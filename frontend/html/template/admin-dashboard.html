@@ -247,10 +247,10 @@
 								<li class="has-submenu active">
 									<a href="javascript:void(0);">Dashboard <i class="isax isax-add"></i></a>
 									<ul class="submenu">
-										<li class="has-submenu">
+										<li class="has-submenu active">
 											<a href="javascript:void(0);">Instructor Dashboard</a>
 											<ul class="submenu">
-												<li><a href="instructor-dashboard.html">Dashboard</a></li>
+												<li class="active"><a href="instructor-dashboard.html">Dashboard</a></li>
 												<li><a href="instructor-profile.html">My Profile</a></li>
 												<li><a href="instructor-course.html">Course</a></li>
 												<li><a href="instructor-announcements.html">Announcements</a></li>
@@ -290,7 +290,6 @@
 												<li><a href="student-settings.html">Settings</a></li>
 											</ul>
 										</li>
-										<li class="active"><a href="admin-dashboard.html">Admin Dashboard</a></li>  <!-- New addition for admin -->
 									</ul>
 								</li>	
 								<li class="has-submenu">
@@ -528,7 +527,7 @@
 												<span class="icon-box bg-primary-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/user-octagon.svg" alt=""></span>
 												<div>
 													<span class="d-block">Total Users</span>
-													<h4 class="fs-24 mt-1">50</h4>
+													<h4 class="fs-24 mt-1" id="total-users">0</h4>
 												</div>
 											</div>
 										</div>
@@ -541,7 +540,7 @@
 												<span class="icon-box bg-secondary-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/teacher.svg" alt=""></span>
 												<div>
 													<span class="d-block">Total Teachers</span>
-													<h4 class="fs-24 mt-1">15</h4>
+													<h4 class="fs-24 mt-1" id="total-teachers">0</h4>
 												</div>
 											</div>
 										</div>
@@ -554,7 +553,7 @@
 												<span class="icon-box bg-success-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/student.svg" alt=""></span>
 												<div>
 													<span class="d-block">Total Students</span>
-													<h4 class="fs-24 mt-1">35</h4>
+													<h4 class="fs-24 mt-1" id="total-students">0</h4>
 												</div>
 											</div>
 										</div>
@@ -567,7 +566,7 @@
 												<span class="icon-box bg-info-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/book-2.svg" alt=""></span>
 												<div>
 													<span class="d-block">Total Courses</span>
-													<h4 class="fs-24 mt-1">20</h4>
+													<h4 class="fs-24 mt-1" id="total-courses">0</h4>
 												</div>
 											</div>
 										</div>
@@ -580,7 +579,7 @@
 												<span class="icon-box bg-purple-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/category.svg" alt=""></span>
 												<div>
 													<span class="d-block">Total Categories</span>
-													<h4 class="fs-24 mt-1">10</h4>
+													<h4 class="fs-24 mt-1" id="total-categories">0</h4>
 												</div>
 											</div>
 										</div>
@@ -593,7 +592,7 @@
 												<span class="icon-box bg-blue-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/money-add.svg" alt=""></span>
 												<div>
 													<span class="d-block">Total Earnings</span>
-													<h4 class="fs-24 mt-1">$1000</h4>
+													<h4 class="fs-24 mt-1" id="total-earnings">$0</h4>
 												</div>
 											</div>
 										</div>
@@ -611,20 +610,8 @@
 											<th>Date</th>
 										</tr>
 									</thead>
-									<tbody>
-										<tr>
-											<td>Ronald Richard</td>
-											<td>Student</td>
-											<td>Enrolled in Course</td>
-											<td>2025-09-25</td>
-										</tr>
-										<tr>
-											<td>Eugene Andre</td>
-											<td>Teacher</td>
-											<td>Created Course</td>
-											<td>2025-09-24</td>
-										</tr>
-										<!-- Add more rows as needed -->
+									<tbody id="recent-activities">
+										<!-- Dynamically populated -->
 									</tbody>
 								</table>
 							</div>
@@ -696,7 +683,7 @@
 											</div>
 											<div class="footer-address d-flex align-items-center">
 												<img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2">
-												<p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fbdfc9dedad6c8d7d6c8fbdec3dad6cbd7de95d8d4d6">[email&#160;protected]</a></p>
+												<p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bbdfc9dedad6c8d7d6c8fbdec3dad6cbd7de95d8d4d6">[email&#160;protected]</a></p>
 											</div>
 											<div class="footer-address d-flex align-items-center">
 												<img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2">
@@ -736,17 +723,111 @@
 		<!-- /Main Wrapper -->
 	  
 		<!-- jQuery -->
-		<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="assets/js/jquery-3.7.1.min.js" type="792b5d2f8090265d3583bdac-text/javascript"></script>
+		<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="assets/js/jquery-3.7.1.min.js" type="8ccc04bfbc4ae39a064a676e-text/javascript"></script>
 		
 		<!-- Bootstrap Core JS -->
-		<script src="assets/js/bootstrap.bundle.min.js" type="792b5d2f8090265d3583bdac-text/javascript"></script>
+		<script src="assets/js/bootstrap.bundle.min.js" type="8ccc04bfbc4ae39a064a676e-text/javascript"></script>
 
 		<!-- Sticky Sidebar JS -->
-        <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="792b5d2f8090265d3583bdac-text/javascript"></script>
-        <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="792b5d2f8090265d3583bdac-text/javascript"></script>
+        <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="8ccc04bfbc4ae39a064a676e-text/javascript"></script>
+        <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="8ccc04bfbc4ae39a064a676e-text/javascript"></script>
 		
 		<!-- Custom JS -->
-		<script src="assets/js/script.js" type="792b5d2f8090265d3583bdac-text/javascript"></script>
+		<script src="assets/js/script.js" type="8ccc04bfbc4ae39a064a676e-text/javascript"></script>
 		
-	<script src="../../cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="792b5d2f8090265d3583bdac-|49" defer=""></script></body>
+		<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+<script>
+    $(document).ready(function() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Please login first.');
+            window.location.href = 'login.html';
+            return;
+        }
+        let decoded;
+        try {
+            decoded = jwt_decode(token);
+        } catch (error) {
+            alert('Invalid token. Please login again.');
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+            return;
+        }
+        if (decoded.role !== 'admin') {
+            alert('Access denied: This dashboard is for admins only.');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // Load profile data including image
+        function loadProfile() {
+            $.ajax({
+                url: '/api/auth/profile',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function(profile) {
+                    $('#profile-name').text(profile.name || 'Admin'); // Update header name
+                    $('#profile-email').text(profile.email || ''); // Update header email
+                    let imgSrc = profile.profileImage || 'assets/img/default-grey-silhouette.png'; // Default grey image
+                    $('#profile-img').attr('src', imgSrc); // Update header image
+                    $('.dropdown-profile-img').attr('src', imgSrc); // Update dropdown image
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading profile:', error);
+                }
+            });
+        }
+
+        loadProfile(); // Load profile on page load
+
+        // Fetch dashboard data from backend API
+        $.ajax({
+            url: '/api/admin/dashboard',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function(response) {
+                // Update total users
+                $('#total-users').text(response.totalUsers || 0);
+
+                // Update total teachers
+                $('#total-teachers').text(response.totalTeachers || 0);
+
+                // Update total students
+                $('#total-students').text(response.totalStudents || 0);
+
+                // Update total courses
+                $('#total-courses').text(response.totalCourses || 0);
+
+                // Update total categories
+                $('#total-categories').text(response.totalCategories || 0);
+
+                // Update total earnings
+                $('#total-earnings').text(`$${response.totalEarnings || 0}`);
+
+                // Populate recent activities table
+                if (response.recentActivities && response.recentActivities.length) {
+                    let activitiesHTML = '';
+                    response.recentActivities.forEach(activity => {
+                        activitiesHTML += `
+                            <tr>
+                                <td>${activity.user || 'Unknown'}</td>
+                                <td>${activity.role || 'Unknown'}</td>
+                                <td>${activity.action || 'No Action'}</td>
+                                <td>${activity.date || 'No Date'}</td>
+                            </tr>
+                        `;
+                    });
+                    $('#recent-activities').html(activitiesHTML);
+                } else {
+                    $('#recent-activities').html('<tr><td colspan="4">No recent activities.</td></tr>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching dashboard data:', error);
+            }
+        });
+    });
+</script>
+		
+	<script src="../../cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="8ccc04bfbc4ae39a064a676e-|49" defer=""></script></body>
 </html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -21,8 +21,18 @@
     <link rel="stylesheet" href="assets/plugins/tabler-icons/tabler-icons.css">
     <link rel="stylesheet" href="assets/css/iconsax.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+    .login-bg{
+        margin-top: -23px;
+    }
+    .login-header img{
+        margin-top: -20px;
+        width: 350px;
+    }
+    </style>
 </head>
 <body>
+    <div id="alertBox" class="alert d-none text-center" role="alert"></div>
 
     <div class="main-wrapper">
         <div class="login-content">
@@ -32,86 +42,68 @@
                         <div>
                             <div class="login-carousel-section mb-3">
                                 <div class="login-banner">
-                                    <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
+                                    <img src="assets/img/auth/auth-1.svg" class="img-fluid w-100 w-md-75" alt="Logo">
                                 </div>
                                 <div class="mentor-course text-center">
-                                    <h3 class="mb-2">Welcome to <br>Dreams<span class="text-secondary">LMS</span> Courses.</h3>
+                                    <h3 class="mb-2">Welcome to <br>Adaptive<span class="text-secondary">LMS</span> Courses.</h3>
                                     <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 login-wrap-bg">
-                    <div class="login-wrapper">
+                <div class="col-12 col-md-6 login-wrap-bg d-flex align-items-center justify-content-center p-2 p-md-4">
+                    <div class="login-wrapper w-100">
                         <div class="loginbox">
                             <div class="w-100">
-                                <div class="d-flex align-items-center justify-content-between login-header">
+                                <div class="d-flex align-items-center justify-content-between login-header mb-2 mb-md-4 mt-0">
                                     <img src="assets/img/logo.svg" class="img-fluid" alt="Logo">
-                                    <!-- <a href="index.html" class="link-1">Back to Home</a> -->
                                 </div>
-                                <h1 class="fs-32 fw-bold topic">Sign up</h1>
-                                <form id="signupForm" class="mb-3 pb-3">
+                                <h1 class="fs-32 fw-bold topic text-center text-md-start">Sign up</h1>
+                                <form id="signupForm" class="mb-3 pb-3" aria-label="Signup Form">
                                     <div class="mb-3 position-relative">
-                                        <label class="form-label">Full Name<span class="text-danger ms-1">*</span></label>
+                                        <label class="form-label" for="nameInput">Full Name<span class="text-danger ms-1">*</span></label>
                                         <div class="position-relative">
-                                            <input type="text" name="name" class="form-control form-control-lg" required>
+                                            <input type="text" id="nameInput" name="name" class="form-control form-control-lg" required aria-required="true">
                                             <span><i class="isax isax-user input-icon text-gray-7 fs-14"></i></span>
                                         </div>
                                     </div>
                                     <div class="mb-3 position-relative">
-                                        <label class="form-label">Email<span class="text-danger ms-1">*</span></label>
+                                        <label class="form-label" for="emailInput">Email<span class="text-danger ms-1">*</span></label>
                                         <div class="position-relative">
-                                            <input type="email" name="email" class="form-control form-control-lg" required>
+                                            <input type="email" id="emailInput" name="email" class="form-control form-control-lg" required aria-required="true">
                                             <span><i class="isax isax-sms input-icon text-gray-7 fs-14"></i></span>
                                         </div>
                                     </div>
                                     <div class="mb-3 position-relative">
-                                        <label class="form-label">New Password <span class="text-danger"> *</span></label>
-                                        <div class="position-relative" id="passwordInput">
-                                            <input type="password" name="password" class="pass-inputs form-control form-control-lg" required>
-                                            <span class="isax toggle-passwords isax-eye-slash text-gray-7 fs-14"></span>
-                                        </div>
-                                        <!-- - <div class="password-strength" id="passwordStrength">
-                                            <span id="poor"></span>
-                                            <span id="weak"></span>
-                                            <span id="strong"></span>
-                                            <span id="heavy"></span>
-                                        </div> 
-                                         <div class="mt-2" id="passwordInfo"></div>  -->
-                                    </div>
-                                    <div class="mb-3 position-relative">
-                                        <label class="form-label">Confirm Password <span class="text-danger"> *</span></label>
+                                        <label class="form-label" for="passwordInput">New Password <span class="text-danger">*</span></label>
                                         <div class="position-relative">
-                                            <input type="password" name="confirmPassword" class="pass-inputa form-control form-control-lg" required>
-                                            <span class="isax toggle-passworda isax-eye-slash text-gray-7 fs-14"></span>
+                                            <input type="password" id="passwordInput" name="password" class="pass-input form-control form-control-lg" required aria-required="true">
+                                            <span class="isax toggle-password isax-eye-slash text-gray-7 fs-14"></span>
                                         </div>
                                     </div>
                                     <div class="mb-3 position-relative">
-                                        <label class="form-label">Role <span class="text-danger"> *</span></label>
-                                        <select name="role" class="form-control form-control-lg" required>
-                                            <option value="">Select Role</option>
-                                            <option value="student">Student</option>
-                                            <option value="teacher">Teacher</option>
-                                        </select>
+                                        <label class="form-label" for="confirmPasswordInput">Confirm Password <span class="text-danger">*</span></label>
+                                        <div class="position-relative">
+                                            <input type="password" id="confirmPasswordInput" name="confirmPassword" class="pass-input form-control form-control-lg" required aria-required="true">
+                                            <span class="isax toggle-password isax-eye-slash text-gray-7 fs-14"></span>
+                                        </div>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between mb-4">
                                         <div class="remember-me d-flex align-items-center">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required aria-required="true">
                                             <label class="form-check-label mb-0 d-inline-flex remember-me fs-14" for="flexCheckDefault">
                                                 I agree with <a href="javascript:void(0);" class="link-2 mx-2">Terms of Service</a> and <a href="javascript:void(0);" class="link-2 mx-2">Privacy Policy</a>
                                             </label>
                                         </div>
                                     </div>
                                     <div class="d-grid">
-                                        <button class="btn btn-secondary btn-lg" type="submit">Sign Up <i class="isax isax-arrow-right-3 ms-1"></i></button>
+                                        <button class="btn btn-secondary btn-lg" type="submit" id="signupButton">
+                                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                            Sign Up <i class="isax isax-arrow-right-3 ms-1"></i>
+                                        </button>
                                     </div>
                                 </form>
-                                <!-- <div class="d-flex align-items-center justify-content-center or fs-14 mb-3">Or</div> -->
-                                <!-- <div class="d-flex align-items-center justify-content-center mb-3">
-                                    <a href="javascript:void(0);" class="btn btn-light me-2"><img src="assets/img/icons/google.svg" alt="img" class="me-2">Google</a>
-                                    <a href="javascript:void(0);" class="btn btn-light"><img src="assets/img/icons/facebook.svg" alt="img" class="me-2">Facebook</a>
-                                </div> -->
                                 <div class="fs-14 fw-normal d-flex align-items-center justify-content-center">
                                     Already you have an account?<a href="login.html" class="link-2 ms-1"> Login</a>
                                 </div>
@@ -121,12 +113,13 @@
                 </div>
             </div>
         </div>
-        <script src="assets/js/jquery-3.7.1.min.js"></script>
-        <script src="assets/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/plugins/select2/js/select2.min.js"></script>
-        <script src="assets/plugins/slick/slick.js"></script>
-        <script src="assets/js/validation.js"></script>
-        <script src="assets/js/script.js"></script>
-        <script src="assets/js/auth.js"></script>
+    </div>
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/plugins/select2/js/select2.min.js"></script>
+    <script src="assets/plugins/slick/slick.js"></script>
+    <script src="assets/js/validation.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/auth.js"></script>
 </body>
 </html>
