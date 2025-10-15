@@ -1,7 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta Tags -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,33 +11,18 @@
     
     <title>Dreams LMS | Student Profile</title>
 
-    <!-- Favicon -->
     <link rel="shortcut icon" href="assets/img/favicon.png"> 
     <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
-    
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    
-    <!-- Fontawesome CSS -->
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
-
-    <!-- Feather CSS -->
     <link rel="stylesheet" href="assets/css/feather.css">
-
-    <!-- Iconsax CSS -->
     <link rel="stylesheet" href="assets/css/iconsax.css">
-
-    <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
-
-    <!-- Theme Settings Js -->
     <script src="assets/js/theme-script.js"></script>
 </head>
 <body>
-    <!-- Main Wrapper -->
     <div class="main-wrapper">
-        <!-- Header Topbar -->
         <div class="header-topbar text-center">
             <div class="container">
                 <div class="row">
@@ -80,9 +64,7 @@
                 </div>
             </div>
         </div>
-        <!-- /Header Topbar -->
     
-        <!-- Header -->
         <header class="header-two">
             <div class="container">
                 <div class="header-nav">
@@ -165,17 +147,17 @@
                         <div class="dropdown profile-dropdown">
                             <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
                                 <span class="avatar">
-                                    <img id="profileImageHeader" src="assets/img/user/default-user.png" alt="Img" class="img-fluid rounded-circle">
+                                    <img id="profileImageHeader" src="assets/img/default-grey-silhouette.png" alt="Img" class="img-fluid rounded-circle">
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <div class="profile-header d-flex align-items-center">
                                     <div class="avatar">
-                                        <img id="profileImageDropdown" src="assets/img/user/default-user.png" alt="Img" class="img-fluid rounded-circle">
+                                        <img id="profileImageDropdown" src="assets/img/default-grey-silhouette.png" alt="Img" class="img-fluid rounded-circle">
                                     </div>
                                     <div>
-                                        <h6 id="dropdownUserName">Loading...</h6>
-                                        <p><a id="dropdownEmail" href="#">Loading...</a></p>
+                                        <h6 id="dropdownUserName"></h6>
+                                        <p id="dropdownEmail"></p>
                                     </div>
                                 </div>
                                 <ul class="profile-body">
@@ -195,9 +177,7 @@
                     </div>
                 </div>
             </header>
-            <!-- /Header -->           
 
-            <!-- Breadcrumb -->
             <div class="breadcrumb-bar text-center">
                 <div class="container">
                     <div class="row">
@@ -213,11 +193,9 @@
                     </div>
                 </div>
             </div>
-            <!-- /Breadcrumb -->
 
             <div class="content">
                 <div class="container">
-                    <!-- Profile Box -->
                     <div class="instructor-profile">
                         <div class="instructor-profile-bg">
                             <img src="assets/img/bg/card-bg-01.png" class="instructor-profile-bg-1" alt="">
@@ -226,12 +204,12 @@
                             <div class="col-md-6">
                                 <div class="d-flex align-items-center">
                                     <span class="avatar flex-shrink-0 avatar-xxl avatar-rounded me-3 border border-white border-3 position-relative">
-                                        <img id="profileImage" src="assets/img/user/default-user.png" alt="" onclick="triggerImageUpload()" class="img-fluid rounded-circle">
+                                        <img id="profileImage" src="assets/img/default-grey-silhouette.png" alt="" onclick="triggerImageUpload()" class="img-fluid rounded-circle">
                                         <input type="file" id="imageUpload" style="display:none;" accept="image/*" onchange="uploadImage(event)">
                                         <span class="verify-tick"><i class="isax isax-verify5"></i></span>
                                     </span>
                                     <div>
-                                        <h5 class="mb-1 text-white d-inline-flex align-items-center" id="userName">Loading...<a href="student-settings.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
+                                        <h5 class="mb-1 text-white d-inline-flex align-items-center" id="userName"><a href="student-settings.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
                                         <p class="text-light" id="userRole">Student</p>
                                     </div>
                                 </div>
@@ -243,9 +221,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- /Profile Box -->
                     <div class="row">
-                        <!-- Sidebar -->
                         <div class="col-lg-3 theiaStickySidebar">
                             <div class="settings-sidebar mb-lg-0">
                                 <div>
@@ -272,7 +248,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- /Sidebar -->
                         <div class="col-lg-9">
                             <div class="page-title d-flex align-items-center justify-content-between">
                                 <h5 class="fw-bold">My Profile</h5>
@@ -388,7 +363,6 @@
                 </div>
             </div>
 
-            <!-- Footer -->
             <footer class="footer">
                 <div class="footer-bg">
                     <img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
@@ -483,24 +457,14 @@
                     </div>
                 </div>
             </footer>
-            <!-- /Footer -->
         </div>
-        <!-- /Main Wrapper -->
     
-        <!-- jQuery -->
         <script src="assets/js/jquery-3.7.1.min.js"></script>
-        
-        <!-- Bootstrap Core JS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Sticky Sidebar JS -->
         <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
         <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
-        
-        <!-- Custom JS -->
         <script src="assets/js/script.js"></script>
-        
-        <!-- Profile JS -->
+        <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
         <script>
 $(document).ready(function () {
     // Toast Alert Function
@@ -541,14 +505,72 @@ $(document).ready(function () {
     }
 
     // Check if user is logged in
-    if (!localStorage.getItem('token')) {
+    const token = localStorage.getItem('token');
+    if (!token) {
         showAlert('No token found. Please login again.', 'danger');
         setTimeout(() => {
             window.location.href = 'login.html';
         }, 1500);
         return;
-    } else {
-        loadProfile();
+    }
+
+    let decoded;
+    try {
+        decoded = jwt_decode(token);
+    } catch (error) {
+        showAlert('Invalid token. Please login again.', 'danger');
+        localStorage.removeItem('token');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+        return;
+    }
+
+    if (decoded.role !== 'student') {
+        showAlert('Access denied: This page is for students only.', 'danger');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+        return;
+    }
+
+    // Load profile data
+    function loadProfile() {
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/profile',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+            success: function (data) {
+                console.log('Profile Data:', data);
+                $('#userName').text(data.name || 'N/A');
+                $('#email').text(data.email || 'N/A');
+                $('#firstName').text(data.name ? data.name.split(' ')[0] : 'N/A');
+                $('#lastName').text(data.name ? data.name.split(' ')[1] || '' : '');
+                $('#regDate').text(data.registrationDate ? new Date(data.registrationDate).toLocaleString() : 'N/A');
+                $('#phoneNumber').text(data.phoneNumber || 'Not provided');
+                $('#dob').text(data.dob ? new Date(data.dob).toLocaleDateString() : 'Not provided');
+                $('#age').text(data.age || 'Not provided');
+                $('#bio').text(data.bio || 'Not provided');
+                const profileImgSrc = data.profileImage ? `http://localhost:5000${data.profileImage}` : 'assets/img/default-grey-silhouette.png';
+                $('#profileImage').attr('src', profileImgSrc);
+                $('#profileImageHeader').attr('src', profileImgSrc);
+                $('#profileImageDropdown').attr('src', profileImgSrc);
+                $('#dropdownUserName').text(data.name || 'N/A');
+                $('#dropdownEmail').text(data.email || 'N/A');
+                $('#userRole').text(data.role ? data.role.charAt(0).toUpperCase() + data.role.slice(1) : 'N/A');
+            },
+            error: function (xhr) {
+                console.log('Profile Load Error:', xhr.responseText);
+                showAlert(xhr.responseJSON?.message || 'Error loading profile.', 'danger');
+                if (xhr.status === 401) {
+                    localStorage.removeItem('token');
+                    showAlert('Session expired. Please login again.', 'danger');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                }
+            }
+        });
     }
 
     // Edit mode toggle
@@ -561,7 +583,7 @@ $(document).ready(function () {
             $('#editLastName').val(nameParts[1] || '');
             $('#editEmail').val($('#email').text() || '');
             $('#editPhoneNumber').val($('#phoneNumber').text() || '');
-            $('#editDob').val($('#dob').text() ? new Date($('#dob').text()).toISOString().split('T')[0] : '');
+            $('#editDob').val($('#dob').text() && $('#dob').text() !== 'Not provided' ? new Date($('#dob').text()).toISOString().split('T')[0] : '');
             $('#editAge').val($('#age').text() || '');
             $('#editBio').val($('#bio').text() || '');
         }
@@ -635,7 +657,7 @@ $(document).ready(function () {
         });
     });
 
-    // Logout Handler with Event Delegation
+    // Logout Handler
     $(document).on('click', '#logout-sidebar, #logout-btn', function (e) {
         e.preventDefault();
         console.log('Logout button clicked');
@@ -662,44 +684,8 @@ $(document).ready(function () {
         });
     });
 
-    // Load profile data
-    function loadProfile() {
-        $.ajax({
-            url: 'http://localhost:5000/api/auth/profile',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
-            success: function (data) {
-                console.log('Profile Data:', data);
-                $('#userName').text(data.name || 'N/A');
-                $('#email').text(data.email || 'N/A');
-                $('#firstName').text(data.name ? data.name.split(' ')[0] : 'N/A');
-                $('#lastName').text(data.name ? data.name.split(' ')[1] || '' : '');
-                $('#regDate').text(data.registrationDate ? new Date(data.registrationDate).toLocaleString() : 'N/A');
-                $('#phoneNumber').text(data.phoneNumber || 'Not provided');
-                $('#dob').text(data.dob ? new Date(data.dob).toLocaleDateString() : 'Not provided');
-                $('#age').text(data.age || 'Not provided');
-                $('#bio').text(data.bio || 'Not provided');
-                const profileImgSrc = data.profileImage ? `http://localhost:5000${data.profileImage}` : 'assets/img/user/default-user.png';
-                $('#profileImage').attr('src', profileImgSrc).removeClass('no-image');
-                $('#profileImageHeader').attr('src', profileImgSrc).removeClass('no-image');
-                $('#profileImageDropdown').attr('src', profileImgSrc).removeClass('no-image');
-                $('#dropdownUserName').text(data.name || 'N/A');
-                $('#dropdownEmail').text(data.email || 'N/A');
-                $('#userRole').text(data.role ? data.role.charAt(0).toUpperCase() + data.role.slice(1) : 'N/A');
-            },
-            error: function (xhr) {
-                console.log('Profile Load Error:', xhr.responseText);
-                showAlert(xhr.responseJSON?.message || 'Error loading profile.', 'danger');
-                if (xhr.status === 401) {
-                    localStorage.removeItem('token');
-                    showAlert('Session expired. Please login again.', 'danger');
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 1500);
-                }
-            }
-        });
-    }
+    // Load profile on page load
+    loadProfile();
 });
         </script>
     </body>
