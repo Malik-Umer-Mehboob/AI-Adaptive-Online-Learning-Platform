@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html> 
+﻿<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
@@ -9,146 +9,100 @@
 		<meta name="author" content="Dreams Technologies">
 		<meta name="robots" content="index, follow">
 		
-		<title>Dreams LMS | Advanced Learning Management System Template</title>
+		<title>Dreams LMS | Student Dashboard</title>
 
 		<link rel="shortcut icon" href="assets/img/favicon.png"> 
 		<link rel="apple-touch-icon" href="assets/img/apple-icon.png">
-		<script src="assets/js/theme-script.js" type="text/javascript"></script>
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 		<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
 		<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
 		<link rel="stylesheet" href="assets/css/feather.css">
 		<link rel="stylesheet" href="assets/css/iconsax.css">
 		<link rel="stylesheet" href="assets/css/style.css">
+		<style>
+			.header-nav { padding: 10px 0; }
+			.navbar-logo { max-width: 180px; }
+			.navbar-logo img { width: 100%; height: auto; }
+			.logo-white, .logo-dark { display: flex; align-items: center; }
+			.profile-card { border-radius: 15px; }
+			.card { box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s; }
+			.card:hover { transform: translateY(-5px); }
+			.quiz-ans-card { position: relative; overflow: hidden; }
+			.quiz-ans-bg1, .quiz-ans-bg2 { opacity: 0.1; }
+			.settings-sidebar ul li a { padding: 10px; border-radius: 5px; }
+			.settings-sidebar ul li a.active { background-color: #f0f4ff; }
+			.course-item-two { margin-bottom: 20px; }
+			/* Dark mode styles */
+			body.dark-mode {
+				background-color: #121212;
+				color: #e0e0e0;
+			}
+			body.dark-mode .card,
+			body.dark-mode .settings-sidebar,
+			body.dark-mode .footer {
+				background-color: #1e1e1e;
+				border-color: #333333;
+			}
+			body.dark-mode .profile-card {
+				background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+			}
+			body.dark-mode .quiz-ans-card {
+				background-color: #252525;
+			}
+			body.dark-mode .text-white,
+			body.dark-mode .link-light,
+			body.dark-mode a:not(.btn) {
+				color: #e0e0e0 !important;
+			}
+			body.dark-mode .btn-primary {
+				background-color: #3a6cff;
+				border-color: #3a6cff;
+			}
+			body.dark-mode .btn-dark {
+				background-color: #444444;
+				border-color: #444444;
+			}
+			body.dark-mode .settings-sidebar ul li a.active {
+				background-color: #3a3a3a;
+				color: #ffffff;
+			}
+			body.dark-mode .breadcrumb-bar {
+				background-color: #1e1e1e;
+			}
+			body.dark-mode .course-content h6 a,
+			body.dark-mode .course-content .link-default {
+				color: #e0e0e0;
+			}
+			body.dark-mode .badge-light {
+				background-color: #333333;
+				color: #e0e0e0;
+			}
+			body.dark-mode .text-secondary {
+				color: #bbbbbb !important;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="main-wrapper">
-			<div class="header-topbar text-center">
-				<div class="container">
-					<div class="row">
-						<div class="col-lg-6">
-							<div class="d-flex align-items-center">
-								<p class="d-flex align-items-center fw-medium fs-14 mb-2 me-3"><i class="isax isax-location me-2"></i>1442 Crosswind Drive Madisonville</p>
-								<p class="d-flex align-items-center fw-medium fs-14 mb-2"><i class="isax isax-call-calling5 me-2"></i>+1 45887 77874</p>
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="d-flex align-items-center justify-content-end">
-								<div class="dropdown flag-dropdown mb-2 me-3">
-									<a href="javascript:void(0);" class="dropdown-toggle d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-										<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-									</a>
-									<ul class="dropdown-menu p-2 mt-2">
-										<li><a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);"><img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG</a></li>
-										<li><a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);"><img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA</a></li>
-										<li><a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);"><img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE</a></li>
-									</ul>
-								</div>
-								<div class="dropdown mb-2 me-3">
-									<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">USD</a>
-									<ul class="dropdown-menu p-2 mt-2">
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
-									</ul>
-								</div>
-								<ul class="social-icon d-flex align-items-center mb-2">
-									<li class="me-2"><a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a></li>
-									<li class="me-2"><a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a></li>
-									<li class="me-2"><a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a></li>
-									<li class="me-2"><a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a></li>
-									<li><a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
 			<header class="header-two">
 				<div class="container">
-					<div class="header-nav">
+					<div class="header-nav d-flex align-items-center">
 						<div class="navbar-header">
 							<a id="mobile_btn" href="javascript:void(0);">
 								<span class="bar-icon"><span></span><span></span><span></span></span>
 							</a>
 							<div class="navbar-logo">
-								<a class="logo-white header-logo" href="index.html"><img src="assets/img/logo.svg" class="logo" alt="Logo"></a>
-								<a class="logo-dark header-logo" href="index.html"><img src="assets/img/logo-white.svg" class="logo" alt="Logo"></a>
+								<a class="logo-white header-logo" href="index.html"><img src="assets/img/logo.png" class="logo" alt="Logo"></a>
+								<a class="logo-dark header-logo" href="index.html"><img src="assets/img/logo.png" class="logo" alt="Logo"></a>
 							</div>
 						</div>
 						<div class="main-menu-wrapper">								
 							<div class="menu-header">
-								<a href="index.html" class="menu-logo"><img src="assets/img/logo.svg" class="img-fluid" alt="Logo"></a>
+								<a href="index.html" class="menu-logo"><img src="assets/img/logo.png" class="img-fluid" alt="Logo"></a>
 								<a id="menu_close" class="menu-close" href="javascript:void(0);"><i class="fas fa-times"></i></a>
 							</div>
-							<ul class="main-nav">
-								<li class="has-submenu megamenu">
-									<a href="#">Home <i class="isax isax-add"></i></a>
-									<ul class="submenu mega-submenu">
-										<li>
-											<div class="megamenu-wrapper">
-												<div class="row">
-													<div class="col-lg-2"><div class="single-demo"><div class="demo-img"><a href="index.html" class="inner-demo-img"><img src="assets/img/home/home-01.jpg" class="img-fluid" alt="img"></a></div><div class="demo-info"><a href="index.html" class="inner-demo-img">Home 1</a></div></div></div>
-													<div class="col-lg-2"><div class="single-demo"><div class="demo-img"><a href="index-2.html" class="inner-demo-img"><img src="assets/img/home/home-02.jpg" class="img-fluid" alt="img"></a></div><div class="demo-info"><a href="index-2.html" class="inner-demo-img">Home 2</a></div></div></div>
-													<div class="col-lg-2"><div class="single-demo"><div class="demo-img"><a href="index-3.html" class="inner-demo-img"><img src="assets/img/home/home-03.jpg" class="img-fluid" alt="img"></a></div><div class="demo-info"><a href="index-3.html" class="inner-demo-img">Home 3</a></div></div></div>
-													<div class="col-lg-2"><div class="single-demo"><div class="demo-img"><a href="index-4.html" class="inner-demo-img"><img src="assets/img/home/home-04.jpg" class="img-fluid" alt="img"></a></div><div class="demo-info"><a href="index-4.html" class="inner-demo-img">Home 4</a></div></div></div>
-													<div class="col-lg-2"><div class="single-demo"><div class="demo-img"><a href="index-5.html" class="inner-demo-img"><img src="assets/img/home/home-05.jpg" class="img-fluid" alt="img"></a></div><div class="demo-info"><a href="index-5.html" class="inner-demo-img">Home 5</a></div></div></div>
-													<div class="col-lg-2"><div class="single-demo"><div class="demo-img"><a href="index-6.html" class="inner-demo-img"><img src="assets/img/home/home-06.jpg" class="img-fluid" alt="img"></a></div><div class="demo-info"><a href="index-6.html" class="inner-demo-img">Home 6</a></div></div></div>
-												</div>
-											</div>
-										</li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="#">Courses <i class="isax isax-add"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu"><a href="javascript:void(0);">Courses</a><ul class="submenu"><li><a href="course-grid.html">Course Grid</a></li><li><a href="course-list.html">Course List</a></li></ul></li>
-										<li class="has-submenu"><a href="javascript:void(0);">Course Category</a><ul class="submenu"><li><a href="course-category.html">Course Category</a></li><li><a href="course-category-2.html">Course Category 2</a></li><li><a href="course-category-3.html">Course Category 3</a></li></ul></li>
-										<li class="has-submenu"><a href="javascript:void(0);">Course Details</a><ul class="submenu"><li><a href="course-details.html">Course Details</a></li><li><a href="course-details-2.html">Course Details 2</a></li></ul></li>										
-										<li><a href="course-resume.html">Course Resume</a></li>
-										<li><a href="course-watch.html">Course Watch</a></li>
-										<li><a href="cart.html">Course Cart</a></li>
-										<li><a href="checkout.html">Course Checkout</a></li>
-										<li><a href="add-course.html">Add New Course</a></li>
-									</ul>
-								</li>
-								<li class="has-submenu active">
-									<a href="javascript:void(0);">Dashboard <i class="isax isax-add"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu"><a href="javascript:void(0);">Instructor Dashboard</a><ul class="submenu"><li><a href="instructor-dashboard.html">Dashboard</a></li><li><a href="instructor-profile.html">My Profile</a></li><li><a href="instructor-course.html">Course</a></li><li><a href="instructor-announcements.html">Announcements</a></li><li><a href="instructor-assignment.html">Assignments</a></li><li class="has-submenu"><a href="javascript:void(0);">Student</a><ul class="submenu"><li><a href="students.html">Student Grid</a></li><li><a href="student-list.html">Student List</a></li><li><a href="student-details.html">Student Details</a></li></ul></li><li><a href="instructor-quiz.html">Quiz</a></li><li><a href="instructor-quiz-results.html">Quiz Results</a></li><li><a href="instructor-certificate.html">Certificates</a></li><li><a href="instructor-earnings.html">Earning</a></li><li><a href="instructor-payout.html">Payout</a></li><li><a href="instructor-statements.html">Statement</a></li><li><a href="instructor-tickets.html">Support Tickets</a></li><li><a href="instructor-settings.html">Settings</a></li></ul></li>
-										<li class="has-submenu active"><a href="javascript:void(0);">Student Dashboard</a><ul class="submenu"><li class="active"><a href="student-dashboard.html">Student Dashboard</a></li><li><a href="student-profile.html">My Profile</a></li><li><a href="student-courses.html">Enrolled Courses</a></li><li><a href="student-certificates.html">My Certificates</a></li><li><a href="student-wishlist.html">Wishlist</a></li><li><a href="student-reviews.html">Reviews</a></li><li><a href="student-quiz.html">My Quiz Attempts</a></li><li><a href="student-order-history.html">Order History</a></li><li><a href="student-referral.html">Referrals</a></li><li><a href="student-messages.html">Messages</a></li><li><a href="student-tickets.html">Support Ticket</a></li><li><a href="student-settings.html">Settings</a></li></ul></li>
-									</ul>
-								</li>	
-								<li class="has-submenu">
-									<a href="#">Pages <i class="isax isax-add"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu"><a href="#">Instructors</a><ul class="submenu"><li><a href="instructor-grid.html">Instructor Grid</a></li><li><a href="instructor-list.html">Instructor List</a></li><li><a href="instructor-details.html">Instructor Details</a></li></ul></li>
-										<li><a href="about-us.html">About Us</a></li>
-										<li><a href="contact-us.html">Contact us</a></li>
-										<li><a href="notifications.html">Notifications</a></li>
-										<li><a href="become-an-instructor.html">Become an Instructor</a></li>
-										<li><a href="testimonials.html">Testimonials</a></li>
-										<li class="has-submenu"><a href="#">Authentication</a><ul class="submenu"><li><a href="login.html">Login</a></li><li><a href="register.html">Register</a></li><li><a href="forgot-password.html">Forgot Password</a></li><li><a href="reset-password.html">Reset Password</a></li><li><a href="set-password.html">Set Password</a></li><li><a href="otp.html">OTP</a></li><li><a href="lock-screen.html">Lock Screen</a></li></ul></li>
-										<li class="has-submenu"><a href="#">Error</a><ul class="submenu"><li><a href="error-404.html">404 Error</a></li><li><a href="error-500.html">500 Error</a></li></ul></li>
-										<li><a href="pricing-plan.html">Pricing Plan</a></li>
-										<li><a href="faq.html">FAQ</a></li>
-										<li><a href="coming-soon.html">Coming Soon</a></li>
-										<li><a href="under-construction.html">Under Construction</a></li>
-										<li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-										<li><a href="privacy-policy.html">Privacy Policy</a></li>
-										<li><a href="index-rtl.html">RTL</a></li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="#">Blog <i class="isax isax-add"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu"><a href="#">Blog Layouts</a><ul class="submenu"><li><a href="blog-grid.html">Blog 1 Grid</a></li><li><a href="blog-2-grid.html">Blog 2 Grid</a></li><li><a href="blog-3-grid.html">Blog 3 Grid</a></li><li><a href="blog-carousal.html">Blog Carousal</a></li><li><a href="blog-masonry.html">Blog Mansory</a></li><li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li><li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li></ul></li>
-										<li class="has-submenu"><a href="#">Blog Details</a><ul class="submenu"><li><a href="blog-details.html">Blog Details</a></li><li><a href="blog-details-left-sidebar.html">Blog Details Left Sidebar</a></li><li><a href="blog-details-right-sidebar.html">Blog Details Right Sidebar</a></li></ul></li>
-									</ul>
-								</li>
-							</ul>
 						</div>
-						<div class="header-btn d-flex align-items-center">
+						<div class="header-btn d-flex align-items-center ms-auto">
 							<div class="icon-btn me-2">
 								<a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate"><i class="isax isax-sun-15"></i></a>
 								<a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle"><i class="isax isax-moon"></i></a>
@@ -168,8 +122,6 @@
 									<ul class="profile-body">
 										<li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a></li>
 										<li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-quiz.html"><i class="isax isax-award me-2"></i>Quiz Attempts</a></li>
-										<li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-order-history.html"><i class="isax isax-shopping-cart me-2"></i>Order History</a></li>
-										<li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-messages.html"><i class="isax isax-messages-3 me-2"></i>Messages<span class="message-count">2</span></a></li>
 										<li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a></li>										
 									</ul>
 									<div class="profile-footer">
@@ -185,10 +137,9 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-md-12 col-12">
-							<h2 class="breadcrumb-title mb-2">Dashboard</h2>
+							<h2 class="breadcrumb-title mb-2">Student Dashboard</h2>
 							<nav aria-label="breadcrumb">
 								<ol class="breadcrumb justify-content-center mb-0">
-									<li class="breadcrumb-item"><a href="#">Home</a></li>
 									<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
 								</ol>
 							</nav>
@@ -250,7 +201,7 @@
 									<div class="row align-items-center">
 										<div class="col-md-8">
 											<div>
-												<h6 class="mb-1">Quiz : Build Responsive Real World</h6>
+												<h6 class="mb-1" id="quiz-title">Quiz : No Quiz Attempted</h6>
 												<p>Answered : <span id="quiz-answered">0/0</span></p>
 											</div>
 										</div>
@@ -295,7 +246,7 @@
 								</div>
 							</div>
 							<h5 class="mb-3 fs-18">Recently Enrolled Courses</h5>
-							<div class="row" id="recent-courses"></div>
+							<div class="row" id="recent-courses"><p>No courses enrolled yet.</p></div>
 							<div>
 								<div class="row">
 									<div class="col-xl-7"></div>
@@ -303,7 +254,7 @@
 										<div class="card mb-0">
 											<div class="card-body">
 												<h5 class="mb-3 fs-18 border-bottom pb-3">Latest Quizzes</h5>
-												<div id="latest-quizzes"></div>
+												<div id="latest-quizzes"><p>No quizzes attempted yet.</p></div>
 											</div>
 										</div>
 									</div>
@@ -323,7 +274,7 @@
 						<div class="row row-gap-4">
 							<div class="col-lg-4">
 								<div class="footer-about">
-									<div class="footer-logo"><img src="assets/img/logo.svg" alt=""></div>
+									<div class="footer-logo"><img src="assets/img/logo.png" alt=""></div>
 									<p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
 									<div class="d-flex align-items-center">
 										<a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
@@ -356,7 +307,7 @@
 											</div>
 											<div class="footer-contact-info">
 												<div class="footer-address d-flex align-items-center"><img src="assets/img/icon/icon-20.svg" alt="Img" class="img-fluid me-2"><p>3556 Beech Street, San Francisco,<br>California, CA 94108</p></div>
-												<div class="footer-address d-flex align-items-center"><img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2"><p><a href="mailto:support@dreamslms.com">support@dreamslms.com</a></p></div>
+												<div class="footer-address d-flex align-items-center"><img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2"><p><a href="mailto:support@dreamslms.com">support@AdaptiveLMS.com</a></p></div>
 												<div class="footer-address d-flex align-items-center"><img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2"><p>+19 123-456-7890</p></div>
 											</div>
 										</div>
@@ -369,7 +320,7 @@
 				<div class="footer-bottom">
 					<div class="container">
 						<div class="row row-gap-2">
-							<div class="col-md-6"><div class="text-center text-md-start"><p class="text-white">Copyright &copy; 2025 DreamsLMS. All rights reserved.</p></div></div>
+							<div class="col-md-6"><div class="text-center text-md-start"><p class="text-white">Copyright &copy; 2025 AdaptiveLMS. All rights reserved.</p></div></div>
 							<div class="col-md-6"><div><ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link"><li><a href="terms-and-conditions.html">Terms & Conditions</a></li><li><a href="privacy-policy.html">Privacy Policy</a></li></ul></div></div>
 						</div>
 					</div>
@@ -384,6 +335,19 @@
 		<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 		<script>
 			$(document).ready(function() {
+				// Dark/Light mode toggle functionality
+				$('#dark-mode-toggle').on('click', function() {
+					$('body').removeClass('dark-mode');
+					$('#dark-mode-toggle').removeClass('activate');
+					$('#light-mode-toggle').addClass('activate');
+				});
+
+				$('#light-mode-toggle').on('click', function() {
+					$('body').addClass('dark-mode');
+					$('#light-mode-toggle').removeClass('activate');
+					$('#dark-mode-toggle').addClass('activate');
+				});
+
 				const token = localStorage.getItem('token');
 				if (!token) {
 					alert('Please login first.');
@@ -449,12 +413,15 @@
 						url: 'http://localhost:5000/api/student/dashboard',
 						type: 'GET',
 						headers: { 'Authorization': 'Bearer ' + token },
+						cache: false, // Cache ko disable kar ke fresh data fetch
 						success: function(response) {
 							$('#enrolled-courses').text(response.enrolledCourses !== undefined ? response.enrolledCourses : 0);
 							$('#active-courses').text(response.activeCourses !== undefined ? response.activeCourses : 0);
 							$('#completed-courses').text(response.completedCourses !== undefined ? response.completedCourses : 0);
 							$('#quiz-answered').text(response.quizAnswered || '0/0');
-							if (response.recentCourses && response.recentCourses.length) {
+							$('#quiz-title').text('Quiz: ' + (response.quizTitle || 'No Quiz Attempted'));
+
+							if (response.recentCourses && response.recentCourses.length > 0) {
 								let recentCoursesHTML = '';
 								response.recentCourses.forEach(course => {
 									recentCoursesHTML += `
@@ -495,7 +462,8 @@
 							} else {
 								$('#recent-courses').html('<p>No courses enrolled yet.</p>');
 							}
-							if (response.latestQuizzes && response.latestQuizzes.length) {
+
+							if (response.latestQuizzes && response.latestQuizzes.length > 0) {
 								let quizzesHTML = '';
 								response.latestQuizzes.forEach(quiz => {
 									quizzesHTML += `
@@ -525,6 +493,7 @@
 							$('#active-courses').text(0);
 							$('#completed-courses').text(0);
 							$('#quiz-answered').text('0/0');
+							$('#quiz-title').text('Quiz: No Quiz Attempted');
 							$('#recent-courses').html('<p>No courses enrolled yet.</p>');
 							$('#latest-quizzes').html('<p>No quizzes attempted yet.</p>');
 						}
@@ -533,6 +502,9 @@
 
 				loadProfile();
 				loadDashboardData();
+
+				// Auto-refresh dashboard every 30 seconds
+				setInterval(loadDashboardData, 30000);
 
 				// Listen for profile update event
 				window.addEventListener('profileUpdated', function() {
