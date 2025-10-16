@@ -8,14 +8,14 @@ dotenv.config({ path: './.env' });
 
 (async function seedAdmin() {
   try {
-    // ✅ Connect to MongoDB (no deprecated options)
+    //  Connect to MongoDB (no deprecated options)
     await mongoose.connect(process.env.MONGO_URI);
     console.log('MongoDB connected');
 
     const email = 'malik.umerkhan97@gmail.com';
     const password = 'malikawan97'; // apna password yahan rakho
 
-    // ⚙️ Delete any existing admin with same email
+    //  Delete any existing admin with same email
     await Admin.deleteOne({ email });
 
     const admin = new Admin({
@@ -26,11 +26,11 @@ dotenv.config({ path: './.env' });
     });
 
     await admin.save();
-    console.log('✅ Admin seeded successfully!');
+    console.log(' Admin seeded successfully!');
     console.log(`Email: ${email}`);
     console.log(`Password: ${password}`);
   } catch (err) {
-    console.error('❌ Error seeding admin:', err);
+    console.error(' Error seeding admin:', err);
   } finally {
     await mongoose.connection.close();
     console.log('🔌 MongoDB connection closed.');

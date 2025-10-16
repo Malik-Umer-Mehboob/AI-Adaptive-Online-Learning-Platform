@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta Tags -->
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Dreams LMS is a powerful Learning Management System template designed for educators, training institutions, and businesses. Manage courses, track student progress, conduct virtual classes, and enhance e-learning experiences with an intuitive and feature-rich platform.">
-    <meta name="keywords" content="LMS template, Learning Management System, e-learning software, online course platform, student management, education portal, virtual classroom, training management system, course tracking, online education">
+    <meta name="description" content="Manage users efficiently with Dreams LMS, a robust Learning Management System template.">
+    <meta name="keywords" content="LMS, manage users, admin panel, e-learning">
     <meta name="author" content="Dreams Technologies">
-    <meta name="robots" content="index, follow">
-    
-    <title>Dreams LMS | Advanced Learning Management System Template</title>
+    <title>Manage Users | Dreams LMS</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="assets/img/favicon.png">
@@ -18,10 +14,10 @@
 
     <!-- Theme Settings Js -->
     <script src="assets/js/theme-script.js" type="text/javascript"></script>
-    
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    
+
     <!-- Fontawesome CSS -->
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
@@ -35,7 +31,7 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <!-- Inline CSS for Dark/Light Mode and Toast -->
+    <!-- Custom CSS for UI Enhancements and Toast -->
     <style>
         .light-mode {
             background-color: #ffffff;
@@ -47,15 +43,54 @@
         }
         .theme-toggle {
             cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
         }
         .theme-toggle.activate .isax {
-            color: #007bff; /* Active icon color */
+            color: #007bff;
+        }
+        .theme-toggle:hover {
+            background-color: #e9ecef;
         }
         .avatar img {
-            display: none; /* Hide image by default */
+            display: none;
         }
         .avatar.has-image img {
-            display: block; /* Show image if profileImage exists */
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 50%;
+        }
+        .user-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        .user-table th, .user-table td {
+            vertical-align: middle;
+            padding: 12px;
+        }
+        .user-table .btn {
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .user-table .btn:hover {
+            transform: translateY(-2px);
+        }
+        .profile-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .profile-card-bg img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            opacity: 0.3;
         }
         #toast-container {
             position: fixed;
@@ -76,6 +111,31 @@
             color: #fff;
         }
         @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -250px;
+                width: 250px;
+                height: 100%;
+                background: #fff;
+                transition: 0.3s;
+                z-index: 1000;
+            }
+            .sidebar.active {
+                left: 0;
+            }
+            .content {
+                margin-left: 0;
+            }
+            .navbar-header {
+                display: block;
+            }
+            .user-table {
+                font-size: 14px;
+            }
+            .user-table th, .user-table td {
+                padding: 8px;
+            }
             #toast-container {
                 top: 10px;
                 right: 10px;
@@ -83,8 +143,7 @@
         }
     </style>
 </head>
-<body>
-    <!-- Main Wrapper -->
+<body class="light-mode">
     <div class="main-wrapper">
         <!-- Header -->
         <header class="header-two">
@@ -110,7 +169,7 @@
                     <div class="main-menu-wrapper">
                         <div class="menu-header">
                             <a href="index.html" class="menu-logo">
-                                <img src="assets/img/logo.svg" class="img-fluid" alt="Logo">
+                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
                             </a>
                             <a id="menu_close" class="menu-close" href="javascript:void(0);">
                                 <i class="fas fa-times"></i>
@@ -168,30 +227,29 @@
                 </div>
             </div>
         </header>
-        <!-- /Header -->
-        
+
         <!-- Breadcrumb -->
         <div class="breadcrumb-bar text-center">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12 col-12">
-                        <h2 class="breadcrumb-title mb-2">Admin Dashboard</h2>
+                        <h2 class="breadcrumb-title mb-2">Manage Users</h2>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb justify-content-center mb-0">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Admin Dashboard</li>
+                                <li class="breadcrumb-item"><a href="admin-dashboard.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Manage Users</li>
                             </ol>
                         </nav>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- /Breadcrumb -->
 
+        <!-- Content -->
         <div class="content">
             <div class="container">
                 <!-- Profile Box -->
-                <div class="profile-card overflow-hidden bg-blue-gradient2 bg-5 p-5">
+                <div class="profile-card overflow-hidden bg-blue-gradient2 bg-5 p-5 mb-4">
                     <div class="profile-card-bg">
                         <img src="assets/img/bg/card-bg-01.png" class="profile-card-bg-1" alt="">
                     </div>
@@ -210,13 +268,11 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="d-flex align-items-center justify-content-lg-end flex-wrap gap-2">
-                                <a href="manage-users.html" class="btn btn-white rounded-pill me-3">Manage Users</a>
                                 <a href="manage-categories.html" class="btn btn-secondary rounded-pill">Manage Categories</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- /Profile Box -->
 
                 <div class="row">
                     <!-- Sidebar -->
@@ -226,13 +282,13 @@
                                 <h6 class="mb-3">Main Menu</h6>
                                 <ul class="mb-3 pb-1">
                                     <li>
-                                        <a href="admin-dashboard.html" class="d-inline-flex align-items-center active"><i class="isax isax-grid-35 me-2"></i>Dashboard</a>
+                                        <a href="admin-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a>
                                     </li>
                                     <li>
                                         <a class="profile-link d-inline-flex align-items-center" data-href="admin-profile.html"><i class="fa-solid fa-user me-2"></i>My Profile</a>
                                     </li>
                                     <li>
-                                        <a href="manage-users.html" class="d-inline-flex align-items-center"><i class="isax isax-user me-2"></i>Manage Users</a>
+                                        <a href="manage-users.html" class="d-inline-flex align-items-center active"><i class="isax isax-user me-2"></i>Manage Users</a>
                                     </li>
                                     <li>
                                         <a href="manage-categories.html" class="d-inline-flex align-items-center"><i class="isax isax-category me-2"></i>Manage Categories</a>
@@ -266,75 +322,23 @@
                             </div>
                         </div>
                     </div>
-                    <!-- /Sidebar -->
+
+                    <!-- Main Content -->
                     <div class="col-lg-9">
-                        <div class="row">
-                            <div class="col-md-6 col-xl-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <span class="icon-box bg-primary-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/user-octagon.svg" alt=""></span>
-                                            <div>
-                                                <span class="d-block">Total Users</span>
-                                                <h4 class="fs-24 mt-1" id="total-users">0</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-xl-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <span class="icon-box bg-success-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/student.svg" alt=""></span>
-                                            <div>
-                                                <span class="d-block">Total Students</span>
-                                                <h4 class="fs-24 mt-1" id="total-students">0</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-xl-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <span class="icon-box bg-info-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/book-2.svg" alt=""></span>
-                                            <div>
-                                                <span class="d-block">Total Courses</span>
-                                                <h4 class="fs-24 mt-1" id="total-courses">0</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-xl-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <span class="icon-box bg-purple-transparent me-2 me-xxl-3 flex-shrink-0"><img src="assets/img/icon/category.svg" alt=""></span>
-                                            <div>
-                                                <span class="d-block">Total Categories</span>
-                                                <h4 class="fs-24 mt-1" id="total-categories">0</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <h5 class="mb-3 fs-18">Recent Activities</h5>
+                        <h5 class="mb-3 fs-18">Registered Users</h5>
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table table-bordered user-table">
                                 <thead>
                                     <tr>
-                                        <th>User</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
                                         <th>Role</th>
-                                        <th>Action</th>
-                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="recent-activities">
-                                    <!-- Dynamically populated -->
+                                <tbody id="user-list">
+                                    <!-- Users will be dynamically populated here -->
                                 </tbody>
                             </table>
                         </div>
@@ -443,147 +447,80 @@
                 </div>
             </div>
         </footer>
-        <!-- /Footer -->
     </div>
-    <!-- /Main Wrapper -->
 
     <!-- jQuery -->
-    <script src="assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-    
-    <!-- Bootstrap Core JS -->
-    <script src="assets/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
     <!-- Sticky Sidebar JS -->
-    <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
-    <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript"></script>
-    
+    <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+    <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
     <!-- Custom JS -->
-    <script src="assets/js/script.js" type="text/javascript"></script>
-    
+    <script src="assets/js/script.js"></script>
+    <!-- JWT Decode -->
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-    
+
     <script>
         $(document).ready(function() {
             const token = localStorage.getItem('token');
             if (!token) {
-                showToast('Please login first.', 'error');
+                alert('Please login first.');
                 window.location.href = 'login.html';
                 return;
             }
+
             let decoded;
             try {
                 decoded = jwt_decode(token);
-                console.log('Decoded Token:', decoded);
+                if (decoded.role !== 'admin') {
+                    alert('Access denied: This page is for admins only.');
+                    window.location.href = 'login.html';
+                    return;
+                }
             } catch (error) {
-                console.error('Token decode error:', error);
-                showToast('Invalid token. Please login again.', 'error');
+                alert('Invalid token. Please login again.');
                 localStorage.removeItem('token');
                 window.location.href = 'login.html';
                 return;
             }
-            if (decoded.role !== 'admin') {
-                showToast('Access denied: Admins only.', 'error');
-                window.location.href = 'login.html';
-                return;
-            }
 
-            // Function to show toast messages
-            function showToast(message, type = 'success', duration = 3000) {
-                const toastContainer = $('#toast-container');
-                const toastId = `toast-${Date.now()}`;
-                const toastHtml = `
-                    <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
-                        <div class="d-flex">
-                            <div class="toast-body">${message}</div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                    </div>
-                `;
-                toastContainer.append(toastHtml);
-                const toastElement = document.getElementById(toastId);
-                const toast = new bootstrap.Toast(toastElement);
-                toast.show();
-                setTimeout(() => {
-                    toast.hide();
-                    $(`#${toastId}`).remove();
-                }, duration);
-            }
-
-            // Load profile data including image and email
+            // Load profile data
             function loadProfile() {
-                console.log('Loading profile for user ID:', decoded.id);
                 $.ajax({
                     url: 'http://localhost:5000/api/auth/profile',
                     type: 'GET',
                     headers: { 'Authorization': 'Bearer ' + token },
                     success: function(profile) {
-                        console.log('Profile loaded:', profile);
-                        $('#profile-name').text(profile.name || 'Admin');
+                        $('#profile-name').text(profile.name || 'Admin User');
                         $('#profile-email a').text(profile.email || 'No email').attr('href', `mailto:${profile.email || ''}`);
                         if (profile.profileImage) {
                             $('.dropdown-profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
                             $('#profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
-                        } else {
-                            $('.dropdown-profile-img').attr('src', '').parent().removeClass('has-image');
-                            $('#profile-img').attr('src', '').parent().removeClass('has-image');
                         }
                     },
-                    error: function(xhr, status, error) {
-                        console.error('Profile load error:', { status: xhr.status, response: xhr.responseText, error });
-                        if (xhr.status === 0) {
-                            showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
-                        } else if (xhr.status === 401) {
+                    error: function(xhr) {
+                        if (xhr.status === 401) {
                             showToast('Session expired. Please login again.', 'error');
                             localStorage.removeItem('token');
                             window.location.href = 'login.html';
-                        } else if (xhr.status === 404) {
-                            showToast('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id, 'error');
-                            console.log('Debug: Verify user with ID ' + decoded.id + ' in admins collection.');
-                        } else if (xhr.status === 500) {
-                            showToast('Server error accessing profile. Please try again later or contact support.', 'error');
                         } else {
-                            showToast(`Error loading profile (Status: ${xhr.status}). Please try again.`, 'error');
+                            showToast('Error loading profile.', 'error');
                         }
                     }
                 });
             }
 
-            // Handle profile link click with improved error handling
+            // Handle profile link click
             $('.profile-link').on('click', function(e) {
                 e.preventDefault();
                 const href = $(this).data('href') || $(this).attr('href');
-                console.log('Attempting to access profile for Token ID:', decoded.id, 'Redirect URL:', href);
-                $.ajax({
-                    url: 'http://localhost:5000/api/auth/profile',
-                    type: 'GET',
-                    headers: { 'Authorization': 'Bearer ' + token },
-                    success: function(profile) {
-                        console.log('Profile access OK, redirecting to:', href);
-                        window.location.href = href;
-                    },
-                    error: function(xhr) {
-                        console.error('Profile access error:', { status: xhr.status, response: xhr.responseText });
-                        if (xhr.status === 0) {
-                            showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
-                        } else if (xhr.status === 401) {
-                            showToast('Session expired. Please login again.', 'error');
-                            localStorage.removeItem('token');
-                            window.location.href = 'login.html';
-                        } else if (xhr.status === 404) {
-                            showToast('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id, 'error');
-                            console.log('Debug: Verify user with ID ' + decoded.id + ' in admins collection.');
-                        } else if (xhr.status === 500) {
-                            showToast('Server error accessing profile. Please try again later or contact support.', 'error');
-                        } else {
-                            showToast(`Error accessing profile (Status: ${xhr.status}). Please try again.`, 'error');
-                        }
-                    }
-                });
+                window.location.href = href;
             });
 
-            loadProfile(); // Load profile on page load
+            loadProfile();
 
-            // Dark/Light Mode Toggle Logic
+            // Dark/Light Mode Toggle
             const toggleDarkMode = () => {
                 $('body').addClass('dark-mode').removeClass('light-mode');
                 $('#dark-mode-toggle').removeClass('activate');
@@ -598,7 +535,6 @@
                 localStorage.setItem('theme', 'light');
             };
 
-            // Check saved theme on page load
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 toggleDarkMode();
@@ -606,55 +542,123 @@
                 toggleLightMode();
             }
 
-            // Toggle button click handlers
             $('#dark-mode-toggle').on('click', toggleDarkMode);
             $('#light-mode-toggle').on('click', toggleLightMode);
 
-            // Fetch dashboard data from backend API
+            // Mobile Menu Toggle
+            $('#mobile_btn').on('click', function() {
+                $('.theiaStickySidebar').toggleClass('active');
+            });
+            $('#menu_close').on('click', function() {
+                $('.theiaStickySidebar').removeClass('active');
+            });
+
+            // Function to show toast messages
+            function showToast(message, type = 'success', duration = 3000) {
+                const toastContainer = $('#toast-container');
+                const toastId = `toast-${Date.now()}`;
+                const toastHtml = `
+                    <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
+                        <div class="d-flex">
+                            <div class="toast-body">${message}</div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+                toastContainer.append(toastHtml);
+
+                const toastElement = document.getElementById(toastId);
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show();
+
+                setTimeout(() => {
+                    toast.hide();
+                    $(`#${toastId}`).remove();
+                }, duration);
+            }
+
+            // Fetch and display users (excluding current admin)
             $.ajax({
-                url: 'http://localhost:5000/api/admin/dashboard',
+                url: 'http://localhost:5000/api/admin/users',
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token },
                 success: function(response) {
-                    console.log('Dashboard data loaded:', response);
-                    $('#total-users').text(response.totalUsers || 0);
-                    $('#total-teachers').text(response.totalTeachers || 0);
-                    $('#total-students').text(response.totalStudents || 0);
-                    $('#total-courses').text(response.totalCourses || 0);
-                    $('#total-categories').text(response.totalCategories || 0);
-                    $('#total-earnings').text(`$${response.totalEarnings || 0}`);
-                    if (response.recentActivities && response.recentActivities.length) {
-                        let activitiesHTML = '';
-                        response.recentActivities.forEach(activity => {
-                            activitiesHTML += `
-                                <tr>
-                                    <td>${activity.user || 'Unknown'}</td>
-                                    <td>${activity.role || 'Unknown'}</td>
-                                    <td>${activity.action || 'No Action'}</td>
-                                    <td>${new Date(activity.date).toLocaleString() || 'No Date'}</td>
-                                </tr>
-                            `;
+                    let userListHTML = '';
+                    if (response.users && response.users.length > 0) {
+                        // Fetch current admin profile to get admin ID
+                        $.ajax({
+                            url: 'http://localhost:5000/api/auth/profile',
+                            type: 'GET',
+                            headers: { 'Authorization': 'Bearer ' + token },
+                            async: false, // Synchronous to ensure admin ID is available
+                            success: function(profile) {
+                                const adminId = profile._id; // Assuming _id is the unique identifier
+                                const filteredUsers = response.users.filter(user => user._id !== adminId && user.role !== 'admin');
+                                if (filteredUsers.length > 0) {
+                                    filteredUsers.forEach(user => {
+                                        userListHTML += `
+                                            <tr>
+                                                <td>${user.name || 'Unknown'}</td>
+                                                <td>${user.email || 'No Email'}</td>
+                                                <td>${user.role || 'User'}</td>
+                                                <td><span class="badge ${user.status === 'Active' ? 'bg-success' : 'bg-secondary'}">${user.status || 'Active'}</span></td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-sm edit-user me-2" data-id="${user._id}" data-role="${user.role}">
+                                                        <i class="fas fa-edit me-1"></i> Edit
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm delete-user" data-id="${user._id}" data-role="${user.role}">
+                                                        <i class="fas fa-trash me-1"></i> Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        `;
+                                    });
+                                } else {
+                                    userListHTML = '<tr><td colspan="5">No non-admin users found.</td></tr>';
+                                }
+                            },
+                            error: function(xhr) {
+                                showToast('Error fetching admin profile to filter users.', 'error');
+                                userListHTML = '<tr><td colspan="5">Error loading users. Please try again.</td></tr>';
+                            }
                         });
-                        $('#recent-activities').html(activitiesHTML);
                     } else {
-                        $('#recent-activities').html('<tr><td colspan="4">No recent activities.</td></tr>');
+                        userListHTML = '<tr><td colspan="5">No users found.</td></tr>';
                     }
+                    $('#user-list').html(userListHTML);
                 },
-                error: function(xhr, status, error) {
-                    console.error('Dashboard data error:', { status: xhr.status, response: xhr.responseText, error });
-                    if (xhr.status === 0) {
-                        showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
-                    } else if (xhr.status === 401) {
-                        showToast('Session expired. Please login again.', 'error');
-                        localStorage.removeItem('token');
-                        window.location.href = 'login.html';
-                    } else if (xhr.status === 404) {
-                        showToast('Dashboard data not found. Please ensure the admin dashboard endpoint is set up correctly.', 'error');
-                    } else if (xhr.status === 500) {
-                        showToast('Server error accessing dashboard. Please try again later or contact support.', 'error');
-                    } else {
-                        showToast(`Error loading dashboard data (Status: ${xhr.status}). Please try again.`, 'error');
-                    }
+                error: function(xhr) {
+                    $('#user-list').html('<tr><td colspan="5">Error loading users. Please try again.</td></tr>');
+                    showToast(`Error loading users: ${xhr.responseText || 'Unknown error'}`, 'error');
+                }
+            });
+
+            // Edit User
+            $(document).on('click', '.edit-user', function() {
+                const userId = $(this).data('id');
+                const role = $(this).data('role');
+                window.location.href = `edit-user.html?id=${userId}&role=${role}`;
+            });
+
+            // Delete User
+            $(document).on('click', '.delete-user', function() {
+                const userId = $(this).data('id');
+                const role = $(this).data('role');
+                if (confirm('Are you sure you want to delete this user?')) {
+                    $.ajax({
+                        url: `http://localhost:5000/api/admin/users/${role}/${userId}`,
+                        type: 'DELETE',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        success: function(response) {
+                            showToast('User deleted successfully.', 'success');
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000); // Reload after 2 seconds
+                        },
+                        error: function(xhr) {
+                            showToast(`Error deleting user: ${xhr.responseText || 'Unknown error'}`, 'error');
+                        }
+                    });
                 }
             });
         });

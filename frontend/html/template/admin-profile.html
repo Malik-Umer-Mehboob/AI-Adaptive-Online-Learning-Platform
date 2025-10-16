@@ -35,7 +35,7 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <!-- Inline CSS for Dark/Light Mode -->
+    <!-- Inline CSS for Dark/Light Mode and Toast -->
     <style>
         .light-mode {
             background-color: #ffffff;
@@ -56,6 +56,30 @@
         }
         .avatar.has-image img {
             display: block; /* Show image if profileImage exists */
+        }
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        .toast {
+            opacity: 0.9;
+            transition: all 0.3s;
+        }
+        .toast-success {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .toast-error {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        @media (max-width: 768px) {
+            #toast-container {
+                top: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
@@ -79,14 +103,14 @@
                                 <img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;">
                             </a>
                             <a class="logo-dark header-logo" href="index.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 40px; width: auto;">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;">
                             </a>
                         </div>
                     </div>
                     <div class="main-menu-wrapper">
                         <div class="menu-header">
                             <a href="index.html" class="menu-logo">
-                                <img src="assets/img/logo.svg" class="img-fluid" alt="Logo">
+                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
                             </a>
                             <a id="menu_close" class="menu-close" href="javascript:void(0);">
                                 <i class="fas fa-times"></i>
@@ -179,7 +203,7 @@
                                     <span class="verify-tick"><i class="isax isax-verify5"></i></span>
                                 </span>
                                 <div>
-                                    <h5 class="mb-1 text-white d-inline-flex align-items-center"><span id="profile-name">Admin User</span><a href="admin-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
+                                    <h5 class="mb-1 text-white d-inline-flex align-items-center"><span id="profile-name">Super Admin</span><a href="admin-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
                                     <p class="text-light">Administrator</p>
                                     <p class="text-light" id="profile-email"></p>
                                 </div>
@@ -293,6 +317,9 @@
             </div>
         </div>
 
+        <!-- Toast Container -->
+        <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
         <!-- Footer -->
         <footer class="footer">
             <div class="footer-bg">
@@ -375,7 +402,7 @@
                     <div class="row row-gap-2">
                         <div class="col-md-6">
                             <div class="text-center text-md-start">
-                                <p class="text-white">Copyright &copy; 2025 DreamsLMS. All rights reserved.</p>
+                                <p class="text-white">Copyright &copy; 2025 AdaptiveLMS. All rights reserved.</p>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -434,6 +461,30 @@
             return;
         }
 
+        // Function to show toast messages
+        function showToast(message, type = 'success', duration = 3000) {
+            const toastContainer = $('#toast-container');
+            const toastId = `toast-${Date.now()}`;
+            const toastHtml = `
+                <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
+                    <div class="d-flex">
+                        <div class="toast-body">${message}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            toastContainer.append(toastHtml);
+
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+
+            setTimeout(() => {
+                toast.hide();
+                $(`#${toastId}`).remove();
+            }, duration);
+        }
+
         // Load profile data including image, name, email, and phone
         function loadProfile() {
             $.ajax({
@@ -458,18 +509,18 @@
                 error: function(xhr, status, error) {
                     console.error('Profile load error:', { status: xhr.status, response: xhr.responseText, error }); // Debug: Log error details
                     if (xhr.status === 0) {
-                        alert('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.');
+                        showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
                     } else if (xhr.status === 401) {
-                        alert('Session expired. Please login again.');
+                        showToast('Session expired. Please login again.', 'error');
                         localStorage.removeItem('token');
                         window.location.href = 'login.html';
                     } else if (xhr.status === 404) {
-                        alert('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id);
+                        showToast('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id, 'error');
                         console.log('Debug: Verify user with ID ' + decoded.id + ' in admins collection.');
                     } else if (xhr.status === 500) {
-                        alert('Server error accessing profile. Please try again later or contact support.');
+                        showToast('Server error accessing profile. Please try again later or contact support.', 'error');
                     } else {
-                        alert(`Error loading profile (Status: ${xhr.status}). Please try again.`);
+                        showToast(`Error loading profile (Status: ${xhr.status}). Please try again.`, 'error');
                     }
                 }
             });
@@ -491,18 +542,18 @@
                 error: function(xhr) {
                     console.error('Profile access error:', { status: xhr.status, response: xhr.responseText }); // Debug: Log error details
                     if (xhr.status === 0) {
-                        alert('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.');
+                        showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
                     } else if (xhr.status === 401) {
-                        alert('Session expired. Please login again.');
+                        showToast('Session expired. Please login again.', 'error');
                         localStorage.removeItem('token');
                         window.location.href = 'login.html';
                     } else if (xhr.status === 404) {
-                        alert('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id);
+                        showToast('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id, 'error');
                         console.log('Debug: Verify user with ID ' + decoded.id + ' in admins collection.');
                     } else if (xhr.status === 500) {
-                        alert('Server error accessing profile. Please try again later or contact support.');
+                        showToast('Server error accessing profile. Please try again later or contact support.', 'error');
                     } else {
-                        alert(`Error accessing profile (Status: ${xhr.status}). Please try again.`);
+                        showToast(`Error accessing profile (Status: ${xhr.status}). Please try again.`, 'error');
                     }
                 }
             });
@@ -522,12 +573,14 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    alert(response.message);
-                    location.reload(); // Reload to reflect changes
+                    showToast(response.message, 'success');
+                    setTimeout(() => {
+                        location.reload(); // Reload to reflect changes after 2 seconds
+                    }, 2000);
                 },
                 error: function(xhr) {
                     console.error('Update error:', xhr.responseText);
-                    alert('Error updating profile: ' + (xhr.responseJSON ? xhr.responseJSON.message : 'Unknown error'));
+                    showToast('Error updating profile: ' + (xhr.responseJSON ? xhr.responseJSON.message : 'Unknown error'), 'error');
                 }
             });
         });

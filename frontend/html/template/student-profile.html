@@ -22,36 +22,35 @@
     <script src="assets/js/theme-script.js"></script>
 </head>
 <body>
- <header class="header-two">
-            <div class="container">
-                <div class="header-nav">
-                    <div class="navbar-header">
-                        <a id="mobile_btn" href="javascript:void(0);">
-                            <span class="bar-icon">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </span>
+    <header class="header-two">
+        <div class="container">
+            <div class="header-nav">
+                <div class="navbar-header">
+                    <a id="mobile_btn" href="javascript:void(0);">
+                        <span class="bar-icon">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </a>
+                    <div class="navbar-logo" style="text-align: left;">
+                        <a class="logo-white header-logo" href="index.html">
+                            <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 150px; height: auto;">
                         </a>
-                        <div class="navbar-logo" style="text-align: left;"> <!-- Left align kiya -->
-                            <a class="logo-white header-logo" href="index.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 150px; height: auto;"> <!-- Normal size set kiya -->
-                            </a>
-                            <a class="logo-dark header-logo" href="index.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 150px; height: auto;"> <!-- Normal size set kiya -->
-                            </a>
-                        </div>
+                        <a class="logo-dark header-logo" href="index.html">
+                            <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 150px; height: auto;">
+                        </a>
                     </div>
-                    <div class="main-menu-wrapper">                                
-                        <div class="menu-header">
-                            <a href="index.html" class="menu-logo">
-                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 150px; height: auto;"> <!-- Yahan bhi size adjust -->
-                            </a>
-                            <a id="menu_close" class="menu-close" href="javascript:void(0);">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </div>
-                   
+                </div>
+                <div class="main-menu-wrapper">                                
+                    <div class="menu-header">
+                        <a href="index.html" class="menu-logo">
+                            <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 150px; height: auto;">
+                        </a>
+                        <a id="menu_close" class="menu-close" href="javascript:void(0);">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
                     <div class="header-btn d-flex align-items-center">
                         <div class="icon-btn me-2">
                             <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate"><i class="isax isax-sun-15"></i></a>
@@ -89,180 +88,256 @@
                         </div>
                     </div>
                 </div>
-            </header>
+            </div>
+        </header>
 
-            <div class="breadcrumb-bar text-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12 col-12">
-                            <h2 class="breadcrumb-title mb-2">My Profile</h2>
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb justify-content-center mb-0">
-                                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">My Profile</li>
-                                </ol>
-                            </nav>
-                        </div>
+        <div class="breadcrumb-bar text-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-12">
+                        <h2 class="breadcrumb-title mb-2">My Profile</h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center mb-0">
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">My Profile</li>
+                            </ol>
+                        </nav>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="content">
-                <div class="container">
-                    <div class="instructor-profile">
-                        <div class="instructor-profile-bg">
-                            <img src="assets/img/bg/card-bg-01.png" class="instructor-profile-bg-1" alt="">
-                        </div>
-                        <div class="row align-items-center row-gap-3">
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-center">
-                                    <span class="avatar flex-shrink-0 avatar-xxl avatar-rounded me-3 border border-white border-3 position-relative">
-                                        <img id="profileImage" src="assets/img/default-grey-silhouette.png" alt="" onclick="triggerImageUpload()" class="img-fluid rounded-circle">
-                                        <input type="file" id="imageUpload" style="display:none;" accept="image/*" onchange="uploadImage(event)">
-                                        <span class="verify-tick"><i class="isax isax-verify5"></i></span>
-                                    </span>
-                                    <div>
-                                        <h5 class="mb-1 text-white d-inline-flex align-items-center" id="userName"><a href="student-settings.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
-                                        <p class="text-light" id="userRole">Student</p>
-                                    </div>
+        <div class="content">
+            <div class="container">
+                <div class="instructor-profile">
+                    <div class="instructor-profile-bg">
+                        <img src="assets/img/bg/card-bg-01.png" class="instructor-profile-bg-1" alt="">
+                    </div>
+                    <div class="row align-items-center row-gap-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar flex-shrink-0 avatar-xxl avatar-rounded me-3 border border-white border-3 position-relative">
+                                    <img id="profileImage" src="assets/img/default-grey-silhouette.png" alt="" onclick="triggerImageUpload()" class="img-fluid rounded-circle">
+                                    <input type="file" id="imageUpload" style="display:none;" accept="image/*" onchange="uploadImage(event)">
+                                    <span class="verify-tick"><i class="isax isax-verify5"></i></span>
+                                </span>
+                                <div>
+                                    <h5 class="mb-1 text-white d-inline-flex align-items-center" id="userName"><a href="student-settings.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
+                                    <p class="text-light" id="userRole">Student</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-3 theiaStickySidebar">
-                            <div class="settings-sidebar mb-lg-0">
-                                <div>
-                                    <h6 class="mb-3">Dashboard</h6>
-                                    <ul class="mb-3 pb-1">
-                                        <li><a href="student-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a></li>
-                                        <li><a href="student-profile.html" class="d-inline-flex align-items-center active"><i class="fa-solid fa-user me-2"></i>My Profile</a></li>
-                                        <li><a href="student-courses.html" class="d-inline-flex align-items-center"><i class="isax isax-teacher5 me-2"></i>Enrolled Courses</a></li>
-                                        <li><a href="student-certificates.html" class="d-inline-flex align-items-center"><i class="isax isax-note-215 me-2"></i>My Certificates</a></li>
-                                        <li><a href="student-wishlist.html" class="d-inline-flex align-items-center"><i class="isax isax-heart5 me-2"></i>Wishlist</a></li>
-                                        <li><a href="student-reviews.html" class="d-inline-flex align-items-center"><i class="isax isax-star5 me-2"></i>Reviews</a></li>
-                                        <li><a href="student-quiz.html" class="d-inline-flex align-items-center"><i class="isax isax-award5 me-2"></i>My Quiz Attempts</a></li>
-                                        <li><a href="student-order-history.html" class="d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Order History</a></li>
-                                        <li><a href="student-referral.html" class="d-inline-flex align-items-center"><i class="isax isax-tag-user5 me-2"></i>Referrals</a></li>
-                                        <li><a href="student-messages.html" class="d-inline-flex align-items-center"><i class="isax isax-messages-35 me-2"></i>Messages</a></li>
-                                        <li><a href="student-tickets.html" class="d-inline-flex align-items-center"><i class="isax isax-ticket5 me-2"></i>Support Tickets</a></li>
-                                    </ul>
-                                    <hr>
-                                    <h6 class="mb-3">Account Settings</h6>
-                                    <ul>
-                                        <li><a href="student-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a></li>
-                                        <li><a href="javascript:void(0);" id="logout-sidebar" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a></li>
-                                    </ul>
-                                </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 theiaStickySidebar">
+                        <div class="settings-sidebar mb-lg-0">
+                            <div>
+                                <h6 class="mb-3">Dashboard</h6>
+                                <ul class="mb-3 pb-1">
+                                    <li><a href="student-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a></li>
+                                    <li><a href="student-profile.html" class="d-inline-flex align-items-center active"><i class="fa-solid fa-user me-2"></i>My Profile</a></li>
+                                    <li><a href="student-courses.html" class="d-inline-flex align-items-center"><i class="isax isax-teacher5 me-2"></i>Enrolled Courses</a></li>
+                                    <li><a href="student-certificates.html" class="d-inline-flex align-items-center"><i class="isax isax-note-215 me-2"></i>My Certificates</a></li>
+                                    <li><a href="student-wishlist.html" class="d-inline-flex align-items-center"><i class="isax isax-heart5 me-2"></i>Wishlist</a></li>
+                                    <li><a href="student-reviews.html" class="d-inline-flex align-items-center"><i class="isax isax-star5 me-2"></i>Reviews</a></li>
+                                    <li><a href="student-quiz.html" class="d-inline-flex align-items-center"><i class="isax isax-award5 me-2"></i>My Quiz Attempts</a></li>
+                                    <li><a href="student-order-history.html" class="d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Order History</a></li>
+                                    <li><a href="student-referral.html" class="d-inline-flex align-items-center"><i class="isax isax-tag-user5 me-2"></i>Referrals</a></li>
+                                    <li><a href="student-messages.html" class="d-inline-flex align-items-center"><i class="isax isax-messages-35 me-2"></i>Messages</a></li>
+                                    <li><a href="student-tickets.html" class="d-inline-flex align-items-center"><i class="isax isax-ticket5 me-2"></i>Support Tickets</a></li>
+                                </ul>
+                                <hr>
+                                <h6 class="mb-3">Account Settings</h6>
+                                <ul>
+                                    <li><a href="student-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a></li>
+                                    <li><a href="javascript:void(0);" id="logout-sidebar" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a></li>
+                                </ul>
                             </div>
                         </div>
-                        <div class="col-lg-9">
-                            <div class="page-title d-flex align-items-center justify-content-between">
-                                <h5 class="fw-bold">My Profile</h5>
-                                <a href="#" class="edit-profile-icon" onclick="toggleEditMode()"><i class="isax isax-edit-2"></i></a>
-                            </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="fs-18 pb-3 border-bottom mb-3">Basic Information</h5>
-                                    <div class="row" id="profileInfo">
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="page-title d-flex align-items-center justify-content-between">
+                            <h5 class="fw-bold">My Profile</h5>
+                            <a href="#" class="edit-profile-icon" onclick="toggleEditMode()"><i class="isax isax-edit-2"></i></a>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="fs-18 pb-3 border-bottom mb-3">Basic Information</h5>
+                                <div class="row" id="profileInfo">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <h6>First Name</h6>
+                                            <span id="firstName"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <h6>Last Name</h6>
+                                            <span id="lastName"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <h6>Registration Date</h6>
+                                            <span id="regDate"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <h6>Phone Number</h6>
+                                            <span id="phoneNumber"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <h6>Email</h6>
+                                            <span id="email"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <h6>DOB</h6>
+                                            <span id="dob" data-original-dob=""></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <h6>Age</h6>
+                                            <span id="age"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div>
+                                            <h6>Bio</h6>
+                                            <span id="bio"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row d-none" id="editForm">
+                                    <form id="updateProfileForm">
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <h6>First Name</h6>
-                                                <span id="firstName"></span>
+                                                <label class="form-label">First Name</label>
+                                                <input type="text" class="form-control" id="editFirstName">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <h6>Last Name</h6>
-                                                <span id="lastName"></span>
+                                                <label class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" id="editLastName">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <h6>Registration Date</h6>
-                                                <span id="regDate"></span>
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="editEmail">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <h6>Phone Number</h6>
-                                                <span id="phoneNumber"></span>
+                                                <label class="form-label">Phone Number</label>
+                                                <input type="text" class="form-control" id="editPhoneNumber">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <h6>Email</h6>
-                                                <span id="email"></span>
+                                                <label class="form-label">DOB</label>
+                                                <input type="date" class="form-control" id="editDob">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <h6>DOB</h6>
-                                                <span id="dob"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <h6>Age</h6>
-                                                <span id="age"></span>
+                                                <label class="form-label">Age</label>
+                                                <input type="number" class="form-control" id="editAge" min="1" max="120">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <div>
-                                                <h6>Bio</h6>
-                                                <span id="bio"></span>
+                                            <div class="mb-3">
+                                                <label class="form-label">Bio</label>
+                                                <textarea class="form-control" id="editBio"></textarea>
                                             </div>
                                         </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            <button type="button" class="btn btn-secondary ms-2" onclick="toggleEditMode()">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-bg">
+                <img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
+                <img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt="">
+            </div>
+            <div class="footer-top">
+                <div class="container">
+                    <div class="row row-gap-4">
+                        <div class="col-lg-4">
+                            <div class="footer-about">
+                                <div class="footer-logo">
+                                    <img src="assets/img/logo.svg" alt="" style="width: 150px; height: auto;">
+                                </div>
+                                <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
+                                <div class="d-flex align-items-center">
+                                    <a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
+                                    <a href="#"><img src="assets/img/icon/googleplay.svg" alt=""></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="row row-gap-4">
+                                <div class="col-lg-3">
+                                    <div class="footer-widget footer-menu">
+                                        <h5 class="footer-title">For Instructor</h5>
+                                        <ul>
+                                            <li><a href="course-grid.html">Search Mentors</a></li>
+                                            <li><a href="login.html">Login</a></li>
+                                            <li><a href="register.html">Register</a></li>
+                                            <li><a href="course-list.html">Booking</a></li>
+                                            <li><a href="student-dashboard.html">Students Dashboard</a></li>
+                                        </ul>
                                     </div>
-                                    <div class="row d-none" id="editForm">
-                                        <form id="updateProfileForm">
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">First Name</label>
-                                                    <input type="text" class="form-control" id="editFirstName">
-                                                </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="footer-widget footer-menu">
+                                        <h5 class="footer-title">For Student</h5>
+                                        <ul>
+                                            <li><a href="javascript:void(0);">Appointments</a></li>
+                                            <li><a href="instructor-message.html">Chat</a></li>
+                                            <li><a href="login.html">Login</a></li>
+                                            <li><a href="register.html">Register</a></li>
+                                            <li><a href="instructor-dashboard.html">Instructor Dashboard</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="footer-widget footer-contact">
+                                        <h5 class="footer-title">Newsletter</h5>
+                                        <div class="subscribe-input">
+                                            <input type="email" class="form-control" placeholder="Enter your Email Address">
+                                            <button type="submit" class="btn btn-primary btn-sm inline-flex align-items-center"><i class="isax isax-send-2 me-1"></i>Subscribe</button>
+                                        </div>
+                                        <div class="footer-contact-info">
+                                            <div class="footer-address d-flex align-items-center">
+                                                <img src="assets/img/icon/icon-20.svg" alt="Img" class="img-fluid me-2">
+                                                <p> 3556  Beech Street, San Francisco,<br> California, CA 94108 </p>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Last Name</label>
-                                                    <input type="text" class="form-control" id="editLastName">
-                                                </div>
+                                            <div class="footer-address d-flex align-items-center">
+                                                <img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2">
+                                                <p><a href="mailto:support@dreamslms.com">support@dreamslms.com</a></p>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Email</label>
-                                                    <input type="email" class="form-control" id="editEmail">
-                                                </div>
+                                            <div class="footer-address d-flex align-items-center">
+                                                <img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2">
+                                                <p>+19 123-456-7890</p>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Phone Number</label>
-                                                    <input type="text" class="form-control" id="editPhoneNumber">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">DOB</label>
-                                                    <input type="date" class="form-control" id="editDob">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Age</label>
-                                                    <input type="number" class="form-control" id="editAge" min="1" max="120">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Bio</label>
-                                                    <textarea class="form-control" id="editBio"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                <button type="button" class="btn btn-secondary ms-2" onclick="toggleEditMode()">Cancel</button>
-                                            </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -270,102 +345,26 @@
                     </div>
                 </div>
             </div>
-
-            <footer class="footer">
-                <div class="footer-bg">
-                    <img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
-                    <img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt="">
-                </div>
-                <div class="footer-top">
-                    <div class="container">
-                        <div class="row row-gap-4">
-                            <div class="col-lg-4">
-                                <div class="footer-about">
-                                    <div class="footer-logo">
-                                        <img src="assets/img/logo.svg" alt="" style="width: 150px; height: auto;"> <!-- Footer logo bhi adjust -->
-                                    </div>
-                                    <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
-                                    <div class="d-flex align-items-center">
-                                        <a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
-                                        <a href="#"><img src="assets/img/icon/googleplay.svg" alt=""></a>
-                                    </div>
-                                </div>
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row row-gap-2">
+                        <div class="col-md-6">
+                            <div class="text-center text-md-start">
+                                <p class="text-white">Copyright &copy; 2025 AdaptiveLMS. All rights reserved.</p>
                             </div>
-                            <div class="col-lg-8">
-                                <div class="row row-gap-4">
-                                    <div class="col-lg-3">
-                                        <div class="footer-widget footer-menu">
-                                            <h5 class="footer-title">For Instructor</h5>
-                                            <ul>
-                                                <li><a href="course-grid.html">Search Mentors</a></li>
-                                                <li><a href="login.html">Login</a></li>
-                                                <li><a href="register.html">Register</a></li>
-                                                <li><a href="course-list.html">Booking</a></li>
-                                                <li><a href="student-dashboard.html">Students Dashboard</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="footer-widget footer-menu">
-                                            <h5 class="footer-title">For Student</h5>
-                                            <ul>
-                                                <li><a href="javascript:void(0);">Appointments</a></li>
-                                                <li><a href="instructor-message.html">Chat</a></li>
-                                                <li><a href="login.html">Login</a></li>
-                                                <li><a href="register.html">Register</a></li>
-                                                <li><a href="instructor-dashboard.html">Instructor Dashboard</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="footer-widget footer-contact">
-                                            <h5 class="footer-title">Newsletter</h5>
-                                            <div class="subscribe-input">
-                                                <input type="email" class="form-control" placeholder="Enter your Email Address">
-                                                <button type="submit" class="btn btn-primary btn-sm inline-flex align-items-center"><i class="isax isax-send-2 me-1"></i>Subscribe</button>
-                                            </div>
-                                            <div class="footer-contact-info">
-                                                <div class="footer-address d-flex align-items-center">
-                                                    <img src="assets/img/icon/icon-20.svg" alt="Img" class="img-fluid me-2">
-                                                    <p> 3556  Beech Street, San Francisco,<br> California, CA 94108 </p>
-                                                </div>
-                                                <div class="footer-address d-flex align-items-center">
-                                                    <img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2">
-                                                    <p><a href="mailto:support@dreamslms.com">support@dreamslms.com</a></p>
-                                                </div>
-                                                <div class="footer-address d-flex align-items-center">
-                                                    <img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2">
-                                                    <p>+19 123-456-7890</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
+                                    <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
+                                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="footer-bottom">
-                    <div class="container">
-                        <div class="row row-gap-2">
-                            <div class="col-md-6">
-                                <div class="text-center text-md-start">
-                                    <p class="text-white">Copyright &copy; 2025 DreamsLMS. All rights reserved.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div>
-                                    <ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
-                                        <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-                                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        </div>
+            </div>
+        </footer>
     
         <script src="assets/js/jquery-3.7.1.min.js"></script>
         <script src="assets/js/bootstrap.bundle.min.js"></script>
@@ -375,7 +374,7 @@
         <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
         <script>
 $(document).ready(function () {
-    // Toast Alert Function (same raha, no change)
+    // Toast Alert Function (same)
     function showAlert(message, type = 'danger') {
         console.log('showAlert called:', message, type);
         if ($('#toastContainer').length === 0) {
@@ -442,27 +441,33 @@ $(document).ready(function () {
         return;
     }
 
-    // Load profile data (thori si logging add ki for debugging)
+    // Load profile data (image URL aur DOB handling fix)
     function loadProfile() {
         $.ajax({
             url: 'http://localhost:5000/api/auth/profile',
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
             success: function (data) {
-                console.log('Profile Data Loaded:', data); // Debugging ke liye
+                console.log('Profile Data Loaded:', data);
                 $('#userName').text(data.name || 'N/A');
                 $('#email').text(data.email || 'N/A');
                 $('#firstName').text(data.name ? data.name.split(' ')[0] : 'N/A');
                 $('#lastName').text(data.name ? data.name.split(' ')[1] || '' : '');
                 $('#regDate').text(data.registrationDate ? new Date(data.registrationDate).toLocaleString() : 'N/A');
                 $('#phoneNumber').text(data.phoneNumber || 'Not provided');
-                $('#dob').text(data.dob ? new Date(data.dob).toLocaleDateString() : 'Not provided');
+                
+                // DOB: Store original ISO, display localized
+                const dobDisplay = data.dob ? new Date(data.dob).toLocaleDateString() : 'Not provided';
+                $('#dob').text(dobDisplay).attr('data-original-dob', data.dob || '');
+                
                 $('#age').text(data.age || 'Not provided');
                 $('#bio').text(data.bio || 'Not provided');
-                const profileImgSrc = data.profileImage ? `http://localhost:5000${data.profileImage}` : 'assets/img/default-grey-silhouette.png';
-                $('#profileImage').attr('src', profileImgSrc);
-                $('#profileImageHeader').attr('src', profileImgSrc);
-                $('#profileImageDropdown').attr('src', profileImgSrc);
+                
+                // Image: Use full URL from backend, add cache-busting
+                const profileImgSrc = data.profileImage || 'assets/img/default-grey-silhouette.png';
+                const imgWithCacheBust = profileImgSrc.startsWith('http') ? `${profileImgSrc}?t=${new Date().getTime()}` : profileImgSrc;
+                $('#profileImage, #profileImageHeader, #profileImageDropdown').attr('src', imgWithCacheBust);
+                
                 $('#dropdownUserName').text(data.name || 'N/A');
                 $('#dropdownEmail').text(data.email || 'N/A');
                 $('#userRole').text(data.role ? data.role.charAt(0).toUpperCase() + data.role.slice(1) : 'N/A');
@@ -481,7 +486,7 @@ $(document).ready(function () {
         });
     }
 
-    // Edit mode toggle (same)
+    // Edit mode toggle (DOB ke liye original ISO use)
     window.toggleEditMode = function () {
         $('#profileInfo').toggleClass('d-none');
         $('#editForm').toggleClass('d-none');
@@ -491,7 +496,9 @@ $(document).ready(function () {
             $('#editLastName').val(nameParts[1] || '');
             $('#editEmail').val($('#email').text() || '');
             $('#editPhoneNumber').val($('#phoneNumber').text() || '');
-            $('#editDob').val($('#dob').text() && $('#dob').text() !== 'Not provided' ? new Date($('#dob').text()).toISOString().split('T')[0] : '');
+            
+            // DOB: Use original ISO date
+            $('#editDob').val($('#dob').attr('data-original-dob') || '');
             $('#editAge').val($('#age').text() || '');
             $('#editBio').val($('#bio').text() || '');
         }
@@ -502,7 +509,7 @@ $(document).ready(function () {
         $('#imageUpload').click();
     };
 
-    // Image upload handler (thori si logging add ki)
+    // Image upload handler (file input reset add)
     window.uploadImage = function (event) {
         const file = event.target.files[0];
         if (file) {
@@ -520,7 +527,8 @@ $(document).ready(function () {
                 success: function (response) {
                     console.log('Upload success:', response);
                     showAlert(response.message || 'Profile image updated!', 'success');
-                    loadProfile(); // Refresh karega
+                    $('#imageUpload').val(''); // Reset file input
+                    loadProfile();
                 },
                 error: function (xhr) {
                     console.log('Upload error:', xhr.responseText);
@@ -530,11 +538,11 @@ $(document).ready(function () {
         }
     };
 
-    // Update profile (same, but ensure karo backend mein User model mein fields hain jaise name, email, etc., aur updateOne ya save use karo MongoDB mein)
+    // Update profile (file input reset aur name trim)
     $('#updateProfileForm').submit(function (e) {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('name', $('#editFirstName').val() + ' ' + $('#editLastName').val());
+        formData.append('name', $('#editFirstName').val() + ' ' + $('#editLastName').val().trim());
         formData.append('email', $('#editEmail').val());
         formData.append('phoneNumber', $('#editPhoneNumber').val());
         formData.append('dob', $('#editDob').val());
@@ -544,6 +552,7 @@ $(document).ready(function () {
         const imageFile = $('#imageUpload')[0].files[0];
         if (imageFile) {
             formData.append('profileImage', imageFile);
+            $('#imageUpload').val(''); // Reset file input
         }
 
         $.ajax({
@@ -554,10 +563,10 @@ $(document).ready(function () {
             contentType: false,
             processData: false,
             success: function (response) {
-                console.log('Update success:', response); // Debugging
+                console.log('Update success:', response);
                 showAlert(response.message || 'Profile updated!', 'success');
                 toggleEditMode();
-                loadProfile(); // Updated data load karega, jo DB se aayega
+                loadProfile();
             },
             error: function (xhr) {
                 console.error('Profile update failed:', xhr.responseText);

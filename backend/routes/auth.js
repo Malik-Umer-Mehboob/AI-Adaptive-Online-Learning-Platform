@@ -68,11 +68,11 @@ const getModelByRole = (role) => {
     }
 };
 
+// Signup (Student only for now)
 router.post('/signup', async (req, res) => {
     const { name, email, password, confirmPassword } = req.body;
 
     try {
-        // Validate inputs
         if (!name || !email || !password || !confirmPassword) {
             return res.status(400).json({ message: 'All fields are required.' });
         }
@@ -83,7 +83,6 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
         }
 
-        // Check for existing user in both models
         const existingStudent = await Student.findOne({ email });
         const existingAdmin = await Admin.findOne({ email });
         if (existingStudent || existingAdmin) {
@@ -102,16 +101,17 @@ router.post('/signup', async (req, res) => {
             bio: null
         });
         await user.save();
-        res.status(201).json({ message: 'Student successfully registered.' });
+        res.status(201).json({ message: 'Student successfully registered.', user: { name, email, role: 'student' } });
     } catch (error) {
         console.error('Signup Error:', error);
         if (error.code === 11000 && error.keyPattern.email) {
             return res.status(400).json({ message: 'This email is already registered.' });
         }
-        res.status(500).json({ message: 'Server error.', error: error.message });
+        res.status(500).json({ message: 'Server error during signup.', error: error.message });
     }
 });
 
+// Signin
 router.post('/signin', async (req, res) => {
     const { email, password } = req.body;
 
@@ -137,7 +137,7 @@ router.post('/signin', async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        const redirectUrl = user.role === 'admin' 
+        const redirectUrl = user.role === 'admin'
             ? 'http://127.0.0.1:5500/html/template/admin-dashboard.html'
             : 'http://127.0.0.1:5500/html/template/student-dashboard.html';
 
@@ -149,10 +149,11 @@ router.post('/signin', async (req, res) => {
         });
     } catch (error) {
         console.error('Signin Error:', error);
-        res.status(500).json({ message: 'Server error.', error: error.message });
+        res.status(500).json({ message: 'Server error during signin.', error: error.message });
     }
 });
 
+// Forgot Password
 router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
 
@@ -208,6 +209,7 @@ router.post('/forgot-password', async (req, res) => {
     }
 });
 
+// Reset Password
 router.post('/reset-password', async (req, res) => {
     const { token, email, password, confirmPassword, otp } = req.body;
 
@@ -243,7 +245,7 @@ router.post('/reset-password', async (req, res) => {
         user.otpExpires = undefined;
         await user.save();
 
-        const redirectUrl = user.role === 'admin' 
+        const redirectUrl = user.role === 'admin'
             ? 'http://127.0.0.1:5500/html/template/admin-dashboard.html'
             : 'http://127.0.0.1:5500/html/template/student-dashboard.html';
 
@@ -258,16 +260,15 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 
-// Route: Get Profile
+// Get Profile
 router.get('/profile', authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id; // From authenticateToken middleware
+        const userId = req.user.id;
         const Model = getModelByRole(req.user.role);
         const user = await Model.findById(userId).select('-password -resetOtp -otpExpires');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        // Ensure full URL for profileImage
         if (user.profileImage) {
             user.profileImage = `http://localhost:5000${user.profileImage}`;
         }
@@ -278,7 +279,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
     }
 });
 
-// Route: Update Profile
+// Update Profile
 router.put('/update-profile', authenticateToken, upload.single('profileImage'), async (req, res) => {
     try {
         if (!req.user) {
@@ -286,7 +287,7 @@ router.put('/update-profile', authenticateToken, upload.single('profileImage'), 
             return res.status(401).json({ message: 'Unauthorized: No user data found.' });
         }
 
-        const userId = req.user.id; // From authenticateToken middleware
+        const userId = req.user.id;
         const Model = getModelByRole(req.user.role);
         const updateData = {
             name: req.body.name,
@@ -298,19 +299,17 @@ router.put('/update-profile', authenticateToken, upload.single('profileImage'), 
             profileImage: req.file ? `/uploads/${req.file.filename}` : undefined,
         };
 
-        // Remove undefined fields
         Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
 
-        console.log('Updating profile with data:', updateData); // Debug: Log update data
+        console.log('Updating profile with data:', updateData);
         const user = await Model.findByIdAndUpdate(userId, updateData, { new: true }).select('-password -resetOtp -otpExpires');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        // Ensure full URL for profileImage in response
         if (user.profileImage) {
             user.profileImage = `http://localhost:5000${user.profileImage}`;
         }
-        console.log('Profile updated:', user); // Debug: Log updated user
+        console.log('Profile updated:', user);
         res.status(200).json({ message: 'Profile updated successfully', user });
     } catch (error) {
         console.error('Profile Update Error:', error);
