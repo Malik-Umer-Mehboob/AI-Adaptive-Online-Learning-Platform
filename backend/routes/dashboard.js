@@ -121,11 +121,9 @@ router.get('/admin/dashboard', authenticateToken, checkRole(['admin']), async (r
 
         res.json({
             totalUsers,
-            totalTeachers: totalAdmins, // Assuming admins are teachers
             totalStudents,
             totalCourses,
             totalCategories,
-            totalEarnings,
             recentActivities
         });
     } catch (error) {

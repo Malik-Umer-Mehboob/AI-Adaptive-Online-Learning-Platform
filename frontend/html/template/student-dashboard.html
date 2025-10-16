@@ -123,7 +123,7 @@
 										<li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a></li>										
 									</ul>
 									<div class="profile-footer">
-										<a href="index.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"><i class="isax isax-logout me-2"></i>Logout</a>
+										<a href="javascript:void(0);" id="logout-btn" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"><i class="isax isax-logout me-2"></i>Logout</a>
 									</div>
 								</div>
 							</div>
@@ -186,7 +186,7 @@
 									<h6 class="mb-3">Account Settings</h6>
 									<ul>
 										<li><a href="student-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a></li>
-										<li><a href="login.html" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a></li>
+										<li><a href="javascript:void(0);" id="logout-sidebar" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a></li>
 									</ul>
 								</div>
 							</div>
@@ -333,40 +333,7 @@
 		<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 		<script>
 			$(document).ready(function() {
-				// Dark/Light mode toggle functionality
-				$('#dark-mode-toggle').on('click', function() {
-					$('body').removeClass('dark-mode');
-					$('#dark-mode-toggle').removeClass('activate');
-					$('#light-mode-toggle').addClass('activate');
-				});
-
-				$('#light-mode-toggle').on('click', function() {
-					$('body').addClass('dark-mode');
-					$('#light-mode-toggle').removeClass('activate');
-					$('#dark-mode-toggle').addClass('activate');
-				});
-
-				const token = localStorage.getItem('token');
-				if (!token) {
-					alert('Please login first.');
-					window.location.href = 'login.html';
-					return;
-				}
-				let decoded;
-				try {
-					decoded = jwt_decode(token);
-				} catch (error) {
-					alert('Invalid token. Please login again.');
-					localStorage.removeItem('token');
-					window.location.href = 'login.html';
-					return;
-				}
-				if (decoded.role !== 'student') {
-					alert('Access denied: This dashboard is for students only.');
-					window.location.href = 'login.html';
-					return;
-				}
-
+				// Show Alert Function
 				function showAlert(message, type = 'danger') {
 					if ($('#toastContainer').length === 0) {
 						$('body').append(`<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1055;"></div>`);
@@ -382,16 +349,67 @@
 						</div>`;
 					$('#toastContainer').append(toastHtml);
 					const toastElement = $(`#${toastId}`);
+					toastElement.css({ opacity: 0, transform: 'translateY(-20px)' });
+					toastElement.animate({ opacity: 1, transform: 'translateY(0)' }, 300);
 					toastElement.toast('show');
+					toastElement.on('hidden.bs.toast', function () {
+						$(this).animate({ opacity: 0, transform: 'translateY(-20px)' }, 300, function () {
+							$(this).remove();
+						});
+					});
 				}
 
+				// Dark/Light mode toggle functionality
+				$('#dark-mode-toggle').on('click', function() {
+					$('body').removeClass('dark-mode');
+					$('#dark-mode-toggle').removeClass('activate');
+					$('#light-mode-toggle').addClass('activate');
+				});
+
+				$('#light-mode-toggle').on('click', function() {
+					$('body').addClass('dark-mode');
+					$('#light-mode-toggle').removeClass('activate');
+					$('#dark-mode-toggle').addClass('activate');
+				});
+
+				// Check if user is logged in
+				const token = localStorage.getItem('token');
+				if (!token) {
+					showAlert('Please login first.', 'danger');
+					setTimeout(() => {
+						window.location.href = 'login.html';
+					}, 1500);
+					return;
+				}
+				let decoded;
+				try {
+					decoded = jwt_decode(token);
+				} catch (error) {
+					showAlert('Invalid token. Please login again.', 'danger');
+					localStorage.removeItem('token');
+					setTimeout(() => {
+						window.location.href = 'login.html';
+					}, 1500);
+					return;
+				}
+				if (decoded.role !== 'student') {
+					showAlert('Access denied: This dashboard is for students only.', 'danger');
+					setTimeout(() => {
+						window.location.href = 'login.html';
+					}, 1500);
+					return;
+				}
+
+				// Load profile data
 				function loadProfile() {
 					$.ajax({
 						url: 'http://localhost:5000/api/auth/profile',
 						type: 'GET',
 						headers: { 'Authorization': 'Bearer ' + token },
+						cache: false,
 						success: function(profile) {
-							const imgSrc = profile.profileImage ? `http://localhost:5000${profile.profileImage}` : 'assets/img/default-profile.png';
+							console.log('Profile Data Loaded:', profile);
+							const imgSrc = profile.profileImage ? `${profile.profileImage}?t=${new Date().getTime()}` : 'assets/img/default-profile.png';
 							$('#profile-name a:first').text(profile.name || 'Student Name');
 							$('#dropdown-email').text(profile.email || 'No Email');
 							$('#profile-img').attr('src', imgSrc);
@@ -402,17 +420,26 @@
 						error: function(xhr) {
 							console.error('Error loading profile:', xhr.responseText);
 							showAlert('Error loading profile.', 'danger');
+							if (xhr.status === 401) {
+								localStorage.removeItem('token');
+								showAlert('Session expired. Please login again.', 'danger');
+								setTimeout(() => {
+									window.location.href = 'login.html';
+								}, 1500);
+							}
 						}
 					});
 				}
 
+				// Load dashboard data
 				function loadDashboardData() {
 					$.ajax({
 						url: 'http://localhost:5000/api/student/dashboard',
 						type: 'GET',
 						headers: { 'Authorization': 'Bearer ' + token },
-						cache: false, // Cache ko disable kar ke fresh data fetch
+						cache: false,
 						success: function(response) {
+							console.log('Dashboard Data Loaded:', response);
 							$('#enrolled-courses').text(response.enrolledCourses !== undefined ? response.enrolledCourses : 0);
 							$('#active-courses').text(response.activeCourses !== undefined ? response.activeCourses : 0);
 							$('#completed-courses').text(response.completedCourses !== undefined ? response.completedCourses : 0);
@@ -498,17 +525,45 @@
 					});
 				}
 
+				// Logout Handler
+				$(document).on('click', '#logout-btn, #logout-sidebar', function (e) {
+					e.preventDefault();
+					console.log('Logout button clicked');
+					$.ajax({
+						url: 'http://localhost:5000/api/auth/logout',
+						type: 'GET',
+						headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+						success: function (response) {
+							console.log('Logout success:', response);
+							localStorage.removeItem('token');
+							showAlert('Logout successful.', 'success');
+							setTimeout(() => {
+								window.location.href = 'login.html';
+							}, 1500);
+						},
+						error: function (xhr) {
+							console.error('Logout error:', xhr.responseText);
+							localStorage.removeItem('token');
+							showAlert('Logout successful.', 'success');
+							setTimeout(() => {
+								window.location.href = 'login.html';
+							}, 1500);
+						}
+					});
+				});
+
+				// Load profile and dashboard data on page load
 				loadProfile();
 				loadDashboardData();
 
-				// Auto-refresh dashboard every 30 seconds
-				setInterval(loadDashboardData, 30000);
-
 				// Listen for profile update event
 				window.addEventListener('profileUpdated', function() {
+					console.log('Profile updated event received');
 					loadProfile();
-					loadDashboardData();
 				});
+
+				// Auto-refresh dashboard every 30 seconds
+				setInterval(loadDashboardData, 30000);
 			});
 		</script>
 	</body>
