@@ -18,15 +18,20 @@ router.get('/test', (req, res) => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../public/uploads'));
+        const uploadPath = path.join(__dirname, '../public/uploads');
+        console.log('Multer destination:', uploadPath); // Debug: Log upload path
+        cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        const filename = `${Date.now()}${path.extname(file.originalname)}`;
+        console.log('Multer filename:', filename); // Debug: Log generated filename
+        cb(null, filename);
     },
 });
-const upload = multer({ 
+
+const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 },
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
     fileFilter: (req, file, cb) => {
         const filetypes = /jpeg|jpg|png/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -34,7 +39,8 @@ const upload = multer({
         if (extname && mimetype) {
             return cb(null, true);
         } else {
-            cb(new Error('Images only (jpeg, jpg, png)!'));
+            console.error('Multer file filter error: Invalid file type', file.originalname);
+            cb(new Error('Only .jpg, .jpeg, and .png files are allowed!'));
         }
     }
 });
@@ -249,6 +255,66 @@ router.post('/reset-password', async (req, res) => {
     } catch (error) {
         console.error('Reset Password Error:', error);
         res.status(500).json({ message: 'Error resetting password.', error: error.message });
+    }
+});
+
+// Route: Get Profile
+router.get('/profile', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id; // From authenticateToken middleware
+        const Model = getModelByRole(req.user.role);
+        const user = await Model.findById(userId).select('-password -resetOtp -otpExpires');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // Ensure full URL for profileImage
+        if (user.profileImage) {
+            user.profileImage = `http://localhost:5000${user.profileImage}`;
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Profile Fetch Error:', error);
+        res.status(500).json({ message: 'Error fetching profile', error: error.message });
+    }
+});
+
+// Route: Update Profile
+router.put('/update-profile', authenticateToken, upload.single('profileImage'), async (req, res) => {
+    try {
+        if (!req.user) {
+            console.error('req.user is undefined');
+            return res.status(401).json({ message: 'Unauthorized: No user data found.' });
+        }
+
+        const userId = req.user.id; // From authenticateToken middleware
+        const Model = getModelByRole(req.user.role);
+        const updateData = {
+            name: req.body.name,
+            email: req.body.email,
+            phoneNumber: req.body.phoneNumber,
+            dob: req.body.dob,
+            age: req.body.age,
+            bio: req.body.bio,
+            profileImage: req.file ? `/uploads/${req.file.filename}` : undefined,
+        };
+
+        // Remove undefined fields
+        Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
+        console.log('Updating profile with data:', updateData); // Debug: Log update data
+        const user = await Model.findByIdAndUpdate(userId, updateData, { new: true }).select('-password -resetOtp -otpExpires');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // Ensure full URL for profileImage in response
+        if (user.profileImage) {
+            user.profileImage = `http://localhost:5000${user.profileImage}`;
+        }
+        console.log('Profile updated:', user); // Debug: Log updated user
+        res.status(200).json({ message: 'Profile updated successfully', user });
+    } catch (error) {
+        console.error('Profile Update Error:', error);
+        res.status(500).json({ message: 'Error updating profile', error: error.message });
     }
 });
 

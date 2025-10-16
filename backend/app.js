@@ -1,46 +1,35 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require('cors');
-var dotenv = require('dotenv');
-var rateLimit = require('express-rate-limit');
-
-// Clear module cache to ensure latest routes are loaded
-try {
-    delete require.cache[require.resolve('./routes/auth')];
-    delete require.cache[require.resolve('./routes/admin')];
-    delete require.cache[require.resolve('./routes/dashboard')];
-} catch (error) {
-    console.error('Error clearing module cache:', error.message);
-}
-
-var authRoutes;
-try {
-    const authModule = require('./routes/auth');
-    authRoutes = authModule.router; // Access router from module.exports
-    console.log('authRoutes loaded successfully');
-} catch (error) {
-    console.error('Error loading authRoutes:', error.message);
-}
-
-var adminRoutes = require('./routes/admin');
-var dashboardRoutes = require('./routes/dashboard');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const rateLimit = require('express-rate-limit');
+const createError = require('http-errors');
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-var connectDB = require('./config/db');
-connectDB();
-
-var app = express();
-
-// Debug: Log to confirm routes are loaded
-console.log('Loading routes:', {
-    authRoutes: !!authRoutes,
-    adminRoutes: !!adminRoutes,
-    dashboardRoutes: !!dashboardRoutes
+// MongoDB Connection
+const connectDB = require('./config/db');
+connectDB().catch(err => {
+    console.error('Failed to connect to MongoDB:', err.message);
+    process.exit(1); // Exit if MongoDB connection fails
 });
+
+// Routes
+const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
+const dashboardRoutes = require('./routes/dashboard');
+
+const app = express();
+
+// CORS Configuration
+app.use(cors({
+    origin: ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:5000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Rate Limiting for all routes
 const generalLimiter = rateLimit({
@@ -58,14 +47,6 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth', authLimiter);
 
-// CORS Configuration
-app.use(cors({
-    origin: ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:5000'],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -73,7 +54,7 @@ app.use(cookieParser());
 
 // Static file serving
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static('public/uploads'));
+app.use('/Uploads', express.static(path.join(__dirname, 'public', 'Uploads')));
 
 // Serve favicon explicitly
 app.get('/favicon.ico', (req, res) => {
@@ -85,8 +66,11 @@ app.get('/api/test', (req, res) => {
     res.json({ message: 'Server is running' });
 });
 
-// Debug route to list all registered routes
+// Debug route to list all registered routes (development only)
 app.get('/api/debug/routes', (req, res) => {
+    if (process.env.NODE_ENV === 'production') {
+        return res.status(403).json({ message: 'Debug route disabled in production' });
+    }
     const routes = [];
     app._router.stack.forEach((middleware) => {
         if (middleware.route) {
@@ -109,7 +93,7 @@ app.get('/api/debug/routes', (req, res) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes.router); // Change here
 app.use('/api/admin', adminRoutes);
 app.use('/api', dashboardRoutes);
 
