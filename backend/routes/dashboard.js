@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, checkRole } = require('../middleware/auth');
-const { Course, Quiz, Enrollment, QuizAttempt } = require('../models'); // Models path adjust karo
+const Student = require('../models/Student');
+const Admin = require('../models/Admin');
+const Course = require('../models/Course');
+const Enrollment = require('../models/Enrollment');
 
 // Enroll course route
 router.post('/student/enroll', authenticateToken, checkRole(['student']), async (req, res) => {
@@ -21,7 +24,8 @@ router.post('/student/enroll', authenticateToken, checkRole(['student']), async 
         await enrollment.save();
         res.json({ message: 'Enrolled successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('Enroll Error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
@@ -39,25 +43,8 @@ router.post('/student/complete', authenticateToken, checkRole(['student']), asyn
         await enrollment.save();
         res.json({ message: 'Course completed' });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-// Submit quiz route
-router.post('/student/quiz', authenticateToken, checkRole(['student']), async (req, res) => {
-    try {
-        const { quizId, correct, total } = req.body;
-        if (!quizId || correct === undefined || total === undefined) return res.status(400).json({ message: 'Missing fields' });
-
-        // Check if quiz exists
-        const quiz = await Quiz.findById(quizId);
-        if (!quiz) return res.status(404).json({ message: 'Quiz not found' });
-
-        const attempt = new QuizAttempt({ userId: req.user.id, quizId, correct, total });
-        await attempt.save();
-        res.json({ message: 'Quiz submitted' });
-    } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('Complete Course Error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
@@ -92,57 +79,59 @@ router.get('/student/dashboard', authenticateToken, checkRole(['student']), asyn
                 };
             });
 
-        // Quiz attempts
-        const userQuizzes = await QuizAttempt.find({ userId }).populate('quizId').sort({ date: -1 });
-        const latestQuizzes = userQuizzes.slice(0, 5).map(q => {
-            const quiz = q.quizId;
-            const percentage = Math.round((q.correct / q.total) * 100);
-            return {
-                title: quiz.title,
-                correct: q.correct,
-                total: q.total,
-                percentage
-            };
-        });
-
-        // Latest quiz for top card
-        let quizAnswered = '0/0';
-        let quizTitle = 'No Quiz Attempted';
-        if (userQuizzes.length > 0) {
-            const latest = userQuizzes[0]; // Latest one
-            quizAnswered = `${latest.correct}/${latest.total}`;
-            quizTitle = latest.quizId.title;
-        }
-
         res.json({
             enrolledCourses,
             activeCourses,
             completedCourses,
-            quizAnswered,
-            recentCourses,
-            latestQuizzes,
-            quizTitle
+            recentCourses
         });
     } catch (error) {
-        console.error('Dashboard error:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Student Dashboard Error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
-// Admin dashboard (mock rakha hai, agar dynamic banana ho to similarly DB use karo)
-router.get('/admin/dashboard', authenticateToken, checkRole(['admin']), (req, res) => {
-    // Yahan bhi DB se fetch kar sakte ho, lekin abhi mock
-    const mockAdminData = {
-        totalUsers: 53,
-        totalStudents: 48,
-        totalCourses: 15,
-        totalCategories: 3,
-        totalEarnings: 5000,
-        recentActivities: [
-            { user: 'Ali', role: 'student', action: 'Enrolled', date: new Date().toISOString() }
-        ]
-    };
-    res.json(mockAdminData);
+// Admin Dashboard (dynamic from DB)
+router.get('/admin/dashboard', authenticateToken, checkRole(['admin']), async (req, res) => {
+    try {
+        const totalUsers = await Student.countDocuments() + await Admin.countDocuments();
+        const totalStudents = await Student.countDocuments();
+        const totalAdmins = await Admin.countDocuments();
+        const totalCourses = await Course.countDocuments();
+        const totalCategories = (await Course.distinct('category')).length;
+        const totalEarnings = await Enrollment.aggregate([
+            { $lookup: { from: 'courses', localField: 'courseId', foreignField: '_id', as: 'course' } },
+            { $unwind: '$course' },
+            { $group: { _id: null, total: { $sum: '$course.price' } } }
+        ]).then(result => result[0]?.total || 0);
+
+        // Recent activities (latest 5 enrollments)
+        const recentActivities = await Enrollment.find()
+            .populate('userId', 'name role')
+            .populate('courseId', 'title')
+            .sort({ enrolledAt: -1 })
+            .limit(5)
+            .lean()
+            .then(activities => activities.map(a => ({
+                user: a.userId?.name || 'Unknown',
+                role: a.userId?.role || 'Unknown',
+                action: `Enrolled in ${a.courseId?.title || 'Unknown'}`,
+                date: a.enrolledAt?.toISOString() || new Date().toISOString()
+            })));
+
+        res.json({
+            totalUsers,
+            totalTeachers: totalAdmins, // Assuming admins are teachers
+            totalStudents,
+            totalCourses,
+            totalCategories,
+            totalEarnings,
+            recentActivities
+        });
+    } catch (error) {
+        console.error('Admin Dashboard Error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
 });
 
 module.exports = router;
