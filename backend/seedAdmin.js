@@ -13,7 +13,7 @@ dotenv.config({ path: './.env' });
     console.log('MongoDB connected');
 
     const email = 'malik.umerkhan97@gmail.com';
-    const password = 'malikawan97'; // apna password yahan rakho
+    const password = 'malikawan97'; 
 
     //  Delete any existing admin with same email
     await Admin.deleteOne({ email });
@@ -21,7 +21,7 @@ dotenv.config({ path: './.env' });
     const admin = new Admin({
       name: 'Super Admin',
       email,
-      password, // plain password pass kiya, model khud hash kare ga
+      password, 
       role: 'admin',
     });
 

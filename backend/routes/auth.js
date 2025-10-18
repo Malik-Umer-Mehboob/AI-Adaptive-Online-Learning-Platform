@@ -6,6 +6,7 @@ const Student = require('../models/Student');
 const Admin = require('../models/Admin');
 const multer = require('multer');
 const path = require('path');
+const crypto = require('crypto'); // Added crypto module
 const { authenticateToken } = require('../middleware/auth');
 
 // Debug: Log to confirm route file is loaded
@@ -55,9 +56,9 @@ const transporter = nodemailer.createTransport({
     logger: true // Log SMTP interactions
 });
 
-// Function to generate a 6-digit OTP
+// Function to generate a 6-digit OTP using crypto
 const generateOtp = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    return crypto.randomInt(100000, 1000000).toString();
 };
 
 const getModelByRole = (role) => {
@@ -182,7 +183,7 @@ router.post('/forgot-password', async (req, res) => {
 
         const resetUrl = `http://127.0.0.1:5500/html/template/set-password.html?token=${resetToken}&email=${encodeURIComponent(email)}`;
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: '"AI Adaptive Online Learning Platform" <' + process.env.EMAIL_USER + '>',  // Yeh line change karo
             to: email,
             subject: 'Password Reset Request',
             html: `
