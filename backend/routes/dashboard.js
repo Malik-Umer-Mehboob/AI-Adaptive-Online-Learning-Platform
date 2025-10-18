@@ -69,13 +69,7 @@ router.get('/student/dashboard', authenticateToken, checkRole(['student']), asyn
                     id: course._id,
                     title: course.title,
                     image: course.image,
-                    instructorName: course.instructorName,
-                    instructorImage: course.instructorImage,
                     category: course.category,
-                    price: course.price,
-                    rating: course.rating,
-                    reviews: course.reviews,
-                    discount: course.discount
                 };
             });
 
