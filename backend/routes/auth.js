@@ -6,26 +6,27 @@ const Student = require('../models/Student');
 const Admin = require('../models/Admin');
 const multer = require('multer');
 const path = require('path');
-const crypto = require('crypto'); // Added crypto module
-const { authenticateToken } = require('../middleware/auth');
+const crypto = require('crypto');
+const { auth } = require('../middleware/auth'); // Ensure correct import
 
 // Debug: Log to confirm route file is loaded
-console.log('auth.js routes loaded');
+console.log('auth.js loaded with router export');
 
 // Test route to verify /api/auth is working
 router.get('/test', (req, res) => {
+    console.log('Test route hit');
     res.json({ message: 'Auth routes are working' });
 });
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadPath = path.join(__dirname, '../public/uploads');
-        console.log('Multer destination:', uploadPath); // Debug: Log upload path
+        console.log('Multer destination:', uploadPath);
         cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
         const filename = `${Date.now()}${path.extname(file.originalname)}`;
-        console.log('Multer filename:', filename); // Debug: Log generated filename
+        console.log('Multer filename:', filename);
         cb(null, filename);
     },
 });
@@ -52,8 +53,8 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
     },
-    debug: true, // Enable debug mode
-    logger: true // Log SMTP interactions
+    debug: true,
+    logger: true
 });
 
 // Function to generate a 6-digit OTP using crypto
@@ -62,6 +63,7 @@ const generateOtp = () => {
 };
 
 const getModelByRole = (role) => {
+    console.log('getModelByRole called with role:', role); // Debug
     switch (role) {
         case 'student': return Student;
         case 'admin': return Admin;
@@ -74,6 +76,7 @@ router.post('/signup', async (req, res) => {
     const { name, email, password, confirmPassword } = req.body;
 
     try {
+        console.log('Signup request:', { name, email }); // Debug
         if (!name || !email || !password || !confirmPassword) {
             return res.status(400).json({ message: 'All fields are required.' });
         }
@@ -159,6 +162,7 @@ router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
 
     try {
+        console.log('Forgot password request:', { email }); // Debug
         if (!email) {
             return res.status(400).json({ message: 'Email is required.' });
         }
@@ -183,7 +187,7 @@ router.post('/forgot-password', async (req, res) => {
 
         const resetUrl = `http://127.0.0.1:5500/html/template/set-password.html?token=${resetToken}&email=${encodeURIComponent(email)}`;
         const mailOptions = {
-            from: '"AI Adaptive Online Learning Platform" <' + process.env.EMAIL_USER + '>',  // Yeh line change karo
+            from: '"AI Adaptive Online Learning Platform" <' + process.env.EMAIL_USER + '>',
             to: email,
             subject: 'Password Reset Request',
             html: `
@@ -215,6 +219,7 @@ router.post('/reset-password', async (req, res) => {
     const { token, email, password, confirmPassword, otp } = req.body;
 
     try {
+        console.log('Reset password request:', { email, otp }); // Debug
         if (!token || !email || !password || !confirmPassword || !otp) {
             return res.status(400).json({ message: 'All fields are required.' });
         }
@@ -262,8 +267,9 @@ router.post('/reset-password', async (req, res) => {
 });
 
 // Get Profile
-router.get('/profile', authenticateToken, async (req, res) => {
+router.get('/profile', auth, async (req, res) => {
     try {
+        console.log('Profile request for user:', req.user); // Debug
         const userId = req.user.id;
         const Model = getModelByRole(req.user.role);
         const user = await Model.findById(userId).select('-password -resetOtp -otpExpires');
@@ -281,8 +287,9 @@ router.get('/profile', authenticateToken, async (req, res) => {
 });
 
 // Update Profile
-router.put('/update-profile', authenticateToken, upload.single('profileImage'), async (req, res) => {
+router.put('/update-profile', auth, upload.single('profileImage'), async (req, res) => {
     try {
+        console.log('Update profile request:', req.user); // Debug
         if (!req.user) {
             console.error('req.user is undefined');
             return res.status(401).json({ message: 'Unauthorized: No user data found.' });
@@ -315,6 +322,22 @@ router.put('/update-profile', authenticateToken, upload.single('profileImage'), 
     } catch (error) {
         console.error('Profile Update Error:', error);
         res.status(500).json({ message: 'Error updating profile', error: error.message });
+    }
+});
+
+// Sample new route (to demonstrate correct syntax)
+router.get('/user-info', auth, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const Model = getModelByRole(req.user.role);
+        const user = await Model.findById(userId).select('name email role');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ message: 'User info retrieved', user });
+    } catch (error) {
+        console.error('User Info Error:', error);
+        res.status(500).json({ message: 'Error fetching user info', error: error.message });
     }
 });
 

@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, checkRole } = require('../middleware/auth');
+const { auth, checkRole } = require('../middleware/auth');
 const Student = require('../models/Student');
 const Admin = require('../models/Admin');
 const Course = require('../models/Course');
 const Enrollment = require('../models/Enrollment');
 
 // Enroll course route
-router.post('/student/enroll', authenticateToken, checkRole(['student']), async (req, res) => {
+router.post('/student/enroll', auth, checkRole(['student']), async (req, res) => {
     try {
         const { courseId } = req.body;
         if (!courseId) return res.status(400).json({ message: 'Course ID required' });
@@ -30,7 +30,7 @@ router.post('/student/enroll', authenticateToken, checkRole(['student']), async 
 });
 
 // Complete course route
-router.post('/student/complete', authenticateToken, checkRole(['student']), async (req, res) => {
+router.post('/student/complete', auth, checkRole(['student']), async (req, res) => {
     try {
         const { courseId } = req.body;
         if (!courseId) return res.status(400).json({ message: 'Course ID required' });
@@ -49,7 +49,7 @@ router.post('/student/complete', authenticateToken, checkRole(['student']), asyn
 });
 
 // Student Dashboard (fully dynamic from DB)
-router.get('/student/dashboard', authenticateToken, checkRole(['student']), async (req, res) => {
+router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) => {
     try {
         const userId = req.user.id;
 
@@ -68,7 +68,7 @@ router.get('/student/dashboard', authenticateToken, checkRole(['student']), asyn
                 return {
                     id: course._id,
                     title: course.title,
-                    image: course.image,
+                    image: course.image ? `http://localhost:5000${course.image}` : 'assets/img/placeholder.jpg',
                     category: course.category,
                 };
             });
@@ -86,7 +86,7 @@ router.get('/student/dashboard', authenticateToken, checkRole(['student']), asyn
 });
 
 // Admin Dashboard (dynamic from DB)
-router.get('/admin/dashboard', authenticateToken, checkRole(['admin']), async (req, res) => {
+router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
     try {
         const totalUsers = await Student.countDocuments() + await Admin.countDocuments();
         const totalStudents = await Student.countDocuments();
@@ -116,6 +116,7 @@ router.get('/admin/dashboard', authenticateToken, checkRole(['admin']), async (r
         res.json({
             totalUsers,
             totalStudents,
+            totalAdmins,
             totalCourses,
             totalCategories,
             recentActivities

@@ -20,6 +20,8 @@ connectDB().catch(err => {
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const dashboardRoutes = require('./routes/dashboard');
+const courseRoutes = require('./routes/courses');
+const categoryRoutes = require('./routes/categories');
 
 const app = express();
 
@@ -47,18 +49,24 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth', authLimiter);
 
+// Middleware
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '10mb' })); // Increase limit for file uploads
+app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 app.use(cookieParser());
 
-// Static file serving
+// Static file serving for public and uploads
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/Uploads', express.static(path.join(__dirname, 'public', 'Uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'))); // Serve videos from uploads/videos/
 
 // Serve favicon explicitly
 app.get('/favicon.ico', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'assets', 'img', 'favicon.png'));
+});
+
+// Health Check Endpoint
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'OK', timestamp: new Date().toISOString(), uptime: process.uptime() });
 });
 
 // Test route to verify server
@@ -93,9 +101,11 @@ app.get('/api/debug/routes', (req, res) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes.router); // Change here
+app.use('/api/auth', authRoutes.router); // Ensure router is exported from authRoutes
 app.use('/api/admin', adminRoutes);
 app.use('/api', dashboardRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // 404 Error Handler
 app.use(function(req, res, next) {

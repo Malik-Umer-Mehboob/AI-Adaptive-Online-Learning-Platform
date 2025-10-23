@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { getModelByRole } = require('./auth');
-const { authenticateToken, isAdmin } = require('../middleware/auth');
+const { auth, checkRole } = require('../middleware/auth'); // Updated import
+const Category = require('../models/Category');
+const Course = require('../models/Course');
 
-router.use(authenticateToken, isAdmin);
+router.use(auth, checkRole(['admin'])); // Ensure only admins can access these routes
 
 // Get all users (Admin + Students)
 router.get('/users', async (req, res) => {
@@ -87,6 +89,63 @@ router.delete('/users/:role/:id', async (req, res) => {
     } catch (error) {
         console.error('Error deleting user:', error);
         res.status(500).json({ message: 'Server error while deleting user.', error: error.message });
+    }
+});
+
+// Get all categories
+router.get('/categories', async (req, res) => {
+    try {
+        const categories = await Category.find();
+        res.json(categories);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Add category
+router.post('/categories', async (req, res) => {
+    const { name, description } = req.body;
+    try {
+        const category = new Category({ name, description });
+        await category.save();
+        res.status(201).json(category);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Update category
+router.put('/categories/:id', async (req, res) => {
+    const { name, description } = req.body;
+    try {
+        const category = await Category.findByIdAndUpdate(req.params.id, { name, description }, { new: true });
+        if (!category) return res.status(404).json({ message: 'Category not found' });
+        res.json(category);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Delete category (with cascade)
+router.delete('/categories/:id', async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+        if (!category) return res.status(404).json({ message: 'Category not found' });
+        await category.deleteOne();
+        res.json({ message: 'Category and related courses deleted' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Dashboard counts (total categories and courses)
+router.get('/dashboard/counts', async (req, res) => {
+    try {
+        const totalCategories = await Category.countDocuments();
+        const totalCourses = await Course.countDocuments();
+        res.json({ totalCategories, totalCourses });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 });
 

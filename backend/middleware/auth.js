@@ -1,33 +1,25 @@
 const jwt = require('jsonwebtoken');
-const { getModelByRole } = require('../routes/auth');
 
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) {
-        return res.status(401).json({ message: 'Access token required.' });
-    }
+const auth = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) return res.status(401).json({ message: 'No token provided' });
+
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
         req.user = decoded;
         next();
     } catch (error) {
-        return res.status(401).json({ message: 'Invalid or expired token.' });
+        res.status(401).json({ message: 'Invalid token' });
     }
 };
 
-const checkRole = (roles) => (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-        return res.status(403).json({ message: 'Access denied: Insufficient permissions.' });
-    }
-    next();
+const checkRole = (roles) => {
+    return (req, res, next) => {
+        if (!req.user || !roles.includes(req.user.role)) {
+            return res.status(403).json({ message: `Access denied: Requires one of these roles: ${roles.join(', ')}` });
+        }
+        next();
+    };
 };
 
-const isAdmin = (req, res, next) => {
-    if (req.user.role !== 'admin') {
-        return res.status(403).json({ message: 'Access denied: Admins only.' });
-    }
-    next();
-};
-
-module.exports = { authenticateToken, checkRole, isAdmin };
+module.exports = { auth, checkRole };
