@@ -10,7 +10,6 @@ const adminSchema = new mongoose.Schema({
     profileImage: { type: String, default: null },
     phoneNumber: { type: String },
     bio: { type: String },
-    dob: { type: Date },
     age: { type: Number },
     resetOtp: { type: String },
     otpExpires: { type: Date }

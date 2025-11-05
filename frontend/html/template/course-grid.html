@@ -1,1112 +1,579 @@
-﻿<!DOCTYPE html> 
+﻿<!DOCTYPE html>
 <html lang="en">
-	<head>
-	
-		<!-- Meta Tags -->
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="description" content="Dreams LMS is a powerful Learning Management System template designed for educators, training institutions, and businesses. Manage courses, track student progress, conduct virtual classes, and enhance e-learning experiences with an intuitive and feature-rich platform.">
-		<meta name="keywords" content="LMS template, Learning Management System, e-learning software, online course platform, student management, education portal, virtual classroom, training management system, course tracking, online education">
-		<meta name="author" content="Dreams Technologies">
-		<meta name="robots" content="index, follow">
-		
-		<title>Dreams LMS | Advanced Learning Management System Template</title>
+<head>
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Dreams LMS is a powerful Learning Management System template designed for educators, training institutions, and businesses.">
+    <meta name="keywords" content="LMS template, Learning Management System, e-learning software, online course platform">
+    <meta name="author" content="Dreams Technologies">
+    <meta name="robots" content="index, follow">
+    
+    <title>Adaptive LMS | All Courses</title>
 
-		<!-- Favicon -->
-		<link rel="shortcut icon" href="assets/img/favicon.png"> 
-		<link rel="apple-touch-icon" href="assets/img/apple-icon.png">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/img/favicon.png"> 
+    <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
 
-		<!-- Theme Settings Js -->
-		<script src="assets/js/theme-script.js" type="c383dff8f44d223cc7d628d4-text/javascript"></script>
-		
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-		
-		<!-- Fontawesome CSS -->
-		<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
-		<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
 
-		<!-- Select2 CSS -->
-		<link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
-		
-		<!-- Rangeslider CSS -->
-	    <link rel="stylesheet" href="assets/plugins/ion-rangeslider/css/ion.rangeSlider.min.css">
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
+    
+    <!-- Feathericon CSS -->
+    <link rel="stylesheet" href="assets/plugins/feather/feather.css">
 
-		<!-- Feathericon CSS -->
-        <link rel="stylesheet" href="assets/plugins/feather/feather.css">
+    <!-- Iconsax CSS -->
+    <link rel="stylesheet" href="assets/css/iconsax.css">
 
-		<!-- Iconsax CSS -->
-		<link rel="stylesheet" href="assets/css/iconsax.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
 
-		<!-- Main CSS -->
-		<link rel="stylesheet" href="assets/css/style.css">
-	
-	</head>
-	<body>
+    <!-- Custom Professional CSS -->
+    <style>
+        :root {
+            --primary: #007bff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --dark: #343a40;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+        }
 
-		<!-- Main Wrapper -->
-		<div class="main-wrapper">
+        body.dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --card-bg: #2c2c2c;
+            --border-color: #444;
+        }
 
-			<!-- Header Topbar-->
-			<div class="header-topbar text-center">
-				<div class="container">
-					<div class="row">
-						<div class="col-lg-6">
-							<div class="d-flex align-items-center justify-content-center justify-content-lg-start">
-								<p class="d-flex align-items-center fw-medium fs-14 mb-2 me-3"><i class="isax isax-location5 me-2"></i>1442 Crosswind Drive Madisonville</p>
-								<p class="d-flex align-items-center fw-medium fs-14 mb-2"><i class="isax isax-call-calling5 me-2"></i>+1 45887 77874</p>
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="d-flex align-items-center justify-content-center justify-content-lg-end">
-								<div class="dropdown flag-dropdown mb-2 me-3">
-									<a href="javascript:void(0);" class="dropdown-toggle d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-										<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-									</a>
-									<ul class="dropdown-menu p-2 mt-2">
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-											</a>
-										</li>
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
-											</a>
-										</li>
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
-											</a>
-										</li>
-									</ul>
-								</div>
-								<div class="dropdown mb-2 me-3">
-									<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-										USD
-									</a>
-									<ul class="dropdown-menu p-2 mt-2">
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
-									</ul>
-								</div>
-								<ul class="social-icon d-flex align-items-center mb-2">
-									<li class="me-2">
-										<a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
-									</li>
-									<li class="me-2">
-										<a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
-									</li>
-									<li class="me-2">
-										<a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a>
-									</li>
-									<li class="me-2">
-										<a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
-									</li>
-									<li>
-										<a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Header Topbar-->
-	
-			<!-- Header -->
-			<header class="header-two">
-				<div class="container">
-					<div class="header-nav">
-						<div class="navbar-header">
-							<a id="mobile_btn" href="javascript:void(0);">
-								<span class="bar-icon">
-									<span></span>
-									<span></span>
-									<span></span>
-								</span>
-							</a>
-							<div class="navbar-logo">
-								<a class="logo-white header-logo" href="index.html">
-									<img src="assets/img/logo.svg" class="logo" alt="Logo">
-								</a>
-								<a class="logo-dark header-logo" href="index.html">
-									<img src="assets/img/logo-white.svg" class="logo" alt="Logo">
-								</a>
-							</div>
-						</div>
-						<div class="main-menu-wrapper">								
-							<div class="menu-header">
-								<a href="index.html" class="menu-logo">
-									<img src="assets/img/logo.svg" class="img-fluid" alt="Logo">
-								</a>
-								<a id="menu_close" class="menu-close" href="javascript:void(0);">
-									<i class="fas fa-times"></i>
-								</a>
-							</div>
-							<ul class="main-nav">
-								<li class="has-submenu megamenu">
-									<a href="#">Home <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu mega-submenu">
-										<li>
-											<div class="megamenu-wrapper">
-												<div class="row">
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index.html" class="inner-demo-img"><img src="assets/img/home/home-01.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index.html" class="inner-demo-img">Home 1</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-2.html" class="inner-demo-img"><img src="assets/img/home/home-02.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-2.html" class="inner-demo-img">Home 2</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-3.html" class="inner-demo-img"><img src="assets/img/home/home-03.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-3.html" class="inner-demo-img">Home 3</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-4.html" class="inner-demo-img"><img src="assets/img/home/home-04.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-4.html" class="inner-demo-img">Home 4</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-5.html" class="inner-demo-img"><img src="assets/img/home/home-05.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-5.html" class="inner-demo-img">Home 5</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-6.html" class="inner-demo-img"><img src="assets/img/home/home-06.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-6.html" class="inner-demo-img">Home 6</a>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</li>
-									</ul>
-								</li>
-								<li class="has-submenu active">
-									<a href="#">Courses <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu active">
-											<a href="javascript:void(0);">Courses</a>
-											<ul class="submenu">
-												<li class="active"><a href="course-grid.html">Course Grid</a></li>
-												<li><a href="course-list.html">Course List</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Course Category</a>
-											<ul class="submenu">
-												<li><a href="course-category.html">Course Category</a></li>
-												<li><a href="course-category-2.html">Course Category 2</a></li>
-												<li><a href="course-category-3.html">Course Category 3</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Course Details</a>
-											<ul class="submenu">
-												<li><a href="course-details.html">Course Details</a></li>
-												<li><a href="course-details-2.html">Course Details 2</a></li>
-											</ul>
-										</li>										
-										<li><a href="course-resume.html">Course Resume</a></li>
-										<li><a href="course-watch.html">Course Watch</a></li>
-										<li><a href="cart.html">Course Cart</a></li>
-										<li><a href="checkout.html">Course Checkout</a></li>
-										<li><a href="add-course.html">Add New Course</a></li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="javascript:void(0);">Dashboard <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Instructor Dashboard</a>
-											<ul class="submenu">
-												<li><a href="instructor-dashboard.html">Dashboard</a></li>
-												<li><a href="instructor-profile.html">My Profile</a></li>
-												<li><a href="instructor-course.html">Course</a></li>
-												<li><a href="instructor-announcements.html">Announcements</a></li>
-												<li><a href="instructor-assignment.html">Assignments</a></li>
-												<li class="has-submenu">
-													<a href="javascript:void(0);">Student</a>
-													<ul class="submenu">
-														<li><a href="students.html">Student Grid</a></li>
-														<li><a href="student-list.html">Student List</a></li>
-														<li><a href="student-details.html">Student Details</a></li>
-													</ul>
-												</li>
-												<li><a href="instructor-quiz.html">Quiz</a></li>
-												<li><a href="instructor-quiz-results.html">Quiz Results</a></li>
-												<li><a href="instructor-certificate.html">Certificates</a></li>
-												<li><a href="instructor-earnings.html">Earning</a></li>
-												<li><a href="instructor-payout.html">Payout</a></li>
-												<li><a href="instructor-statements.html">Statement</a></li>
-												<li><a href="instructor-tickets.html">Support Tickets</a></li>
-												<li><a href="instructor-settings.html">Settings</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Student Dashboard</a>
-											<ul class="submenu">
-												<li><a href="student-dashboard.html">Student Dashboard</a></li>
-												<li><a href="student-profile.html">My Profile</a></li>
-												<li><a href="student-courses.html">Enrolled Courses</a></li>
-												<li><a href="student-certificates.html">My Certificates</a></li>
-												<li><a href="student-wishlist.html">Wishlist</a></li>
-												<li><a href="student-reviews.html">Reviews</a></li>
-												<li><a href="student-quiz.html">My Quiz Attempts</a></li>
-												<li><a href="student-order-history.html">Order History</a></li>
-												<li><a href="student-referral.html">Referrals</a></li>
-												<li><a href="student-messages.html">Messages</a></li>
-												<li><a href="student-tickets.html">Support Ticket</a></li>
-												<li><a href="student-settings.html">Settings</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="#">Pages <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="#">Instructors</a>
-											<ul class="submenu">
-												<li><a href="instructor-grid.html">Instructor Grid</a></li>
-												<li><a href="instructor-list.html">Instructor List</a></li>
-												<li><a href="instructor-details.html">Instructor Details</a></li>
-											</ul>
-										</li>
-										<li><a href="about-us.html">About Us</a></li>
-										<li><a href="contact-us.html">Contact us</a></li>
-										<li><a href="notifications.html">Notifications</a></li>
-										<li><a href="become-an-instructor.html">Become an Instructor</a></li>
-										<li><a href="testimonials.html">Testimonials</a></li>
-										<li class="has-submenu">
-											<a href="#">Authentication</a>
-											<ul class="submenu">
-												<li><a href="login.html">Login</a></li>
-												<li><a href="register.html">Register</a></li>
-												<li><a href="forgot-password.html">Forgot Password</a></li>
-												<li><a href="reset-password.html">Reset Password</a></li>
-												<li><a href="set-password.html">Set Password</a></li>
-												<li><a href="otp.html">OTP</a></li>
-												<li><a href="lock-screen.html">Lock Screen</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="#">Error</a>
-											<ul class="submenu">
-												<li><a href="error-404.html">404 Error</a></li>
-												<li><a href="error-500.html">500 Error</a></li>
-											</ul>
-										</li>
-										<li><a href="pricing-plan.html">Pricing Plan</a></li>
-										<li><a href="faq.html">FAQ</a></li>
-										<li><a href="coming-soon.html">Coming Soon</a></li>
-										<li><a href="under-construction.html">Under Construction</a></li>
-										<li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-										<li><a href="privacy-policy.html">Privacy Policy</a></li>
-										<li><a href="index-rtl.html">RTL</a></li>
-									</ul>
-								</li>	
-								<li class="has-submenu">
-									<a href="#">Blog <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="#">Blog Layouts</a>
-											<ul class="submenu">
-												<li><a href="blog-grid.html">Blog 1 Grid</a></li>
-												<li><a href="blog-2-grid.html">Blog 2 Grid</a></li>
-												<li><a href="blog-3-grid.html">Blog 3 Grid</a></li>
-												<li><a href="blog-carousal.html">Blog Carousal</a></li>
-												<li><a href="blog-masonry.html">Blog Mansory</a></li>
-												<li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
-												<li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="#">Blog Details</a>
-											<ul class="submenu">
-												<li><a href="blog-details.html">Blog Details</a></li>
-												<li><a href="blog-details-left-sidebar.html">Blog Details Left Sidebar</a></li>
-												<li><a href="blog-details-right-sidebar.html">Blog Details Right Sidebar</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							
-							<div class="menu-dropdown">
-								<div class="cart-item">
-									<h6>Cart & Wishlist</h6>                                
-									<div class="icon-btn">
-										<a href="cart.html" class="position-relative">
-											<i class="isax isax-shopping-cart5"></i>
-											<span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
-										</a>
-									</div>
-								</div>
-								<div class="dropdown flag-dropdown mb-2">
-									<a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-										<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-									</a>
-									<ul class="dropdown-menu p-2 mt-2">
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-											</a>
-										</li>
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
-											</a>
-										</li>
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
-											</a>
-										</li>
-									</ul>
-								</div>
-								<div class="dropdown mb-2">
-									<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-										USD
-									</a>
-									<ul class="dropdown-menu p-2 mt-2">
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
-									</ul>
-								</div>
-								<div class="dropdown mb-2">
-									<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-										Light
-									</a>
-									<ul class="dropdown-menu p-2 mt-2">
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">Light</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">Dark</a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="menu-login">
-								<a href="login.html" class="btn btn-primary w-100 mb-2"><i class="isax isax-user me-2"></i>Sign In</a>
-								<a href="register.html" class="btn btn-secondary w-100"><i class="isax isax-user-edit me-2"></i>Register</a>
-							</div>
-						</div>
-						<div class="header-btn d-flex align-items-center">
-							<div class="icon-btn me-2">
-								<a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
-									<i class="isax isax-sun-15"></i>
-								</a>
-								<a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
-									<i class="isax isax-moon"></i>
-								</a>
-							</div>
-							<div class="icon-btn me-3">
-								<a href="cart.html" class="position-relative">
-									<i class="isax isax-shopping-cart5"></i>
-									<span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
-								</a>
-							</div>
-							<a href="login.html" class="btn btn-light d-inline-flex align-items-center me-2">
-								<i class="isax isax-lock-circle me-2"></i>Sign In
-							</a>
-							<a href="register.html" class="btn btn-secondary me-0">
-								<i class="isax isax-user-edit me-2"></i>Register
-							</a>
-						</div>
-					</div>
-				</div>
-			</header>
-			<!-- /Header -->
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
 
-			<!-- Breadcrumb -->
-			<div class="breadcrumb-bar text-center">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-12 col-12">
-							<h2 class="breadcrumb-title mb-2">Course Grid</h2>
-							<nav aria-label="breadcrumb">
-								<ol class="breadcrumb justify-content-center mb-0">
-									<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Course Grid</li>
-								</ol>
-							</nav>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Breadcrumb -->
-			
-			<!-- Course -->
-			<section class="course-content">
-				<div class="container">
-					<div class="row align-items-baseline">
-						<div class="col-lg-3 theiaStickySidebar">
-							<div class="filter-clear">
-								<div class="clear-filter mb-4 pb-lg-2 d-flex align-items-center justify-content-between">
-									<h5><i class="feather-filter me-2"></i>Filters</h5>
-									<a href="javascript:void(0);" class="clear-text">
-										Clear
-									</a>
-								</div>
+        .course-item-two {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
 
-								<div class="accordion accordion-customicon1 accordions-items-seperate">
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="headingcustomicon1One">
-											<a href="#" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapsecustomicon1One" aria-expanded="false" aria-controls="collapsecustomicon1One">
-											Categories <i class="fa-solid fa-chevron-down"></i>
-											</a>
-										</h2>
-										<div id="collapsecustomicon1One" class="accordion-collapse collapse show" aria-labelledby="headingcustomicon1One" data-bs-parent="#accordioncustomicon1Example" style="">
-											<div class="accordion-body">
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span> Backend (3)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>  CSS (2)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>  Frontend (2)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span> General (2)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist" checked="">
-														<span class="checkmark"></span> IT & Software (2)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span> Photography (2)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>  Programming Language (3)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check mb-0">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>  Technology (2)
-													</label>
-												</div>
-												<a href="javascript:void(0);" class="see-more-btn">See More</a>
-											</div>
-										</div>
-									</div>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="headingcustomicon1Two">
-											<a href="#" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapsecustomicon1Two" aria-expanded="false" aria-controls="collapsecustomicon1Two">
-											Instructors<i class="fa-solid fa-chevron-down"></i>
-											</a>
-										</h2>
-										<div id="collapsecustomicon1Two" class="accordion-collapse collapse show" aria-labelledby="headingcustomicon1Two" data-bs-parent="#accordioncustomicon1Example">
-											<div class="accordion-body">
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span> Keny White (10)
-	
-													</label>
-												</div>
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>  Hinata Hyuga (5)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>  John Doe (3)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check mb-0">
-														<input type="checkbox" name="select_specialist" checked="">
-														<span class="checkmark"></span> Nicole Brown
-													</label>
-												</div>
-												<a href="javascript:void(0);" class="see-more-btn">See More</a>
-											</div>
-										</div>
-									</div>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="headingcustomicon1Three">
-											<a href="#" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapsecustomicon1Three" aria-expanded="false" aria-controls="collapsecustomicon1Three">
-											Price<i class="fa-solid fa-chevron-down"></i>
-											</a>
-										</h2>
-										<div id="collapsecustomicon1Three" class="accordion-collapse collapse show" aria-labelledby="headingcustomicon1Three" data-bs-parent="#accordioncustomicon1Example">
-											<div class="accordion-body">
-												<div>
-													<label class="custom_check custom_one">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span> All (10)
-	
-													</label>
-												</div>
-												<div>
-													<label class="custom_check custom_one">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>  Free (5) 
-	
-													</label>
-												</div>
-												<div>
-													<label class="custom_check custom_one mb-0">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>  Paid (3)
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="headingcustomicon1Four">
-											<a href="#" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapsecustomicon1Four" aria-expanded="false" aria-controls="collapsecustomicon1Four">
-											Range<i class="fa-solid fa-chevron-down"></i>
-											</a>
-										</h2>
-										<div id="collapsecustomicon1Four" class="accordion-collapse collapse show" aria-labelledby="headingcustomicon1Four" data-bs-parent="#accordioncustomicon1Example">
-											<div class="accordion-body">
-												<div class="filter-range">
-													<input type="text" class="input-range">
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="headingcustomicon1Five">
-											<a href="#" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapsecustomicon1Five" aria-expanded="false" aria-controls="collapsecustomicon1Five">
-											Level<i class="fa-solid fa-chevron-down"></i>
-											</a>
-										</h2>
-										<div id="collapsecustomicon1Five" class="accordion-collapse collapse show" aria-labelledby="headingcustomicon1Five" data-bs-parent="#accordioncustomicon1Example">
-											<div class="accordion-body">
-												<div>
-													<label class="custom_check custom_one">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>Beginner (10)
-	
-													</label>
-												</div>
-												<div>
-													<label class="custom_check custom_one">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span> Intermediate (5)
-	
-													</label>
-												</div>
-												<div>
-													<label class="custom_check custom_one">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>Advanced (21)
-													</label>
-												</div>
-												<div>
-													<label class="custom_check custom_one mb-0">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>Expert  (3)
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="headingcustomicon1Six">
-											<a href="#" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapsecustomicon1Six" aria-expanded="false" aria-controls="collapsecustomicon1Six">
-											Reviews <i class="fa-solid fa-chevron-down"></i>
-											</a>
-										</h2>
-										<div id="collapsecustomicon1Six" class="accordion-collapse collapse show" aria-labelledby="headingcustomicon1Six" data-bs-parent="#accordioncustomicon1Example">
-											<div class="accordion-body">
-												<div>
-													<label class="custom_check custom_one">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning"></i>
-													</label>
-												</div>
-												<div>
-													<label class="custom_check custom_one">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-light"></i>
-	
-													</label>
-												</div>
-												<div>
-													<label class="custom_check custom_one">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-light me-1"></i>
-														<i class="fa-solid fa-star text-light"></i>
-													</label>
-												</div>
-												<div>
-													<label class="custom_check custom_one">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-light me-1"></i>
-														<i class="fa-solid fa-star text-light me-1"></i>
-														<i class="fa-solid fa-star text-light"></i>
-													</label>
-												</div>
-												<div>
-													<label class="custom_check custom_one mb-0">
-														<input type="checkbox" name="select_specialist">
-														<span class="checkmark"></span>
-														<i class="fa-solid fa-star text-warning me-1"></i>
-														<i class="fa-solid fa-star text-light me-1"></i>
-														<i class="fa-solid fa-star text-light me-1"></i>
-														<i class="fa-solid fa-star text-light me-1"></i>
-														<i class="fa-solid fa-star text-light"></i>
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
+        .course-item-two:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
 
-							</div>
-						</div>
-						<div class="col-lg-9">
-						
-							<!-- Filter -->
-							<div class="showing-list mb-4">
-								<div class="row align-items-center">
-									<div class="col-lg-4">
-											<div class="show-result text-center text-lg-start">
-												<h6 class="fw-medium">Showing 1-9 of 50 results</h6>
-											</div>
-									</div>
-									<div class="col-lg-8">	
-										<div class="show-filter add-course-info">
-											<form action="#">
-												<div class="d-sm-flex justify-content-center justify-content-lg-end mb-1 mb-lg-0">
-													<div class="view-icons mb-2 mb-sm-0">
-														<a href="course-grid.html" class="grid-view active"><i class="feather-grid"></i></a>
-														<a href="course-list.html" class="list-view"><i class="isax isax-task"></i></a>
-													</div>
-													<select class="form-select">
-														<option>Newly Published </option>
-														<option>Trending Courses</option>
-														<option>Top Rated</option>
-														<option>Free Courses</option>
-													</select>
-													<div class=" search-group">
-														<i class="isax isax-search-normal-1"></i>
-														<input type="text" class="form-control" placeholder="Search">
-													</div>
-												</div>
-											</form>
-										</div>	
-									</div>
-								</div>
-							</div>
-							<!-- /Filter -->
-							
-							<div class="row">
-								<div class="col-xl-4 col-md-6">
-									<div class="course-item-two course-item mx-0">
-										<div class="course-img">
-											<a href="course-details.html">
-												<img src="assets/img/course/course-01.jpg" alt="img" class="img-fluid">  
-											</a>
-											<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-												<div class="badge text-bg-danger">15% off</div>
-												<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-											</div>
-										</div>
-										<div class="course-content">
-											<div class="d-flex justify-content-between mb-2">
-												<div class="d-flex align-items-center">
-													<a href="instructor-details.html" class="avatar avatar-sm">
-														<img src="assets/img/user/user-29.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-													</a>
-													<div class="ms-2">
-														<a href="instructor-details.html" class="link-default fs-14">Brenda Slaton</a>
-													</div>
-												</div>
-												<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-													Design
-												</span>
-											</div>
-											<h6 class="title mb-2"><a href="course-details.html">Information About UI/UX Design Degree</a></h6>
-											<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.9 (200 Reviews)</p>
-											<div class="d-flex align-items-center justify-content-between">
-												<h5 class="text-secondary mb-0">$120</h5>
-												<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-xl-4 col-md-6">
-									<div class="course-item-two course-item mx-0">
-										<div class="course-img">
-											<a href="course-details.html">
-												<img src="assets/img/course/course-02.jpg" alt="img" class="img-fluid">  
-											</a>
-											<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-												<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-											</div>
-										</div>
-										<div class="course-content">
-											<div class="d-flex justify-content-between mb-2">
-												<div class="d-flex align-items-center">
-													<a href="instructor-details.html" class="avatar avatar-sm">
-														<img src="assets/img/user/user-30.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-													</a>
-													<div class="ms-2">
-														<a href="instructor-details.html" class="link-default fs-14">Ana Reyes</a>
-													</div>
-												</div>
-												<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-													Wordpress
-												</span>
-											</div>
-											<h6 class="title mb-2"><a href="course-details.html">Wordpress for Beginners - Master Wordpress Quickly</a></h6>
-											<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (160 Reviews)</p>
-											<div class="d-flex align-items-center justify-content-between">
-												<h5 class="text-secondary mb-0">$140</h5>
-												<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-xl-4 col-md-6">
-									<div class="course-item-two course-item mx-0">
-										<div class="course-img">
-											<a href="course-details.html">
-												<img src="assets/img/course/course-03.jpg" alt="img" class="img-fluid">  
-											</a>
-											<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-												<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-											</div>
-										</div>
-										<div class="course-content">
-											<div class="d-flex justify-content-between mb-2">
-												<div class="d-flex align-items-center">
-													<a href="instructor-details.html" class="avatar avatar-sm">
-														<img src="assets/img/user/user-31.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-													</a>
-													<div class="ms-2">
-														<a href="instructor-details.html" class="link-default fs-14">Andrew Pirtle</a>
-													</div>
-												</div>
-												<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-													Design
-												</span>
-											</div>
-											<h6 class="title mb-2"><a href="course-details.html">Sketch from A to Z (2024): Become an app designer</a></h6>
-											<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (160 Reviews)</p>
-											<div class="d-flex align-items-center justify-content-between">
-												<h5 class="text-secondary mb-0">$140</h5>
-												<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-xl-4 col-md-6">
-									<div class="course-item-two course-item mx-0">
-										<div class="course-img">
-											<a href="course-details.html">
-												<img src="assets/img/course/course-04.jpg" alt="img" class="img-fluid">  
-											</a>
-											<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-												<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-											</div>
-										</div>
-										<div class="course-content">
-											<div class="d-flex justify-content-between mb-2">
-												<div class="d-flex align-items-center">
-													<a href="instructor-details.html" class="avatar avatar-sm">
-														<img src="assets/img/user/user-32.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-													</a>
-													<div class="ms-2">
-														<a href="instructor-details.html" class="link-default fs-14">Christy Garner</a>
-													</div>
-												</div>
-												<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-													Programming
-												</span>
-											</div>
-											<h6 class="title mb-2"><a href="course-details.html">Build Responsive Real World Websites with Crash Course</a></h6>
-											<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.2 (220 Reviews)</p>
-											<div class="d-flex align-items-center justify-content-between">
-												<h5 class="text-secondary mb-0">$200</h5>
-												<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-xl-4 col-md-6">
-									<div class="course-item-two course-item mx-0">
-										<div class="course-img">
-											<a href="course-details.html">
-												<img src="assets/img/course/course-05.jpg" alt="img" class="img-fluid">  
-											</a>
-											<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-												<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-											</div>
-										</div>
-										<div class="course-content">
-											<div class="d-flex justify-content-between mb-2">
-												<div class="d-flex align-items-center">
-													<a href="instructor-details.html" class="avatar avatar-sm">
-														<img src="assets/img/user/user-32.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-													</a>
-													<div class="ms-2">
-														<a href="instructor-details.html" class="link-default fs-14">Justin Gregory</a>
-													</div>
-												</div>
-												<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-													Programming
-												</span>
-											</div>
-											<h6 class="title mb-2"><a href="course-details.html">Learn JavaScript and Express to become a Expert</a></h6>
-											<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-											<div class="d-flex align-items-center justify-content-between">
-												<h5 class="text-secondary mb-0">$130</h5>
-												<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-xl-4 col-md-6">
-									<div class="course-item-two course-item mx-0">
-										<div class="course-img">
-											<a href="course-details.html">
-												<img src="assets/img/course/course-06.jpg" alt="img" class="img-fluid">  
-											</a>
-											<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-												<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-											</div>
-										</div>
-										<div class="course-content">
-											<div class="d-flex justify-content-between mb-2">
-												<div class="d-flex align-items-center">
-													<a href="instructor-details.html" class="avatar avatar-sm">
-														<img src="assets/img/user/user-33.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-													</a>
-													<div class="ms-2">
-														<a href="instructor-details.html" class="link-default fs-14">Carolyn Hines</a>
-													</div>
-												</div>
-												<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-													Programming
-												</span>
-											</div>
-											<h6 class="title mb-2"><a href="course-details.html">Introduction to Python Programming</a></h6>
-											<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-											<div class="d-flex align-items-center justify-content-between">
-												<h5 class="text-secondary mb-0">$130</h5>
-												<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-xl-4 col-md-6">
-									<div class="course-item-two course-item mx-0">
-										<div class="course-img">
-											<a href="course-details.html">
-												<img src="assets/img/course/course-07.jpg" alt="img" class="img-fluid">  
-											</a>
-											<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-												<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-											</div>
-										</div>
-										<div class="course-content">
-											<div class="d-flex justify-content-between mb-2">
-												<div class="d-flex align-items-center">
-													<a href="instructor-details.html" class="avatar avatar-sm">
-														<img src="assets/img/user/user-34.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-													</a>
-													<div class="ms-2">
-														<a href="instructor-details.html" class="link-default fs-14">Rafael Miller</a>
-													</div>
-												</div>
-												<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-													Programming
-												</span>
-											</div>
-											<h6 class="title mb-2"><a href="course-details.html">Build Responsive Websites with HTML5 and CSS3</a></h6>
-											<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-											<div class="d-flex align-items-center justify-content-between">
-												<h5 class="text-secondary mb-0">$170</h5>
-												<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-xl-4 col-md-6">
-									<div class="course-item-two course-item mx-0">
-										<div class="course-img">
-											<a href="course-details.html">
-												<img src="assets/img/course/course-08.jpg" alt="img" class="img-fluid">  
-											</a>
-											<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-												<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-											</div>
-										</div>
-										<div class="course-content">
-											<div class="d-flex justify-content-between mb-2">
-												<div class="d-flex align-items-center">
-													<a href="instructor-details.html" class="avatar avatar-sm">
-														<img src="assets/img/user/user-35.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-													</a>
-													<div class="ms-2">
-														<a href="instructor-details.html" class="link-default fs-14">Nancy Duarte</a>
-													</div>
-												</div>
-												<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-													Design
-												</span>
-											</div>
-											<h6 class="title mb-2"><a href="course-details.html">Information About Photoshop Design Degree</a></h6>
-											<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-											<div class="d-flex align-items-center justify-content-between">
-												<h5 class="text-secondary mb-0">$170</h5>
-												<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-xl-4 col-md-6">
-									<div class="course-item-two course-item mx-0">
-										<div class="course-img">
-											<a href="course-details.html">
-												<img src="assets/img/course/course-09.jpg" alt="img" class="img-fluid">  
-											</a>
-											<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-												<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-											</div>
-										</div>
-										<div class="course-content">
-											<div class="d-flex justify-content-between mb-2">
-												<div class="d-flex align-items-center">
-													<a href="instructor-details.html" class="avatar avatar-sm">
-														<img src="assets/img/user/user-36.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-													</a>
-													<div class="ms-2">
-														<a href="instructor-details.html" class="link-default fs-14">James Kagan</a>
-													</div>
-												</div>
-												<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-													Design
-												</span>
-											</div>
-											<h6 class="title mb-2"><a href="course-details.html">C# Developers Double Your Coding with Visual Studio</a></h6>
-											<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-											<div class="d-flex align-items-center justify-content-between">
-												<h5 class="text-secondary mb-0">$180</h5>
-												<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							
-							<!-- /pagination -->
-							<div class="row align-items-center">
-								<div class="col-md-2">
-                                  <p class="pagination-text">Page 1 of 2</p>
-								</div>
-								<div class="col-md-10">
-									<ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0">
-										<li class="page-item prev">
-											<a class="page-link" href="javascript:void(0)" tabindex="-1"><i class="fas fa-angle-left"></i></a>
-										</li>
-										<li class="page-item first-page active">
-											<a class="page-link" href="javascript:void(0)">1</a>
-										</li>
-										<li class="page-item">
-											<a class="page-link" href="javascript:void(0)">2</a>
-										</li>
-										<li class="page-item">
-											<a class="page-link" href="javascript:void(0)">3</a>
-										</li>
-										<li class="page-item next">
-											<a class="page-link" href="javascript:void(0)"><i class="fas fa-angle-right"></i></a>
-										</li>
-									</ul>
-								</div>
-							</div>
-							<!-- /pagination -->
-							
-						</div>
-					</div>
-				</div>
-			</section>
-			<!-- /Course -->
+        .course-img {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
 
-		<!-- Footer -->
-		<footer class="footer">
+        .course-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .course-item-two:hover .course-img img {
+            transform: scale(1.08);
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .course-item-two:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+
+        .play-btn i {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-left: 3px;
+        }
+
+        .video-count-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+
+        .fav-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(255,255,255,0.9);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .fav-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .fav-btn i {
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .fav-btn.favorited i {
+            color: #e91e63 !important;
+        }
+
+        .course-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .instructor-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .instructor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+            border: 2px solid var(--border-color);
+        }
+
+        .instructor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .instructor-avatar .initials {
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .instructor-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 2px;
+        }
+
+        .instructor-meta {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .course-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0.75rem 0;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-title a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .course-title a:hover {
+            color: var(--primary);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .rating-stars {
+            display: flex;
+            margin-right: 0.5rem;
+        }
+
+        .rating-stars i {
+            font-size: 1rem;
+            margin-right: 2px;
+        }
+
+        .rating-stars .filled {
+            color: #ffc107;
+        }
+
+        .rating-stars .empty {
+            color: #e9ecef;
+        }
+
+        .rating-text {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .course-desc {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .course-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 1.25rem;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .price.free {
+            color: var(--success);
+        }
+
+        .course-meta {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+
+        .enroll-btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,123,255,0.2);
+        }
+
+        .enroll-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,123,255,0.3);
+        }
+
+        .enroll-btn.enrolled {
+            background: var(--success);
+            border-color: var(--success);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.2);
+        }
+
+        .enroll-btn.enrolled:hover {
+            box-shadow: 0 8px 20px rgba(40,167,69,0.3);
+        }
+
+        .category-badge {
+            background: rgba(0,123,255,0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .navbar-logo img.logo {
+            width: 120px;
+            height: auto;
+        }
+
+        .footer-logo img {
+            width: 150px;
+            height: auto;
+        }
+
+        .toast-success {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        .toast-error {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .course-img {
+                height: 200px;
+            }
+            .course-title {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Header -->
+        <header class="header-two">
+            <div class="container">
+                <div class="header-nav">
+                    <div class="navbar-header">
+                        <a id="mobile_btn" href="javascript:void(0);">
+                            <span class="bar-icon">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                        </a>
+                        <div class="navbar-logo">
+                            <a class="logo-white header-logo" href="index-3.html">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="main-menu-wrapper">                                
+                        <div class="menu-header">
+                            <a href="index-3.html" class="menu-logo">
+                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
+                            </a>
+                            <a id="menu_close" class="menu-close" href="javascript:void(0);">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                        <ul class="main-nav">
+                            <li><a href="index-3.html">Home</a></li>
+                            <li class="active"><a href="course-grid.html">Courses</a></li>
+                            <li><a href="student-dashboard.html">Dashboard</a></li>
+                        </ul>
+                        <div class="menu-dropdown">
+                            <div class="cart-item">
+                                <h6>Cart & Wishlist</h6>                                
+                                <div class="icon-btn">
+                                    <a href="cart.html" class="position-relative">
+                                        <i class="isax isax-shopping-cart5"></i>
+                                        <span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">0</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="dropdown mb-2">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                    Theme
+                                </a>
+                                <ul class="dropdown-menu p-2 mt-2">
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);" id="light-mode-toggle">Light</a></li>
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);" id="dark-mode-toggle">Dark</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-btn d-flex align-items-center">
+                        <div class="icon-btn me-2">
+                            <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle">
+                                <i class="isax isax-sun-15"></i>
+                            </a>
+                            <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle activate">
+                                <i class="isax isax-moon"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- /Header -->
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-bar text-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-12">
+                        <h2 class="breadcrumb-title mb-2">All Courses</h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center mb-0">
+                                <li class="breadcrumb-item"><a href="index-3.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Courses</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Breadcrumb -->
+        
+        <!-- Course -->
+        <section class="course-content py-5">
+            <div class="container">
+                <div class="row align-items-baseline">
+                    <div class="col-lg-3 theiaStickySidebar">
+                        <div class="filter-clear">
+                            <div class="clear-filter mb-4 pb-lg-2 d-flex align-items-center justify-content-between">
+                                <h5><i class="feather-filter me-2"></i>Filters</h5>
+                                <a href="javascript:void(0);" class="clear-text" id="clear-filters">Clear All</a>
+                            </div>
+                            <div class="accordion accordion-customicon1 accordions-items-separate">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingcustomicon1One">
+                                        <a href="#" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapsecustomicon1One">
+                                            <i class="fas fa-folder me-2"></i>Categories <i class="fa-solid fa-chevron-down ms-auto"></i>
+                                        </a>
+                                    </h2>
+                                    <div id="collapsecustomicon1One" class="accordion-collapse collapse show" data-bs-parent="#accordioncustomicon1Example">
+                                        <div class="accordion-body" id="category-filter">
+                                            <div class="text-center py-3">
+                                                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <!-- Filter -->
+                        <div class="showing-list mb-4">
+                            <div class="row align-items-center">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="show-result text-center text-lg-start">
+                                        <h6 class="fw-medium mb-1" id="course-count">Loading courses...</h6>
+                                        <small class="text-muted" id="filter-status">All courses</small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8 col-md-6">    
+                                    <div class="show-filter add-course-info">
+                                        <form class="d-flex align-items-center gap-3">
+                                            <div class="view-icons mb-2 mb-sm-0">
+                                                <a href="course-grid.html" class="grid-view active me-2"><i class="feather-grid fs-5"></i></a>
+                                            </div>
+                                            <div class="search-group flex-grow-1">
+                                                <i class="isax isax-search-normal-1 position-absolute ms-3"></i>
+                                                <input type="text" class="form-control ps-5" id="search-courses" placeholder="Search courses...">
+                                            </div>
+                                        </form>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Filter -->
+                        
+                        <!-- Loading State -->
+                        <div id="loading-courses" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Loading courses...</p>
+                        </div>
+                        
+                        <div class="row" id="course-grid">
+                            <!-- Courses will be loaded here -->
+                        </div>
+                        
+                        <div class="empty-state text-center py-5" id="empty-courses" style="display: none;">
+                            <div class="mb-4">
+                                <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
+                            </div>
+                            <h5 class="text-muted mb-3">No courses available</h5>
+                            <p class="text-muted mb-4">Check back later for new courses!</p>
+                            <a href="student-dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div class="row align-items-center mt-4" id="pagination" style="display: none;">
+                            <div class="col-md-6">
+                                <p class="pagination-text mb-0" id="pagination-text">Page 1 of 1</p>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0">
+                                    <li class="page-item prev disabled">
+                                        <a class="page-link" href="javascript:void(0)" id="prev-page">
+                                            <i class="fas fa-angle-left me-1"></i> Previous
+                                        </a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                    <li class="page-item next disabled">
+                                        <a class="page-link" href="javascript:void(0)" id="next-page">
+                                            Next <i class="fas fa-angle-right ms-1"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
             <div class="footer-bg">
                 <img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
                 <img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt="">
@@ -1117,9 +584,9 @@
                         <div class="col-lg-4">
                             <div class="footer-about">
                                 <div class="footer-logo">
-                                    <img src="assets/img/logo.svg" alt="">
+                                    <img src="assets/img/logo.png" alt="Logo">
                                 </div>
-                                <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
+                                <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning activities.</p>
                                 <div class="d-flex align-items-center">
                                     <a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
                                     <a href="#"><img src="assets/img/icon/googleplay.svg" alt=""></a>
@@ -1135,8 +602,6 @@
                                             <li><a href="course-grid.html">Search Mentors</a></li>
                                             <li><a href="login.html">Login</a></li>
                                             <li><a href="register.html">Register</a></li>
-                                            <li><a href="course-list.html">Booking</a></li>
-                                            <li><a href="student-dashboard.html">Students Dashboard</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1147,8 +612,6 @@
                                             <li><a href="javascript:void(0);">Appointments</a></li>
                                             <li><a href="instructor-message.html">Chat</a></li>
                                             <li><a href="login.html">Login</a></li>
-                                            <li><a href="register.html">Register</a></li>
-                                            <li><a href="instructor-dashboard.html">Instructor Dashboard</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1157,22 +620,14 @@
                                         <h5 class="footer-title">Newsletter</h5>
                                         <div class="subscribe-input">
                                             <form action="javascript:void(0);">
-                                                <input type="email" class="form-control" placeholder="Enter your Email Address">
-                                                <button type="submit" class="btn btn-primary btn-sm inline-flex align-items-center"><i class="isax isax-send-2 me-1"></i>Subscribe</button>
+                                                <input type="email" class="form-control" placeholder="Enter your Email">
+                                                <button type="submit" class="btn btn-primary btn-sm">Subscribe</button>
                                             </form>
                                         </div>
                                         <div class="footer-contact-info">
                                             <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-20.svg" alt="Img" class="img-fluid me-2">
-                                                <p> 3556  Beech Street, San Francisco,<br> California, CA 94108 </p>
-                                            </div>
-                                            <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2">
-                                                <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fd998f989c908e91908ebd98859c908d9198d39e9290">[email&#160;protected]</a></p>
-                                            </div>
-                                            <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2">
-                                                <p>+19 123-456-7890</p>
+                                                <img src="assets/img/icon/icon-20.svg" alt="" class="me-2">
+                                                <p>3556 Beech Street, San Francisco,<br> California, CA 94108</p>
                                             </div>
                                         </div>
                                     </div>
@@ -1184,49 +639,349 @@
             </div>
             <div class="footer-bottom">
                 <div class="container">
-                    <div class="row row-gap-2">
+                    <div class="row">
                         <div class="col-md-6">
-                            <div class="text-center text-md-start">
-                                <p class="text-white">Copyright &copy; 2025 DreamsLMS. All rights reserved.</p>
-                            </div>
+                            <p class="text-white text-center text-md-start">Copyright © 2025 AdaptiveLMS. All rights reserved.</p>
                         </div>
                         <div class="col-md-6">
-                            <div>
-                                <ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
-                                    <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-                                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                                </ul>
-                            </div>
+                            <ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
+                                <li><a href="terms-and-conditions.html">Terms</a></li>
+                                <li><a href="privacy-policy.html">Privacy</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </footer>
-        <!-- /Footer -->
-			
-		</div>
-	   <!-- /Main Wrapper -->
-	  
-		<!-- jQuery -->
-		<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="assets/js/jquery-3.7.1.min.js" type="c383dff8f44d223cc7d628d4-text/javascript"></script>
-		
-		<!-- Bootstrap Core JS -->
-		<script src="assets/js/bootstrap.bundle.min.js" type="c383dff8f44d223cc7d628d4-text/javascript"></script>
-		
-		<!-- Select2 JS -->
-	  	<script src="assets/plugins/select2/js/select2.min.js" type="c383dff8f44d223cc7d628d4-text/javascript"></script>
+    </div>
 
-		<!-- Rangeslider JS -->
-	    <script src="assets/plugins/ion-rangeslider/js/ion.rangeSlider.min.js" type="c383dff8f44d223cc7d628d4-text/javascript"></script>
-	    <script src="assets/plugins/ion-rangeslider/js/custom-rangeslider.js" type="c383dff8f44d223cc7d628d4-text/javascript"></script>
+    <!-- Toast Container -->
+    <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
 
-		
-		<!-- Sticky Sidebar JS -->
-        <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="c383dff8f44d223cc7d628d4-text/javascript"></script>
-        <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="c383dff8f44d223cc7d628d4-text/javascript"></script>
-		
-		<!-- Custom JS -->
-		<script src="assets/js/script.js" type="c383dff8f44d223cc7d628d4-text/javascript"></script>
-		
-	<script src="../../cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="c383dff8f44d223cc7d628d4-|49" defer=""></script></body>
+    <!-- Scripts -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/plugins/select2/js/select2.min.js"></script>
+    <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+    <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <script src="assets/js/theme-script.js"></script>
+    <script src="assets/js/script.js"></script>
+
+    <!-- Professional Course Grid JS -->
+<script>
+$(document).ready(function() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showToast('Please login to view courses.', 'error');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+    }
+
+    let decoded;
+    try {
+        decoded = jwt_decode(token);
+        if (decoded.exp < Date.now() / 1000) throw new Error('Expired');
+    } catch (error) {
+        showToast('Session expired. Please login again.', 'error');
+        localStorage.removeItem('token');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+    }
+
+    if (decoded.role !== 'student') {
+        showToast('Access denied: Students only.', 'error');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+    }
+
+    let currentFilters = { page: 1, category: '', search: '' };
+
+    function showToast(message, type = 'success', duration = 3000) {
+        const id = `toast-${Date.now()}`;
+        const html = `
+            <div id="${id}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade show" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>`;
+        $('#toast-container').append(html);
+        const toast = new bootstrap.Toast(document.getElementById(id));
+        toast.show();
+        setTimeout(() => $(`#${id}`).fadeOut(300, () => $(this).remove()), duration);
+    }
+
+    function getInitials(name) {
+        return (name || 'AD').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    // Updated: Better thumbnail extraction (handles watch?v=, youtu.be, embed, and playlist fallback)
+    function getYouTubeThumbnail(url) {
+        if (!url) return 'assets/img/course/course-placeholder.jpg';
+        let videoId = null;
+        // Regex for watch?v= or youtu.be
+        const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+        // Regex for embed URL
+        const embedMatch = url.match(/youtube\.com\/embed\/([^&\n?#]+)/);
+        if (watchMatch) videoId = watchMatch[1];
+        else if (embedMatch) videoId = embedMatch[1];
+        // If playlist URL (fallback or error case), use generic playlist thumbnail
+        else if (url.includes('playlist?list=')) {
+            // Extract playlist ID and use a default playlist thumbnail (YouTube style)
+            const playlistMatch = url.match(/list=([a-zA-Z0-9_-]+)/);
+            if (playlistMatch) {
+                // Use first video style thumbnail; backend can provide better
+                return `https://i.ytimg.com/vi/${playlistMatch[1].substring(0,11)}/mqdefault.jpg`; // Fallback
+            }
+            return 'assets/img/course/playlist-placeholder.jpg'; // Add custom image
+        }
+        return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
+    }
+
+    function generateStars(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= Math.floor(rating)) stars += '<i class="fas fa-star filled"></i>';
+            else if (i === Math.ceil(rating) && rating % 1 >= 0.5) stars += '<i class="fas fa-star-half-alt filled"></i>';
+            else stars += '<i class="far fa-star empty"></i>';
+        }
+        return stars;
+    }
+
+    function isEnrolled(courseId) {
+        return $.ajax({
+            url: `http://localhost:5000/api/dashboard/student/enrollments`,
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token }
+        }).then(data => data.some(e => e.courseId === courseId)).catch(() => false);
+    }
+
+    function loadCategories() {
+        $.ajax({
+            url: 'http://localhost:5000/api/categories',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function(cats) {
+                const html = cats.map(cat => `
+                    <div class="mb-2">
+                        <label class="custom_check d-flex align-items-center">
+                            <input type="checkbox" name="category" value="${cat._id}" class="me-2">
+                            <span class="checkmark"></span>
+                            <span class="ms-2">${cat.name}</span>
+                        </label>
+                    </div>`).join('');
+                $('#category-filter').html(html || '<p class="text-muted text-center py-3">No categories</p>');
+            },
+            error: () => $('#category-filter').html('<p class="text-danger text-center py-3">Error loading categories</p>')
+        });
+    }
+
+    // Updated: Added debug log for videos and playlist handling
+    async function loadCourses() {
+        const params = new URLSearchParams({
+            page: currentFilters.page,
+            limit: 9
+        });
+        if (currentFilters.category) params.append('category', currentFilters.category);
+        if (currentFilters.search) params.append('search', currentFilters.search);
+
+        $('#loading-courses').show();
+        $('#course-grid, #pagination').hide();
+
+        try {
+            const res = await $.ajax({
+                url: `http://localhost:5000/api/courses?${params}`,
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            $('#loading-courses').hide();
+            const courses = res.courses || [];
+
+            if (courses.length === 0) {
+                $('#empty-courses').show();
+                $('#course-count').text('No courses found');
+                return;
+            }
+
+            // Debug: Log first course's video URL and if it's playlist
+            if (courses[0] && courses[0].videos && courses[0].videos.length > 0) {
+                console.log('Sample video URL for thumbnail:', courses[0].videos[0].url);
+                console.log('Is playlist URL?', courses[0].videos[0].url.includes('playlist'));
+            }
+
+            const coursePromises = courses.map(async course => {
+                const enrolled = await isEnrolled(course._id);
+                const videoCount = (course.videos || []).length;
+                const firstUrl = course.videos?.[0]?.url;
+                const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
+                const rating = course.rating || 4.5;
+                const reviews = course.reviewCount || 0;
+                const duration = course.duration || '2h 30m';
+
+                return `
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="course-item-two course-item h-100">
+                            <div class="course-img">
+                                <a href="course-details.html?id=${course._id}">
+                                    <img src="${thumbnail}" alt="${course.name}" onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                                    <div class="play-overlay">
+                                        <div class="play-btn"><i class="fas fa-play"></i></div>
+                                    </div>
+                                    ${videoCount > 1 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
+                                    <button class="fav-btn ${course.isFavorite ? 'favorited' : ''}" data-id="${course._id}">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </a>
+                            </div>
+                            <div class="course-content">
+                                <h6 class="course-title">
+                                    <a href="course-details.html?id=${course._id}">${course.name}</a>
+                                </h6>
+                                <div class="rating">
+                                    <div class="rating-stars">${generateStars(rating)}</div>
+                                    <span class="text-warning fw-medium">${rating}</span>
+                                    <span class="rating-text">(${reviews})</span>
+                                </div>
+                                <p class="course-desc">${course.description}</p>
+                                <div class="course-footer">
+                                    <div>
+                                        <div class="price free">FREE</div>
+                                        <div class="course-meta">${videoCount} lessons • ${duration}</div>
+                                    </div>
+                                    <button class="btn btn-primary enroll-btn ${enrolled ? 'enrolled' : ''}" data-id="${course._id}" data-name="${course.name}">
+                                        ${enrolled ? '<i class="fas fa-check"></i> Enrolled' : '<i class="fas fa-play"></i> Start Free'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            const html = await Promise.all(coursePromises);
+            $('#course-grid').html(html.join('')).show();
+            $('#course-count').text(`Showing ${courses.length} of ${res.totalCourses} courses`);
+            updateFilterStatus();
+
+            if (res.totalPages > 1) {
+                updatePagination(res.currentPage, res.totalPages);
+                $('#pagination').show();
+            }
+        } catch (err) {
+            $('#loading-courses').hide();
+            $('#empty-courses').show().find('h5').text('Error loading courses');
+            showToast('Failed to load courses.', 'error');
+        }
+    }
+
+    function updateFilterStatus() {
+        let status = 'All courses';
+        if (currentFilters.search) status = `Search: "${currentFilters.search}"`;
+        else if (currentFilters.category) {
+            const catName = $(`input[value="${currentFilters.category}"]`).nextAll('span').last().text();
+            status = `Category: ${catName}`;
+        }
+        $('#filter-status').text(status);
+    }
+
+    function updatePagination(curr, total) {
+        $('#pagination-text').text(`Page ${curr} of ${total}`);
+        let pages = '';
+        for (let i = 1; i <= total; i++) {
+            pages += `<li class="page-item ${i === curr ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" data-page="${i}">${i}</a></li>`;
+        }
+        $('.pagination.lms-page').html(`
+            <li class="page-item prev ${curr === 1 ? 'disabled' : ''}"><a class="page-link" id="prev-page"><i class="fas fa-angle-left"></i> Previous</a></li>
+            ${pages}
+            <li class="page-item next ${curr === total ? 'disabled' : ''}"><a class="page-link" id="next-page">Next <i class="fas fa-angle-right"></i></a></li>
+        `);
+    }
+
+    // Event Handlers
+    $(document).on('click', '.enroll-btn:not(.enrolled)', async function() {
+        const btn = $(this);
+        const id = btn.data('id');
+        const name = btn.data('name');
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Enrolling...');
+
+        try {
+            await $.ajax({
+                url: 'http://localhost:5000/api/dashboard/student/enroll',
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                contentType: 'application/json',
+                data: JSON.stringify({ courseId: id })
+            });
+            btn.removeClass('btn-primary').addClass('enrolled btn-success')
+                .html('<i class="fas fa-check"></i> Enrolled').prop('disabled', true);
+            showToast(`Enrolled in "${name}"!`, 'success');
+        } catch (err) {
+            showToast('Enrollment failed.', 'error');
+            btn.html('<i class="fas fa-play"></i> Start Free').prop('disabled', false);
+        }
+    });
+
+    $(document).on('change', 'input[name="category"]', function() {
+        const checked = $('input[name="category"]:checked').map((_, el) => el.value).get();
+        currentFilters.category = checked.join(',') || '';
+        currentFilters.page = 1;
+        loadCourses();
+    });
+
+    $('#clear-filters').on('click', function() {
+        $('input[name="category"]').prop('checked', false);
+        $('#search-courses').val('');
+        currentFilters = { page: 1, category: '', search: '' };
+        loadCourses();
+    });
+
+    let searchTimer;
+    $('#search-courses').on('input', function() {
+        clearTimeout(searchTimer);
+        currentFilters.search = this.value.trim();
+        currentFilters.page = 1;
+        searchTimer = setTimeout(loadCourses, 500);
+    });
+
+    $(document).on('click', '#prev-page', () => { if (currentFilters.page > 1) { currentFilters.page--; loadCourses(); } });
+    $(document).on('click', '#next-page', () => { currentFilters.page++; loadCourses(); });
+    $(document).on('click', '.page-link[data-page]', function() {
+        currentFilters.page = parseInt($(this).data('page'));
+        loadCourses();
+    });
+
+    $(document).on('click', '.fav-btn', function() {
+        const btn = $(this);
+        const id = btn.data('id');
+        const favored = btn.hasClass('favorited');
+        $.ajax({
+            url: `http://localhost:5000/api/courses/${id}/favorite`,
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            contentType: 'application/json',
+            data: JSON.stringify({ favorite: !favored }),
+            success: () => {
+                btn.toggleClass('favorited');
+                showToast(favored ? 'Removed from favorites' : 'Added to favorites', favored ? 'info' : 'success');
+            }
+        });
+    });
+
+    // Theme Toggle
+    $('#dark-mode-toggle').on('click', () => {
+        $('body').removeClass('light-mode').addClass('dark-mode');
+        localStorage.setItem('theme', 'dark');
+    });
+    $('#light-mode-toggle').on('click', () => {
+        $('body').removeClass('dark-mode').addClass('light-mode');
+        localStorage.setItem('theme', 'light');
+    });
+    if (localStorage.getItem('theme') === 'dark') $('body').addClass('dark-mode');
+
+    // Init
+    loadCategories();
+    loadCourses();
+});
+</script>
+</body>
 </html>

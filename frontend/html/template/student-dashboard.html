@@ -332,239 +332,246 @@
 		<script src="assets/js/script.js" type="text/javascript"></script>
 		<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 		<script>
-			$(document).ready(function() {
-				// Show Alert Function
-				function showAlert(message, type = 'danger') {
-					if ($('#toastContainer').length === 0) {
-						$('body').append(`<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1055;"></div>`);
-					}
-					const toastId = 'toast-' + new Date().getTime();
-					const bgClass = type === 'success' ? 'bg-success text-white' : 'bg-danger text-white';
-					const toastHtml = `
-						<div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000">
-							<div class="toast-body ${bgClass} d-flex align-items-center justify-content-between p-3">
-								<span>${message}</span>
-								<button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
-							</div>
-						</div>`;
-					$('#toastContainer').append(toastHtml);
-					const toastElement = $(`#${toastId}`);
-					toastElement.css({ opacity: 0, transform: 'translateY(-20px)' });
-					toastElement.animate({ opacity: 1, transform: 'translateY(0)' }, 300);
-					toastElement.toast('show');
-					toastElement.on('hidden.bs.toast', function () {
-						$(this).animate({ opacity: 0, transform: 'translateY(-20px)' }, 300, function () {
-							$(this).remove();
-						});
-					});
-				}
+$(document).ready(function() {
+    // Show Alert Function
+    function showAlert(message, type = 'danger') {
+        if ($('#toastContainer').length === 0) {
+            $('body').append('<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1055;"></div>');
+        }
+        const toastId = 'toast-' + new Date().getTime();
+        const bgClass = type === 'success' ? 'bg-success text-white' : 'bg-danger text-white';
+        const toastHtml = `
+            <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000">
+                <div class="toast-body ${bgClass} d-flex align-items-center justify-content-between p-3">
+                    <span>${message}</span>
+                    <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>`;
+        $('#toastContainer').append(toastHtml);
+        const toastElement = $(`#${toastId}`);
+        toastElement.css({ opacity: 0, transform: 'translateY(-20px)' });
+        toastElement.animate({ opacity: 1, transform: 'translateY(0)' }, 300);
+        toastElement.toast('show');
+        toastElement.on('hidden.bs.toast', function () {
+            $(this).animate({ opacity: 0, transform: 'translateY(-20px)' }, 300, function () {
+                $(this).remove();
+            });
+        });
+    }
 
-				// Dark/Light mode toggle functionality
-				$('#dark-mode-toggle').on('click', function() {
-					$('body').removeClass('dark-mode');
-					$('#dark-mode-toggle').removeClass('activate');
-					$('#light-mode-toggle').addClass('activate');
-				});
+    // Dark/Light mode toggle functionality
+    $('#dark-mode-toggle').on('click', function() {
+        $('body').removeClass('dark-mode');
+        $('#dark-mode-toggle').removeClass('activate');
+        $('#light-mode-toggle').addClass('activate');
+    });
 
-				$('#light-mode-toggle').on('click', function() {
-					$('body').addClass('dark-mode');
-					$('#light-mode-toggle').removeClass('activate');
-					$('#dark-mode-toggle').addClass('activate');
-				});
+    $('#light-mode-toggle').on('click', function() {
+        $('body').addClass('dark-mode');
+        $('#light-mode-toggle').removeClass('activate');
+        $('#dark-mode-toggle').addClass('activate');
+    });
 
-				// Check if user is logged in
-				const token = localStorage.getItem('token');
-				if (!token) {
-					showAlert('Please login first.', 'danger');
-					setTimeout(() => {
-						window.location.href = 'login.html';
-					}, 1500);
-					return;
-				}
-				let decoded;
-				try {
-					decoded = jwt_decode(token);
-				} catch (error) {
-					showAlert('Invalid token. Please login again.', 'danger');
-					localStorage.removeItem('token');
-					setTimeout(() => {
-						window.location.href = 'login.html';
-					}, 1500);
-					return;
-				}
-				if (decoded.role !== 'student') {
-					showAlert('Access denied: This dashboard is for students only.', 'danger');
-					setTimeout(() => {
-						window.location.href = 'login.html';
-					}, 1500);
-					return;
-				}
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showAlert('Please login first.', 'danger');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+        return;
+    }
+    let decoded;
+    try {
+        decoded = jwt_decode(token);
+    } catch (error) {
+        showAlert('Invalid token. Please login again.', 'danger');
+        localStorage.removeItem('token');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+        return;
+    }
+    if (decoded.role !== 'student') {
+        showAlert('Access denied: This dashboard is for students only.', 'danger');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+        return;
+    }
 
-				// Load profile data
-				function loadProfile() {
-					$.ajax({
-						url: 'http://localhost:5000/api/auth/profile',
-						type: 'GET',
-						headers: { 'Authorization': 'Bearer ' + token },
-						cache: false,
-						success: function(profile) {
-							console.log('Profile Data Loaded:', profile);
-							const imgSrc = profile.profileImage ? `${profile.profileImage}?t=${new Date().getTime()}` : 'assets/img/default-profile.png';
-							$('#profile-name a:first').text(profile.name || 'Student Name');
-							$('#dropdown-email').text(profile.email || 'No Email');
-							$('#profile-img').attr('src', imgSrc);
-							$('#dropdown-profile-img').attr('src', imgSrc);
-							$('#dropdown-profile-img2').attr('src', imgSrc);
-							$('#dropdown-name').text(profile.name || 'Student Name');
-						},
-						error: function(xhr) {
-							console.error('Error loading profile:', xhr.responseText);
-							showAlert('Error loading profile.', 'danger');
-							if (xhr.status === 401) {
-								localStorage.removeItem('token');
-								showAlert('Session expired. Please login again.', 'danger');
-								setTimeout(() => {
-									window.location.href = 'login.html';
-								}, 1500);
-							}
-						}
-					});
-				}
+    // Load profile data
+    function loadProfile() {
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/profile',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            cache: false,
+            success: function(profile) {
+                console.log('Profile Data Loaded:', profile);
+                const imgSrc = profile.profileImage ? `${profile.profileImage}?t=${new Date().getTime()}` : 'assets/img/default-profile.png';
+                $('#profile-name a:first').text(profile.name || 'Student Name');
+                $('#dropdown-email').text(profile.email || 'No Email');
+                $('#profile-img').attr('src', imgSrc);
+                $('#dropdown-profile-img').attr('src', imgSrc);
+                $('#dropdown-profile-img2').attr('src', imgSrc);
+                $('#dropdown-name').text(profile.name || 'Student Name');
+            },
+            error: function(xhr) {
+                console.error('Error loading profile:', xhr.responseText);
+                showAlert('Error loading profile.', 'danger');
+                if (xhr.status === 401) {
+                    localStorage.removeItem('token');
+                    showAlert('Session expired. Please login again.', 'danger');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                }
+            }
+        });
+    }
 
-				// Load dashboard data
-				function loadDashboardData() {
-					$.ajax({
-						url: 'http://localhost:5000/api/student/dashboard',
-						type: 'GET',
-						headers: { 'Authorization': 'Bearer ' + token },
-						cache: false,
-						success: function(response) {
-							console.log('Dashboard Data Loaded:', response);
-							$('#enrolled-courses').text(response.enrolledCourses !== undefined ? response.enrolledCourses : 0);
-							$('#active-courses').text(response.activeCourses !== undefined ? response.activeCourses : 0);
-							$('#completed-courses').text(response.completedCourses !== undefined ? response.completedCourses : 0);
-							$('#quiz-answered').text(response.quizAnswered || '0/0');
-							$('#quiz-title').text('Quiz: ' + (response.quizTitle || 'No Quiz Attempted'));
+    // Load dashboard data
+    function loadDashboardData() {
+        $.ajax({
+            url: 'http://localhost:5000/api/dashboard/student/dashboard', // Updated endpoint
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            cache: false,
+            success: function(response) {
+                console.log('Dashboard Data Loaded:', response);
+                $('#enrolled-courses').text(response.enrolledCourses || 0);
+                $('#active-courses').text(response.activeCourses || 0);
+                $('#completed-courses').text(response.completedCourses || 0);
+                $('#quiz-answered').text((response.quizAnswered || '0') + '/' + (response.totalQuestions || '0'));
+                $('#quiz-title').text('Quiz: ' + (response.quizTitle || 'No Quiz Attempted'));
 
-							if (response.recentCourses && response.recentCourses.length > 0) {
-								let recentCoursesHTML = '';
-								response.recentCourses.forEach(course => {
-									recentCoursesHTML += `
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html?id=${course.id}">
-														<img src="${course.image || 'assets/img/course/course-01.jpg'}" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														${course.discount ? `<div class="badge text-bg-danger">${course.discount}% off</div>` : ''}
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="${course.instructorImage || 'assets/img/user/user-29.jpg'}" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">${course.instructorName || 'Unknown'}</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">${course.category || 'Design'}</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html?id=${course.id}">${course.title || 'No Title'}</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>${course.rating || '4.5'} (${course.reviews || '100'} Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$${course.price || '100'}</h5>
-														<a href="course-details.html?id=${course.id}" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>`;
-								});
-								$('#recent-courses').html(recentCoursesHTML);
-							} else {
-								$('#recent-courses').html('<p>No courses enrolled yet.</p>');
-							}
+                if (response.recentCourses && response.recentCourses.length > 0) {
+                    let recentCoursesHTML = '';
+                    response.recentCourses.forEach(course => {
+                        recentCoursesHTML += `
+                            <div class="col-xl-4 col-md-6">
+                                <div class="course-item-two course-item mx-0">
+                                    <div class="course-img">
+                                        <a href="course-details.html?id=${course.id}">
+                                            <img src="${course.image || 'assets/img/course/course-01.jpg'}" alt="img" class="img-fluid">  
+                                        </a>
+                                        <div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
+                                            ${course.discount ? `<div class="badge text-bg-danger">${course.discount}% off</div>` : ''}
+                                            <a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="course-content">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <div class="d-flex align-items-center">
+                                                <a href="instructor-details.html" class="avatar avatar-sm">
+                                                    <img src="${course.instructorImage || 'assets/img/user/user-29.jpg'}" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
+                                                </a>
+                                                <div class="ms-2">
+                                                    <a href="instructor-details.html" class="link-default fs-14">${course.instructorName || 'Unknown'}</a>
+                                                </div>
+                                            </div>
+                                            <span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">${course.category || 'Design'}</span>
+                                        </div>
+                                        <h6 class="title mb-2"><a href="course-details.html?id=${course.id}">${course.title || 'No Title'}</a></h6>
+                                        <p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>${course.rating || '4.5'} (${course.reviews || '100'} Reviews)</p>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <h5 class="text-secondary mb-0">$${course.price || '100'}</h5>
+                                            <a href="course-details.html?id=${course.id}" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                    });
+                    $('#recent-courses').html(recentCoursesHTML);
+                } else {
+                    $('#recent-courses').html('<p>No courses enrolled yet.</p>');
+                }
 
-							if (response.latestQuizzes && response.latestQuizzes.length > 0) {
-								let quizzesHTML = '';
-								response.latestQuizzes.forEach(quiz => {
-									quizzesHTML += `
-										<div class="d-flex align-items-center flex-wrap flex-md-nowrap justify-content-between row-gap-2 mb-3">
-											<div>
-												<h6 class="mb-1">${quiz.title || 'No Title'}</h6>
-												<div class="d-flex align-items-center">
-													<p>Correct Answer : ${quiz.correct || '0'}/${quiz.total || '0'}</p>
-												</div>
-											</div>
-											<div class="circle-progress flex-shrink-0" data-value="${quiz.percentage || '0'}">
-												<span class="progress-left"><span class="progress-bar border-${quiz.percentage >= 50 ? 'success' : 'danger'}"></span></span>
-												<span class="progress-right"><span class="progress-bar border-${quiz.percentage >= 50 ? 'success' : 'danger'}"></span></span>
-												<div class="progress-value">${quiz.percentage || '0'}%</div>
-											</div>
-										</div>`;
-								});
-								$('#latest-quizzes').html(quizzesHTML);
-							} else {
-								$('#latest-quizzes').html('<p>No quizzes attempted yet.</p>');
-							}
-						},
-						error: function(xhr) {
-							console.error('Error fetching dashboard data:', xhr.responseText);
-							showAlert('Error fetching dashboard data.', 'danger');
-							$('#enrolled-courses').text(0);
-							$('#active-courses').text(0);
-							$('#completed-courses').text(0);
-							$('#quiz-answered').text('0/0');
-							$('#quiz-title').text('Quiz: No Quiz Attempted');
-							$('#recent-courses').html('<p>No courses enrolled yet.</p>');
-							$('#latest-quizzes').html('<p>No quizzes attempted yet.</p>');
-						}
-					});
-				}
+                if (response.latestQuizzes && response.latestQuizzes.length > 0) {
+                    let quizzesHTML = '';
+                    response.latestQuizzes.forEach(quiz => {
+                        quizzesHTML += `
+                            <div class="d-flex align-items-center flex-wrap flex-md-nowrap justify-content-between row-gap-2 mb-3">
+                                <div>
+                                    <h6 class="mb-1">${quiz.title || 'No Title'}</h6>
+                                    <div class="d-flex align-items-center">
+                                        <p>Correct Answer : ${quiz.correct || '0'}/${quiz.total || '0'}</p>
+                                    </div>
+                                </div>
+                                <div class="circle-progress flex-shrink-0" data-value="${quiz.percentage || '0'}">
+                                    <span class="progress-left"><span class="progress-bar border-${quiz.percentage >= 50 ? 'success' : 'danger'}"></span></span>
+                                    <span class="progress-right"><span class="progress-bar border-${quiz.percentage >= 50 ? 'success' : 'danger'}"></span></span>
+                                    <div class="progress-value">${quiz.percentage || '0'}%</div>
+                                </div>
+                            </div>`;
+                    });
+                    $('#latest-quizzes').html(quizzesHTML);
+                } else {
+                    $('#latest-quizzes').html('<p>No quizzes attempted yet.</p>');
+                }
+            },
+            error: function(xhr) {
+                console.error('Error fetching dashboard data:', xhr.status, xhr.responseText);
+                showAlert('Error fetching dashboard data.', 'danger');
+                $('#enrolled-courses').text(0);
+                $('#active-courses').text(0);
+                $('#completed-courses').text(0);
+                $('#quiz-answered').text('0/0');
+                $('#quiz-title').text('Quiz: No Quiz Attempted');
+                $('#recent-courses').html('<p>No courses enrolled yet.</p>');
+                $('#latest-quizzes').html('<p>No quizzes attempted yet.</p>');
+                if (xhr.status === 401) {
+                    localStorage.removeItem('token');
+                    showAlert('Session expired. Please login again.', 'danger');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                }
+            }
+        });
+    }
 
-				// Logout Handler
-				$(document).on('click', '#logout-btn, #logout-sidebar', function (e) {
-					e.preventDefault();
-					console.log('Logout button clicked');
-					$.ajax({
-						url: 'http://localhost:5000/api/auth/logout',
-						type: 'GET',
-						headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
-						success: function (response) {
-							console.log('Logout success:', response);
-							localStorage.removeItem('token');
-							showAlert('Logout successful.', 'success');
-							setTimeout(() => {
-								window.location.href = 'login.html';
-							}, 1500);
-						},
-						error: function (xhr) {
-							console.error('Logout error:', xhr.responseText);
-							localStorage.removeItem('token');
-							showAlert('Logout successful.', 'success');
-							setTimeout(() => {
-								window.location.href = 'login.html';
-							}, 1500);
-						}
-					});
-				});
+    // Logout Handler
+    $(document).on('click', '#logout-btn, #logout-sidebar', function (e) {
+        e.preventDefault();
+        console.log('Logout button clicked');
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/logout',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+            success: function (response) {
+                console.log('Logout success:', response);
+                localStorage.removeItem('token');
+                showAlert('Logout successful.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            },
+            error: function (xhr) {
+                console.error('Logout error:', xhr.responseText);
+                localStorage.removeItem('token');
+                showAlert('Logout successful.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            }
+        });
+    });
 
-				// Load profile and dashboard data on page load
-				loadProfile();
-				loadDashboardData();
+    // Load profile and dashboard data on page load
+    loadProfile();
+    loadDashboardData();
 
-				// Listen for profile update event
-				window.addEventListener('profileUpdated', function() {
-					console.log('Profile updated event received');
-					loadProfile();
-				});
+    // Listen for profile update event
+    window.addEventListener('profileUpdated', function() {
+        console.log('Profile updated event received');
+        loadProfile();
+    });
 
-				// Auto-refresh dashboard every 30 seconds
-				setInterval(loadDashboardData, 30000);
-			});
-		</script>
+    // Auto-refresh dashboard every 30 seconds
+    setInterval(loadDashboardData, 30000);
+});
+</script>
 	</body>
 </html>

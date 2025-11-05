@@ -462,202 +462,162 @@
     
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
     
-    <script>
-        $(document).ready(function() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                showToast('Please login first.', 'error');
-                window.location.href = 'login.html';
-                return;
-            }
-            let decoded;
-            try {
-                decoded = jwt_decode(token);
-                console.log('Decoded Token:', decoded);
-            } catch (error) {
-                console.error('Token decode error:', error);
-                showToast('Invalid token. Please login again.', 'error');
-                localStorage.removeItem('token');
-                window.location.href = 'login.html';
-                return;
-            }
-            if (decoded.role !== 'admin') {
-                showToast('Access denied: Admins only.', 'error');
-                window.location.href = 'login.html';
-                return;
-            }
+  <script>
+    $(document).ready(function() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            showToast('Please login first.', 'error');
+            window.location.href = 'login.html';
+            return;
+        }
+        let decoded;
+        try {
+            decoded = jwt_decode(token);
+            console.log('Decoded Token:', decoded);
+        } catch (error) {
+            console.error('Token decode error:', error);
+            showToast('Invalid token. Please login again.', 'error');
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+            return;
+        }
+        if (decoded.role !== 'admin') {
+            showToast('Access denied: Admins only.', 'error');
+            window.location.href = 'login.html';
+            return;
+        }
 
-            // Function to show toast messages
-            function showToast(message, type = 'success', duration = 3000) {
-                const toastContainer = $('#toast-container');
-                const toastId = `toast-${Date.now()}`;
-                const toastHtml = `
-                    <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
-                        <div class="d-flex">
-                            <div class="toast-body">${message}</div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
+        function showToast(message, type = 'success', duration = 3000) {
+            const toastContainer = $('#toast-container');
+            const toastId = `toast-${Date.now()}`;
+            const toastHtml = `
+                <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
+                    <div class="d-flex">
+                        <div class="toast-body">${message}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
-                `;
-                toastContainer.append(toastHtml);
-                const toastElement = document.getElementById(toastId);
-                const toast = new bootstrap.Toast(toastElement);
-                toast.show();
-                setTimeout(() => {
-                    toast.hide();
-                    $(`#${toastId}`).remove();
-                }, duration);
-            }
+                </div>
+            `;
+            toastContainer.append(toastHtml);
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+            setTimeout(() => {
+                toast.hide();
+                $(`#${toastId}`).remove();
+            }, duration);
+        }
 
-            // Load profile data including image and email
-            function loadProfile() {
-                console.log('Loading profile for user ID:', decoded.id);
-                $.ajax({
-                    url: 'http://localhost:5000/api/auth/profile',
-                    type: 'GET',
-                    headers: { 'Authorization': 'Bearer ' + token },
-                    success: function(profile) {
-                        console.log('Profile loaded:', profile);
-                        $('#profile-name').text(profile.name || 'Admin');
-                        $('#profile-email a').text(profile.email || 'No email').attr('href', `mailto:${profile.email || ''}`);
-                        if (profile.profileImage) {
-                            $('.dropdown-profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
-                            $('#profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
-                        } else {
-                            $('.dropdown-profile-img').attr('src', '').parent().removeClass('has-image');
-                            $('#profile-img').attr('src', '').parent().removeClass('has-image');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Profile load error:', { status: xhr.status, response: xhr.responseText, error });
-                        if (xhr.status === 0) {
-                            showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
-                        } else if (xhr.status === 401) {
-                            showToast('Session expired. Please login again.', 'error');
-                            localStorage.removeItem('token');
-                            window.location.href = 'login.html';
-                        } else if (xhr.status === 404) {
-                            showToast('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id, 'error');
-                            console.log('Debug: Verify user with ID ' + decoded.id + ' in admins collection.');
-                        } else if (xhr.status === 500) {
-                            showToast('Server error accessing profile. Please try again later or contact support.', 'error');
-                        } else {
-                            showToast(`Error loading profile (Status: ${xhr.status}). Please try again.`, 'error');
-                        }
-                    }
-                });
-            }
-
-            // Handle profile link click with improved error handling
-            $('.profile-link').on('click', function(e) {
-                e.preventDefault();
-                const href = $(this).data('href') || $(this).attr('href');
-                console.log('Attempting to access profile for Token ID:', decoded.id, 'Redirect URL:', href);
-                $.ajax({
-                    url: 'http://localhost:5000/api/auth/profile',
-                    type: 'GET',
-                    headers: { 'Authorization': 'Bearer ' + token },
-                    success: function(profile) {
-                        console.log('Profile access OK, redirecting to:', href);
-                        window.location.href = href;
-                    },
-                    error: function(xhr) {
-                        console.error('Profile access error:', { status: xhr.status, response: xhr.responseText });
-                        if (xhr.status === 0) {
-                            showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
-                        } else if (xhr.status === 401) {
-                            showToast('Session expired. Please login again.', 'error');
-                            localStorage.removeItem('token');
-                            window.location.href = 'login.html';
-                        } else if (xhr.status === 404) {
-                            showToast('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id, 'error');
-                            console.log('Debug: Verify user with ID ' + decoded.id + ' in admins collection.');
-                        } else if (xhr.status === 500) {
-                            showToast('Server error accessing profile. Please try again later or contact support.', 'error');
-                        } else {
-                            showToast(`Error accessing profile (Status: ${xhr.status}). Please try again.`, 'error');
-                        }
-                    }
-                });
-            });
-
-            loadProfile(); // Load profile on page load
-
-            // Dark/Light Mode Toggle Logic
-            const toggleDarkMode = () => {
-                $('body').addClass('dark-mode').removeClass('light-mode');
-                $('#dark-mode-toggle').removeClass('activate');
-                $('#light-mode-toggle').addClass('activate');
-                localStorage.setItem('theme', 'dark');
-            };
-
-            const toggleLightMode = () => {
-                $('body').addClass('light-mode').removeClass('dark-mode');
-                $('#light-mode-toggle').removeClass('activate');
-                $('#dark-mode-toggle').addClass('activate');
-                localStorage.setItem('theme', 'light');
-            };
-
-            // Check saved theme on page load
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                toggleDarkMode();
-            } else {
-                toggleLightMode();
-            }
-
-            // Toggle button click handlers
-            $('#dark-mode-toggle').on('click', toggleDarkMode);
-            $('#light-mode-toggle').on('click', toggleLightMode);
-
-            // Fetch dashboard data from backend API
+        function loadProfile() {
+            console.log('Loading profile for user ID:', decoded.id);
             $.ajax({
-                url: 'http://localhost:5000/api/admin/dashboard',
+                url: 'http://localhost:5000/api/auth/profile',
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token },
-                success: function(response) {
-                    console.log('Dashboard data loaded:', response);
-                    $('#total-users').text(response.totalUsers || 0);
-                    $('#total-teachers').text(response.totalTeachers || 0);
-                    $('#total-students').text(response.totalStudents || 0);
-                    $('#total-courses').text(response.totalCourses || 0);
-                    $('#total-categories').text(response.totalCategories || 0);
-                    $('#total-earnings').text(`$${response.totalEarnings || 0}`);
-                    if (response.recentActivities && response.recentActivities.length) {
-                        let activitiesHTML = '';
-                        response.recentActivities.forEach(activity => {
-                            activitiesHTML += `
-                                <tr>
-                                    <td>${activity.user || 'Unknown'}</td>
-                                    <td>${activity.role || 'Unknown'}</td>
-                                    <td>${activity.action || 'No Action'}</td>
-                                    <td>${new Date(activity.date).toLocaleString() || 'No Date'}</td>
-                                </tr>
-                            `;
-                        });
-                        $('#recent-activities').html(activitiesHTML);
-                    } else {
-                        $('#recent-activities').html('<tr><td colspan="4">No recent activities.</td></tr>');
+                success: function(profile) {
+                    console.log('Profile loaded:', profile);
+                    $('#profile-name').text(profile.name || 'Admin');
+                    $('#profile-email a').text(profile.email || 'No email').attr('href', `mailto:${profile.email || ''}`);
+                    if (profile.profileImage) {
+                        $('.dropdown-profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
+                        $('#profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Dashboard data error:', { status: xhr.status, response: xhr.responseText, error });
-                    if (xhr.status === 0) {
-                        showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
-                    } else if (xhr.status === 401) {
-                        showToast('Session expired. Please login again.', 'error');
+                error: function(xhr) {
+                    console.error('Profile load error:', { status: xhr.status, response: xhr.responseText });
+                    if (xhr.status === 0) showToast('Unable to connect to server.', 'error');
+                    else if (xhr.status === 401) {
+                        showToast('Session expired.', 'error');
                         localStorage.removeItem('token');
                         window.location.href = 'login.html';
-                    } else if (xhr.status === 404) {
-                        showToast('Dashboard data not found. Please ensure the admin dashboard endpoint is set up correctly.', 'error');
-                    } else if (xhr.status === 500) {
-                        showToast('Server error accessing dashboard. Please try again later or contact support.', 'error');
-                    } else {
-                        showToast(`Error loading dashboard data (Status: ${xhr.status}). Please try again.`, 'error');
-                    }
+                    } else showToast(`Profile error (Status: ${xhr.status}).`, 'error');
+                }
+            });
+        }
+
+        $('.profile-link').on('click', function(e) {
+            e.preventDefault();
+            const href = $(this).data('href') || $(this).attr('href');
+            $.ajax({
+                url: 'http://localhost:5000/api/auth/profile',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function() { window.location.href = href; },
+                error: function(xhr) {
+                    console.error('Profile access error:', xhr.status, xhr.responseText);
+                    if (xhr.status === 0) showToast('Server unavailable.', 'error');
+                    else if (xhr.status === 401) {
+                        showToast('Session expired.', 'error');
+                        localStorage.removeItem('token');
+                        window.location.href = 'login.html';
+                    } else showToast(`Profile access error (Status: ${xhr.status}).`, 'error');
                 }
             });
         });
-    </script>
+
+        loadProfile();
+
+        const toggleDarkMode = () => {
+            $('body').addClass('dark-mode').removeClass('light-mode');
+            $('#dark-mode-toggle').removeClass('activate');
+            $('#light-mode-toggle').addClass('activate');
+            localStorage.setItem('theme', 'dark');
+        };
+
+        const toggleLightMode = () => {
+            $('body').addClass('light-mode').removeClass('dark-mode');
+            $('#light-mode-toggle').removeClass('activate');
+            $('#dark-mode-toggle').addClass('activate');
+            localStorage.setItem('theme', 'light');
+        };
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') toggleDarkMode();
+        else toggleLightMode();
+
+        $('#dark-mode-toggle').on('click', toggleDarkMode);
+        $('#light-mode-toggle').on('click', toggleLightMode);
+
+        $.ajax({
+            url: 'http://localhost:5000/api/dashboard/admin/dashboard', // Corrected
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function(response) {
+                console.log('Dashboard data loaded:', response);
+                $('#total-users').text(response.totalUsers || 0);
+                $('#total-students').text(response.totalStudents || 0);
+                $('#total-courses').text(response.totalCourses || 0);
+                $('#total-categories').text(response.totalCategories || 0);
+                if (response.recentActivities && response.recentActivities.length) {
+                    let activitiesHTML = '';
+                    response.recentActivities.forEach(activity => {
+                        activitiesHTML += `
+                            <tr>
+                                <td>${activity.user || 'Unknown'}</td>
+                                <td>${activity.role || 'Unknown'}</td>
+                                <td>${activity.action || 'No Action'}</td>
+                                <td>${new Date(activity.date).toLocaleString() || 'No Date'}</td>
+                            </tr>
+                        `;
+                    });
+                    $('#recent-activities').html(activitiesHTML);
+                } else {
+                    $('#recent-activities').html('<tr><td colspan="4">No recent activities.</td></tr>');
+                }
+            },
+            error: function(xhr) {
+                console.error('Dashboard data error:', { status: xhr.status, response: xhr.responseText });
+                if (xhr.status === 0) showToast('Server unavailable. Ensure backend is running.', 'error');
+                else if (xhr.status === 401) {
+                    showToast('Session expired.', 'error');
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                } else if (xhr.status === 404) showToast('Dashboard endpoint not found. Check backend setup.', 'error');
+                else if (xhr.status === 500) showToast('Server error. Try again later.', 'error');
+                else showToast(`Dashboard error (Status: ${xhr.status}).`, 'error');
+            }
+        });
+    });
+</script>
 </body>
 </html>

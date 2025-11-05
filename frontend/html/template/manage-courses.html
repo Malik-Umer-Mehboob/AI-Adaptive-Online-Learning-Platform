@@ -35,145 +35,66 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <!-- Inline CSS for Dark/Light Mode and Toast -->
+    <!-- Inline CSS -->
     <style>
-        .light-mode {
-            background-color: #ffffff;
-            color: #000000;
-        }
-        .dark-mode {
-            background-color: #1a1a1a;
-            color: #ffffff;
-        }
-        .theme-toggle {
-            cursor: pointer;
-        }
-        .theme-toggle.activate .isax {
-            color: #007bff;
-        }
-        .avatar img {
-            display: none;
-        }
-        .avatar.has-image img {
-            display: block;
-        }
-        #toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
-        }
-        .toast {
-            opacity: 0.9;
-            transition: all 0.3s;
-        }
-        .toast-success {
-            background-color: #28a745;
-            color: #fff;
-        }
-        .toast-error {
-            background-color: #dc3545;
-            color: #fff;
-        }
+        .light-mode { background-color: #ffffff; color: #000000; }
+        .dark-mode { background-color: #1a1a1a; color: #ffffff; }
+        .theme-toggle { cursor: pointer; }
+        .theme-toggle.activate .isax { color: #007bff; }
+        .avatar img { display: none; }
+        .avatar.has-image img { display: block; }
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 1050; }
+        .toast { opacity: 0.9; transition: all 0.3s; }
+        .toast-success { background-color: #28a745; color: #fff; }
+        .toast-error { background-color: #dc3545; color: #fff; }
         @media (max-width: 768px) {
-            #toast-container {
-                top: 10px;
-                right: 10px;
-            }
-            .table-responsive {
-                overflow-x: auto;
-            }
+            #toast-container { top: 10px; right: 10px; }
+            .table-responsive { overflow-x: auto; }
         }
-        .video-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .video-preview iframe, .video-preview video {
-            width: 100%;
-            height: 315px;
-        }
+        .video-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #f8f9fa; }
+        .video-preview iframe, .video-preview video { width: 100%; height: 315px; border-radius: 8px; }
+        .video-item:hover { background-color: #e9ecef; }
+        .fetching { opacity: 0.6; pointer-events: none; }
     </style>
 </head>
 <body>
-    <!-- Main Wrapper -->
     <div class="main-wrapper">
         <!-- Header -->
         <header class="header-two">
             <div class="container">
                 <div class="header-nav">
                     <div class="navbar-header">
-                        <a id="mobile_btn" href="javascript:void(0);">
-                            <span class="bar-icon">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </span>
-                        </a>
+                        <a id="mobile_btn" href="javascript:void(0);"><span class="bar-icon"><span></span><span></span><span></span></span></a>
                         <div class="navbar-logo">
-                            <a class="logo-white header-logo" href="index-3.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;">
-                            </a>
-                            <a class="logo-dark header-logo" href="index-3.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;">
-                            </a>
+                            <a class="logo-white header-logo" href="index-3.html"><img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;"></a>
+                            <a class="logo-dark header-logo" href="index-3.html"><img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;"></a>
                         </div>
                     </div>
-                    
                     <div class="main-menu-wrapper">
                         <div class="menu-header">
-                            <a href="index-3.html" class="menu-logo">
-                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
-                            </a>
-                            <a id="menu_close" class="menu-close" href="javascript:void(0);">
-                                <i class="fas fa-times"></i>
-                            </a>
+                            <a href="index-3.html" class="menu-logo"><img src="assets/img/logo.png" class="img-fluid" alt="Logo"></a>
+                            <a id="menu_close" class="menu-close" href="javascript:void(0);"><i class="fas fa-times"></i></a>
                         </div>
                         <div class="header-btn d-flex align-items-center">
                             <div class="icon-btn me-2">
-                                <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
-                                    <i class="isax isax-sun-15"></i>
-                                </a>
-                                <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
-                                    <i class="isax isax-moon"></i>
-                                </a>
+                                <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate"><i class="isax isax-sun-15"></i></a>
+                                <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle"><i class="isax isax-moon"></i></a>
                             </div>
                             <div class="dropdown profile-dropdown">
                                 <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
-                                    <span class="avatar">
-                                        <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
-                                    </span>
+                                    <span class="avatar"><img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <div class="profile-header d-flex align-items-center">
-                                        <div class="avatar">
-                                            <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
-                                        </div>
-                                        <div>
-                                            <h6 id="profile-name">Super Admin</h6>
-                                            <p id="profile-email"><a href="mailto:"></a></p>
-                                        </div>
+                                        <div class="avatar"><img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img"></div>
+                                        <div><h6 id="profile-name">Super Admin</h6><p id="profile-email"><a href="mailto:"></a></p></div>
                                     </div>
                                     <ul class="profile-body">
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link" data-href="admin-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="manage-users.html"><i class="isax isax-user me-2"></i>Manage Users</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="manage-courses.html"><i class="isax isax-book me-2"></i>Manage Courses</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="reports.html"><i class="isax isax-chart me-2"></i>Reports</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="admin-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
-                                        </li>
+                                        <li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link" data-href="admin-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a></li>
+                                        <li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="manage-users.html"><i class="isax isax-user me-2"></i>Manage Users</a></li>
+                                        <li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="manage-courses.html"><i class="isax isax-book me-2"></i>Manage Courses</a></li>
+                                        <li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="reports.html"><i class="isax isax-chart me-2"></i>Reports</a></li>
+                                        <li><a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="admin-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a></li>
                                     </ul>
                                     <div class="profile-footer">
                                         <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"><i class="isax isax-logout me-2"></i>Logout</a>
@@ -183,770 +104,809 @@
                         </div>
                     </div>
                 </div>
-            </header>
-            <!-- /Header -->
-            
-            <!-- Breadcrumb -->
-            <div class="breadcrumb-bar text-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12 col-12">
-                            <h2 class="breadcrumb-title mb-2">Manage Courses</h2>
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb justify-content-center mb-0">
-                                    <li class="breadcrumb-item"><a href="admin-dashboard.html">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Manage Courses</li>
-                                </ol>
-                            </nav>
-                        </div>
+            </div>
+        </header>
+        
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-bar text-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-12">
+                        <h2 class="breadcrumb-title mb-2">Manage Courses</h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center mb-0">
+                                <li class="breadcrumb-item"><a href="admin-dashboard.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Manage Courses</li>
+                            </ol>
+                        </nav>
                     </div>
                 </div>
             </div>
-            <!-- /Breadcrumb -->
-
-            <div class="content">
-                <div class="container">
-                    <!-- Profile Box -->
-                    <div class="profile-card overflow-hidden bg-blue-gradient2 bg-5 p-5">
-                        <div class="profile-card-bg">
-                            <img src="assets/img/bg/card-bg-01.png" class="profile-card-bg-1" alt="">
-                        </div>
-                        <div class="row align-items-center row-gap-3">
-                            <div class="col-lg-6">
-                                <div class="d-flex align-items-center">
-                                    <span class="avatar avatar-xxl avatar-rounded me-3 border border-white border-2 position-relative">
-                                        <img src="" alt="Profile Image" id="profile-img">
-                                        <span class="verify-tick"><i class="isax isax-verify5"></i></span>
-                                    </span>
-                                    <div>
-                                        <h5 class="mb-1 text-white d-inline-flex align-items-center"><a class="profile-link" data-href="admin-profile.html" id="profile-name">Super Admin</a><a href="admin-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
-                                        <p class="text-light">Administrator</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Profile Box -->
-
-                    <div class="row">
-                        <!-- Sidebar -->
-                        <div class="col-lg-3 theiaStickySidebar">
-                            <div class="settings-sidebar">
-                                <div>
-                                    <h6 class="mb-3">Main Menu</h6>
-                                    <ul class="mb-3 pb-1">
-                                        <li>
-                                            <a href="admin-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a>
-                                        </li>
-                                        <li>
-                                            <a class="profile-link d-inline-flex align-items-center" data-href="admin-profile.html"><i class="fa-solid fa-user me-2"></i>My Profile</a>
-                                        </li>
-                                        <li>
-                                            <a href="manage-users.html" class="d-inline-flex align-items-center"><i class="isax isax-user me-2"></i>Manage Users</a>
-                                        </li>
-                                        <li>
-                                            <a href="manage-categories.html" class="d-inline-flex align-items-center"><i class="isax isax-category me-2"></i>Manage Categories</a>
-                                        </li>
-                                        <li>
-                                            <a href="manage-courses.html" class="d-inline-flex align-items-center active"><i class="isax isax-book me-2"></i>Manage Courses</a>
-                                        </li>
-                                        <li>
-                                            <a href="manage-subcategories.html" class="d-inline-flex align-items-center"><i class="isax isax-category-2 me-2"></i>Manage Subcategories</a>
-                                        </li>
-                                        <li>
-                                            <a href="reports.html" class="d-inline-flex align-items-center"><i class="isax isax-chart me-2"></i>Reports & Analytics</a>
-                                        </li>
-                                        <li>
-                                            <a href="system-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting me-2"></i>System Settings</a>
-                                        </li>
-                                        <li>
-                                            <a href="admin-tickets.html" class="d-inline-flex align-items-center"><i class="isax isax-ticket me-2"></i>Support Tickets</a>
-                                        </li>
-                                    </ul>
-                                    <hr>
-                                    <h6 class="mb-3">Account Settings</h6>
-                                    <ul>
-                                        <li>
-                                            <a href="admin-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a>
-                                        </li>
-                                        <li>
-                                            <a href="index-3.html" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Sidebar -->
-                        <div class="col-lg-9">
-                            <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
-                                <h5 class="mb-0 fs-18">Courses List</h5>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">Add New Course</button>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                            <th>Category</th>
-                                            <th>Videos</th>
-                                            <th>Created At</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="courses-list">
-                                        <!-- Dynamically populated -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Add Course Modal -->
-            <div class="modal fade" id="addCourseModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add Course</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="add-course-form" enctype="multipart/form-data">
-                                <div class="mb-3">
-                                    <label class="form-label">Course Name</label>
-                                    <input type="text" class="form-control" id="course-name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Description</label>
-                                    <textarea class="form-control" id="course-description" required></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Category</label>
-                                    <select class="form-control" id="course-category" required>
-                                        <!-- Populated dynamically -->
-                                    </select>
-                                </div>
-                                <div id="video-section">
-                                    <label class="form-label">Add Topic Videos</label>
-                                    <div id="video-list" class="mb-3"></div>
-                                    <div class="border p-3 rounded bg-light">
-                                        <div class="mb-3">
-                                            <label class="form-label">Topic Name</label>
-                                            <input type="text" class="form-control" id="video-topic" placeholder="Enter topic name" required>
-                                        </div>
-                                        <label class="form-label">Upload Video or Add URL</label>
-                                        <input type="file" class="form-control mb-2" id="course-video" accept="video/*">
-                                        <small class="form-text text-muted">Or paste a YouTube video/playlist URL below:</small>
-                                        <input type="url" class="form-control mb-2" id="course-video-url" placeholder="https://www.youtube.com/watch?v=example or https://www.youtube.com/playlist?list=example">
-                                        <button type="button" class="btn btn-secondary w-100" id="add-video-btn">Add to Playlist</button>
-                                    </div>
-                                </div>
-                                <div id="video-preview" class="mt-3"></div>
-                                <button type="submit" class="btn btn-primary mt-3">Save Course</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Edit Course Modal -->
-            <div class="modal fade" id="editCourseModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Edit Course</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="edit-course-form" enctype="multipart/form-data">
-                                <input type="hidden" id="edit-course-id">
-                                <div class="mb-3">
-                                    <label class="form-label">Course Name</label>
-                                    <input type="text" class="form-control" id="edit-course-name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Description</label>
-                                    <textarea class="form-control" id="edit-course-description" required></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Category</label>
-                                    <select class="form-control" id="edit-course-category" required>
-                                        <!-- Populated dynamically -->
-                                    </select>
-                                </div>
-                                <div id="edit-video-section">
-                                    <label class="form-label">Manage Topic Videos</label>
-                                    <div id="edit-video-list" class="mb-3"></div>
-                                    <div class="border p-3 rounded bg-light">
-                                        <div class="mb-3">
-                                            <label class="form-label">Topic Name</label>
-                                            <input type="text" class="form-control" id="edit-video-topic" placeholder="Enter topic name" required>
-                                        </div>
-                                        <label class="form-label">Upload Video or Add URL</label>
-                                        <input type="file" class="form-control mb-2" id="edit-course-video" accept="video/*">
-                                        <small class="form-text text-muted">Or paste a YouTube video/playlist URL below:</small>
-                                        <input type="url" class="form-control mb-2" id="edit-course-video-url" placeholder="https://www.youtube.com/watch?v=example or https://www.youtube.com/playlist?list=example">
-                                        <button type="button" class="btn btn-secondary w-100" id="edit-add-video-btn">Add to Playlist</button>
-                                    </div>
-                                </div>
-                                <div id="edit-video-preview" class="mt-3"></div>
-                                <button type="submit" class="btn btn-primary mt-3">Update Course</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Toast Container -->
-            <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
-
-            <!-- Footer -->
-            <footer class="footer">
-                <div class="footer-bg">
-                    <img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
-                    <img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt="">
-                </div>
-                <div class="footer-top">
-                    <div class="container">
-                        <div class="row row-gap-4">
-                            <div class="col-lg-4">
-                                <div class="footer-about">
-                                    <div class="footer-logo">
-                                        <img src="assets/img/logo.png" alt="">
-                                    </div>
-                                    <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
-                                    <div class="d-flex align-items-center">
-                                        <a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
-                                        <a href="#"><img src="assets/img/icon/googleplay.svg" alt=""></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-8">
-                                <div class="row row-gap-4">
-                                    <div class="col-lg-3">
-                                        <div class="footer-widget footer-menu">
-                                            <h5 class="footer-title">For Instructor</h5>
-                                            <ul>
-                                                <li><a href="course-grid.html">Search Mentors</a></li>
-                                                <li><a href="login.html">Login</a></li>
-                                                <li><a href="register.html">Register</a></li>
-                                                <li><a href="course-list.html">Booking</a></li>
-                                                <li><a href="student-dashboard.html">Students Dashboard</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="footer-widget footer-menu">
-                                            <h5 class="footer-title">For Student</h5>
-                                            <ul>
-                                                <li><a href="javascript:void(0);">Appointments</a></li>
-                                                <li><a href="instructor-message.html">Chat</a></li>
-                                                <li><a href="login.html">Login</a></li>
-                                                <li><a href="register.html">Register</a></li>
-                                                <li><a href="instructor-dashboard.html">Instructor Dashboard</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="footer-widget footer-contact">
-                                            <h5 class="footer-title">Newsletter</h5>
-                                            <div class="subscribe-input">
-                                                <form action="javascript:void(0);">
-                                                    <input type="email" class="form-control" placeholder="Enter your Email Address">
-                                                    <button type="submit" class="btn btn-primary btn-sm inline-flex align-items-center"><i class="isax isax-send-2 me-1"></i>Subscribe</button>
-                                                </form>
-                                            </div>
-                                            <div class="footer-contact-info">
-                                                <div class="footer-address d-flex align-items-center">
-                                                    <img src="assets/img/icon/icon-20.svg" alt="Img" class="img-fluid me-2">
-                                                    <p>3556 Beech Street, San Francisco,<br>California, CA 94108</p>
-                                                </div>
-                                                <div class="footer-address d-flex align-items-center">
-                                                    <img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2">
-                                                    <p><a href="mailto:admin@example.com">admin@example.com</a></p>
-                                                </div>
-                                                <div class="footer-address d-flex align-items-center">
-                                                    <img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2">
-                                                    <p>+19 123-456-7890</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <div class="container">
-                        <div class="row row-gap-2">
-                            <div class="col-md-6">
-                                <div class="text-center text-md-start">
-                                    <p class="text-white">Copyright &copy; 2025 AdaptiveLMS. All rights reserved.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div>
-                                    <ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
-                                        <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-                                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!-- /Footer -->
         </div>
-        <!-- /Main Wrapper -->
 
-        <!-- jQuery -->
-        <script src="assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-        
-        <!-- Bootstrap Core JS -->
-        <script src="assets/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-
-        <!-- Sticky Sidebar JS -->
-        <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
-        <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript"></script>
-        
-        <!-- Custom JS -->
-        <script src="assets/js/script.js" type="text/javascript"></script>
-        
-        <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-        
-       <script>
-    $(document).ready(function() {
-        // Check for token and admin role
-        const token = localStorage.getItem('token');
-        if (!token) {
-            showToast('Please login first.', 'error');
-            window.location.href = 'login.html';
-            return;
-        }
-        let decoded;
-        try {
-            decoded = jwt_decode(token);
-        } catch (error) {
-            console.error('Error decoding token:', error);
-            showToast('Invalid token. Please login again.', 'error');
-            localStorage.removeItem('token');
-            window.location.href = 'login.html';
-            return;
-        }
-        if (decoded.role !== 'admin') {
-            showToast('Access denied: Admins only.', 'error');
-            window.location.href = 'login.html';
-            return;
-        }
-
-        // Function to show toast messages
-        function showToast(message, type = 'success', duration = 3000) {
-            const toastContainer = $('#toast-container');
-            const toastId = `toast-${Date.now()}`;
-            const toastHtml = `
-                <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
-                    <div class="d-flex">
-                        <div class="toast-body">${message}</div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        <div class="content">
+            <div class="container">
+                <div class="profile-card overflow-hidden bg-blue-gradient2 bg-5 p-5">
+                    <div class="profile-card-bg"><img src="assets/img/bg/card-bg-01.png" class="profile-card-bg-1" alt=""></div>
+                    <div class="row align-items-center row-gap-3">
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xxl avatar-rounded me-3 border border-white border-2 position-relative">
+                                    <img src="" alt="Profile Image" id="profile-img">
+                                    <span class="verify-tick"><i class="isax isax-verify5"></i></span>
+                                </span>
+                                <div>
+                                    <h5 class="mb-1 text-white d-inline-flex align-items-center"><a class="profile-link" data-href="admin-profile.html" id="profile-name">Super Admin</a><a href="admin-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
+                                    <p class="text-light">Administrator</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            `;
-            toastContainer.append(toastHtml);
-            const toastElement = document.getElementById(toastId);
-            const toast = new bootstrap.Toast(toastElement);
-            toast.show();
-            setTimeout(() => {
-                toast.hide();
-                $(`#${toastId}`).remove();
-            }, duration);
-        }
 
-        // Load profile data
-        function loadProfile() {
-            $.ajax({
-                url: 'http://localhost:5000/api/auth/profile',
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token },
-                success: function(profile) {
-                    $('#profile-name').text(profile.name || 'Super Admin');
-                    $('#profile-email a').text(profile.email || 'No email').attr('href', `mailto:${profile.email || ''}`);
-                    if (profile.profileImage) {
-                        $('.dropdown-profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
-                        $('#profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
-                    } else {
-                        $('.dropdown-profile-img').attr('src', '').parent().removeClass('has-image');
-                        $('#profile-img').attr('src', '').parent().removeClass('has-image');
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Profile load error:', xhr.status, xhr.responseText);
-                    if (xhr.status === 0) showToast('Unable to connect to server.', 'error');
-                    else if (xhr.status === 401) {
-                        showToast('Session expired.', 'error');
-                        localStorage.removeItem('token');
-                        window.location.href = 'login.html';
-                    } else showToast('Error loading profile.', 'error');
-                }
-            });
-        }
+                <div class="row">
+                    <div class="col-lg-3 theiaStickySidebar">
+                        <div class="settings-sidebar">
+                            <div>
+                                <h6 class="mb-3">Main Menu</h6>
+                                <ul class="mb-3 pb-1">
+                                    <li><a href="admin-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a></li>
+                                    <li><a class="profile-link d-inline-flex align-items-center" data-href="admin-profile.html"><i class="fa-solid fa-user me-2"></i>My Profile</a></li>
+                                    <li><a href="manage-users.html" class="d-inline-flex align-items-center"><i class="isax isax-user me-2"></i>Manage Users</a></li>
+                                    <li><a href="manage-categories.html" class="d-inline-flex align-items-center"><i class="isax isax-category me-2"></i>Manage Categories</a></li>
+                                    <li><a href="manage-courses.html" class="d-inline-flex align-items-center active"><i class="isax isax-book me-2"></i>Manage Courses</a></li>
+                                    <li><a href="manage-subcategories.html" class="d-inline-flex align-items-center"><i class="isax isax-category-2 me-2"></i>Manage Subcategories</a></li>
+                                    <li><a href="reports.html" class="d-inline-flex align-items-center"><i class="isax isax-chart me-2"></i>Reports & Analytics</a></li>
+                                    <li><a href="system-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting me-2"></i>System Settings</a></li>
+                                    <li><a href="admin-tickets.html" class="d-inline-flex align-items-center"><i class="isax isax-ticket me-2"></i>Support Tickets</a></li>
+                                </ul>
+                                <hr>
+                                <h6 class="mb-3">Account Settings</h6>
+                                <ul>
+                                    <li><a href="admin-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a></li>
+                                    <li><a href="index-3.html" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+                            <h5 class="mb-0 fs-18">Courses List</h5>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">Add New Course</button>
+                        </div>
 
-        // Function to populate category dropdowns
-        function populateCategorySelect(selectId) {
-            $.ajax({
-                url: 'http://localhost:5000/api/categories',
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token },
-                success: function(categories) {
-                    let options = '<option value="">Select Category</option>';
-                    categories.forEach(cat => {
-                        options += `<option value="${cat._id}">${cat.name}</option>`;
-                    });
-                    $(`#${selectId}`).html(options);
-                },
-                error: function(xhr) {
-                    console.error('Category dropdown error:', xhr.status, xhr.responseText);
-                    showToast('Error loading categories for dropdown.', 'error');
-                }
-            });
-        }
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th>Videos</th>
+                                        <th>Created At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="courses-list">
+                                    <!-- Dynamically populated -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        // Function to parse YouTube URL and get embed src
-        function getYouTubeEmbedUrl(url) {
-            let videoId = '';
-            let playlistId = '';
-            try {
-                const urlObj = new URL(url);
-                if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
-                    videoId = urlObj.searchParams.get('v') || urlObj.pathname.split('/').pop();
-                    playlistId = urlObj.searchParams.get('list');
+        <!-- Add Course Modal -->
+        <div class="modal fade" id="addCourseModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add New Course</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-course-form" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Course Name *</label>
+                                        <input type="text" class="form-control" id="course-name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Category *</label>
+                                        <select class="form-control" id="course-category" required>
+                                            <option value="">Select Category</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Course Description *</label>
+                                <textarea class="form-control" id="course-description" rows="3" required></textarea>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="mb-3">Course Videos / Topics</h6>
+                                <div id="video-section">
+                                    <div id="video-list" class="mb-3">
+                                        <!-- Video items -->
+                                    </div>
+                                    <div class="border p-3 rounded bg-light">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Topic Name *</label>
+                                                    <input type="text" class="form-control" id="video-topic" placeholder="Enter topic name" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Upload Video File</label>
+                                                    <input type="file" class="form-control" id="course-video" accept="video/*">
+                                                    <small class="form-text text-muted">Max 100MB</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">OR YouTube URL (Single or Playlist)</label>
+                                                    <input type="text" class="form-control" id="course-video-url" placeholder="https://www.youtube.com/watch?v=... or https://www.youtube.com/playlist?list=...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary w-100" id="add-video-btn">
+                                            Add to Course Playlist
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="video-preview" class="mt-3 p-3 border rounded bg-light">
+                                    <p class="text-muted">Video preview will appear here</p>
+                                </div>
+                                
+                                <div class="d-flex justify-content-end mt-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        Save Course
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Course Modal -->
+        <div class="modal fade" id="editCourseModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Course</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="edit-course-form" enctype="multipart/form-data">
+                            <input type="hidden" id="edit-course-id">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Course Name *</label>
+                                        <input type="text" class="form-control" id="edit-course-name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Category *</label>
+                                        <select class="form-control" id="edit-course-category" required>
+                                            <option value="">Select Category</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Course Description *</label>
+                                <textarea class="form-control" id="edit-course-description" rows="3" required></textarea>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="mb-3">Manage Course Videos / Topics</h6>
+                                <div id="edit-video-section">
+                                    <div id="edit-video-list" class="mb-3">
+                                        <!-- Video items -->
+                                    </div>
+                                    <div class="border p-3 rounded bg-light">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Topic Name *</label>
+                                                    <input type="text" class="form-control" id="edit-video-topic" placeholder="Enter topic name" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Upload New Video File</label>
+                                                    <input type="file" class="form-control" id="edit-course-video" accept="video/*">
+                                                    <small class="form-text text-muted">Max 100MB</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">OR YouTube URL (Single or Playlist)</label>
+                                                    <input type="text" class="form-control" id="edit-course-video-url" placeholder="https://www.youtube.com/watch?v=... or https://www.youtube.com/playlist?list=...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary w-100" id="edit-add-video-btn">
+                                            Add New Video
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="edit-video-preview" class="mt-3 p-3 border rounded bg-light">
+                                    <p class="text-muted">Video preview will appear here</p>
+                                </div>
+                                
+                                <div class="d-flex justify-content-end mt-3">
+                                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        Update Course
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-bg"><img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt=""><img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt=""></div>
+            <div class="footer-top">
+                <div class="container">
+                    <div class="row row-gap-4">
+                        <div class="col-lg-4">
+                            <div class="footer-about">
+                                <div class="footer-logo"><img src="assets/img/logo.png" alt=""></div>
+                                <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
+                                <div class="d-flex align-items-center">
+                                    <a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
+                                    <a href="#"><img src="assets/img/icon/googleplay.svg" alt=""></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="row row-gap-4">
+                                <div class="col-lg-3">
+                                    <div class="footer-widget footer-menu">
+                                        <h5 class="footer-title">For Instructor</h5>
+                                        <ul>
+                                            <li><a href="course-grid.html">Search Mentors</a></li>
+                                            <li><a href="login.html">Login</a></li>
+                                            <li><a href="register.html">Register</a></li>
+                                            <li><a href="course-list.html">Booking</a></li>
+                                            <li><a href="student-dashboard.html">Students Dashboard</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="footer-widget footer-menu">
+                                        <h5 class="footer-title">For Student</h5>
+                                        <ul>
+                                            <li><a href="javascript:void(0);">Appointments</a></li>
+                                            <li><a href="instructor-message.html">Chat</a></li>
+                                            <li><a href="login.html">Login</a></li>
+                                            <li><a href="register.html">Register</a></li>
+                                            <li><a href="instructor-dashboard.html">Instructor Dashboard</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="footer-widget footer-contact">
+                                        <h5 class="footer-title">Newsletter</h5>
+                                        <div class="subscribe-input">
+                                            <form action="javascript:void(0);">
+                                                <input type="email" class="form-control" placeholder="Enter your Email Address">
+                                                <button type="submit" class="btn btn-primary btn-sm inline-flex align-items-center">Subscribe</button>
+                                            </form>
+                                        </div>
+                                        <div class="footer-contact-info">
+                                            <div class="footer-address d-flex align-items-center"><img src="assets/img/icon/icon-20.svg" alt="Img" class="img-fluid me-2"><p>3556 Beech Street, San Francisco,<br>California, CA 94108</p></div>
+                                            <div class="footer-address d-flex align-items-center"><img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2"><p><a href="mailto:admin@example.com">admin@example.com</a></p></div>
+                                            <div class="footer-address d-flex align-items-center"><img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2"><p>+19 123-456-7890</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row row-gap-2">
+                        <div class="col-md-6">
+                            <div class="text-center text-md-start"><p class="text-white">Copyright &copy; 2025 AdaptiveLMS. All rights reserved.</p></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div><ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link"><li><a href="terms-and-conditions.html">Terms & Conditions</a></li><li><a href="privacy-policy.html">Privacy Policy</a></li></ul></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- jQuery -->
+    <script src="assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+    
+    <!-- Bootstrap Core JS -->
+    <script src="assets/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+
+    <!-- Sticky Sidebar JS -->
+    <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
+    <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript"></script>
+    
+    <!-- Custom JS -->
+    <script src="assets/js/script.js" type="text/javascript"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    
+ <!-- Updated Script for Playlist Support -->
+<script>
+$(document).ready(function() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showToast('Please login first.', 'error');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    let decoded;
+    try {
+        decoded = jwt_decode(token);
+    } catch (error) {
+        showToast('Invalid token.', 'error');
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    if (decoded.role !== 'admin') {
+        showToast('Access denied.', 'error');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    let videoFiles = [];
+    let videoCounter = 0;
+
+    function showToast(message, type = 'success', duration = 4000) {
+        const toastContainer = $('#toast-container');
+        const toastId = `toast-${Date.now()}`;
+        const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" data-bs-delay="${duration}">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        toastContainer.append(toastHtml);
+        const toast = new bootstrap.Toast(document.getElementById(toastId));
+        toast.show();
+        setTimeout(() => $(`#${toastId}`).remove(), duration + 500);
+    }
+
+    function loadProfile() {
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/profile',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function(profile) {
+                $('#profile-name').text(profile.name || 'Super Admin');
+                $('#profile-email a').text(profile.email || '').attr('href', `mailto:${profile.email || ''}`);
+                if (profile.profileImage) {
+                    $('.dropdown-profile-img, #profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
                 }
-                if (playlistId) {
-                    return `https://www.youtube.com/embed/videoseries?list=${playlistId}`;
-                } else if (videoId) {
-                    return `https://www.youtube.com/embed/${videoId}`;
-                }
-            } catch (e) {
-                console.error('Invalid YouTube URL:', url, e);
-                return null;
+            },
+            error: function() {}
+        });
+    }
+
+    function populateCategorySelect(selectId) {
+        $.ajax({
+            url: 'http://localhost:5000/api/categories',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function(categories) {
+                let options = '<option value="">Select Category</option>';
+                categories.forEach(cat => {
+                    options += `<option value="${cat._id}">${cat.name}</option>`;
+                });
+                $(`#${selectId}`).html(options);
+            },
+            error: function() {
+                showToast('Error loading categories.', 'error');
             }
+        });
+    }
+
+    function generateVideoId() {
+        return 'vid_' + Date.now() + '_' + videoCounter++;
+    }
+
+    function addVideoToList(listId, previewId, topic, file, url, videoId) {
+        if (!topic.trim()) return showToast('Topic is required.', 'error'), false;
+        if (!file && !url.trim()) return showToast('Add video file or URL.', 'error'), false;
+
+        const isPlaylist = url.includes('playlist?list=');
+
+        const videoItem = $(`
+            <div class="video-item" data-video-id="${videoId}">
+                <div class="d-flex align-items-center w-100">
+                    <i class="fas fa-play-circle me-3 text-primary fs-4"></i>
+                    <div class="flex-grow-1">
+                        <strong>${topic}</strong>
+                        <small class="d-block text-muted">
+                            ${file ? `File: ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)` : `URL: ${url} ${isPlaylist ? '(Playlist - Multiple Videos)' : ''}`}
+                        </small>
+                        <input type="hidden" name="topic-${videoId}" value="${topic}">
+                        <input type="hidden" name="isFile-${videoId}" value="${!!file}">
+                        ${file ? `<input type="hidden" name="fileId-${videoId}" value="${videoId}">` : ''}
+                        ${url ? `<input type="hidden" name="url-${videoId}" value="${url}">` : ''}
+                    </div>
+                    <button type="button" class="btn btn-sm btn-danger remove-video ms-2">Remove</button>
+                </div>
+            </div>
+        `);
+
+        if (file) videoFiles.push({ id: videoId, file });
+
+        videoItem.find('.remove-video').on('click', function() {
+            const id = $(this).closest('.video-item').data('video-id');
+            videoFiles = videoFiles.filter(f => f.id !== id);
+            $(this).closest('.video-item').fadeOut(300, function() { $(this).remove(); updatePreview(previewId); });
+        });
+
+        $(`#${listId}`).append(videoItem);
+        updatePreview(previewId);
+        return true;
+    }
+
+    // New: Fetch playlist videos from backend
+    // Updated: Frontend URL fix for playlist fetch
+async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
+    try {
+        const response = await $.ajax({
+            url: 'http://localhost:5000/api/courses/youtube/fetch-playlist',  // Fixed: Added /courses/
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            data: JSON.stringify({ playlistUrl })
+        });
+
+        if (response.videos && response.videos.length > 0) {
+            response.videos.forEach((video, index) => {
+                const id = generateVideoId();
+                addVideoToList(listId, previewId, video.topic, null, video.url, id);
+            });
+            showToast(`${response.videos.length} videos added from playlist!`, 'success');
+        } else {
+            showToast('No videos found in playlist.', 'error');
+        }
+    } catch (error) {
+        console.error('Playlist fetch error:', error);
+        showToast('Failed to fetch playlist. Check URL or API key.', 'error');
+    }
+}
+    function updatePreview(previewId) {
+        const $items = $(`#${previewId.replace('preview', 'list')} .video-item`);
+        const $container = $(`#${previewId}`);
+        if ($items.length === 0) return $container.html('<p class="text-muted">No videos added.</p>');
+
+        let html = '<div class="row">';
+        $items.each(function() {
+            const topic = $(this).find('strong').text();
+            const url = $(this).find(`input[name^="url-"]`).val();
+            const isFile = $(this).find(`input[name^="isFile-"]`).val() === 'true';
+            let media = isFile 
+                ? '<div class="text-center"><i class="fas fa-file-video fa-3x text-muted"></i><p class="small">Video File</p></div>'
+                : (getYouTubeEmbedUrl(url) ? `<iframe src="${getYouTubeEmbedUrl(url)}" frameborder="0" allowfullscreen class="rounded"></iframe>` : '<p class="text-muted">Invalid URL</p>');
+            html += `<div class="col-md-6 mb-3"><div class="border rounded p-3"><h6>${topic}</h6><div class="video-preview-container">${media}</div></div></div>`;
+        });
+        $container.html(html + '</div>');
+    }
+
+    function getYouTubeEmbedUrl(url) {
+        if (!url) return null;
+        try {
+            const urlObj = new URL(url);
+            const list = urlObj.searchParams.get('list');
+            if (list) {
+                return `https://www.youtube.com/embed/videoseries?list=${list}`;
+            }
+            const videoId = urlObj.searchParams.get('v') || (urlObj.hostname === 'youtu.be' ? urlObj.pathname.slice(1) : null);
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+        } catch {
             return null;
         }
+    }
 
-        // Function to add video to list
-        let videoFiles = []; // Store files temporarily
-        function addVideoToList(listId, previewId, topic, file, url, isEdit = false) {
-            if (!topic) {
-                showToast('Topic name is required.', 'error');
-                return;
-            }
-            if (!file && !url) {
-                showToast('Please upload a file or provide a URL.', 'error');
-                return;
-            }
-            const videoItem = $('<div class="video-item"></div>');
-            const source = file ? file.name : url;
-            videoItem.append(`<span>${topic} - ${source}</span>`);
-            const removeBtn = $('<button class="btn btn-sm btn-danger ms-2">Remove</button>');
-            removeBtn.on('click', function() {
-                videoItem.remove();
-                if (file) {
-                    videoFiles = videoFiles.filter(f => f.name !== file.name);
+    function loadCourses() {
+        $.ajax({
+            url: 'http://localhost:5000/api/courses',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function(courses) {
+                const $tbody = $('#courses-list').empty();
+                if (!courses || courses.length === 0) {
+                    $tbody.html('<tr><td colspan="6" class="text-center text-muted py-4">No courses found.</td></tr>');
+                    return;
                 }
-            });
-            videoItem.append(removeBtn);
-            $(`#${listId}`).append(videoItem);
 
-            // Preview
-            let previewHtml = '';
-            if (file) {
-                const objectUrl = URL.createObjectURL(file);
-                previewHtml = `<video controls src="${objectUrl}" style="width: 100%; height: auto;"></video>`;
-                videoFiles.push(file); // Store file for upload
-            } else if (url) {
-                const embedUrl = getYouTubeEmbedUrl(url);
-                if (embedUrl) {
-                    previewHtml = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
-                } else {
-                    previewHtml = '<p>Invalid YouTube URL</p>';
-                }
-            }
-            $(`#${previewId}`).html(previewHtml);
-        }
+                let html = '';
+                courses.forEach(c => {
+                    const count = Array.isArray(c.videos) ? c.videos.length : 0;
+                    const cat = c.category?.name || 'Uncategorized';
+                    const first = count > 0 ? c.videos[0].topic : '';
+                    const escape = s => String(s || '').replace(/"/g, '&quot;');
+                    const videosData = JSON.stringify((c.videos || []).map(v => ({ topic: v.topic, url: v.url, isFile: !!v.isFile })));
 
-        // Load courses
-        function loadCourses() {
-            $.ajax({
-                url: 'http://localhost:5000/api/courses',
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token },
-                success: function(courses) {
-                    let coursesHTML = '';
-                    courses.forEach(course => {
-                        const videosCount = course.videos ? course.videos.length : 0;
-                        // Escape data attributes to prevent XSS and JSON issues
-                        const escapedName = course.name.replace(/"/g, '&quot;');
-                        const escapedDescription = course.description.replace(/"/g, '&quot;');
-                        let videosData = [];
-                        try {
-                            videosData = course.videos || [];
-                        } catch (e) {
-                            console.error('Invalid videos data for course:', course._id, e);
-                        }
-                        coursesHTML += `
-                            <tr>
-                                <td>${escapedName}</td>
-                                <td>${escapedDescription}</td>
-                                <td>${course.category ? course.category.name : 'N/A'}</td>
-                                <td>${videosCount}</td>
-                                <td>${new Date(course.createdAt).toLocaleString()}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary edit-course" 
-                                            data-id="${course._id}" 
-                                            data-name="${escapedName}" 
-                                            data-description="${escapedDescription}" 
-                                            data-category="${course.category ? course.category._id : ''}" 
-                                            data-videos='${JSON.stringify(videosData)}'>Edit</button>
-                                    <button class="btn btn-sm btn-danger delete-course" data-id="${course._id}">Delete</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                    $('#courses-list').html(coursesHTML);
-                    console.log('Courses loaded, edit buttons count:', $('.edit-course').length);
-                },
-                error: function(xhr) {
-                    console.error('Load courses error:', xhr.status, xhr.responseText);
-                    const message = xhr.responseJSON?.message || 'Error loading courses.';
-                    showToast(message, 'error');
-                }
-            });
-        }
-
-        // Add video button for add modal
-        $('#add-video-btn').on('click', function() {
-            const topic = $('#video-topic').val();
-            const file = $('#course-video')[0].files[0];
-            const url = $('#course-video-url').val();
-            addVideoToList('video-list', 'video-preview', topic, file, url);
-            $('#video-topic').val('');
-            $('#course-video').val('');
-            $('#course-video-url').val('');
-        });
-
-        // Add course
-        $('#add-course-form').on('submit', function(e) {
-            e.preventDefault();
-            const name = $('#course-name').val();
-            const description = $('#course-description').val();
-            const category = $('#course-category').val();
-            if (!name || !description || !category) {
-                showToast('Please fill all required fields.', 'error');
-                return;
-            }
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('description', description);
-            formData.append('category', category);
-
-            const videoItems = $('#video-list .video-item');
-            videoItems.each(function(index, item) {
-                const text = $(item).find('span').text();
-                const [topic, source] = text.split(' - ');
-                const file = videoFiles.find(f => f.name === source);
-                if (file) {
-                    formData.append('videoFiles', file);
-                    formData.append(`videos[${index}][topic]`, topic);
-                    formData.append(`videos[${index}][isFile]`, true);
-                } else {
-                    formData.append(`videos[${index}][topic]`, topic);
-                    formData.append(`videos[${index}][url]`, source);
-                    formData.append(`videos[${index}][isFile]`, false);
-                }
-            });
-
-            $.ajax({
-                url: 'http://localhost:5000/api/courses',
-                type: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token },
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    showToast('Course added successfully.', 'success');
-                    $('#addCourseModal').modal('hide');
-                    $('#add-course-form')[0].reset();
-                    $('#video-list').empty();
-                    $('#video-preview').empty();
-                    videoFiles = [];
-                    loadCourses();
-                },
-                error: function(xhr) {
-                    console.error('Add course error:', xhr.status, xhr.responseText);
-                    const message = xhr.responseJSON?.message || 'Error adding course.';
-                    showToast(message, 'error');
-                }
-            });
-        });
-
-        // Edit course event handler
-        $(document).on('click', '.edit-course', function(e) {
-            e.preventDefault();
-            console.log('Edit button clicked:', $(this).data('id'));
-            const id = $(this).data('id');
-            const name = $(this).data('name');
-            const description = $(this).data('description');
-            const category = $(this).data('category');
-            let videos;
-            try {
-                videos = JSON.parse($(this).data('videos') || '[]');
-            } catch (error) {
-                console.error('Error parsing data-videos:', $(this).data('videos'), error);
-                showToast('Error loading course videos.', 'error');
-                videos = [];
-            }
-            $('#edit-course-id').val(id);
-            $('#edit-course-name').val(name);
-            $('#edit-course-description').val(description);
-            $('#edit-course-category').val(category);
-            $('#edit-video-list').empty();
-            videoFiles = []; // Reset files
-            videos.forEach(video => {
-                console.log('Adding video to edit list:', video);
-                addVideoToList('edit-video-list', 'edit-video-preview', video.topic, null, video.url || video.path, true);
-            });
-            $('#editCourseModal').modal('show').on('shown.bs.modal', function() {
-                console.log('Edit modal shown for course:', id);
-            });
-        });
-
-        // Add video button for edit modal
-        $('#edit-add-video-btn').on('click', function() {
-            const topic = $('#edit-video-topic').val();
-            const file = $('#edit-course-video')[0].files[0];
-            const url = $('#edit-course-video-url').val();
-            addVideoToList('edit-video-list', 'edit-video-preview', topic, file, url, true);
-            $('#edit-video-topic').val('');
-            $('#edit-course-video').val('');
-            $('#edit-course-video-url').val('');
-        });
-
-        // Edit course
-        $('#edit-course-form').on('submit', function(e) {
-            e.preventDefault();
-            const id = $('#edit-course-id').val();
-            const name = $('#edit-course-name').val();
-            const description = $('#edit-course-description').val();
-            const category = $('#edit-course-category').val();
-            if (!name || !description || !category) {
-                showToast('Please fill all required fields.', 'error');
-                return;
-            }
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('description', description);
-            formData.append('category', category);
-
-            const videoItems = $('#edit-video-list .video-item');
-            videoItems.each(function(index, item) {
-                const text = $(item).find('span').text();
-                const [topic, source] = text.split(' - ');
-                const file = videoFiles.find(f => f.name === source);
-                if (file) {
-                    formData.append('videoFiles', file);
-                    formData.append(`videos[${index}][topic]`, topic);
-                    formData.append(`videos[${index}][isFile]`, true);
-                } else {
-                    formData.append(`videos[${index}][topic]`, topic);
-                    formData.append(`videos[${index}][url]`, source);
-                    formData.append(`videos[${index}][isFile]`, false);
-                }
-            });
-
-            $.ajax({
-                url: `http://localhost:5000/api/courses/${id}`,
-                type: 'PUT',
-                headers: { 'Authorization': 'Bearer ' + token },
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    showToast('Course updated successfully.', 'success');
-                    $('#editCourseModal').modal('hide');
-                    $('#edit-video-list').empty();
-                    $('#edit-video-preview').empty();
-                    videoFiles = [];
-                    loadCourses();
-                },
-                error: function(xhr) {
-                    console.error('Update course error:', xhr.status, xhr.responseText);
-                    const message = xhr.responseJSON?.message || 'Error updating course.';
-                    showToast(message, 'error');
-                }
-            });
-        });
-
-        // Delete course
-        $(document).on('click', '.delete-course', function() {
-            const id = $(this).data('id');
-            if (confirm('Are you sure you want to delete this course?')) {
-                $.ajax({
-                    url: `http://localhost:5000/api/courses/${id}`,
-                    type: 'DELETE',
-                    headers: { 'Authorization': 'Bearer ' + token },
-                    success: function() {
-                        showToast('Course deleted successfully.', 'success');
-                        loadCourses();
-                    },
-                    error: function(xhr) {
-                        console.error('Delete course error:', xhr.status, xhr.responseText);
-                        const message = xhr.responseJSON?.message || 'Error deleting course.';
-                        showToast(message, 'error');
-                    }
+                    html += `
+                        <tr>
+                            <td>${escape(c.name)}</td>
+                            <td>${escape(c.description).substring(0,50)}${c.description.length > 50 ? '...' : ''}</td>
+                            <td>${escape(cat)}</td>
+                            <td><span class="badge bg-primary">${count} video${count !== 1 ? 's' : ''}</span>${count > 0 ? `<br><small class="text-muted">${escape(first)}</small>` : ''}</td>
+                            <td>${new Date(c.createdAt).toLocaleDateString()}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary me-1 edit-course"
+                                        data-id="${c._id}"
+                                        data-name="${escape(c.name)}"
+                                        data-description="${escape(c.description)}"
+                                        data-category="${c.category?._id || ''}"
+                                        data-videos="${escape(videosData)}">
+                                    Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-course" data-id="${c._id}">Delete</button>
+                            </td>
+                        </tr>`;
                 });
+                $tbody.html(html);
+            },
+            error: function(xhr) {
+                console.error('Load courses error:', xhr.responseText);
+                $('#courses-list').html('<tr><td colspan="6" class="text-center text-danger">Error loading courses</td></tr>');
             }
         });
+    }
 
-        // Dark/Light Mode Toggle Logic
-        const toggleDarkMode = () => {
-            $('body').addClass('dark-mode').removeClass('light-mode');
-            $('#dark-mode-toggle').removeClass('activate');
-            $('#light-mode-toggle').addClass('activate');
-            localStorage.setItem('theme', 'dark');
-        };
+    // Updated Add Video Button - Handles Playlist Fetch
+    $('#add-video-btn').on('click', async () => {
+        const topic = $('#video-topic').val().trim();
+        const file = $('#course-video')[0].files[0];
+        const url = $('#course-video-url').val().trim();
+        const isPlaylist = url.includes('playlist?list=');
 
-        const toggleLightMode = () => {
-            $('body').addClass('light-mode').removeClass('dark-mode');
-            $('#light-mode-toggle').removeClass('activate');
-            $('#dark-mode-toggle').addClass('activate');
-            localStorage.setItem('theme', 'light');
-        };
-
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            toggleDarkMode();
-        } else {
-            toggleLightMode();
+        if (file && url) {
+            return showToast('Choose file OR URL, not both.', 'error');
         }
 
-        $('#dark-mode-toggle').on('click', toggleDarkMode);
-        $('#light-mode-toggle').on('click', toggleLightMode);
-
-        // Initialize
-        loadProfile();
-        loadCourses();
-        populateCategorySelect('course-category');
-        populateCategorySelect('edit-course-category');
-
-        // Debug: Check if edit buttons are present
-        setTimeout(() => {
-            console.log('Checking edit buttons after load:', $('.edit-course').length);
-        }, 1000);
+        if (file) {
+            // Single file
+            const id = generateVideoId();
+            if (addVideoToList('video-list', 'video-preview', topic, file, null, id)) {
+                $('#video-topic, #course-video, #course-video-url').val('');
+            }
+        } else if (url) {
+            if (isPlaylist) {
+                // Fetch playlist
+                $('#add-video-btn').prop('disabled', true).text('Fetching Playlist...').closest('.border').addClass('fetching');
+                await fetchPlaylistVideos(url, 'video-list', 'video-preview');
+                $('#add-video-btn').prop('disabled', false).text('Add to Course Playlist').closest('.border').removeClass('fetching');
+                $('#course-video-url').val('');
+                $('#video-topic').val(''); // Clear topic for playlist
+            } else {
+                // Single video URL
+                const id = generateVideoId();
+                if (addVideoToList('video-list', 'video-preview', topic, null, url, id)) {
+                    $('#video-topic, #course-video-url').val('');
+                }
+            }
+        } else {
+            showToast('Add video file or URL.', 'error');
+        }
     });
+
+    // Add Course - Same as before
+    $('#add-course-form').on('submit', function(e) {
+        e.preventDefault();
+        const name = $('#course-name').val().trim();
+        const desc = $('#course-description').val().trim();
+        const cat = $('#course-category').val();
+        if (!name || !desc || !cat) return showToast('Fill all fields.', 'error');
+        if ($('#video-list .video-item').length === 0) return showToast('Add at least one video.', 'error');
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('description', desc);
+        formData.append('category', cat);
+
+        const videos = [];
+        $('#video-list .video-item').each(function() {
+            const topic = $(this).find('input[name^="topic-"]').val();
+            const fileId = $(this).find('input[name^="fileId-"]').val();
+            const url = $(this).find('input[name^="url-"]').val();
+            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+            const obj = { topic, isFile };
+            if (isFile && fileId) {
+                const f = videoFiles.find(x => x.id === fileId);
+                if (f) formData.append('videoFiles', f.file);
+            } else if (url) {
+                obj.url = url;
+            }
+            videos.push(obj);
+        });
+        formData.append('videos', JSON.stringify(videos));
+
+        $.ajax({
+            url: 'http://localhost:5000/api/courses',
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function() {
+                showToast('Course created!', 'success');
+                $('#addCourseModal').modal('hide');
+                $('#add-course-form')[0].reset();
+                $('#video-list').empty();
+                $('#video-preview').html('<p class="text-muted">Video preview will appear here</p>');
+                videoFiles = [];
+                videoCounter = 0;
+                loadCourses();  // REFRESH LIST
+            },
+            error: function(xhr) {
+                showToast(xhr.responseJSON?.message || 'Error creating course.', 'error');
+            }
+        });
+    });
+
+    // Edit Course - Updated for playlist too (same logic)
+    $(document).on('click', '.edit-course', function() {
+        const data = $(this).data();
+        $('#edit-course-id').val(data.id);
+        $('#edit-course-name').val(data.name);
+        $('#edit-course-description').val(data.description);
+        $('#edit-course-category').val(data.category);
+        $('#edit-video-list').empty();
+        videoFiles = [];
+        videoCounter = 0;
+
+        let videos = [];
+        try { videos = JSON.parse(data.videos || '[]'); } catch {}
+        videos.forEach((v, i) => {
+            const id = `edit_${i}`;
+            addVideoToList('edit-video-list', 'edit-video-preview', v.topic, null, v.url, id);
+        });
+        updatePreview('edit-video-preview');
+        $('#editCourseModal').modal('show');
+    });
+
+    // Updated Edit Add Video Button - Handles Playlist
+    $('#edit-add-video-btn').on('click', async () => {
+        const topic = $('#edit-video-topic').val().trim();
+        const file = $('#edit-course-video')[0].files[0];
+        const url = $('#edit-course-video-url').val().trim();
+        const isPlaylist = url.includes('playlist?list=');
+
+        if (file && url) {
+            return showToast('Choose file OR URL, not both.', 'error');
+        }
+
+        if (file) {
+            const id = generateVideoId();
+            if (addVideoToList('edit-video-list', 'edit-video-preview', topic, file, null, id)) {
+                $('#edit-video-topic, #edit-course-video, #edit-course-video-url').val('');
+            }
+        } else if (url) {
+            if (isPlaylist) {
+                $('#edit-add-video-btn').prop('disabled', true).text('Fetching Playlist...').closest('.border').addClass('fetching');
+                await fetchPlaylistVideos(url, 'edit-video-list', 'edit-video-preview');
+                $('#edit-add-video-btn').prop('disabled', false).text('Add New Video').closest('.border').removeClass('fetching');
+                $('#edit-course-video-url').val('');
+                $('#edit-video-topic').val('');
+            } else {
+                const id = generateVideoId();
+                if (addVideoToList('edit-video-list', 'edit-video-preview', topic, null, url, id)) {
+                    $('#edit-video-topic, #edit-course-video-url').val('');
+                }
+            }
+        } else {
+            showToast('Add video file or URL.', 'error');
+        }
+    });
+
+    $('#edit-course-form').on('submit', function(e) {
+        e.preventDefault();
+        const id = $('#edit-course-id').val();
+        const formData = new FormData();
+        formData.append('name', $('#edit-course-name').val().trim());
+        formData.append('description', $('#edit-course-description').val().trim());
+        formData.append('category', $('#edit-course-category').val());
+
+        const videos = [];
+        $('#edit-video-list .video-item').each(function() {
+            const topic = $(this).find('input[name^="topic-"]').val();
+            const fileId = $(this).find('input[name^="fileId-"]').val();
+            const url = $(this).find('input[name^="url-"]').val();
+            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+            const obj = { topic, isFile };
+            if (isFile && fileId) {
+                const f = videoFiles.find(x => x.id === fileId);
+                if (f) formData.append('videoFiles', f.file);
+            } else if (url) {
+                obj.url = url;
+            }
+            videos.push(obj);
+        });
+        formData.append('videos', JSON.stringify(videos));
+
+        $.ajax({
+            url: `http://localhost:5000/api/courses/${id}`,
+            type: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + token },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function() {
+                showToast('Course updated!', 'success');
+                $('#editCourseModal').modal('hide');
+                loadCourses();  // REFRESH
+            },
+            error: function(xhr) {
+                showToast(xhr.responseJSON?.message || 'Update failed.', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-course', function() {
+        if (confirm('Delete this course?')) {
+            $.ajax({
+                url: `http://localhost:5000/api/courses/${$(this).data('id')}`,
+                type: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function() {
+                    showToast('Deleted!', 'success');
+                    loadCourses();  // REFRESH
+                },
+                error: function() {
+                    showToast('Delete failed.', 'error');
+                }
+            });
+        }
+    });
+
+    $('#addCourseModal').on('shown.bs.modal', function() {
+        populateCategorySelect('course-category');
+        $('#video-list').empty();
+        $('#video-preview').html('<p class="text-muted">Video preview will appear here</p>');
+        videoFiles = [];
+        videoCounter = 0;
+    });
+
+    $('#editCourseModal').on('shown.bs.modal', function() {
+        populateCategorySelect('edit-course-category');
+    });
+
+    loadProfile();
+    loadCourses();
+    populateCategorySelect('course-category');
+    populateCategorySelect('edit-course-category');
+});
 </script>
-    </body>
+</body>
 </html>

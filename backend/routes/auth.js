@@ -47,7 +47,7 @@ const upload = multer({
     }
 });
 
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({  // Fixed: createTransport, not createTransporter
     service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER,
@@ -98,7 +98,6 @@ router.post('/signup', async (req, res) => {
             email, 
             password, 
             role: 'student', 
-            dob: null, 
             age: null, 
             profileImage: null,
             phoneNumber: null,
@@ -200,14 +199,10 @@ router.post('/forgot-password', async (req, res) => {
             `
         };
 
-        await transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.error('Email Send Error:', error);
-                return res.status(500).json({ message: 'Error sending email.', error: error.message });
-            }
-            console.log('Email sent to', email, 'with OTP:', otp, 'Response:', info.response);
-            res.status(200).json({ message: 'Password reset link and OTP sent to your email.', resetToken });
-        });
+        // Fixed: Use promise version of sendMail (no callback)
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent to', email, 'with OTP:', otp, 'Response:', info.response);
+        res.status(200).json({ message: 'Password reset link and OTP sent to your email.', resetToken });
     } catch (error) {
         console.error('Forgot Password Error:', error);
         res.status(500).json({ message: 'Error sending reset link.', error: error.message });
@@ -286,7 +281,7 @@ router.get('/profile', auth, async (req, res) => {
     }
 });
 
-// Update Profile
+// Update Profile (Email hardcoded - not updatable)
 router.put('/update-profile', auth, upload.single('profileImage'), async (req, res) => {
     try {
         console.log('Update profile request:', req.user); // Debug
@@ -299,9 +294,8 @@ router.put('/update-profile', auth, upload.single('profileImage'), async (req, r
         const Model = getModelByRole(req.user.role);
         const updateData = {
             name: req.body.name,
-            email: req.body.email,
+            // Email removed - hardcoded, not updatable
             phoneNumber: req.body.phoneNumber,
-            dob: req.body.dob,
             age: req.body.age,
             bio: req.body.bio,
             profileImage: req.file ? `/uploads/${req.file.filename}` : undefined,
