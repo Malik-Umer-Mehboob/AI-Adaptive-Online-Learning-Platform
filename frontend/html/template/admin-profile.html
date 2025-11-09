@@ -9,78 +9,513 @@
     <meta name="keywords" content="LMS template, Learning Management System, e-learning software, online course platform, student management, education portal, virtual classroom, training management system, course tracking, online education">
     <meta name="author" content="Dreams Technologies">
     <meta name="robots" content="index, follow">
-    
+   
     <title>Adaptive LMS | Admin Profile</title>
-
     <!-- Favicon -->
     <link rel="shortcut icon" href="assets/img/favicon.png">
     <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
-
     <!-- Theme Settings Js -->
     <script src="assets/js/theme-script.js" type="text/javascript"></script>
-    
+   
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    
+   
     <!-- Fontawesome CSS -->
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
-
     <!-- Feather CSS -->
     <link rel="stylesheet" href="assets/css/feather.css">
-
     <!-- Iconsax CSS -->
     <link rel="stylesheet" href="assets/css/iconsax.css">
-
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
-
     <!-- Inline CSS for Dark/Light Mode and Toast -->
     <style>
-        .light-mode {
-            background-color: #ffffff;
-            color: #000000;
-        }
-        .dark-mode {
-            background-color: #1a1a1a;
-            color: #ffffff;
-        }
-        .theme-toggle {
-            cursor: pointer;
-        }
-        .theme-toggle.activate .isax {
-            color: #007bff; /* Active icon color */
-        }
-        .avatar img {
-            display: none; /* Hide image by default */
-        }
-        .avatar.has-image img {
-            display: block; /* Show image if profileImage exists */
-        }
+      .light-mode {
+        background-color: #ffffff;
+        color: #000000;
+      }
+      .dark-mode {
+        background-color: #1a1a1a;
+        color: #ffffff;
+      }
+      .theme-toggle {
+        cursor: pointer;
+      }
+      .theme-toggle.activate .isax {
+        color: #007bff; /* Active icon color */
+      }
+      .avatar img {
+        display: none; /* Hide image by default */
+      }
+      .avatar.has-image img {
+        display: block; /* Show image if profileImage exists */
+      }
+      #toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+      }
+      .toast {
+        opacity: 0.9;
+        transition: all 0.3s;
+      }
+      .toast-success {
+        background-color: #28a745;
+        color: #fff;
+      }
+      .toast-error {
+        background-color: #dc3545;
+        color: #fff;
+      }
+      @media (max-width: 768px) {
         #toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
+          top: 10px;
+          right: 10px;
         }
-        .toast {
-            opacity: 0.9;
-            transition: all 0.3s;
+      }
+      /* Light Mode Cards */
+      .card-users {
+        background: linear-gradient(135deg, #a8e6ff, #b3d9ff);
+        color: #333;
+      }
+      .card-students {
+        background: linear-gradient(135deg, #a8f5c2, #b8f5d2);
+        color: #333;
+      }
+      .card-courses {
+        background: linear-gradient(135deg, #a8f0ff, #b8f0ff);
+        color: #333;
+      }
+      .card-categories {
+        background: linear-gradient(135deg, #d1c4e9, #d7bde2);
+        color: #333;
+      }
+      /* Dark Mode Cards */
+      .dark-mode .card-users {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        color: #ffffff;
+      }
+      .dark-mode .card-students {
+        background: linear-gradient(135deg, #1e7e34, #155724);
+        color: #ffffff;
+      }
+      .dark-mode .card-courses {
+        background: linear-gradient(135deg, #117a8b, #0c5460);
+        color: #ffffff;
+      }
+      .dark-mode .card-categories {
+        background: linear-gradient(135deg, #5a2d91, #4a1d7a);
+        color: #ffffff;
+      }
+      .table th, .table td {
+        border-right: 1px solid #dee2e6;
+        position: relative;
+      }
+      .table th:last-child, .table td:last-child {
+        border-right: none;
+      }
+      .dark-mode .table th, .dark-mode .table td {
+        border-right: 1px solid #495057;
+      }
+      /* Recent Activities Table Styling */
+      .recent-activities-table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+      }
+      .recent-activities-table thead th {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        border: none;
+        padding: 16px 12px;
+      }
+      .recent-activities-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .recent-activities-table tbody tr:hover {
+        background: rgba(0, 123, 255, 0.05);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      .recent-activities-table tbody td {
+        padding: 16px 12px;
+        vertical-align: middle;
+        border: none;
+        position: relative;
+      }
+      .recent-activities-table tbody td::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 20px;
+        background: #dee2e6;
+      }
+      .recent-activities-table tbody td:last-child::after {
+        display: none;
+      }
+      .dark-mode .recent-activities-table thead th {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      }
+      .dark-mode .recent-activities-table tbody tr {
+        border-bottom: 1px solid #495057;
+      }
+      .dark-mode .recent-activities-table tbody tr:hover {
+        background: rgba(0, 123, 255, 0.1);
+      }
+      .dark-mode .recent-activities-table tbody td::after {
+        background: #495057;
+      }
+      .dark-mode .recent-activities-table {
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.05);
+      }
+      .activity-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        margin-right: 8px;
+      }
+      .role-admin { background: #007bff; color: white; }
+      .role-student { background: #28a745; color: white; }
+      .role-instructor { background: #ffc107; color: #212529; }
+      .dark-mode .role-admin { background: #0d6efd; }
+      .dark-mode .role-student { background: #20c997; }
+      .dark-mode .role-instructor { background: #fd7e14; color: white; }
+      /* Footer Styles */
+      .footer {
+        background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+        color: #ffffff;
+        padding: 30px 0 0; /* Further reduced from 40px to 30px */
+        position: relative;
+      }
+      .light-mode .footer {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #333333;
+      }
+      .footer-top {
+        padding-bottom: 30px; /* Reduced from 40px to 30px */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .light-mode .footer-top {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .footer-about p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      .footer-logo img {
+        max-width: 220px;
+        margin-bottom: 20px;
+      }
+      .footer-widget h5 {
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+      .light-mode .footer-widget h5 {
+        color: #0056b3;
+      }
+      .footer-widget ul li a {
+        color: #cccccc;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        display: block;
+        padding: 5px 0;
+      }
+      .light-mode .footer-widget ul li a {
+        color: #666666;
+      }
+      .footer-widget ul li a:hover {
+        color: #007bff;
+      }
+      .light-mode .footer-widget ul li a:hover {
+        color: #0056b3;
+      }
+      .subscribe-input form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .subscribe-input input {
+        flex: 1;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+      .light-mode .subscribe-input input {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        color: #333333;
+      }
+      .subscribe-input button {
+        border-radius: 25px;
+        padding: 10px 20px;
+        background: #007bff;
+        border: none;
+        color: white;
+        transition: background 0.3s ease;
+      }
+      .subscribe-input button:hover {
+        background: #0056b3;
+      }
+      .footer-contact-info .footer-address {
+        margin-bottom: 15px;
+      }
+      .footer-contact-info .footer-address img {
+        width: 20px;
+        height: 20px;
+      }
+      .footer-contact-info p {
+        margin: 0;
+        font-size: 14px;
+      }
+      .footer-contact-info a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .light-mode .footer-contact-info a {
+        color: #0056b3;
+      }
+      .footer-bottom {
+        padding: 15px 0; /* Reduced from 20px to 15px */
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .light-mode .footer-bottom {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        color: #666666;
+      }
+      .footer-bottom p,
+      .footer-bottom a {
+        color: #ffffff !important; /* Make footer-bottom content white */
+      }
+      .footer-link li {
+        margin: 0 15px;
+      }
+      .footer-link a {
+        color: #cccccc;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      .light-mode .footer-link a {
+        color: #666666;
+      }
+      .footer-link a:hover {
+        color: #007bff;
+      }
+      .light-mode .footer-link a:hover {
+        color: #0056b3;
+      }
+      /* Hover effects for icons (social links and sidebar icons) */
+      .social-link,
+      .isax,
+      .fas {
+        transition: all 0.3s ease;
+      }
+      .social-link:hover,
+      .isax:hover,
+      .fas:hover {
+        transform: scale(1.2);
+        color: #007bff !important;
+      }
+      .light-mode .social-link:hover,
+      .light-mode .isax:hover,
+      .light-mode .fas:hover {
+        color: #0056b3 !important;
+      }
+      @media (max-width: 768px) {
+        .subscribe-input form {
+          flex-direction: column;
         }
-        .toast-success {
-            background-color: #28a745;
-            color: #fff;
+        .footer-link {
+          flex-direction: column;
+          gap: 10px;
         }
-        .toast-error {
-            background-color: #dc3545;
-            color: #fff;
+      }
+      /* Further reduce height of profile card */
+      .profile-card {
+        padding: 1.5rem !important; /* Reduced from 2rem to 1.5rem */
+      }
+      .profile-card .row-gap-3 {
+        row-gap: 0.5rem !important; /* Reduce row gap */
+      }
+      /* Additional CSS to reduce height and ensure alignment */
+.footer {
+  padding: 20px 0 0 !important;
+}
+.footer-top {
+  padding-bottom: 15px !important;
+}
+.footer-bottom {
+  padding: 8px 0 !important;
+}
+.footer-about p,
+.footer-widget p {
+  margin-bottom: 12px !important;
+  line-height: 1.4 !important;
+}
+.footer-widget h5 {
+  margin-bottom: 12px !important;
+}
+.footer-widget ul li {
+  padding: 3px 0 !important;
+}
+.footer-widget ul li a {
+  padding: 3px 0 !important;
+}
+.footer-contact {
+  margin-top: 10px !important;
+}
+.footer-contact .mb-1 {
+  margin-bottom: 4px !important;
+}
+.footer-contact .mb-2 {
+  margin-bottom: 4px !important;
+}
+.subscribe-input {
+  margin-bottom: 10px !important;
+}
+.footer-top .row {
+  align-items: flex-start !important;
+}
+.footer-widget,
+.footer-about {
+  min-height: auto !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start !important;
+}
+      /* Professional UI for Profile Details Card - Updated for Dark Mode Visibility */
+      .profile-details-card {
+        border-radius: 8px;
+        border: 2px solid transparent;
+        background: linear-gradient(#e3f2fd, #f0f8ff) padding-box, linear-gradient(135deg, #007bff, #0056b3) border-box;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Reduced shadow intensity for less dark shading */
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-top: 30px; /* Increased top margin for better spacing */
+      }
+      .profile-details-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* Slightly reduced hover shadow */
+        transform: translateY(-2px);
+      }
+      .dark-mode .profile-details-card {
+        background: linear-gradient(#343a40, #495057) padding-box, linear-gradient(135deg, #0d6efd, #0b5ed7) border-box;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Reduced shadow for dark mode */
+      }
+      .dark-mode .profile-details-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      }
+      .profile-details-card .card-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border-bottom: none;
+        padding: 1.25rem 1.5rem;
+      }
+      .dark-mode .profile-details-card .card-header {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      }
+      .profile-details-card .card-header h5 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.25rem;
+      }
+      .profile-details-card .card-body {
+        padding: 2rem;
+        background: linear-gradient(to bottom, #e3f2fd, #f0f8ff); /* Light blue gradient for body */
+      }
+      .dark-mode .profile-details-card .card-body {
+        background: linear-gradient(to bottom, #343a40, #495057); /* Dark gradient for dark mode */
+      }
+      .profile-details-card .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+      .dark-mode .profile-details-card .form-label {
+        color: #ffffff; /* White text for better visibility in dark mode */
+      }
+      .profile-details-card .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        font-size: 0.95rem;
+      }
+      .profile-details-card .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+      .dark-mode .profile-details-card .form-control {
+        background: #495057;
+        border-color: #6c757d;
+        color: #fff;
+      }
+      .dark-mode .profile-details-card .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+      .profile-details-card .form-control[readonly] {
+        background: #f8f9fa;
+        color: #6c757d;
+      }
+      .dark-mode .profile-details-card .form-control[readonly] {
+        background: #6c757d;
+        color: #ffffff; /* White text for readonly fields in dark mode */
+      }
+      .profile-details-card .form-text {
+        color: #6c757d;
+        font-size: 0.85rem;
+      }
+      .dark-mode .profile-details-card .form-text {
+        color: #adb5bd;
+      }
+      .profile-details-card .btn-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        border-radius: 6px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .profile-details-card .btn-primary:hover {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+      }
+      .dark-mode .profile-details-card .btn-primary {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      }
+      .dark-mode .profile-details-card .btn-primary:hover {
+        background: linear-gradient(135deg, #0b5ed7, #0a58ca);
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+      }
+      .profile-details-card .mb-3 {
+        margin-bottom: 1.5rem;
+      }
+      @media (max-width: 768px) {
+        .profile-details-card .card-body {
+          padding: 1.5rem;
         }
-        @media (max-width: 768px) {
-            #toast-container {
-                top: 10px;
-                right: 10px;
-            }
-        }
+      }
     </style>
 </head>
 <body>
@@ -100,17 +535,17 @@
                         </a>
                         <div class="navbar-logo">
                             <a class="logo-white header-logo" href="index-3.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 220px">
                             </a>
                             <a class="logo-dark header-logo" href="index-3.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 220px">
                             </a>
                         </div>
                     </div>
                     <div class="main-menu-wrapper">
                         <div class="menu-header">
                             <a href="index-3.html" class="menu-logo">
-                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
+                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 220px;" />
                             </a>
                             <a id="menu_close" class="menu-close" href="javascript:void(0);">
                                 <i class="fas fa-times"></i>
@@ -137,7 +572,7 @@
                                             <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
                                         </div>
                                         <div>
-                                            <h6 id="profile-name">Admin User</h6>
+                                            <h6 id="profile-name">Super Admin</h6>
                                             <p id="profile-email"><a href="mailto:"></a></p>
                                         </div>
                                     </div>
@@ -169,7 +604,7 @@
             </div>
         </header>
         <!-- /Header -->
-        
+       
         <!-- Breadcrumb -->
         <div class="breadcrumb-bar text-center">
             <div class="container">
@@ -187,15 +622,14 @@
             </div>
         </div>
         <!-- /Breadcrumb -->
-
         <div class="content">
             <div class="container">
                 <!-- Profile Box -->
-                <div class="profile-card overflow-hidden bg-blue-gradient2 mb-5 p-5">
+                <div class="profile-card overflow-hidden bg-blue-gradient2 bg-5 p-2">
                     <div class="profile-card-bg">
                         <img src="assets/img/bg/card-bg-01.png" class="profile-card-bg-1" alt="">
                     </div>
-                    <div class="row align-items-center row-gap-3">
+                    <div class="row align-items-center row-gap-2">
                         <div class="col-lg-6">
                             <div class="d-flex align-items-center">
                                 <span class="avatar avatar-xxl avatar-rounded me-3 border border-white border-2 position-relative">
@@ -203,9 +637,10 @@
                                     <span class="verify-tick"><i class="isax isax-verify5"></i></span>
                                 </span>
                                 <div>
-                                    <h5 class="mb-1 text-white d-inline-flex align-items-center"><span id="profile-name">Super Admin</span><a href="admin-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
+                                    <h5 class="mb-1 text-white d-inline-flex align-items-center">
+                                        <a class="profile-link" data-href="admin-profile.html" id="profile-name">Super Admin</a><a href="admin-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a>
+                                    </h5>
                                     <p class="text-light">Administrator</p>
-                                    <p class="text-light" id="profile-email"></p>
                                 </div>
                             </div>
                         </div>
@@ -218,7 +653,6 @@
                     </div>
                 </div>
                 <!-- /Profile Box -->
-
                 <div class="row">
                     <!-- Sidebar -->
                     <div class="col-lg-3 theiaStickySidebar">
@@ -242,26 +676,20 @@
                                         <a href="manage-courses.html" class="d-inline-flex align-items-center"><i class="isax isax-book me-2"></i>Manage Courses</a>
                                     </li>
                                     <li>
-                                        <a href="manage-subcategories.html" class="d-inline-flex align-items-center"><i class="isax isax-category-2 me-2"></i>Manage Subcategories</a>
-                                    </li>
-                                    <li>
                                         <a href="reports.html" class="d-inline-flex align-items-center"><i class="isax isax-chart me-2"></i>Reports & Analytics</a>
                                     </li>
                                     <li>
                                         <a href="system-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting me-2"></i>System Settings</a>
                                     </li>
-                                    <li>
-                                        <a href="admin-tickets.html" class="d-inline-flex align-items-center"><i class="isax isax-ticket me-2"></i>Support Tickets</a>
-                                    </li>
                                 </ul>
-                                <hr>
+                                <hr />
                                 <h6 class="mb-3">Account Settings</h6>
                                 <ul>
                                     <li>
                                         <a href="admin-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a>
                                     </li>
                                     <li>
-                                        <a href="login.html" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a>
+                                        <a href="index-3.html" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a>
                                     </li>
                                 </ul>
                             </div>
@@ -269,7 +697,7 @@
                     </div>
                     <!-- /Sidebar -->
                     <div class="col-lg-9">
-                        <div class="card">
+                        <div class="card profile-details-card">
                             <div class="card-header">
                                 <h5 class="card-title">Profile Details</h5>
                             </div>
@@ -316,131 +744,123 @@
                 </div>
             </div>
         </div>
-
         <!-- Toast Container -->
         <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
-
         <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-bg">
-                <img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
-                <img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt="">
+     <footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row align-items-start">
+        <div class="col-lg-4 mb-3">
+          <div class="footer-about">
+            <div class="footer-logo">
+              <img src="assets/img/logo.png" alt="Logo" style="max-width: 300px; margin-left: -30px;" />
             </div>
-            <div class="footer-top">
-                <div class="container">
-                    <div class="row row-gap-4">
-                        <div class="col-lg-4">
-                            <div class="footer-about">
-                                <div class="footer-logo">
-                                    <img src="assets/img/logo.png" alt="">
-                                </div>
-                                <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
-                                <div class="d-flex align-items-center">
-                                    <a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
-                                    <a href="#"><img src="assets/img/icon/googleplay.svg" alt=""></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="row row-gap-4">
-                                <div class="col-lg-3">
-                                    <div class="footer-widget footer-menu">
-                                        <h5 class="footer-title">For Instructor</h5>
-                                        <ul>
-                                            <li><a href="course-grid.html">Search Mentors</a></li>
-                                            <li><a href="login.html">Login</a></li>
-                                            <li><a href="register.html">Register</a></li>
-                                            <li><a href="course-list.html">Booking</a></li>
-                                            <li><a href="student-dashboard.html">Students Dashboard</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="footer-widget footer-menu">
-                                        <h5 class="footer-title">For Student</h5>
-                                        <ul>
-                                            <li><a href="javascript:void(0);">Appointments</a></li>
-                                            <li><a href="instructor-message.html">Chat</a></li>
-                                            <li><a href="login.html">Login</a></li>
-                                            <li><a href="register.html">Register</a></li>
-                                            <li><a href="instructor-dashboard.html">Instructor Dashboard</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="footer-widget footer-contact">
-                                        <h5 class="footer-title">Newsletter</h5>
-                                        <div class="subscribe-input">
-                                            <form action="javascript:void(0);">
-                                                <input type="email" class="form-control" placeholder="Enter your Email Address">
-                                                <button type="submit" class="btn btn-primary btn-sm inline-flex align-items-center"><i class="isax isax-send-2 me-1"></i>Subscribe</button>
-                                            </form>
-                                        </div>
-                                        <div class="footer-contact-info">
-                                            <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-20.svg" alt="Img" class="img-fluid me-2">
-                                                <p>3556 Beech Street, San Francisco,<br>California, CA 94108</p>
-                                            </div>
-                                            <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2">
-                                                <p><a href="mailto:admin@example.com">admin@example.com</a></p>
-                                            </div>
-                                            <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2">
-                                                <p>+19 123-456-7890</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <p style="margin-top: -30px;">
+              AI Adaptive Online Learning Platform empowers <br>educators and learners with innovative LMS features <br> for adaptive learning and collaboration.
+            </p>
+            <div class="d-flex align-items-center gap-3">
+              <a href="#" class="social-link" title="App Store">
+                <i class="fab fa-apple"></i>
+              </a>
+              <a href="#" class="social-link" title="Google Play">
+                <i class="fab fa-google-play"></i>
+              </a>
+              <a href="#" class="social-link" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-link" title="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-link" title="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Innovation Spotlight</h5>
+            <p>Empowering future with AI-driven education.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Stay Updated</h5>
+            <p>Subscribe for updates on courses and features.</p>
+            <div class="subscribe-input">
+              <form action="javascript:void(0);">
+                <div class="input-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Your email address"
+                    aria-label="Email"
+                  />
+                  <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
                 </div>
+              </form>
             </div>
-            <div class="footer-bottom">
-                <div class="container">
-                    <div class="row row-gap-2">
-                        <div class="col-md-6">
-                            <div class="text-center text-md-start">
-                                <p class="text-white">Copyright &copy; 2025 AdaptiveLMS. All rights reserved.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div>
-                                <ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
-                                    <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-                                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="footer-contact mt-2">
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                <span>Iqra University, Defence View, Karachi, Sindh, Pakistan</span>
+              </div>
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-envelope me-2"></i>
+                <a href="mailto:info@AiAdaptiveOnlineLearningPlatform.com">info@AiAdaptiveOnlineLearningPlatform.com</a>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="fas fa-phone me-2"></i>
+                <span>+92 331-8889902</span>
+              </div>
             </div>
-        </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p>&copy; 2025 AI Adaptive Online Learning Platform. All rights reserved</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item"><a href="privacy.html">Privacy Policy</a></li>
+            <li class="list-inline-item"><a href="terms.html">Terms & Conditions</a></li>
+            <li class="list-inline-item"><a href="cookies.html">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
         <!-- /Footer -->
     </div>
     <!-- /Main Wrapper -->
-
     <!-- jQuery -->
     <script src="assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-    
+   
     <!-- Bootstrap Core JS -->
     <script src="assets/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-
     <!-- Sticky Sidebar JS -->
     <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
     <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript"></script>
-    
+   
     <!-- Custom JS -->
     <script src="assets/js/script.js" type="text/javascript"></script>
-    
+   
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
     <!-- Keep all HTML as it is, only update the <script> section -->
 <script>
     $(document).ready(function() {
         const token = localStorage.getItem('token');
         if (!token) {
-            alert('Please login first.');
+            showToast("Please login first.", "error");
             window.location.href = 'login.html';
             return;
         }
@@ -450,17 +870,16 @@
             console.log('Decoded Token:', decoded); // Debug: Check token contents
         } catch (error) {
             console.error('Token decode error:', error);
-            alert('Invalid token. Please login again.');
+            showToast("Invalid token. Please login again.", "error");
             localStorage.removeItem('token');
             window.location.href = 'login.html';
             return;
         }
         if (decoded.role !== 'admin') {
-            alert('Access denied: This page is for admins only.');
+            showToast("Access denied: This page is for admins only.", "error");
             window.location.href = 'login.html';
             return;
         }
-
         // Function to show toast messages
         function showToast(message, type = 'success', duration = 3000) {
             const toastContainer = $('#toast-container');
@@ -474,62 +893,64 @@
                 </div>
             `;
             toastContainer.append(toastHtml);
-
             const toastElement = document.getElementById(toastId);
             const toast = new bootstrap.Toast(toastElement);
             toast.show();
-
             setTimeout(() => {
                 toast.hide();
                 $(`#${toastId}`).remove();
             }, duration);
         }
-
         // Load profile data including image, name, email, and phone
         function loadProfile() {
+            console.log("Loading profile for user ID:", decoded.id);
             $.ajax({
                 url: 'http://localhost:5000/api/auth/profile',
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token },
                 success: function(profile) {
                     console.log('Profile loaded:', profile); // Debug: Check profile data
-                    $('#profile-name').text(profile.name || 'Admin');
-                    $('#profile-email').html(`<a href="mailto:${profile.email || ''}">${profile.email || 'No email'}</a>`);
+                    $("#profile-name").text(profile.name || 'Admin');
+                    $("#profile-email a")
+                      .text(profile.email || "No email")
+                      .attr("href", `mailto:${profile.email || ""}`);
                     $('#profile-fullname').val(profile.name || '');
                     $('#profile-email-input').val(profile.email || ''); // Email loaded but readonly
                     $('#profile-phone').val(profile.phoneNumber || '');
                     if (profile.profileImage) {
-                        $('.dropdown-profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
-                        $('#profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
+                        $(".dropdown-profile-img")
+                          .attr("src", profile.profileImage)
+                          .parent()
+                          .addClass("has-image");
+                        $("#profile-img")
+                          .attr("src", profile.profileImage)
+                          .parent()
+                          .addClass("has-image");
                     } else {
-                        $('.dropdown-profile-img').attr('src', '').parent().removeClass('has-image');
-                        $('#profile-img').attr('src', '').parent().removeClass('has-image');
+                        $(".dropdown-profile-img").attr('src', '').parent().removeClass('has-image');
+                        $("#profile-img").attr('src', '').parent().removeClass('has-image');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Profile load error:', { status: xhr.status, response: xhr.responseText, error }); // Debug: Log error details
-                    if (xhr.status === 0) {
-                        showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
-                    } else if (xhr.status === 401) {
-                        showToast('Session expired. Please login again.', 'error');
-                        localStorage.removeItem('token');
-                        window.location.href = 'login.html';
-                    } else if (xhr.status === 404) {
-                        showToast('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id, 'error');
-                        console.log('Debug: Verify user with ID ' + decoded.id + ' in admins collection.');
-                    } else if (xhr.status === 500) {
-                        showToast('Server error accessing profile. Please try again later or contact support.', 'error');
-                    } else {
-                        showToast(`Error loading profile (Status: ${xhr.status}). Please try again.`, 'error');
-                    }
-                }
+                error: function(xhr) {
+                    console.error('Profile load error:', {
+                        status: xhr.status,
+                        response: xhr.responseText,
+                    });
+                    if (xhr.status === 0)
+                        showToast("Unable to connect to server.", "error");
+                    else if (xhr.status === 401) {
+                        showToast("Session expired.", "error");
+                        localStorage.removeItem("token");
+                        window.location.href = "login.html";
+                    } else
+                        showToast(`Profile error (Status: ${xhr.status}).`, "error");
+                },
             });
         }
-
         // Handle profile link click with improved error handling (though not needed on this page)
-        $('.profile-link').on('click', function(e) {
+        $(".profile-link").on("click", function (e) {
             e.preventDefault();
-            const href = $(this).data('href') || $(this).attr('href');
+            const href = $(this).data("href") || $(this).attr("href");
             console.log('Profile link clicked, checking profile... Token ID:', decoded.id); // Debug: Log token ID
             $.ajax({
                 url: 'http://localhost:5000/api/auth/profile',
@@ -540,27 +961,25 @@
                     window.location.href = href;
                 },
                 error: function(xhr) {
-                    console.error('Profile access error:', { status: xhr.status, response: xhr.responseText }); // Debug: Log error details
-                    if (xhr.status === 0) {
-                        showToast('Unable to connect to the server. Please ensure the backend server is running on http://localhost:5000 and try again.', 'error');
-                    } else if (xhr.status === 401) {
-                        showToast('Session expired. Please login again.', 'error');
-                        localStorage.removeItem('token');
-                        window.location.href = 'login.html';
-                    } else if (xhr.status === 404) {
-                        showToast('Profile not found. Run node seedAdmin.js to create admin user, then login again. Token ID: ' + decoded.id, 'error');
-                        console.log('Debug: Verify user with ID ' + decoded.id + ' in admins collection.');
-                    } else if (xhr.status === 500) {
-                        showToast('Server error accessing profile. Please try again later or contact support.', 'error');
-                    } else {
-                        showToast(`Error accessing profile (Status: ${xhr.status}). Please try again.`, 'error');
-                    }
-                }
+                    console.error(
+                        "Profile access error:",
+                        xhr.status,
+                        xhr.responseText
+                    );
+                    if (xhr.status === 0) showToast("Server unavailable.", "error");
+                    else if (xhr.status === 401) {
+                        showToast("Session expired.", "error");
+                        localStorage.removeItem("token");
+                        window.location.href = "login.html";
+                    } else
+                        showToast(
+                            `Profile access error (Status: ${xhr.status}).`,
+                            "error"
+                        );
+                },
             });
         });
-
         loadProfile(); // Load profile on page load
-
         // Handle form submission for profile update
         $('#profile-form').on('submit', function(e) {
             e.preventDefault();
@@ -584,22 +1003,18 @@
                 }
             });
         });
-
-        // Dark/Light Mode Toggle Logic
         const toggleDarkMode = () => {
             $('body').addClass('dark-mode').removeClass('light-mode');
             $('#dark-mode-toggle').removeClass('activate');
             $('#light-mode-toggle').addClass('activate');
             localStorage.setItem('theme', 'dark');
         };
-
         const toggleLightMode = () => {
             $('body').addClass('light-mode').removeClass('dark-mode');
             $('#light-mode-toggle').removeClass('activate');
             $('#dark-mode-toggle').addClass('activate');
             localStorage.setItem('theme', 'light');
         };
-
         // Check saved theme on page load
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
@@ -607,7 +1022,6 @@
         } else {
             toggleLightMode();
         }
-
         // Toggle button click handlers
         $('#dark-mode-toggle').on('click', toggleDarkMode);
         $('#light-mode-toggle').on('click', toggleLightMode);

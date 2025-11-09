@@ -1,7 +1,7 @@
-// backend/routes/courses.js
 const express = require('express');
 const router = express.Router();
 const { auth, checkRole } = require('../middleware/auth');
+const mongoose = require('mongoose');
 const Course = require('../models/Course');
 const Category = require('../models/Category');
 const Enrollment = require('../models/Enrollment');
@@ -19,7 +19,7 @@ const youtube = google.youtube({
 // Multer setup
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, '../public/Uploads/videos');
+        const uploadPath = path.join(__dirname, '../public/uploads/videos');
         cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
@@ -60,11 +60,10 @@ function extractPlaylistId(url) {
     }
 }
 
-// Helper: Fetch playlist videos (updated: more logging + fallback)
+// Helper: Fetch playlist videos
 async function fetchPlaylistVideos(playlistId) {
     try {
         if (!process.env.YOUTUBE_API_KEY) {
-            console.warn('YOUTUBE_API_KEY missing - cannot fetch playlist');
             throw new Error('YOUTUBE_API_KEY missing');
         }
         console.log(`Fetching playlist videos for ID: ${playlistId}`);
@@ -78,7 +77,7 @@ async function fetchPlaylistVideos(playlistId) {
         return items.map(item => ({
             topic: item.snippet.title,
             url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
-            type: 'single', // Individual videos
+            type: 'single',
             isFile: false
         }));
     } catch (error) {
@@ -87,14 +86,27 @@ async function fetchPlaylistVideos(playlistId) {
     }
 }
 
-// POST /youtube/fetch-playlist - New route for frontend to fetch playlist videos
+// UPDATED: Helper: Compute average rating from comments (now returns { average, numRatings })
+function computeAverageRating(course) {
+    if (!course.comments || course.comments.length === 0) return { average: 0, numRatings: 0 };
+    const ratedComments = course.comments.filter(c => c.rating && c.rating > 0);
+    const numRatings = ratedComments.length;
+    if (numRatings === 0) return { average: 0, numRatings: 0 };
+    const average = ratedComments.reduce((sum, c) => sum + c.rating, 0) / numRatings;
+    return { average: parseFloat(average.toFixed(1)), numRatings };
+}
+
+// POST /youtube/fetch-playlist - Route for frontend to fetch playlist videos
 router.post('/youtube/fetch-playlist', auth, checkRole(['admin']), async (req, res) => {
     try {
         const { playlistUrl } = req.body;
         if (!playlistUrl || !playlistUrl.includes('playlist?list=')) {
             return res.status(400).json({ message: 'Valid playlist URL required' });
         }
-        const playlistId = new URLSearchParams(playlistUrl.split('?')[1]).get('list');
+        const playlistId = extractPlaylistId(playlistUrl);
+        if (!playlistId) {
+            return res.status(400).json({ message: 'Invalid playlist URL - could not extract ID' });
+        }
         const videos = await fetchPlaylistVideos(playlistId);
         res.json({ videos });
     } catch (error) {
@@ -103,7 +115,103 @@ router.post('/youtube/fetch-playlist', auth, checkRole(['admin']), async (req, r
     }
 });
 
-// GET all courses
+// GET /:id/comments - Fetch comments for a course
+router.get('/:id/comments', auth, async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id).select('comments');
+    if (!course) {
+      return res.status(404).json({ msg: 'Course not found' });
+    }
+    res.json(course.comments || []);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST /:id/comments - Add a new comment to course (updated to include rating)
+router.post('/:id/comments', auth, async (req, res) => {
+  const { name, email, subject, comment, rating } = req.body;
+
+  // Basic validation
+  if (!name || !email || !subject || !comment) {
+    return res.status(400).json({ msg: 'Please enter all fields' });
+  }
+  if (rating && (rating < 1 || rating > 5)) {
+    return res.status(400).json({ msg: 'Rating must be between 1-5' });
+  }
+
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ msg: 'Course not found' });
+    }
+
+    const newComment = {
+      name,
+      email,
+      subject,
+      comment,
+      rating: rating ? parseInt(rating) : undefined
+    };
+
+    course.comments.unshift(newComment); // Add to beginning for latest first
+    await course.save();
+
+    res.json(newComment);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// GET /:id/feedback - Fetch feedbacks for a course (kept for compatibility, but not used)
+router.get('/:id/feedback', auth, async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id).select('feedbacks');
+    if (!course) {
+      return res.status(404).json({ msg: 'Course not found' });
+    }
+    res.json(course.feedbacks || []);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST /:id/feedback - Add a new feedback to course (kept for compatibility, but not used)
+router.post('/:id/feedback', auth, async (req, res) => {
+  const { rating, comment, videoId, isCourse } = req.body;
+
+  // Basic validation
+  if (!rating || rating < 1 || rating > 5) {
+    return res.status(400).json({ msg: 'Please provide a valid rating (1-5)' });
+  }
+
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ msg: 'Course not found' });
+    }
+
+    const newFeedback = {
+      rating,
+      comment: comment || '',
+      videoId: videoId || null,
+      isCourse: isCourse || false
+    };
+
+    course.feedbacks.unshift(newFeedback); // Add to beginning for latest first
+    await course.save();
+
+    res.json(newFeedback);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// GET all courses (UPDATED: Now includes averageRating and numRatings)
 router.get('/', auth, async (req, res) => {
     try {
         const search = req.query.search?.trim() || '';
@@ -113,6 +221,29 @@ router.get('/', auth, async (req, res) => {
         if (search) query.name = { $regex: search, $options: 'i' };
         if (category) query.category = category;
 
+        // Bulk fetch support for multiple IDs (no pagination)
+        if (req.query.ids) {
+            const idList = req.query.ids.split(',').map(id => id.trim()).filter(id => id && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id));
+            if (idList.length > 0) {
+                const objectIds = idList.map(id => new mongoose.Types.ObjectId(id));
+                query._id = { $in: objectIds };
+            } else {
+                return res.json([]); // No valid IDs, return empty array
+            }
+            const courses = await Course.find(query)
+                .populate('category')  // Removed 'instructor' as it's not in schema
+                .sort({ createdAt: -1 });
+            // UPDATED: Add averageRating and numRatings to each course
+            const coursesWithRating = courses.map(course => {
+                const plain = course.toObject();
+                const { average, numRatings } = computeAverageRating(course);
+                plain.averageRating = average;
+                plain.numRatings = numRatings;
+                return plain;
+            });
+            return res.json(coursesWithRating); // Return array directly
+        }
+
         if (req.user.role === 'student') {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 9;
@@ -120,7 +251,7 @@ router.get('/', auth, async (req, res) => {
 
             const totalCourses = await Course.countDocuments(query);
             const courses = await Course.find(query)
-                .populate('category', 'name')
+                .populate('category')  // Removed 'instructor'
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit);
@@ -129,9 +260,13 @@ router.get('/', auth, async (req, res) => {
                 .distinct('courseId')
                 .then(ids => ids.map(id => id.toString()));
 
+            // UPDATED: Add averageRating and numRatings to each course
             const coursesWithStatus = courses.map(course => {
                 const plain = course.toObject();
                 plain.isEnrolled = enrolledCourseIds.includes(plain._id.toString());
+                const { average, numRatings } = computeAverageRating(course);
+                plain.averageRating = average;
+                plain.numRatings = numRatings;
                 return plain;
             });
 
@@ -143,9 +278,17 @@ router.get('/', auth, async (req, res) => {
             });
         } else {
             const courses = await Course.find(query)
-                .populate('category')
+                .populate('category')  // Removed 'instructor'
                 .sort({ createdAt: -1 });
-            res.json(courses);
+            // UPDATED: Add averageRating and numRatings to each course
+            const coursesWithRating = courses.map(course => {
+                const plain = course.toObject();
+                const { average, numRatings } = computeAverageRating(course);
+                plain.averageRating = average;
+                plain.numRatings = numRatings;
+                return plain;
+            });
+            res.json(coursesWithRating);
         }
     } catch (error) {
         console.error('Error fetching courses:', error);
@@ -153,18 +296,23 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
-// GET course by ID
+// GET course by ID (UPDATED: Now includes averageRating and numRatings)
 router.get('/:id', auth, async (req, res) => {
     try {
-        const course = await Course.findById(req.params.id).populate('category');
+        const course = await Course.findById(req.params.id).populate('category');  // Removed 'instructor'
         if (!course) return res.status(404).json({ message: 'Course not found' });
-        res.json(course);
+        const plainCourse = course.toObject();
+        // UPDATED: Add averageRating and numRatings
+        const { average, numRatings } = computeAverageRating(course);
+        plainCourse.averageRating = average;
+        plainCourse.numRatings = numRatings;
+        res.json(plainCourse);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
 });
 
-// POST - Create course
+// POST - Create course (UPDATED: Now includes averageRating and numRatings in response)
 router.post('/', auth, checkRole(['admin']), upload.array('videoFiles'), async (req, res) => {
     try {
         const { name, description, category, videos: videosJson } = req.body;
@@ -230,14 +378,19 @@ router.post('/', auth, checkRole(['admin']), upload.array('videoFiles'), async (
         const course = new Course({ name, description, category, videos: finalVideos });
         await course.save();
         console.log(`Course created with ${finalVideos.length} videos`);
-        res.status(201).json({ message: 'Course created successfully', course });
+        const plainCourse = course.toObject();
+        // UPDATED: Add averageRating and numRatings
+        const { average, numRatings } = computeAverageRating(course);
+        plainCourse.averageRating = average;
+        plainCourse.numRatings = numRatings;
+        res.status(201).json({ message: 'Course created successfully', course: plainCourse });
     } catch (error) {
         console.error('Create course error:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
-// PUT - Update course
+// PUT - Update course (UPDATED: Now includes averageRating and numRatings in response)
 router.put('/:id', auth, checkRole(['admin']), upload.array('videoFiles'), async (req, res) => {
     try {
         const { name, description, category, videos: videosJson } = req.body;
@@ -304,7 +457,12 @@ router.put('/:id', auth, checkRole(['admin']), upload.array('videoFiles'), async
         }
 
         await course.save();
-        res.json({ message: 'Course updated', course });
+        const plainCourse = course.toObject();
+        // UPDATED: Add averageRating and numRatings
+        const { average, numRatings } = computeAverageRating(course);
+        plainCourse.averageRating = average;
+        plainCourse.numRatings = numRatings;
+        res.json({ message: 'Course updated', course: plainCourse });
     } catch (error) {
         console.error('Update course error:', error);
         res.status(500).json({ message: 'Server error' });

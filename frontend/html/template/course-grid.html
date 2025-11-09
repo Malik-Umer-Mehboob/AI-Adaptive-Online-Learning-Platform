@@ -16,6 +16,9 @@
     <link rel="shortcut icon" href="assets/img/favicon.png"> 
     <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
 
+    <!-- Theme Settings Js -->
+    <script src="assets/js/theme-script.js" type="text/javascript"></script>
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     
@@ -28,6 +31,9 @@
     
     <!-- Feathericon CSS -->
     <link rel="stylesheet" href="assets/plugins/feather/feather.css">
+
+    <!-- Tabler Icon CSS -->
+    <link rel="stylesheet" href="assets/plugins/tabler-icons/tabler-icons.css">
 
     <!-- Iconsax CSS -->
     <link rel="stylesheet" href="assets/css/iconsax.css">
@@ -74,6 +80,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            cursor: pointer; /* Add pointer cursor for clickable areas */
         }
 
         .course-item-two:hover {
@@ -166,14 +173,23 @@
             z-index: 2;
         }
 
+        .dark-mode .fav-btn {
+            background: rgba(0,0,0,0.6);
+        }
+
         .fav-btn:hover {
             background: white;
             transform: scale(1.1);
         }
 
+        .dark-mode .fav-btn:hover {
+            background: rgba(255,255,255,0.9);
+        }
+
         .fav-btn i {
             font-size: 1.1rem;
             transition: color 0.3s ease;
+            color: var(--text-color);
         }
 
         .fav-btn.favorited i {
@@ -181,83 +197,35 @@
         }
 
         .course-content {
-            padding: 1.5rem;
+            padding: 1rem; /* Reduced padding to give more space for description */
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-        }
-
-        .instructor-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .instructor-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 0.75rem;
-            flex-shrink: 0;
-            border: 2px solid var(--border-color);
-        }
-
-        .instructor-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .instructor-avatar .initials {
-            width: 100%;
-            height: 100%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.75rem;
-        }
-
-        .instructor-name {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-color);
-            margin-bottom: 2px;
-        }
-
-        .instructor-meta {
-            font-size: 0.75rem;
-            color: var(--gray);
+            overflow: hidden; /* Prevent content overflow */
         }
 
         .course-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem; /* Slightly smaller title to save space */
             font-weight: 600;
-            margin: 0.75rem 0;
-            line-height: 1.4;
+            margin: 0.5rem 0; /* Reduced margin */
+            line-height: 1.3;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-        }
-
-        .course-title a {
-            color: var(--text-color);
-            text-decoration: none;
+            color: var(--text-color); /* Ensure color for non-link */
+            cursor: pointer; /* Pointer for clickable */
             transition: color 0.3s ease;
         }
 
-        .course-title a:hover {
+        .course-title:hover {
             color: var(--primary);
         }
 
         .rating {
             display: flex;
             align-items: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem; /* Reduced margin */
         }
 
         .rating-stars {
@@ -278,16 +246,66 @@
             color: #e9ecef;
         }
 
+        .dark-mode .rating-stars .empty {
+            color: #444;
+        }
+
+        .rating-value {
+            font-size: 0.875rem;
+            color: #ffc107;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
         .rating-text {
             font-size: 0.875rem;
             color: var(--gray);
         }
 
+        .dark-mode .rating-text {
+            color: #adb5bd;
+        }
+
+        .category-badge {
+            background: rgba(0,123,255,0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem; /* Reduced margin */
+            align-self: flex-start;
+        }
+
+        .dark-mode .category-badge {
+            background: rgba(13,110,253,0.2);
+            color: #0d6efd;
+        }
+
         .course-desc {
-            font-size: 0.875rem;
+            font-size: 0.9rem; /* Increased font size for better readability */
             color: var(--gray);
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem; /* Reduced margin-bottom */
             flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Adjusted to 3 lines for balanced visibility without too much space */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.6; /* Improved line height for smoother reading flow */
+            /* Removed min-height to avoid awkward spacing for short descriptions; now adapts naturally */
+            transition: all 0.3s ease; /* Smooth transition on hover or changes */
+        }
+
+        .course-desc:hover {
+            color: var(--text-color); /* Subtle color shift on hover for engagement */
+        }
+
+        .dark-mode .course-desc {
+            color: #adb5bd;
+        }
+
+        .dark-mode .course-desc:hover {
+            color: var(--text-color);
         }
 
         .course-footer {
@@ -295,7 +313,7 @@
             align-items: center;
             justify-content: space-between;
             margin-top: auto;
-            padding-top: 1.25rem;
+            padding-top: 1rem; /* Slightly reduced padding-top */
             border-top: 1px dashed var(--border-color);
         }
 
@@ -313,6 +331,10 @@
             font-size: 0.75rem;
             color: var(--gray);
             margin-top: 2px;
+        }
+
+        .dark-mode .course-meta {
+            color: #adb5bd;
         }
 
         .enroll-btn {
@@ -340,15 +362,6 @@
             box-shadow: 0 8px 20px rgba(40,167,69,0.3);
         }
 
-        .category-badge {
-            background: rgba(0,123,255,0.1);
-            color: var(--primary);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
         .navbar-logo img.logo {
             width: 120px;
             height: auto;
@@ -374,7 +387,344 @@
                 height: 200px;
             }
             .course-title {
-                font-size: 1.1rem;
+                font-size: 1rem; /* Smaller on mobile */
+            }
+            .course-desc {
+                -webkit-line-clamp: 2; /* Reduce to 2 lines on mobile for better space usage */
+                font-size: 0.85rem; /* Slightly smaller on mobile */
+                line-height: 1.5;
+            }
+            .course-footer {
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: center;
+            }
+            .enroll-btn {
+                width: 100%;
+            }
+            .course-content {
+                padding: 0.75rem; /* Further reduce padding on mobile */
+            }
+        }
+        /* Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+            color: #ffffff;
+            padding: 30px 0 0; /* Further reduced from 40px to 30px */
+            position: relative;
+        }
+        .light-mode .footer {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #333333;
+        }
+        .footer-top {
+            padding-bottom: 30px; /* Reduced from 40px to 30px */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light-mode .footer-top {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .footer-about p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .footer-logo img {
+            max-width: 220px;
+            margin-bottom: 20px;
+        }
+        .footer-widget h5 {
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .light-mode .footer-widget h5 {
+            color: #0056b3;
+        }
+        .footer-widget ul li a {
+            color: #cccccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 5px 0;
+        }
+        .light-mode .footer-widget ul li a {
+            color: #666666;
+        }
+        .footer-widget ul li a:hover {
+            color: #007bff;
+        }
+        .light-mode .footer-widget ul li a:hover {
+            color: #0056b3;
+        }
+        .subscribe-input form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .subscribe-input input {
+            flex: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+        .light-mode .subscribe-input input {
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #333333;
+        }
+        .subscribe-input button {
+            border-radius: 25px;
+            padding: 10px 20px;
+            background: #007bff;
+            border: none;
+            color: white;
+            transition: background 0.3s ease;
+        }
+        .subscribe-input button:hover {
+            background: #0056b3;
+        }
+        .footer-contact-info .footer-address {
+            margin-bottom: 15px;
+        }
+        .footer-contact-info .footer-address img {
+            width: 20px;
+            height: 20px;
+        }
+        .footer-contact-info p {
+            margin: 0;
+            font-size: 14px;
+        }
+        .footer-contact-info a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .light-mode .footer-contact-info a {
+            color: #0056b3;
+        }
+        .footer-bottom {
+            padding: 15px 0; /* Reduced from 20px to 15px */
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light-mode .footer-bottom {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: #666666;
+        }
+        .footer-bottom p,
+        .footer-bottom a {
+            color: #ffffff !important; /* Make footer-bottom content white */
+        }
+        .footer-link li {
+            margin: 0 15px;
+        }
+        .footer-link a {
+            color: #cccccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .light-mode .footer-link a {
+            color: #666666;
+        }
+        .footer-link a:hover {
+            color: #007bff;
+        }
+        .light-mode .footer-link a:hover {
+            color: #0056b3;
+        }
+        /* Hover effects for icons (social links and sidebar icons) */
+        .social-link,
+        .isax,
+        .fas {
+            transition: all 0.3s ease;
+        }
+        .social-link:hover,
+        .isax:hover,
+        .fas:hover {
+            transform: scale(1.2);
+            color: #007bff !important;
+        }
+        .light-mode .social-link:hover,
+        .light-mode .isax:hover,
+        .light-mode .fas:hover {
+            color: #0056b3 !important;
+        }
+        @media (max-width: 768px) {
+            .subscribe-input form {
+                flex-direction: column;
+            }
+            .footer-link {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        /* Further reduce height of profile card */
+        .profile-card {
+            padding: 1.5rem !important; /* Reduced from 2rem to 1.5rem */
+        }
+        .profile-card .row-gap-3 {
+            row-gap: 0.5rem !important; /* Reduce row gap */
+        }
+        /* Additional CSS to reduce height and ensure alignment */
+        .footer {
+            padding: 20px 0 0 !important;
+        }
+        .footer-top {
+            padding-bottom: 15px !important;
+        }
+        .footer-bottom {
+            padding: 8px 0 !important;
+        }
+        .footer-about p,
+        .footer-widget p {
+            margin-bottom: 12px !important;
+            line-height: 1.4 !important;
+        }
+        .footer-widget h5 {
+            margin-bottom: 12px !important;
+        }
+        .footer-widget ul li {
+            padding: 3px 0 !important;
+        }
+        .footer-widget ul li a {
+            padding: 3px 0 !important;
+        }
+        .footer-contact {
+            margin-top: 10px !important;
+        }
+        .footer-contact .mb-1 {
+            margin-bottom: 4px !important;
+        }
+        .footer-contact .mb-2 {
+            margin-bottom: 4px !important;
+        }
+        .subscribe-input {
+            margin-bottom: 10px !important;
+        }
+        .footer-top .row {
+            align-items: flex-start !important;
+        }
+        .footer-widget,
+        .footer-about {
+            min-height: auto !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start !important;
+        }
+        /* Professional UI for Profile Details Card - Updated for Dark Mode Visibility */
+        .profile-details-card {
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background: linear-gradient(#e3f2fd, #f0f8ff) padding-box, linear-gradient(135deg, #007bff, #0056b3) border-box;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Reduced shadow intensity for less dark shading */
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-top: 30px; /* Increased top margin for better spacing */
+        }
+        .profile-details-card:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* Slightly reduced hover shadow */
+            transform: translateY(-2px);
+        }
+        .dark-mode .profile-details-card {
+            background: linear-gradient(#343a40, #495057) padding-box, linear-gradient(135deg, #0d6efd, #0b5ed7) border-box;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Reduced shadow for dark mode */
+        }
+        .dark-mode .profile-details-card:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+        .profile-details-card .card-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-bottom: none;
+            padding: 1.25rem 1.5rem;
+        }
+        .dark-mode .profile-details-card .card-header {
+            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+        }
+        .profile-details-card .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        .profile-details-card .card-body {
+            padding: 2rem;
+            background: linear-gradient(to bottom, #e3f2fd, #f0f8ff); /* Light blue gradient for body */
+        }
+        .dark-mode .profile-details-card .card-body {
+            background: linear-gradient(to bottom, #343a40, #495057); /* Dark gradient for dark mode */
+        }
+        .profile-details-card .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .dark-mode .profile-details-card .form-label {
+            color: #ffffff; /* White text for better visibility in dark mode */
+        }
+        .profile-details-card .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .profile-details-card .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .dark-mode .profile-details-card .form-control {
+            background: #495057;
+            border-color: #6c757d;
+            color: #fff;
+        }
+        .dark-mode .profile-details-card .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .profile-details-card .form-control[readonly] {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+        .dark-mode .profile-details-card .form-control[readonly] {
+            background: #6c757d;
+            color: #ffffff; /* White text for readonly fields in dark mode */
+        }
+        .profile-details-card .form-text {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+        .dark-mode .profile-details-card .form-text {
+            color: #adb5bd;
+        }
+        .profile-details-card .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .profile-details-card .btn-primary:hover {
+            background: linear-gradient(135deg, #0056b3, #004085);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+        .dark-mode .profile-details-card .btn-primary {
+            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+        }
+        .dark-mode .profile-details-card .btn-primary:hover {
+            background: linear-gradient(135deg, #0b5ed7, #0a58ca);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+        }
+        .profile-details-card .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .profile-details-card .card-body {
+                padding: 1.5rem;
             }
         }
     </style>
@@ -396,54 +746,122 @@
                         </a>
                         <div class="navbar-logo">
                             <a class="logo-white header-logo" href="index-3.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 200px;">
+                            </a>
+                            <a class="logo-dark header-logo" href="index-3.html">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 200px;">
                             </a>
                         </div>
                     </div>
-                    <div class="main-menu-wrapper">                                
+                    <div class="main-menu-wrapper">								
                         <div class="menu-header">
-                            <a href="index-3.html" class="menu-logo">
-                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
+                            <a href="index.html" class="menu-logo">
+                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 150px;">
                             </a>
                             <a id="menu_close" class="menu-close" href="javascript:void(0);">
                                 <i class="fas fa-times"></i>
                             </a>
                         </div>
                         <ul class="main-nav">
-                            <li><a href="index-3.html">Home</a></li>
-                            <li class="active"><a href="course-grid.html">Courses</a></li>
-                            <li><a href="student-dashboard.html">Dashboard</a></li>
+                            <li>
+                                <a href="index-3.html">Home</a>
+                            </li>
+                            <li class="has-submenu active">
+                                <a href="#">Courses</a>
+                                <ul class="submenu">
+                                    <li class="has-submenu">
+                                        <a href="javascript:void(0);">Courses</a>
+                                        <ul class="submenu">
+                                            <li class="active"><a href="course-grid.html">Course Grid</a></li>
+                                            <li><a href="course-list.html">Course List</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="has-submenu">
+                                        <a href="javascript:void(0);">Course Category</a>
+                                        <ul class="submenu">
+                                            <li><a href="course-category.html">Course Category</a></li>
+                                            <li><a href="course-category-2.html">Course Category 2</a></li>
+                                            <li><a href="course-category-3.html">Course Category 3</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="course-details.html">Course Details</a></li>										
+                                    <li><a href="course-resume.html">Course Resume</a></li>
+                                    <li><a href="course-watch.html">Course Watch</a></li>
+                                    <li><a href="cart.html">Course Cart</a></li>
+                                    <li><a href="checkout.html">Course Checkout</a></li>
+                                    <li><a href="add-course.html">Add New Course</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="student-dashboard.html">Dashboard</a>
+                            </li>
                         </ul>
+                        
                         <div class="menu-dropdown">
                             <div class="cart-item">
                                 <h6>Cart & Wishlist</h6>                                
                                 <div class="icon-btn">
                                     <a href="cart.html" class="position-relative">
                                         <i class="isax isax-shopping-cart5"></i>
-                                        <span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">0</span>
+                                        <span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
                                     </a>
                                 </div>
                             </div>
-                            <div class="dropdown mb-2">
-                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown">
-                                    Theme
+                            <div class="dropdown flag-dropdown mb-2">
+                                <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
                                 </a>
                                 <ul class="dropdown-menu p-2 mt-2">
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);" id="light-mode-toggle">Light</a></li>
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);" id="dark-mode-toggle">Dark</a></li>
+                                    <li>
+                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+                                            <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+                                            <img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+                                            <img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="dropdown mb-2">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    USD
+                                </a>
+                                <ul class="dropdown-menu p-2 mt-2">
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown mb-2">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Light
+                                </a>
+                                <ul class="dropdown-menu p-2 mt-2">
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">Light</a></li>
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">Dark</a></li>
                                 </ul>
                             </div>
                         </div>
+                        
                     </div>
                     <div class="header-btn d-flex align-items-center">
                         <div class="icon-btn me-2">
-                            <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle">
+                            <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
                                 <i class="isax isax-sun-15"></i>
                             </a>
-                            <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle activate">
+                            <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
                                 <i class="isax isax-moon"></i>
                             </a>
                         </div>
+                        
+                        
                     </div>
                 </div>
             </div>
@@ -458,8 +876,8 @@
                         <h2 class="breadcrumb-title mb-2">All Courses</h2>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb justify-content-center mb-0">
-                                <li class="breadcrumb-item"><a href="index-3.html">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Courses</li>
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">All Courses</li>
                             </ol>
                         </nav>
                     </div>
@@ -573,86 +991,98 @@
         </section>
 
         <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-bg">
-                <img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
-                <img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt="">
+     <footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row align-items-start">
+        <div class="col-lg-4 mb-3">
+          <div class="footer-about">
+            <div class="footer-logo">
+              <img src="assets/img/logo.png" alt="Logo" style="max-width: 300px; margin-left: -30px;" />
             </div>
-            <div class="footer-top">
-                <div class="container">
-                    <div class="row row-gap-4">
-                        <div class="col-lg-4">
-                            <div class="footer-about">
-                                <div class="footer-logo">
-                                    <img src="assets/img/logo.png" alt="Logo">
-                                </div>
-                                <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning activities.</p>
-                                <div class="d-flex align-items-center">
-                                    <a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
-                                    <a href="#"><img src="assets/img/icon/googleplay.svg" alt=""></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="row row-gap-4">
-                                <div class="col-lg-3">
-                                    <div class="footer-widget footer-menu">
-                                        <h5 class="footer-title">For Instructor</h5>
-                                        <ul>
-                                            <li><a href="course-grid.html">Search Mentors</a></li>
-                                            <li><a href="login.html">Login</a></li>
-                                            <li><a href="register.html">Register</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="footer-widget footer-menu">
-                                        <h5 class="footer-title">For Student</h5>
-                                        <ul>
-                                            <li><a href="javascript:void(0);">Appointments</a></li>
-                                            <li><a href="instructor-message.html">Chat</a></li>
-                                            <li><a href="login.html">Login</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="footer-widget footer-contact">
-                                        <h5 class="footer-title">Newsletter</h5>
-                                        <div class="subscribe-input">
-                                            <form action="javascript:void(0);">
-                                                <input type="email" class="form-control" placeholder="Enter your Email">
-                                                <button type="submit" class="btn btn-primary btn-sm">Subscribe</button>
-                                            </form>
-                                        </div>
-                                        <div class="footer-contact-info">
-                                            <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-20.svg" alt="" class="me-2">
-                                                <p>3556 Beech Street, San Francisco,<br> California, CA 94108</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <p style="margin-top: -30px;">
+              AI Adaptive Online Learning Platform empowers <br>educators and learners with innovative LMS features <br> for adaptive learning and collaboration.
+            </p>
+            <div class="d-flex align-items-center gap-3">
+              <a href="#" class="social-link" title="App Store">
+                <i class="fab fa-apple"></i>
+              </a>
+              <a href="#" class="social-link" title="Google Play">
+                <i class="fab fa-google-play"></i>
+              </a>
+              <a href="#" class="social-link" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-link" title="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-link" title="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Innovation Spotlight</h5>
+            <p>Empowering future with AI-driven education.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Stay Updated</h5>
+            <p>Subscribe for updates on courses and features.</p>
+            <div class="subscribe-input">
+              <form action="javascript:void(0);">
+                <div class="input-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Your email address"
+                    aria-label="Email"
+                  />
+                  <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
                 </div>
+              </form>
             </div>
-            <div class="footer-bottom">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p class="text-white text-center text-md-start">Copyright © 2025 AdaptiveLMS. All rights reserved.</p>
-                        </div>
-                        <div class="col-md-6">
-                            <ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
-                                <li><a href="terms-and-conditions.html">Terms</a></li>
-                                <li><a href="privacy-policy.html">Privacy</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+            <div class="footer-contact mt-2">
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                <span>Iqra University, Defence View, Karachi, Sindh, Pakistan</span>
+              </div>
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-envelope me-2"></i>
+                <a href="mailto:info@AiAdaptiveOnlineLearningPlatform.com">info@AiAdaptiveOnlineLearningPlatform.com</a>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="fas fa-phone me-2"></i>
+                <span>+92 331-8889902</span>
+              </div>
             </div>
-        </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p>&copy; 2025 AI Adaptive Online Learning Platform. All rights reserved</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item"><a href="privacy.html">Privacy Policy</a></li>
+            <li class="list-inline-item"><a href="terms.html">Terms & Conditions</a></li>
+            <li class="list-inline-item"><a href="cookies.html">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
     </div>
 
     <!-- Toast Container -->
@@ -741,10 +1171,16 @@ $(document).ready(function() {
 
     function generateStars(rating) {
         let stars = '';
+        const fullStars = Math.floor(rating);
+        const hasHalf = rating % 1 >= 0.5;
         for (let i = 1; i <= 5; i++) {
-            if (i <= Math.floor(rating)) stars += '<i class="fas fa-star filled"></i>';
-            else if (i === Math.ceil(rating) && rating % 1 >= 0.5) stars += '<i class="fas fa-star-half-alt filled"></i>';
-            else stars += '<i class="far fa-star empty"></i>';
+            if (i <= fullStars) {
+                stars += '<i class="fas fa-star filled"></i>';
+            } else if (i === fullStars + 1 && hasHalf) {
+                stars += '<i class="fas fa-star-half-alt filled"></i>';
+            } else {
+                stars += '<i class="far fa-star empty"></i>';
+            }
         }
         return stars;
     }
@@ -815,33 +1251,30 @@ $(document).ready(function() {
                 const videoCount = (course.videos || []).length;
                 const firstUrl = course.videos?.[0]?.url;
                 const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
-                const rating = course.rating || 4.5;
-                const reviews = course.reviewCount || 0;
+                const rating = course.averageRating || 0; // Use averageRating, default 0 for empty
+                const numRatings = course.numRatings || 0;
                 const duration = course.duration || '2h 30m';
 
                 return `
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
-                        <div class="course-item-two course-item h-100">
+                        <div class="course-item-two course-item h-100" data-course-id="${course._id}">
                             <div class="course-img">
-                                <a href="course-details.html?id=${course._id}">
-                                    <img src="${thumbnail}" alt="${course.name}" onerror="this.src='assets/img/course/course-placeholder.jpg'">
-                                    <div class="play-overlay">
-                                        <div class="play-btn"><i class="fas fa-play"></i></div>
-                                    </div>
-                                    ${videoCount > 1 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
-                                    <button class="fav-btn ${course.isFavorite ? 'favorited' : ''}" data-id="${course._id}">
-                                        <i class="fas fa-heart"></i>
-                                    </button>
-                                </a>
+                                <img src="${thumbnail}" alt="${course.name}" onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                                <div class="play-overlay">
+                                    <div class="play-btn"><i class="fas fa-play"></i></div>
+                                </div>
+                                ${videoCount > 1 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
+                                <button class="fav-btn ${course.isFavorite ? 'favorited' : ''}" data-id="${course._id}">
+                                    <i class="fas fa-heart"></i>
+                                </button>
                             </div>
                             <div class="course-content">
-                                <h6 class="course-title">
-                                    <a href="course-details.html?id=${course._id}">${course.name}</a>
-                                </h6>
+                                <div class="category-badge">${course.category?.name || 'General'}</div>
+                                <h6 class="course-title">${course.name}</h6>
                                 <div class="rating">
                                     <div class="rating-stars">${generateStars(rating)}</div>
-                                    <span class="text-warning fw-medium">${rating}</span>
-                                    <span class="rating-text">(${reviews})</span>
+                                    ${rating > 0 ? `<span class="rating-value">${rating}</span>` : ''}
+                                    <span class="rating-text">(${numRatings})</span>
                                 </div>
                                 <p class="course-desc">${course.description}</p>
                                 <div class="course-footer">
@@ -898,7 +1331,8 @@ $(document).ready(function() {
     }
 
     // Event Handlers
-    $(document).on('click', '.enroll-btn:not(.enrolled)', async function() {
+    $(document).on('click', '.enroll-btn:not(.enrolled)', async function(e) {
+        e.stopPropagation(); // Prevent course item click
         const btn = $(this);
         const id = btn.data('id');
         const name = btn.data('name');
@@ -918,6 +1352,27 @@ $(document).ready(function() {
         } catch (err) {
             showToast('Enrollment failed.', 'error');
             btn.html('<i class="fas fa-play"></i> Start Free').prop('disabled', false);
+        }
+    });
+
+    // New: Handle course item click for navigation (only if enrolled)
+    $(document).on('click', '.course-item-two', function(e) {
+        // Ignore clicks on buttons or overlays
+        if ($(e.target).closest('.enroll-btn, .fav-btn, .play-overlay').length) {
+            return;
+        }
+        const $item = $(this);
+        const courseId = $item.data('course-id');
+        const $enrollBtn = $item.find('.enroll-btn');
+        const isEnrolled = $enrollBtn.hasClass('enrolled');
+
+        if (isEnrolled) {
+            window.location.href = `course-details.html?id=${courseId}`;
+        } else {
+            showToast('Please enroll in the course to view details.', 'warning');
+            // Optional: Highlight the enroll button
+            $enrollBtn.addClass('border border-warning').effect('bounce', { times: 2 }, 500);
+            setTimeout(() => $enrollBtn.removeClass('border border-warning'), 2000);
         }
     });
 
@@ -950,7 +1405,8 @@ $(document).ready(function() {
         loadCourses();
     });
 
-    $(document).on('click', '.fav-btn', function() {
+    $(document).on('click', '.fav-btn', function(e) {
+        e.stopPropagation(); // Prevent course item click
         const btn = $(this);
         const id = btn.data('id');
         const favored = btn.hasClass('favorited');

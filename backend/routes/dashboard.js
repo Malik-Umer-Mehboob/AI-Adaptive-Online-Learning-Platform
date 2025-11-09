@@ -13,7 +13,7 @@ function getYouTubeThumbnail(url) {
     return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : 'assets/img/placeholder.jpg';
 }
 
-// POST - Enroll in course
+// POST - Enroll in course (Fixed: Set progress: 0 and status: 'enrolled' explicitly)
 router.post('/student/enroll', auth, checkRole(['student']), async (req, res) => {
     try {
         const { courseId } = req.body;
@@ -25,7 +25,12 @@ router.post('/student/enroll', auth, checkRole(['student']), async (req, res) =>
         const existing = await Enrollment.findOne({ studentId: req.user.id, courseId });
         if (existing) return res.status(400).json({ message: 'Already enrolled' });
 
-        const enrollment = new Enrollment({ studentId: req.user.id, courseId });
+        const enrollment = new Enrollment({ 
+            studentId: req.user.id, 
+            courseId,
+            progress: 0,  // Explicitly set to 0 for new enrollments
+            status: 'enrolled'  // Default status set to 'enrolled'
+        });
         await enrollment.save();
         res.json({ message: 'Enrolled successfully' });
     } catch (error) {
@@ -45,6 +50,7 @@ router.post('/student/complete', auth, checkRole(['student']), async (req, res) 
         if (enrollment.status === 'completed') return res.status(400).json({ message: 'Already completed' });
 
         enrollment.status = 'completed';
+        enrollment.progress = 100;  // Set progress to 100% on complete
         await enrollment.save();
         res.json({ message: 'Course completed' });
     } catch (error) {
@@ -53,17 +59,15 @@ router.post('/student/complete', auth, checkRole(['student']), async (req, res) 
     }
 });
 
-// GET - Student enrollments
+// GET - Student enrollments (Fixed: No populate, return plain objects with string courseId)
 router.get('/student/enrollments', auth, checkRole(['student']), async (req, res) => {
     try {
         const enrollments = await Enrollment.find({ studentId: req.user.id })
-            .populate({
-                path: 'courseId',
-                populate: { path: 'category', select: 'name' }
-            })
             .sort({ enrolledAt: -1 });
 
-        res.json(enrollments);
+        // Convert to plain JS objects to ensure courseId is string
+        const plainEnrollments = enrollments.map(e => e.toObject({ getters: true, virtuals: false }));
+        res.json(plainEnrollments);
     } catch (error) {
         console.error('Error fetching enrollments:', error.stack);
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -106,6 +110,8 @@ router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) 
                 title: course.name || 'Untitled',
                 image,
                 category: course.category?.name || 'Uncategorized',
+                instructorName: course.instructor?.name || 'Unknown',  // Added if needed
+                instructorImage: course.instructor?.profileImage || 'assets/img/default-profile.png'
             };
         });
 

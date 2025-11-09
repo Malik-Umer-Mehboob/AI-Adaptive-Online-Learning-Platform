@@ -1,1303 +1,1860 @@
-﻿<!DOCTYPE html> 
+﻿<!DOCTYPE html>
 <html lang="en">
-	<head>
-	
-		<!-- Meta Tags -->
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="description" content="Dreams LMS is a powerful Learning Management System template designed for educators, training institutions, and businesses. Manage courses, track student progress, conduct virtual classes, and enhance e-learning experiences with an intuitive and feature-rich platform.">
-		<meta name="keywords" content="LMS template, Learning Management System, e-learning software, online course platform, student management, education portal, virtual classroom, training management system, course tracking, online education">
-		<meta name="author" content="Dreams Technologies">
-		<meta name="robots" content="index, follow">
-		
-		<title>Dreams LMS | Advanced Learning Management System Template</title>
+<head>
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Dreams LMS is a powerful Learning Management System template designed for educators, training institutions, and businesses. Manage courses, track student progress, conduct virtual classes, and enhance e-learning experiences with an intuitive and feature-rich platform.">
+    <meta name="keywords" content="LMS template, Learning Management System, e-learning software, online course platform, student management, education portal, virtual classroom, training management system, course tracking, online education">
+    <meta name="author" content="Dreams Technologies">
+    <meta name="robots" content="index, follow">
+    <title>Adaptive LMS | Enrolled Courses</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/img/favicon.png">
+    <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
+    <!-- Theme Settings Js -->
+    <script src="assets/js/theme-script.js" type="text/javascript"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+    <!-- Feather CSS -->
+    <link rel="stylesheet" href="assets/css/feather.css">
+    <!-- Iconsax CSS -->
+    <link rel="stylesheet" href="assets/css/iconsax.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Inline CSS for Dark/Light Mode and Toast -->
+    <style>
+      :root {
+            --primary: #007bff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --dark: #343a40;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+        }
+        body.dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --card-bg: #2c2c2c;
+            --border-color: #444;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+      .light-mode {
+        background-color: #ffffff;
+        color: #000000;
+      }
+      .dark-mode {
+        background-color: #1a1a1a;
+        color: #ffffff;
+      }
+      .theme-toggle {
+        cursor: pointer;
+      }
+      .theme-toggle.activate .isax {
+        color: #007bff; /* Active icon color */
+      }
+      .avatar img {
+        display: none; /* Hide image by default */
+      }
+      .avatar.has-image img {
+        display: block; /* Show image if profileImage exists */
+      }
+      #toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+      }
+      .toast {
+        opacity: 0.9;
+        transition: all 0.3s;
+      }
+      .toast-success {
+        background-color: #28a745;
+        color: #fff;
+      }
+      .toast-error {
+        background-color: #dc3545;
+        color: #fff;
+      }
+      @media (max-width: 768px) {
+        #toast-container {
+          top: 10px;
+          right: 10px;
+        }
+      }
+      /* Light Mode Cards */
+      .card-users {
+        background: linear-gradient(135deg, #a8e6ff, #b3d9ff);
+        color: #333;
+      }
+      .card-students {
+        background: linear-gradient(135deg, #a8f5c2, #b8f5d2);
+        color: #333;
+      }
+      .card-courses {
+        background: linear-gradient(135deg, #a8f0ff, #b8f0ff);
+        color: #333;
+      }
+      .card-categories {
+        background: linear-gradient(135deg, #d1c4e9, #d7bde2);
+        color: #333;
+      }
+      /* Dark Mode Cards */
+      .dark-mode .card-users {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        color: #ffffff;
+      }
+      .dark-mode .card-students {
+        background: linear-gradient(135deg, #1e7e34, #155724);
+        color: #ffffff;
+      }
+      .dark-mode .card-courses {
+        background: linear-gradient(135deg, #117a8b, #0c5460);
+        color: #ffffff;
+      }
+      .dark-mode .card-categories {
+        background: linear-gradient(135deg, #5a2d91, #4a1d7a);
+        color: #ffffff;
+      }
+      .table th, .table td {
+        border-right: 1px solid #dee2e6;
+        position: relative;
+      }
+      .table th:last-child, .table td:last-child {
+        border-right: none;
+      }
+      .dark-mode .table th, .dark-mode .table td {
+        border-right: 1px solid #495057;
+      }
+      /* Recent Activities Table Styling */
+      .recent-activities-table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+      }
+      .recent-activities-table thead th {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        border: none;
+        padding: 16px 12px;
+      }
+      .recent-activities-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .recent-activities-table tbody tr:hover {
+        background: rgba(0, 123, 255, 0.05);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      .recent-activities-table tbody td {
+        padding: 16px 12px;
+        vertical-align: middle;
+        border: none;
+        position: relative;
+      }
+      .recent-activities-table tbody td::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 20px;
+        background: #dee2e6;
+      }
+      .recent-activities-table tbody td:last-child::after {
+        display: none;
+      }
+      .dark-mode .recent-activities-table thead th {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      }
+      .dark-mode .recent-activities-table tbody tr {
+        border-bottom: 1px solid #495057;
+      }
+      .dark-mode .recent-activities-table tbody tr:hover {
+        background: rgba(0, 123, 255, 0.1);
+      }
+      .dark-mode .recent-activities-table tbody td::after {
+        background: #495057;
+      }
+      .dark-mode .recent-activities-table {
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.05);
+      }
+      .activity-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        margin-right: 8px;
+      }
+      .role-admin { background: #007bff; color: white; }
+      .role-student { background: #28a745; color: white; }
+      .role-instructor { background: #ffc107; color: #212529; }
+      .dark-mode .role-admin { background: #0d6efd; }
+      .dark-mode .role-student { background: #20c997; }
+      .dark-mode .role-instructor { background: #fd7e14; color: white; }
+      /* Footer Styles */
+      .footer {
+        background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+        color: #ffffff;
+        padding: 30px 0 0; /* Further reduced from 40px to 30px */
+        position: relative;
+      }
+      .light-mode .footer {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #333333;
+      }
+      .footer-top {
+        padding-bottom: 30px; /* Reduced from 40px to 30px */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .light-mode .footer-top {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .footer-about p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      .footer-logo img {
+        max-width: 220px;
+        margin-bottom: 20px;
+      }
+      .footer-widget h5 {
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+      .light-mode .footer-widget h5 {
+        color: #0056b3;
+      }
+      .footer-widget ul li a {
+        color: #cccccc;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        display: block;
+        padding: 5px 0;
+      }
+      .light-mode .footer-widget ul li a {
+        color: #666666;
+      }
+      .footer-widget ul li a:hover {
+        color: #007bff;
+      }
+      .light-mode .footer-widget ul li a:hover {
+        color: #0056b3;
+      }
+      .subscribe-input form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .subscribe-input input {
+        flex: 1;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+      .light-mode .subscribe-input input {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        color: #333333;
+      }
+      .subscribe-input button {
+        border-radius: 25px;
+        padding: 10px 20px;
+        background: #007bff;
+        border: none;
+        color: white;
+        transition: background 0.3s ease;
+      }
+      .subscribe-input button:hover {
+        background: #0056b3;
+      }
+      .footer-contact-info .footer-address {
+        margin-bottom: 15px;
+      }
+      .footer-contact-info .footer-address img {
+        width: 20px;
+        height: 20px;
+      }
+      .footer-contact-info p {
+        margin: 0;
+        font-size: 14px;
+      }
+      .footer-contact-info a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .light-mode .footer-contact-info a {
+        color: #0056b3;
+      }
+      .footer-bottom {
+        padding: 15px 0; /* Reduced from 20px to 15px */
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .light-mode .footer-bottom {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        color: #666666;
+      }
+      .footer-bottom p,
+      .footer-bottom a {
+        color: #ffffff !important; /* Make footer-bottom content white */
+      }
+      .footer-link li {
+        margin: 0 15px;
+      }
+      .footer-link a {
+        color: #cccccc;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      .light-mode .footer-link a {
+        color: #666666;
+      }
+      .footer-link a:hover {
+        color: #007bff;
+      }
+      .light-mode .footer-link a:hover {
+        color: #0056b3;
+      }
+      /* Hover effects for icons (social links and sidebar icons) */
+      .social-link,
+      .isax,
+      .fas {
+        transition: all 0.3s ease;
+      }
+      .social-link:hover,
+      .isax:hover,
+      .fas:hover {
+        transform: scale(1.2);
+        color: #007bff !important;
+      }
+      .light-mode .social-link:hover,
+      .light-mode .isax:hover,
+      .light-mode .fas:hover {
+        color: #0056b3 !important;
+      }
+      @media (max-width: 768px) {
+        .subscribe-input form {
+          flex-direction: column;
+        }
+        .footer-link {
+          flex-direction: column;
+          gap: 10px;
+        }
+      }
+      /* Further reduce height of profile card */
+      .profile-card {
+        padding: 1.5rem !important; /* Reduced from 2rem to 1.5rem */
+      }
+      .profile-card .row-gap-3 {
+        row-gap: 0.5rem !important; /* Reduce row gap */
+      }
+      /* Additional CSS to reduce height and ensure alignment */
+.footer {
+  padding: 20px 0 0 !important;
+}
+.footer-top {
+  padding-bottom: 15px !important;
+}
+.footer-bottom {
+  padding: 8px 0 !important;
+}
+.footer-about p,
+.footer-widget p {
+  margin-bottom: 12px !important;
+  line-height: 1.4 !important;
+}
+.footer-widget h5 {
+  margin-bottom: 12px !important;
+}
+.footer-widget ul li {
+  padding: 3px 0 !important;
+}
+.footer-widget ul li a {
+  padding: 3px 0 !important;
+}
+.footer-contact {
+  margin-top: 10px !important;
+}
+.footer-contact .mb-1 {
+  margin-bottom: 4px !important;
+}
+.footer-contact .mb-2 {
+  margin-bottom: 4px !important;
+}
+.subscribe-input {
+  margin-bottom: 10px !important;
+}
+.footer-top .row {
+  align-items: flex-start !important;
+}
+.footer-widget,
+.footer-about {
+  min-height: auto !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start !important;
+}
+      /* Professional UI for Profile Details Card - Updated for Dark Mode Visibility */
+      .profile-details-card {
+        border-radius: 8px;
+        border: 2px solid transparent;
+        background: linear-gradient(#e3f2fd, #f0f8ff) padding-box, linear-gradient(135deg, #007bff, #0056b3) border-box;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Reduced shadow intensity for less dark shading */
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-top: 30px; /* Increased top margin for better spacing */
+      }
+      .profile-details-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* Slightly reduced hover shadow */
+        transform: translateY(-2px);
+      }
+      .dark-mode .profile-details-card {
+        background: linear-gradient(#343a40, #495057) padding-box, linear-gradient(135deg, #0d6efd, #0b5ed7) border-box;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Reduced shadow for dark mode */
+      }
+      .dark-mode .profile-details-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      }
+      .profile-details-card .card-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border-bottom: none;
+        padding: 1.25rem 1.5rem;
+      }
+      .dark-mode .profile-details-card .card-header {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      }
+      .profile-details-card .card-header h5 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.25rem;
+      }
+      .profile-details-card .card-body {
+        padding: 2rem;
+        background: linear-gradient(to bottom, #e3f2fd, #f0f8ff); /* Light blue gradient for body */
+      }
+      .dark-mode .profile-details-card .card-body {
+        background: linear-gradient(to bottom, #343a40, #495057); /* Dark gradient for dark mode */
+      }
+      .profile-details-card .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+      .dark-mode .profile-details-card .form-label {
+        color: #ffffff; /* White text for better visibility in dark mode */
+      }
+      .profile-details-card .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        font-size: 0.95rem;
+      }
+      .profile-details-card .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+      .dark-mode .profile-details-card .form-control {
+        background: #495057;
+        border-color: #6c757d;
+        color: #fff;
+      }
+      .dark-mode .profile-details-card .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+      .profile-details-card .form-control[readonly] {
+        background: #f8f9fa;
+        color: #6c757d;
+      }
+      .dark-mode .profile-details-card .form-control[readonly] {
+        background: #6c757d;
+        color: #ffffff; /* White text for readonly fields in dark mode */
+      }
+      .profile-details-card .form-text {
+        color: #6c757d;
+        font-size: 0.85rem;
+      }
+      .dark-mode .profile-details-card .form-text {
+        color: #adb5bd;
+      }
+      .profile-details-card .btn-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        border-radius: 6px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .profile-details-card .btn-primary:hover {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+      }
+      .dark-mode .profile-details-card .btn-primary {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      }
+      .dark-mode .profile-details-card .btn-primary:hover {
+        background: linear-gradient(135deg, #0b5ed7, #0a58ca);
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+      }
+      .profile-details-card .mb-3 {
+        margin-bottom: 1.5rem;
+      }
+      @media (max-width: 768px) {
+        .profile-details-card .card-body {
+          padding: 1.5rem;
+        }
+      }
+        .course-item-two {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            cursor: pointer; /* Add pointer cursor for clickable areas */
+        }
 
-		<!-- Favicon -->
-		<link rel="shortcut icon" href="assets/img/favicon.png"> 
-		<link rel="apple-touch-icon" href="assets/img/apple-icon.png">
+        .course-item-two:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
 
-		<!-- Theme Settings Js -->
-		<script src="assets/js/theme-script.js" type="aa8cea53ec42d89138cab525-text/javascript"></script>
-		
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-		
-		<!-- Fontawesome CSS -->
-		<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
-		<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
-		
-		<!-- Feather CSS -->
-		<link rel="stylesheet" href="assets/css/feather.css">
+        .course-img {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
 
-		<!-- Iconsax CSS -->
-		<link rel="stylesheet" href="assets/css/iconsax.css">
+        .course-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
 
-		<!-- Main CSS -->
-		<link rel="stylesheet" href="assets/css/style.css">
-	
-	</head>
-	<body>
+        .course-item-two:hover .course-img img {
+            transform: scale(1.08);
+        }
 
-		<!-- Main Wrapper -->
-		<div class="main-wrapper">
+        .play-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-			<!-- Header Topbar-->
-			<div class="header-topbar text-center">
-				<div class="container">
-					<div class="row">
-						<div class="col-lg-6">
-							<div class="d-flex align-items-center ">
-								<p class="d-flex align-items-center fw-medium fs-14 mb-2 me-3"><i class="isax isax-location me-2"></i>1442 Crosswind Drive Madisonville</p>
-								<p class="d-flex align-items-center fw-medium fs-14 mb-2"><i class="isax isax-call-calling5 me-2"></i>+1 45887 77874</p>
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="d-flex align-items-center justify-content-end">
-								<div class="dropdown flag-dropdown mb-2 me-3">
-									<a href="javascript:void(0);" class="dropdown-toggle d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-										<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-									</a>
-									<ul class="dropdown-menu p-2 mt-2" style="">
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-											</a>
-										</li>
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
-											</a>
-										</li>
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
-											</a>
-										</li>
-									</ul>
-								</div>
-								<div class="dropdown mb-2 me-3">
-									<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-										USD
-									</a>
-									<ul class="dropdown-menu p-2 mt-2" style="">
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
-									</ul>
-								</div>
-								<ul class="social-icon d-flex align-items-center mb-2">
-                                    <li class="me-2">
-                                        <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+        .course-item-two:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+
+        .play-btn i {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-left: 3px;
+        }
+
+        .video-count-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+
+        .fav-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(255,255,255,0.9);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .dark-mode .fav-btn {
+            background: rgba(0,0,0,0.6);
+        }
+
+        .fav-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .dark-mode .fav-btn:hover {
+            background: rgba(255,255,255,0.9);
+        }
+
+        .fav-btn i {
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .fav-btn.favorited i {
+            color: #e91e63 !important;
+        }
+
+        .course-content {
+            padding: 1rem; /* Reduced padding to give more space for description */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent content overflow */
+        }
+
+        .course-title {
+            font-size: 1.1rem; /* Slightly smaller title to save space */
+            font-weight: 600;
+            margin: 0.5rem 0; /* Reduced margin */
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text-color); /* Ensure color for non-link */
+            cursor: pointer; /* Pointer for clickable */
+            transition: color 0.3s ease;
+        }
+
+        .course-title:hover {
+            color: var(--primary);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem; /* Reduced margin */
+        }
+
+        .rating-stars {
+            display: flex;
+            margin-right: 0.5rem;
+        }
+
+        .rating-stars i {
+            font-size: 1rem;
+            margin-right: 2px;
+        }
+
+        .rating-stars .filled {
+            color: #ffc107;
+        }
+
+        .rating-stars .empty {
+            color: #e9ecef;
+        }
+
+        .dark-mode .rating-stars .empty {
+            color: #444;
+        }
+
+        .rating-value {
+            font-size: 0.875rem;
+            color: #ffc107;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .rating-text {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .dark-mode .rating-text {
+            color: #adb5bd;
+        }
+
+        .category-badge {
+            background: rgba(0,123,255,0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem; /* Reduced margin */
+            align-self: flex-start;
+        }
+
+        .dark-mode .category-badge {
+            background: rgba(13,110,253,0.2);
+            color: #0d6efd;
+        }
+
+        .course-desc {
+            font-size: 0.9rem; /* Increased font size for better readability */
+            color: var(--gray);
+            margin-bottom: 0.75rem; /* Reduced margin-bottom */
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Adjusted to 3 lines for balanced visibility without too much space */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.6; /* Improved line height for smoother reading flow */
+            /* Removed min-height to avoid awkward spacing for short descriptions; now adapts naturally */
+            transition: all 0.3s ease; /* Smooth transition on hover or changes */
+        }
+
+        .course-desc:hover {
+            color: var(--text-color); /* Subtle color shift on hover for engagement */
+        }
+
+        .dark-mode .course-desc {
+            color: #adb5bd;
+        }
+
+        .dark-mode .course-desc:hover {
+            color: var(--text-color);
+        }
+
+        .course-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 1rem; /* Slightly reduced padding-top */
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .price.free {
+            color: var(--success);
+        }
+
+        .course-meta {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+
+        .dark-mode .course-meta {
+            color: #adb5bd;
+        }
+
+        .view-btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,123,255,0.2);
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,123,255,0.3);
+            color: white;
+        }
+
+        .navbar-logo img.logo {
+            width: 120px;
+            height: auto;
+        }
+
+        .footer-logo img {
+            width: 150px;
+            height: auto;
+        }
+
+        .toast-success {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        .toast-error {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .course-img {
+                height: 200px;
+            }
+            .course-title {
+                font-size: 1rem; /* Smaller on mobile */
+            }
+            .course-desc {
+                -webkit-line-clamp: 2; /* Reduce to 2 lines on mobile for better space usage */
+                font-size: 0.85rem; /* Slightly smaller on mobile */
+                line-height: 1.5;
+            }
+            .course-footer {
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: center;
+            }
+            .view-btn {
+                width: 100%;
+            }
+            .course-content {
+                padding: 0.75rem; /* Further reduce padding on mobile */
+            }
+        }
+        /* UI Improvements: Enhanced card hover and spacing */
+        .course-item-two {
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother transition */
+        }
+        .course-content {
+            padding: 1rem; /* Adjusted for smaller box */
+        }
+        .progress-bar-custom {
+            height: 6px;
+            background-color: var(--light);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--primary));
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        .your-rating {
+            font-size: 0.8rem;
+            color: var(--success);
+            font-style: italic;
+            margin-top: 0.25rem;
+        }
+        .no-rating {
+            font-size: 0.875rem;
+            color: var(--gray);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Header -->
+        <header class="header-two">
+            <div class="container">
+                <div class="header-nav">
+                    <div class="navbar-header">
+                        <a id="mobile_btn" href="javascript:void(0);">
+                            <span class="bar-icon">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                        </a>
+                        <div class="navbar-logo">
+                            <a class="logo-white header-logo" href="index-3.html">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 200px;">
+                            </a>
+                            <a class="logo-dark header-logo" href="index-3.html">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 200px;">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="main-menu-wrapper">
+                        <div class="menu-header">
+                            <a href="index.html" class="menu-logo">
+                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 150px;">
+                            </a>
+                            <a id="menu_close" class="menu-close" href="javascript:void(0);">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                        <ul class="main-nav">
+                            <li>
+                                <a href="index-3.html">Home</a>
+                            </li>
+                            <li class="has-submenu">
+                                <a href="#">Courses</a>
+                                <ul class="submenu">
+                                    <li class="has-submenu">
+                                        <a href="javascript:void(0);">Courses</a>
+                                        <ul class="submenu">
+                                            <li><a href="course-grid.html">Course Grid</a></li>
+                                            <li><a href="course-list.html">Course List</a></li>
+                                        </ul>
                                     </li>
-                                    <li class="me-2">
-                                        <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+                                    <li class="has-submenu">
+                                        <a href="javascript:void(0);">Course Category</a>
+                                        <ul class="submenu">
+                                            <li><a href="course-category.html">Course Category</a></li>
+                                            <li><a href="course-category-2.html">Course Category 2</a></li>
+                                            <li><a href="course-category-3.html">Course Category 3</a></li>
+                                        </ul>
                                     </li>
-									<li class="me-2">
-                                        <a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a>
-                                    </li>
-									<li class="me-2">
-                                        <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a>
-                                    </li>
+                                    <li><a href="course-details.html">Course Details</a></li>
+                                    <li><a href="course-resume.html">Course Resume</a></li>
+                                    <li><a href="course-watch.html">Course Watch</a></li>
+                                    <li><a href="cart.html">Course Cart</a></li>
+                                    <li><a href="checkout.html">Course Checkout</a></li>
+                                    <li><a href="add-course.html">Add New Course</a></li>
                                 </ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Header Topbar-->
-		
-			<!-- Header -->
-			<header class="header-two">
-				<div class="container">
-					<div class="header-nav">
-						<div class="navbar-header">
-							<a id="mobile_btn" href="javascript:void(0);">
-								<span class="bar-icon">
-									<span></span>
-									<span></span>
-									<span></span>
-								</span>
-							</a>
-							<div class="navbar-logo">
-								<a class="logo-white header-logo" href="index.html">
-									<img src="assets/img/logo.svg" class="logo" alt="Logo">
-								</a>
-								<a class="logo-dark header-logo" href="index.html">
-									<img src="assets/img/logo-white.svg" class="logo" alt="Logo">
-								</a>
-							</div>
-						</div>
-						<div class="main-menu-wrapper">								
-							<div class="menu-header">
-								<a href="index.html" class="menu-logo">
-									<img src="assets/img/logo.svg" class="img-fluid" alt="Logo">
-								</a>
-								<a id="menu_close" class="menu-close" href="javascript:void(0);">
-									<i class="fas fa-times"></i>
-								</a>
-							</div>
-							<ul class="main-nav">
-								<li class="has-submenu megamenu">
-									<a href="#">Home <i class="isax isax-add"></i></a>
-									<ul class="submenu mega-submenu">
-										<li>
-											<div class="megamenu-wrapper">
-												<div class="row">
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index.html" class="inner-demo-img"><img src="assets/img/home/home-01.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index.html" class="inner-demo-img">Home 1</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-2.html" class="inner-demo-img"><img src="assets/img/home/home-02.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-2.html" class="inner-demo-img">Home 2</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-3.html" class="inner-demo-img"><img src="assets/img/home/home-03.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-3.html" class="inner-demo-img">Home 3</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-4.html" class="inner-demo-img"><img src="assets/img/home/home-04.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-4.html" class="inner-demo-img">Home 4</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-5.html" class="inner-demo-img"><img src="assets/img/home/home-05.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-5.html" class="inner-demo-img">Home 5</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-6.html" class="inner-demo-img"><img src="assets/img/home/home-06.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-6.html" class="inner-demo-img">Home 6</a>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="#">Courses <i class="isax isax-add"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Courses</a>
-											<ul class="submenu">
-												<li><a href="course-grid.html">Course Grid</a></li>
-												<li><a href="course-list.html">Course List</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Course Category</a>
-											<ul class="submenu">
-												<li><a href="course-category.html">Course Category</a></li>
-												<li><a href="course-category-2.html">Course Category 2</a></li>
-												<li><a href="course-category-3.html">Course Category 3</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Course Details</a>
-											<ul class="submenu">
-												<li><a href="course-details.html">Course Details</a></li>
-												<li><a href="course-details-2.html">Course Details 2</a></li>
-											</ul>
-										</li>										
-										<li><a href="course-resume.html">Course Resume</a></li>
-										<li><a href="course-watch.html">Course Watch</a></li>
-										<li><a href="cart.html">Course Cart</a></li>
-										<li><a href="checkout.html">Course Checkout</a></li>
-										<li><a href="add-course.html">Add New Course</a></li>
-									</ul>
-								</li>
-								<li class="has-submenu active">
-									<a href="javascript:void(0);">Dashboard <i class="isax isax-add"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Instructor Dashboard</a>
-											<ul class="submenu">
-												<li><a href="instructor-dashboard.html">Dashboard</a></li>
-												<li><a href="instructor-profile.html">My Profile</a></li>
-												<li><a href="instructor-course.html">Course</a></li>
-												<li><a href="instructor-announcements.html">Announcements</a></li>
-												<li><a href="instructor-assignment.html">Assignments</a></li>
-												<li class="has-submenu">
-													<a href="javascript:void(0);">Student</a>
-													<ul class="submenu">
-														<li><a href="students.html">Student Grid</a></li>
-														<li><a href="student-list.html">Student List</a></li>
-														<li><a href="student-details.html">Student Details</a></li>
-													</ul>
-												</li>
-												<li><a href="instructor-quiz.html">Quiz</a></li>
-												<li><a href="instructor-quiz-results.html">Quiz Results</a></li>
-												<li><a href="instructor-certificate.html">Certificates</a></li>
-												<li><a href="instructor-earnings.html">Earning</a></li>
-												<li><a href="instructor-payout.html">Payout</a></li>
-												<li><a href="instructor-statements.html">Statement</a></li>
-												<li><a href="instructor-tickets.html">Support Tickets</a></li>
-												<li><a href="instructor-settings.html">Settings</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu active">
-											<a href="javascript:void(0);">Student Dashboard</a>
-											<ul class="submenu">
-												<li><a href="student-dashboard.html">Student Dashboard</a></li>
-												<li><a href="student-profile.html">My Profile</a></li>
-												<li class="active"><a href="student-courses.html">Enrolled Courses</a></li>
-												<li><a href="student-certificates.html">My Certificates</a></li>
-												<li><a href="student-wishlist.html">Wishlist</a></li>
-												<li><a href="student-reviews.html">Reviews</a></li>
-												<li><a href="student-quiz.html">My Quiz Attempts</a></li>
-												<li><a href="student-order-history.html">Order History</a></li>
-												<li><a href="student-referral.html">Referrals</a></li>
-												<li><a href="student-messages.html">Messages</a></li>
-												<li><a href="student-tickets.html">Support Ticket</a></li>
-												<li><a href="student-settings.html">Settings</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>	
-								<li class="has-submenu">
-									<a href="#">Pages <i class="isax isax-add"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="#">Instructors</a>
-											<ul class="submenu">
-												<li><a href="instructor-grid.html">Instructor Grid</a></li>
-												<li><a href="instructor-list.html">Instructor List</a></li>
-												<li><a href="instructor-details.html">Instructor Details</a></li>
-											</ul>
-										</li>
-										<li><a href="about-us.html">About Us</a></li>
-										<li><a href="contact-us.html">Contact us</a></li>
-										<li><a href="notifications.html">Notifications</a></li>
-										<li><a href="become-an-instructor.html">Become an Instructor</a></li>
-										<li><a href="testimonials.html">Testimonials</a></li>
-										<li class="has-submenu">
-											<a href="#">Authentication</a>
-											<ul class="submenu">
-												<li><a href="login.html">Login</a></li>
-												<li><a href="register.html">Register</a></li>
-												<li><a href="forgot-password.html">Forgot Password</a></li>
-												<li><a href="reset-password.html">Reset Password</a></li>
-												<li><a href="set-password.html">Set Password</a></li>
-												<li><a href="otp.html">OTP</a></li>
-												<li><a href="lock-screen.html">Lock Screen</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="#">Error</a>
-											<ul class="submenu">
-												<li><a href="error-404.html">404 Error</a></li>
-												<li><a href="error-500.html">500 Error</a></li>
-											</ul>
-										</li>
-										<li><a href="pricing-plan.html">Pricing Plan</a></li>
-										<li><a href="faq.html">FAQ</a></li>
-										<li><a href="coming-soon.html">Coming Soon</a></li>
-										<li><a href="under-construction.html">Under Construction</a></li>
-										<li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-										<li><a href="privacy-policy.html">Privacy Policy</a></li>
-										<li><a href="index-rtl.html">RTL</a></li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="#">Blog <i class="isax isax-add"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="#">Blog Layouts</a>
-											<ul class="submenu">
-												<li><a href="blog-grid.html">Blog 1 Grid</a></li>
-												<li><a href="blog-2-grid.html">Blog 2 Grid</a></li>
-												<li><a href="blog-3-grid.html">Blog 3 Grid</a></li>
-												<li><a href="blog-carousal.html">Blog Carousal</a></li>
-												<li><a href="blog-masonry.html">Blog Mansory</a></li>
-												<li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
-												<li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="#">Blog Details</a>
-											<ul class="submenu">
-												<li><a href="blog-details.html">Blog Details</a></li>
-												<li><a href="blog-details-left-sidebar.html">Blog Details Left Sidebar</a></li>
-												<li><a href="blog-details-right-sidebar.html">Blog Details Right Sidebar</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-						<div class="header-btn d-flex align-items-center">
-							<div class="icon-btn me-2">
-								<a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
-									<i class="isax isax-sun-15"></i>
-								</a>
-								<a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
-									<i class="isax isax-moon"></i>
-								</a>
-							</div>
-							<div class="icon-btn me-3">
-								<a href="cart.html" class="position-relative">
-									<i class="isax isax-shopping-cart5"></i>
-									<span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
-								</a>
-							</div>
-							<div class="dropdown profile-dropdown">
-                                <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
-                                    <span class="avatar">
-										<img src="assets/img/user/user-02.jpg" alt="Img" class="img-fluid rounded-circle">
-									</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-									<div class="profile-header d-flex align-items-center">
-										<div class="avatar">
-											<img src="assets/img/user/user-02.jpg" alt="Img" class="img-fluid rounded-circle">
-										</div>
-										<div>
-											<h6>Ronald Richard</h6>
-											<p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7201060716171c0616171f1d32170a131f021e175c111d1f">[email&#160;protected]</a></p>
-										</div>
-									</div>
-									<ul class="profile-body">
-										<li>
-											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
-										</li>
-										<li>
-											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-quiz.html"><i class="isax isax-award me-2"></i>Quiz Attempts</a>
-										</li>
-										<li>
-											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium2" href="student-order-history.html"><i class="isax isax-shopping-cart me-2"></i>Order History</a>
-										</li>
-										<li>
-											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-messages.html"><i class="isax isax-messages-3 me-2"></i>Messages<span class="message-count">2</span></a>
-										</li>
-										<li>
-											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
-										</li>										
-									</ul>
-									<div class="profile-footer">
-										<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="login.html"><i class="isax isax-arrow-2 me-2"></i>Log in as Instructor</a>
-										<a href="index.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"><i class="isax isax-logout me-2"></i>Logout</a>
-									</div>
+                            </li>
+                            <li class="active">
+                                <a href="student-dashboard.html">Dashboard</a>
+                            </li>
+                        </ul>
+                     
+                        <div class="menu-dropdown">
+                            <div class="cart-item">
+                                <h6>Cart & Wishlist</h6>
+                                <div class="icon-btn">
+                                    <a href="cart.html" class="position-relative">
+                                        <i class="isax isax-shopping-cart5"></i>
+                                        <span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
+                                    </a>
                                 </div>
                             </div>
-						</div>
-					</div>
-				</div>
-			</header>
-			<!-- /Header -->
+                            <div class="dropdown flag-dropdown mb-2">
+                                <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+                                </a>
+                                <ul class="dropdown-menu p-2 mt-2">
+                                    <li>
+                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+                                            <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+                                            <img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+                                            <img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="dropdown mb-2">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    USD
+                                </a>
+                                <ul class="dropdown-menu p-2 mt-2">
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown mb-2">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Light
+                                </a>
+                                <ul class="dropdown-menu p-2 mt-2">
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">Light</a></li>
+                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">Dark</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                     
+                    </div>
+                    <div class="header-btn d-flex align-items-center">
+                        <div class="icon-btn me-2">
+                            <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
+                                <i class="isax isax-sun-15"></i>
+                            </a>
+                            <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
+                                <i class="isax isax-moon"></i>
+                            </a>
+                        </div>
+                     
+                     
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- /Header -->
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-bar text-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-12">
+                        <h2 class="breadcrumb-title mb-2">Enrolled Courses</h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center mb-0">
+                                <li class="breadcrumb-item"><a href="student-dashboard.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Enrolled Courses</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Breadcrumb -->
+    
+        <!-- Content -->
+        <div class="content">
+            <div class="container">
+                <!-- Profile Card -->
+                <div class="profile-card overflow-hidden bg-blue-gradient2 mb-5 p-5">
+                    <div class="profile-card-bg"><img src="assets/img/bg/card-bg-01.png" class="profile-card-bg-1" alt=""></div>
+                    <div class="row align-items-center row-gap-3">
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xxl avatar-rounded me-3 border border-white border-2 position-relative">
+                                    <img id="profile-img" src="assets/img/default-profile.png" alt="">
+                                    <span class="verify-tick"><i class="isax isax-verify5"></i></span>
+                                </span>
+                                <div>
+                                    <h5 class="mb-1 text-white d-inline-flex align-items-center" id="profile-name"><a href="student-details.html"></a><a href="student-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
+                                    <p class="text-light">Student</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                         
+                        </div>
+                    </div>
+                </div>
+                <!-- /Profile Card -->
+                <div class="row">
+                    <div class="col-lg-3 theiaStickySidebar">
+                        <div class="settings-sidebar">
+                            <div>
+                                <h6 class="mb-3">Main Menu</h6>
+                                <ul class="mb-3 pb-1">
+                                    <li><a href="student-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a></li>
+                                    <li><a href="student-profile.html" class="d-inline-flex align-items-center"><i class="fa-solid fa-user me-2"></i>My Profile</a></li>
+                                    <li><a href="student-courses.html" class="d-inline-flex align-items-center active"><i class="isax isax-teacher5 me-2"></i>Enrolled Courses</a></li>
+                                    <li><a href="student-certificates.html" class="d-inline-flex align-items-center"><i class="isax isax-note-215 me-2"></i>My Certificates</a></li>
+                                    <li><a href="student-wishlist.html" class="d-inline-flex align-items-center"><i class="isax isax-heart5 me-2"></i>Wishlist</a></li>
+                                    <li><a href="student-reviews.html" class="d-inline-flex align-items-center"><i class="isax isax-star5 me-2"></i>Reviews</a></li>
+                                    <li><a href="student-quiz.html" class="d-inline-flex align-items-center"><i class="isax isax-award5 me-2"></i>My Quiz Attempts</a></li>
+                                    <li><a href="student-order-history.html" class="d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Order History</a></li>
+                                    <li><a href="student-referral.html" class="d-inline-flex align-items-center"><i class="isax isax-tag-user5 me-2"></i>Referrals</a></li>
+                                    <li><a href="student-messages.html" class="d-inline-flex align-items-center"><i class="isax isax-messages-35 me-2"></i>Messages</a></li>
+                                    <li><a href="student-tickets.html" class="d-inline-flex align-items-center"><i class="isax isax-ticket5 me-2"></i>Support Tickets</a></li>
+                                </ul>
+                                <hr>
+                                <h6 class="mb-3">Account Settings</h6>
+                                <ul>
+                                    <li><a href="student-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a></li>
+                                    <li><a href="javascript:void(0);" id="logout-sidebar" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="page-title d-flex flex-wrap gap-3 align-items-center justify-content-between">
+                            <h5>Enrolled Courses</h5>
+                            <div class="tab-list">
+                                <ul class="nav mb-0 gap-2" role="tablist">
+                                    <li class="nav-item mb-0" role="presentation">
+                                        <a href="javascript:void(0);" class="active" data-bs-toggle="tab" data-bs-target="#enroll-courses" aria-selected="true" role="tab">Enrolled (<span id="enrolled-count">0</span>)</a>
+                                    </li>
+                                    <li class="nav-item mb-0" role="presentation">
+                                        <a href="javascript:void(0);" data-bs-toggle="tab" data-bs-target="#active-courses" aria-selected="false" role="tab" class="" tabindex="-1">Active (<span id="active-count">0</span>)</a>
+                                    </li>
+                                    <li class="nav-item mb-0" role="presentation">
+                                        <a href="javascript:void(0);" data-bs-toggle="tab" data-bs-target="#complete-courses" aria-selected="false" role="tab" class="" tabindex="-1">Completed (<span id="completed-count">0</span>)</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tab-content">
+                            <!-- Enrolled Tab -->
+                            <div class="tab-pane fade active show" id="enroll-courses" role="tabpanel">
+                                <!-- Loading State -->
+                                <div id="loading-enrolled" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">Loading enrolled courses...</p>
+                                </div>
+                            
+                                <div class="row" id="enrolled-grid">
+                                    <!-- Courses will be loaded here -->
+                                </div>
+                            
+                                <div class="empty-state text-center py-5" id="empty-enrolled" style="display: none;">
+                                    <div class="mb-4">
+                                        <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
+                                    </div>
+                                    <h5 class="text-muted mb-3">No enrolled courses yet</h5>
+                                    <p class="text-muted mb-4">Enroll in some courses from the Courses page!</p>
+                                    <a href="course-grid.html" class="btn btn-primary">Browse Courses</a>
+                                </div>
+                            
+                                <!-- Pagination -->
+                                <div class="row align-items-center mt-4" id="enrolled-pagination" style="display: none;">
+                                    <div class="col-md-6">
+                                        <p class="pagination-text mb-0" id="enrolled-pagination-text">Page 1 of 1</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0">
+                                            <li class="page-item prev disabled">
+                                                <a class="page-link" href="javascript:void(0)" id="enrolled-prev-page">
+                                                    <i class="fas fa-angle-left me-1"></i> Previous
+                                                </a>
+                                            </li>
+                                            <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                            <li class="page-item next disabled">
+                                                <a class="page-link" href="javascript:void(0)" id="enrolled-next-page">
+                                                    Next <i class="fas fa-angle-right ms-1"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Active Tab -->
+                            <div class="tab-pane fade" id="active-courses" role="tabpanel">
+                                <!-- Loading State -->
+                                <div id="loading-active" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">Loading active courses...</p>
+                                </div>
+                            
+                                <div class="row" id="active-grid">
+                                    <!-- Courses will be loaded here -->
+                                </div>
+                            
+                                <div class="empty-state text-center py-5" id="empty-active" style="display: none;">
+                                    <div class="mb-4">
+                                        <i class="fas fa-play-circle fa-3x text-muted mb-3"></i>
+                                    </div>
+                                    <h5 class="text-muted mb-3">No active courses</h5>
+                                    <p class="text-muted mb-4">Start learning your enrolled courses!</p>
+                                    <a href="#enroll-courses" class="btn btn-primary">View Enrolled</a>
+                                </div>
+                            
+                                <!-- Pagination -->
+                                <div class="row align-items-center mt-4" id="active-pagination" style="display: none;">
+                                    <div class="col-md-6">
+                                        <p class="pagination-text mb-0" id="active-pagination-text">Page 1 of 1</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0">
+                                            <li class="page-item prev disabled">
+                                                <a class="page-link" href="javascript:void(0)" id="active-prev-page">
+                                                    <i class="fas fa-angle-left me-1"></i> Previous
+                                                </a>
+                                            </li>
+                                            <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                            <li class="page-item next disabled">
+                                                <a class="page-link" href="javascript:void(0)" id="active-next-page">
+                                                    Next <i class="fas fa-angle-right ms-1"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Completed Tab -->
+                            <div class="tab-pane fade" id="complete-courses" role="tabpanel">
+                                <!-- Loading State -->
+                                <div id="loading-completed" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">Loading completed courses...</p>
+                                </div>
+                            
+                                <div class="row" id="completed-grid">
+                                    <!-- Courses will be loaded here -->
+                                </div>
+                            
+                                <div class="empty-state text-center py-5" id="empty-completed" style="display: none;">
+                                    <div class="mb-4">
+                                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                    </div>
+                                    <h5 class="text-muted mb-3">No completed courses yet</h5>
+                                    <p class="text-muted mb-4">Complete your courses to see them here!</p>
+                                    <a href="#enroll-courses" class="btn btn-primary">View Enrolled</a>
+                                </div>
+                            
+                                <!-- Pagination -->
+                                <div class="row align-items-center mt-4" id="completed-pagination" style="display: none;">
+                                    <div class="col-md-6">
+                                        <p class="pagination-text mb-0" id="completed-pagination-text">Page 1 of 1</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0">
+                                            <li class="page-item prev disabled">
+                                                <a class="page-link" href="javascript:void(0)" id="completed-prev-page">
+                                                    <i class="fas fa-angle-left me-1"></i> Previous
+                                                </a>
+                                            </li>
+                                            <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                            <li class="page-item next disabled">
+                                                <a class="page-link" href="javascript:void(0)" id="completed-next-page">
+                                                    Next <i class="fas fa-angle-right ms-1"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Toast Container -->
+        <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+        <!-- Footer -->
+     <footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row align-items-start">
+        <div class="col-lg-4 mb-3">
+          <div class="footer-about">
+            <div class="footer-logo">
+              <img src="assets/img/logo.png" alt="Logo" style="max-width: 300px; margin-left: -30px;" />
+            </div>
+            <p style="margin-top: -30px;">
+              AI Adaptive Online Learning Platform empowers <br>educators and learners with innovative LMS features <br> for adaptive learning and collaboration.
+            </p>
+            <div class="d-flex align-items-center gap-3">
+              <a href="#" class="social-link" title="App Store">
+                <i class="fab fa-apple"></i>
+              </a>
+              <a href="#" class="social-link" title="Google Play">
+                <i class="fab fa-google-play"></i>
+              </a>
+              <a href="#" class="social-link" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-link" title="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-link" title="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Innovation Spotlight</h5>
+            <p>Empowering future with AI-driven education.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Stay Updated</h5>
+            <p>Subscribe for updates on courses and features.</p>
+            <div class="subscribe-input">
+              <form action="javascript:void(0);">
+                <div class="input-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Your email address"
+                    aria-label="Email"
+                  />
+                  <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="footer-contact mt-2">
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                <span>Iqra University, Defence View, Karachi, Sindh, Pakistan</span>
+              </div>
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-envelope me-2"></i>
+                <a href="mailto:info@AiAdaptiveOnlineLearningPlatform.com">info@AiAdaptiveOnlineLearningPlatform.com</a>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="fas fa-phone me-2"></i>
+                <span>+92 331-8889902</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p>&copy; 2025 AI Adaptive Online Learning Platform. All rights reserved</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item"><a href="privacy.html">Privacy Policy</a></li>
+            <li class="list-inline-item"><a href="terms.html">Terms & Conditions</a></li>
+            <li class="list-inline-item"><a href="cookies.html">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+        <!-- /Footer -->
+    </div>
+    <!-- /Main Wrapper -->
+    <!-- jQuery -->
+    <script src="assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+    <!-- Bootstrap Core JS -->
+    <script src="assets/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <!-- Sticky Sidebar JS -->
+    <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
+    <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript"></script>
+    <!-- Custom JS -->
+    <script src="assets/js/script.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            showToast('Please login to view enrolled courses.', 'error');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+            return;
+        }
+        let decoded;
+        try {
+            decoded = jwt_decode(token);
+            if (decoded.exp < Date.now() / 1000) throw new Error('Expired');
+        } catch (error) {
+            showToast('Session expired. Please login again.', 'error');
+            localStorage.removeItem('token');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+            return;
+        }
+        if (decoded.role !== 'student') {
+            showToast('Access denied: Students only.', 'error');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+            return;
+        }
+        function showToast(message, type = 'success', duration = 3000) {
+            const toastContainer = $('#toast-container');
+            const toastId = `toast-${Date.now()}`;
+            const toastHtml = `
+                <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
+                    <div class="d-flex">
+                        <div class="toast-body">${message}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            toastContainer.append(toastHtml);
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+            setTimeout(() => {
+                toast.hide();
+                $(`#${toastId}`).remove();
+            }, duration);
+        }
+        // Load Profile Data (same as student-dashboard)
+        function loadProfile() {
+            $.ajax({
+                url: 'http://localhost:5000/api/auth/profile',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token },
+                cache: false,
+                success: function(profile) {
+                    console.log('Profile Data Loaded:', profile);
+                    const displayName = profile.name || 'Student';
+                    $("#dropdown-profile-name, #profile-name a:first").text(displayName);
+                    $("#profile-email a")
+                      .text(profile.email || "No email")
+                      .attr("href", `mailto:${profile.email || ""}`);
+                    const imgSrc = profile.profileImage ? `${profile.profileImage}?t=${new Date().getTime()}` : 'assets/img/default-profile.png';
+                    $('#profile-img').attr('src', imgSrc);
+                    $(".dropdown-profile-img").attr('src', imgSrc).parent().addClass("has-image");
+                },
+                error: function(xhr) {
+                    console.error('Error loading profile:', xhr.responseText);
+                    showToast('Error loading profile.', 'error');
+                    if (xhr.status === 401) {
+                        localStorage.removeItem('token');
+                        showToast('Session expired. Please login again.', 'error');
+                        setTimeout(() => window.location.href = 'login.html', 2000);
+                    }
+                }
+            });
+        }
+        // Utility Functions (from course-grid)
+        function getInitials(name) {
+            return (name || 'AD').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+        function getYouTubeThumbnail(url) {
+            if (!url) return 'assets/img/course/course-placeholder.jpg';
+            let videoId = null;
+            const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+            const embedMatch = url.match(/youtube\.com\/embed\/([^&\n?#]+)/);
+            if (watchMatch) videoId = watchMatch[1];
+            else if (embedMatch) videoId = embedMatch[1];
+            else if (url.includes('playlist?list=')) {
+                const playlistMatch = url.match(/list=([a-zA-Z0-9_-]+)/);
+                if (playlistMatch) {
+                    return `https://i.ytimg.com/vi/${playlistMatch[1].substring(0,11)}/mqdefault.jpg`;
+                }
+                return 'assets/img/course/playlist-placeholder.jpg';
+            }
+            return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
+        }
+        function generateStars(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalf = rating % 1 >= 0.5;
+            for (let i = 1; i <= 5; i++) {
+                if (i <= fullStars) {
+                    stars += '<i class="fas fa-star filled"></i>';
+                } else if (i === fullStars + 1 && hasHalf) {
+                    stars += '<i class="fas fa-star-half-alt filled"></i>';
+                } else {
+                    stars += '<i class="far fa-star empty"></i>';
+                }
+            }
+            return stars;
+        }
+        // Helper to get valid course ID string
+        function getValidCourseId(id) {
+            if (!id) return null;
+            let idStr = typeof id === 'string' ? id : (id.toString ? id.toString() : String(id));
+            // Check if it's a valid 24-char hex ObjectId
+            if (idStr.length === 24 && /^[0-9a-fA-F]{24}$/.test(idStr)) {
+                return idStr.toLowerCase(); // Normalize to lowercase hex
+            }
+            console.warn('Invalid courseId skipped:', id, '->', idStr);
+            return null;
+        }
+        // Global enrollments data
+        let allEnrollments = [];
+        let studentReviewsMap = {}; // New: Map courseId to student rating
+        let filteredEnrollments = { enrolled: [], active: [], completed: [] };
+        let currentTab = 'enrolled';
+        const pageSize = 9;
+        const currentPage = { enrolled: 1, active: 1, completed: 1 };
+        // Fetch student's reviews
+        async function fetchStudentReviews() {
+            try {
+                const reviewsRes = await $.ajax({
+                    url: `http://localhost:5000/api/dashboard/student/reviews`,
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                studentReviewsMap = {};
+                reviewsRes.forEach(r => {
+                    if (r.courseId) {
+                        studentReviewsMap[getValidCourseId(r.courseId)] = r.rating || 0;
+                    }
+                });
+                console.log('Student Reviews Map:', studentReviewsMap);
+            } catch (err) {
+                console.error('Error fetching student reviews:', err);
+                // Removed showToast to avoid error message; fallback to empty map
+                studentReviewsMap = {};
+            }
+        }
+        // Fetch all enrollments once
+        async function fetchAllEnrollments() {
+            try {
+                // Fetch reviews first for dynamic ratings
+                await fetchStudentReviews();
+                const enrollRes = await $.ajax({
+                    url: `http://localhost:5000/api/dashboard/student/enrollments`,
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                let enrollments = enrollRes || [];
+                console.log('Raw Enrollments Fetched:', enrollments);
+                // Compute status if not present (based on progress) - Fixed: Use prog = e.progress || 0 for strict check
+                enrollments = enrollments.map(e => {
+                    const prog = e.progress || 0; // Default to 0 if undefined
+                    console.log(`Enrollment ID: ${e._id}, Progress: ${prog}, Original Status: ${e.status}`); // Debug log
+                    if (!e.status) {
+                        if (prog >= 100) {
+                            e.status = 'completed';
+                        } else if (prog > 0) {
+                            e.status = 'active';
+                        } else {
+                            e.status = 'enrolled';
+                        }
+                    }
+                    return e;
+                });
+                // Get unique valid course IDs (fix for ObjectId cast error)
+                const courseIds = [...new Set(enrollments.map(e => getValidCourseId(e.courseId)).filter(id => id))];
+                console.log('Valid Course IDs:', courseIds); // Debug log
+                let coursesMap = {};
+                if (courseIds.length > 0) {
+                    // Bulk fetch first (now with valid strings)
+                    try {
+                        const params = new URLSearchParams({ ids: courseIds.join(',') });
+                        const coursesRes = await $.ajax({
+                            url: `http://localhost:5000/api/courses?${params}`,
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        // Backend returns array directly for ids query
+                        coursesRes.forEach(c => coursesMap[c._id] = c);
+                        console.log('Bulk fetched courses:', coursesRes.length);
+                    } catch (bulkErr) {
+                        console.warn('Bulk fetch failed, using individual fetches:', bulkErr);
+                        // Fallback to individual fetches with valid ID
+                        for (const id of courseIds) { // Now id is valid string
+                            try {
+                                const c = await $.ajax({
+                                    url: `http://localhost:5000/api/courses/${id}`,
+                                    headers: { 'Authorization': 'Bearer ' + token }
+                                });
+                                coursesMap[id] = c;
+                            } catch (singleErr) {
+                                console.error('Failed to fetch course:', id, singleErr);
+                            }
+                        }
+                    }
+                } else {
+                    console.warn('No valid course IDs found');
+                }
+                // Enhance enrollments with course data (only if valid courseId)
+                allEnrollments = enrollments
+                    .map(e => {
+                        const validId = getValidCourseId(e.courseId);
+                        if (!validId) return null; // Skip invalid
+                        return {
+                            ...e,
+                            courseId: validId, // Ensure string
+                            course: coursesMap[validId] || {
+                                _id: validId,
+                                name: 'Unknown Course',
+                                description: 'Course details not available',
+                                videos: [],
+                                averageRating: 0,
+                                numRatings: 0,
+                                duration: 'N/A',
+                                instructor: { name: '', profileImage: '' },
+                                category: { name: 'Uncategorized' },
+                                isFavorite: false
+                            }
+                        };
+                    })
+                    .filter(e => e !== null); // Remove invalid
+                console.log('Enhanced Enrollments:', allEnrollments);
+                // Filter by status
+                filteredEnrollments.enrolled = allEnrollments.filter(e => e.status === 'enrolled');
+                filteredEnrollments.active = allEnrollments.filter(e => e.status === 'active');
+                filteredEnrollments.completed = allEnrollments.filter(e => e.status === 'completed');
+                // Update counts
+                $('#enrolled-count').text(filteredEnrollments.enrolled.length);
+                $('#active-count').text(filteredEnrollments.active.length);
+                $('#completed-count').text(filteredEnrollments.completed.length);
+                // Load initial tab
+                loadTabContent('enrolled', 1);
+                if (allEnrollments.length === 0) {
+                    showToast('No valid enrollments found. Check backend data.', 'warning');
+                } else {
+                    showToast('Enrollments loaded successfully!', 'success');
+                }
+            } catch (err) {
+                console.error('Error fetching enrollments:', err);
+                showToast('Failed to load enrollments. Please refresh the page.', 'error');
+                // Fallback: Show empty states
+                $('.tab-pane').each(function() {
+                    const tabId = $(this).attr('id').replace('-courses', '');
+                    $(this).find('.empty-state').show();
+                    $(this).find(`#loading-${tabId}`).hide();
+                    $(`#${tabId}-pagination`).hide();
+                });
+            }
+        }
+        // Generate HTML for a list of enrollments (Updated to match course-grid exactly, with progress in meta)
+        function generateEnrollmentHTML(enrollments, startIndex, endIndex) {
+            return enrollments.slice(startIndex - 1, endIndex).map(enroll => {
+                const course = enroll.course;
+                const videoCount = (course.videos || []).length;
+                const firstUrl = course.videos?.[0]?.url;
+                const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
+                const rating = course.averageRating || 0;
+                const numRatings = course.numRatings || 0;
+                const duration = course.duration || '2h 30m';
+                const progress = enroll.progress || 0;
+                const categoryName = course.category?.name || 'General';
 
-			<!-- Breadcrumb -->
-			<div class="breadcrumb-bar text-center">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-12 col-12">
-							<h2 class="breadcrumb-title mb-2">Enrolled Courses</h2>
-							<nav aria-label="breadcrumb">
-								<ol class="breadcrumb justify-content-center mb-0">
-									<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Enrolled Courses</li>
-								</ol>
-							</nav>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Breadcrumb -->
-
-			<div class="content">
-				<div class="container">
-				<!-- profile box -->
-				<div class="profile-card overflow-hidden bg-blue-gradient2 mb-5 p-5">
-					<div class="profile-card-bg">
-						<img src="assets/img/bg/card-bg-01.png" class="profile-card-bg-1" alt="">
-					</div>
-						<div class="row align-items-center row-gap-3">
-							<div class="col-lg-6">
-								<div class="d-flex align-items-center">
-									<span class="avatar avatar-xxl avatar-rounded me-3 border border-white border-2 position-relative">
-										<img src="assets/img/user/user-02.jpg" alt="">
-										<span class="verify-tick"><i class="isax isax-verify5"></i></span>
-									</span>
-									<div>
-										<h5 class="mb-1 text-white d-inline-flex align-items-center">Ronald Richard<a href="instructor-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
-										<p class="text-light">Student</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-6">
-								<div class="d-flex align-items-center justify-content-lg-end flex-wrap gap-2">
-									<a href="become-an-instructor.html" class="btn btn-white rounded-pill me-3">Become an Instructor</a>
-									<a href="instructor-dashboard.html" class="btn btn-secondary rounded-pill">Instructor Dashboard</a>
-								</div>
-							</div>
-						</div>
-				</div>
-				<!-- profile box -->
-					<div class="row">
-							<!-- sidebar -->
-							<div class="col-lg-3 theiaStickySidebar">
-								<div class="settings-sidebar">
-										<div>
-											<h6 class="mb-3">Dashboard</h6>
-											<ul class="mb-3 pb-1">
-												<li>
-													<a href="student-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a>
-												</li>
-												<li>
-													<a href="student-profile.html" class="d-inline-flex align-items-center"><i class="fa-solid fa-user me-2"></i>My Profile</a>
-												</li>
-												<li>
-													<a href="student-courses.html" class="d-inline-flex align-items-center active"><i class="isax isax-teacher5 me-2"></i>Enrolled Courses</a>
-												</li>
-												<li>
-													<a href="student-certificates.html" class="d-inline-flex align-items-center"><i class="isax isax-note-215 me-2"></i>My Certificates</a>
-												</li>
-												<li>
-													<a href="student-wishlist.html" class="d-inline-flex align-items-center"><i class="isax isax-heart5 me-2"></i>Wishlist</a>
-												</li>
-												<li>
-													<a href="student-reviews.html" class="d-inline-flex align-items-center"><i class="isax isax-star5 me-2"></i>Reviews</a>
-												</li>
-												<li>
-													<a href="student-quiz.html" class="d-inline-flex align-items-center"><i class="isax isax-award5 me-2"></i>My Quiz Attempts</a>
-												</li>
-												<li>
-													<a href="student-order-history.html" class="d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Order History</a>
-												</li>
-												<li>
-													<a href="student-referral.html" class="d-inline-flex align-items-center"><i class="isax isax-tag-user5 me-2"></i>Referrals</a>
-												</li>
-												<li>
-													<a href="student-messages.html" class="d-inline-flex align-items-center"><i class="isax isax-messages-35 me-2"></i>Messages</a>
-												</li>
-												<li>
-													<a href="student-tickets.html" class="d-inline-flex align-items-center"><i class="isax isax-ticket5 me-2"></i>Support Tickets</a>
-												</li>
-											</ul>
-											<hr>
-											<h6 class="mb-3">Account Settings</h6>
-											<ul>
-												<li>
-													<a href="student-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a>
-												</li>
-												<li>
-													<a href="login.html" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a>
-												</li>
-											</ul>
-										</div>
-								</div>
-							</div>
-							<!-- sidebar -->
-						<div class="col-lg-9">
-							<div class="page-title d-flex flex-wrap gap-3 align-items-center justify-content-between">
-								<h5>Enrolled Courses</h5>
-								<div class="tab-list">
-									<ul class="nav mb-0 gap-2" role="tablist">
-										<li class="nav-item mb-0" role="presentation">
-											<a href="javascript:void(0);" class="active" data-bs-toggle="tab" data-bs-target="#enroll-courses" aria-selected="true" role="tab">Enrolled (09)</a>
-										</li>
-										<li class="nav-item mb-0" role="presentation">
-											<a href="javascript:void(0);" data-bs-toggle="tab" data-bs-target="#active-courses" aria-selected="false" role="tab" class="" tabindex="-1">Active (06)</a>
-										</li>
-										<li class="nav-item mb-0" role="presentation">
-											<a href="javascript:void(0);" data-bs-toggle="tab" data-bs-target="#complete-courses" aria-selected="false" role="tab" class="" tabindex="-1">Completed (03)</a>
-										</li>
-									</ul>
-								</div>
-							</div>
-							<div class="tab-content">
-								<div class="tab-pane fade active show" id="enroll-courses" role="tabpanel">
-									<div class="row">
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-01.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<div class="badge text-bg-danger">15% off</div>
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-29.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Brenda Slaton</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Design
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Information About UI/UX Design Degree</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.9 (200 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$120</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-02.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-30.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Ana Reyes</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Wordpress
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Wordpress for Beginners - Master Wordpress Quickly</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (160 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$140</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-03.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-31.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Andrew Pirtle</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Design
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Sketch from A to Z (2024): Become an app designer</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (160 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$140</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-04.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-32.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Christy Garner</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Build Responsive Real World Websites with Crash Course</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.2 (220 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$200</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-05.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-32.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Justin Gregory</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Learn JavaScript and Express to become a Expert</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$130</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-06.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-33.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Carolyn Hines</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Introduction to Python Programming</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$130</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-07.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-34.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Rafael Miller</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Build Responsive Websites with HTML5 and CSS3</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$170</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-08.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-35.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Nancy Duarte</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Design
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Information About Photoshop Design Degree</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$170</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-09.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-36.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">James Kagan</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Design
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">C# Developers Double Your Coding with Visual Studio</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$180</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="tab-pane fade" id="active-courses" role="tabpanel">
-									<div class="row">								
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-01.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<div class="badge text-bg-danger">15% off</div>
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-29.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Brenda Slaton</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Design
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Information About UI/UX Design Degree</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.9 (200 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$120</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-02.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-30.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Ana Reyes</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Wordpress
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Wordpress for Beginners - Master Wordpress Quickly</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (160 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$140</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-03.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-31.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Andrew Pirtle</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Design
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Sketch from A to Z (2024): Become an app designer</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (160 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$140</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-04.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-32.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Christy Garner</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Build Responsive Real World Websites with Crash Course</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.2 (220 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$200</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-05.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-32.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Justin Gregory</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Learn JavaScript and Express to become a Expert</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$130</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-06.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-33.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Carolyn Hines</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Introduction to Python Programming</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$130</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="tab-pane fade" id="complete-courses" role="tabpanel">
-									<div class="row">								
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-04.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-32.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Christy Garner</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Build Responsive Real World Websites with Crash Course</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.2 (220 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$200</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-05.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-32.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Justin Gregory</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Learn JavaScript and Express to become a Expert</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$130</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-4 col-md-6">
-											<div class="course-item-two course-item mx-0">
-												<div class="course-img">
-													<a href="course-details.html">
-														<img src="assets/img/course/course-06.jpg" alt="img" class="img-fluid">  
-													</a>
-													<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-														<a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
-													</div>
-												</div>
-												<div class="course-content">
-													<div class="d-flex justify-content-between mb-2">
-														<div class="d-flex align-items-center">
-															<a href="instructor-details.html" class="avatar avatar-sm">
-																<img src="assets/img/user/user-33.jpg" alt="img" class="img-fluid avatar avatar-sm rounded-circle">
-															</a>
-															<div class="ms-2">
-																<a href="instructor-details.html" class="link-default fs-14">Carolyn Hines</a>
-															</div>
-														</div>
-														<span class="badge badge-light rounded-pill bg-light d-inline-flex align-items-center fs-13 fw-medium mb-0">
-															Programming
-														</span>
-													</div>
-													<h6 class="title mb-2"><a href="course-details.html">Introduction to Python Programming</a></h6>
-													<p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>4.4 (180 Reviews)</p>
-													<div class="d-flex align-items-center justify-content-between">
-														<h5 class="text-secondary mb-0">$130</h5>
-														<a href="course-details.html" class="btn btn-dark btn-sm d-inline-flex align-items-center">View Course<i class="isax isax-arrow-right-3 ms-1"></i></a>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- /pagination -->
-							<div class="row align-items-center mt-2">
-								<div class="col-md-2">
-                                  <p class="pagination-text">Page 1 of 2</p>
-								</div>
-								<div class="col-md-10">
-									<ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0">
-										<li class="page-item prev">
-											<a class="page-link" href="javascript:void(0)" tabindex="-1"><i class="fas fa-angle-left"></i></a>
-										</li>
-										<li class="page-item first-page active">
-											<a class="page-link" href="javascript:void(0)">1</a>
-										</li>
-										<li class="page-item">
-											<a class="page-link" href="javascript:void(0)">2</a>
-										</li>
-										<li class="page-item">
-											<a class="page-link" href="javascript:void(0)">3</a>
-										</li>
-										<li class="page-item next">
-											<a class="page-link" href="javascript:void(0)"><i class="fas fa-angle-right"></i></a>
-										</li>
-									</ul>
-								</div>
-							</div>
-							<!-- /pagination -->
-						</div>
-					</div>
-				</div>
-			</div>
-
-		<!-- Footer -->
-		<footer class="footer">
-			<div class="footer-bg">
-				<img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
-				<img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt="">
-			</div>
-			<div class="footer-top">
-				<div class="container">
-					<div class="row row-gap-4">
-						<div class="col-lg-4">
-							<div class="footer-about">
-								<div class="footer-logo">
-									<img src="assets/img/logo.svg" alt="">
-								</div>
-								<p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
-								<div class="d-flex align-items-center">
-									<a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
-									<a href="#"><img src="assets/img/icon/googleplay.svg" alt=""></a>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-8">
-							<div class="row row-gap-4">
-								<div class="col-lg-3">
-									<div class="footer-widget footer-menu">
-										<h5 class="footer-title">For Instructor</h5>
-										<ul>
-											<li><a href="course-grid.html">Search Mentors</a></li>
-											<li><a href="login.html">Login</a></li>
-											<li><a href="register.html">Register</a></li>
-											<li><a href="course-list.html">Booking</a></li>
-											<li><a href="student-dashboard.html">Students Dashboard</a></li>
-										</ul>
-									</div>
-								</div>
-								<div class="col-lg-3">
-									<div class="footer-widget footer-menu">
-										<h5 class="footer-title">For Student</h5>
-										<ul>
-											<li><a href="javascript:void(0);">Appointments</a></li>
-											<li><a href="instructor-message.html">Chat</a></li>
-											<li><a href="login.html">Login</a></li>
-											<li><a href="register.html">Register</a></li>
-											<li><a href="instructor-dashboard.html">Instructor Dashboard</a></li>
-										</ul>
-									</div>
-								</div>
-								<div class="col-lg-6">
-									<div class="footer-widget footer-contact">
-										<h5 class="footer-title">Newsletter</h5>
-										<div class="subscribe-input">
-											<form action="javascript:void(0);">
-												<input type="email" class="form-control" placeholder="Enter your Email Address">
-												<button type="submit" class="btn btn-primary btn-sm inline-flex align-items-center"><i class="isax isax-send-2 me-1"></i>Subscribe</button>
-											</form>
-										</div>
-										<div class="footer-contact-info">
-											<div class="footer-address d-flex align-items-center">
-												<img src="assets/img/icon/icon-20.svg" alt="Img" class="img-fluid me-2">
-												<p> 3556  Beech Street, San Francisco,<br> California, CA 94108 </p>
-											</div>
-											<div class="footer-address d-flex align-items-center">
-												<img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2">
-												<p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6c081e090d011f00011f2c09140d011c0009420f0301">[email&#160;protected]</a></p>
-											</div>
-											<div class="footer-address d-flex align-items-center">
-												<img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2">
-												<p>+19 123-456-7890</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="footer-bottom">
-				<div class="container">
-					<div class="row row-gap-2">
-						<div class="col-md-6">
-							<div class="text-center text-md-start">
-								<p class="text-white">Copyright &copy; 2025 DreamsLMS. All rights reserved.</p>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div>
-								<ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
-									<li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-									<li><a href="privacy-policy.html">Privacy Policy</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</footer>
-		<!-- /Footer -->
-
-
-		</div>
-		<!-- /Main Wrapper -->
-	  
-		<!-- jQuery -->
-		<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="assets/js/jquery-3.7.1.min.js" type="aa8cea53ec42d89138cab525-text/javascript"></script>
-		
-		<!-- Bootstrap Core JS -->
-		<script src="assets/js/bootstrap.bundle.min.js" type="aa8cea53ec42d89138cab525-text/javascript"></script>
-		
-		<!-- Sticky Sidebar JS -->
-        <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="aa8cea53ec42d89138cab525-text/javascript"></script>
-        <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="aa8cea53ec42d89138cab525-text/javascript"></script>
-		
-		<!-- Custom JS -->
-		<script src="assets/js/script.js" type="aa8cea53ec42d89138cab525-text/javascript"></script>
-		
-	<script src="../../cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="aa8cea53ec42d89138cab525-|49" defer=""></script></body>
+                return `
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="course-item-two course-item h-100" data-course-id="${course._id}">
+                            <div class="course-img">
+                                <img src="${thumbnail}" alt="${course.name}" onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                                <div class="play-overlay">
+                                    <div class="play-btn"><i class="fas fa-play"></i></div>
+                                </div>
+                                ${videoCount > 1 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
+                                <button class="fav-btn ${course.isFavorite ? 'favorited' : ''}" data-id="${course._id}">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="course-content">
+                                <div class="category-badge">${categoryName}</div>
+                                <h6 class="course-title">${course.name}</h6>
+                                <div class="rating">
+                                    <div class="rating-stars">${generateStars(rating)}</div>
+                                    ${rating > 0 ? `<span class="rating-value">${rating}</span>` : ''}
+                                    <span class="rating-text">(${numRatings})</span>
+                                </div>
+                                <p class="course-desc">${course.description}</p>
+                                <div class="course-footer">
+                                    <div>
+                                        <div class="price free">FREE</div>
+                                        <div class="course-meta">${videoCount} lessons • ${duration} • ${progress}% Complete</div>
+                                    </div>
+                                    <a href="course-details.html?id=${course._id}" class="view-btn">
+                                        <i class="fas fa-eye"></i> View Course
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+        // Load content for a specific tab with pagination
+        function loadTabContent(tab, page = 1) {
+            const enrollments = filteredEnrollments[tab];
+            const total = enrollments.length;
+            const totalPages = Math.ceil(total / pageSize);
+            const startIndex = (page - 1) * pageSize + 1;
+            const endIndex = Math.min(startIndex + pageSize - 1, total);
+            // Hide loading and show content
+            $(`#loading-${tab}, #empty-${tab}`).hide();
+            const grid = $(`#${tab}-grid`);
+            grid.empty().html(generateEnrollmentHTML(enrollments, startIndex, endIndex)).show();
+            if (total === 0) {
+                $(`#empty-${tab}`).show();
+                $(`#${tab}-pagination`).hide();
+                return;
+            }
+            // Update pagination if more than 1 page
+            if (totalPages > 1) {
+                updatePagination(tab, page, totalPages);
+                $(`#${tab}-pagination`).show();
+            } else {
+                $(`#${tab}-pagination`).hide();
+            }
+            // Update pagination text
+            $(`#${tab}-pagination-text`).text(`Page ${page} of ${totalPages} (${startIndex}-${endIndex} of ${total})`);
+        }
+        function updatePagination(tab, curr, total) {
+            let pages = '';
+            for (let i = 1; i <= total; i++) {
+                pages += `<li class="page-item ${i === curr ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" data-page="${i}">${i}</a></li>`;
+            }
+            $(`#${tab}-pagination .pagination.lms-page`).html(`
+                <li class="page-item prev ${curr === 1 ? 'disabled' : ''}"><a class="page-link" id="${tab}-prev-page"><i class="fas fa-angle-left"></i> Previous</a></li>
+                ${pages}
+                <li class="page-item next ${curr === total ? 'disabled' : ''}"><a class="page-link" id="${tab}-next-page">Next <i class="fas fa-angle-right"></i></a></li>
+            `);
+        }
+        // Tab Switching
+        $('[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            const target = $(e.target).attr('data-bs-target');
+            currentTab = target.replace('#', '').replace('-courses', '');
+            currentPage[currentTab] = 1;
+            loadTabContent(currentTab, currentPage[currentTab]);
+        });
+        // Pagination Events (currentPage now defined above)
+        $(document).on('click', '[id$="-prev-page"]', function() {
+            const tab = this.id.replace('-prev-page', '');
+            if (currentPage[tab] > 1) {
+                currentPage[tab]--;
+                loadTabContent(tab, currentPage[tab]);
+            }
+        });
+        $(document).on('click', '[id$="-next-page"]', function() {
+            const tab = this.id.replace('-next-page', '');
+            const totalPages = Math.ceil(filteredEnrollments[tab].length / pageSize);
+            if (currentPage[tab] < totalPages) {
+                currentPage[tab]++;
+                loadTabContent(tab, currentPage[tab]);
+            }
+        });
+        $(document).on('click', '.page-link[data-page]', function() {
+            const paginationId = $(this).closest('[id$="-pagination"]').attr('id');
+            const tab = paginationId.replace('-pagination', '');
+            currentPage[tab] = parseInt($(this).data('page'));
+            loadTabContent(tab, currentPage[tab]);
+        });
+        $(document).on('click', '.fav-btn', function() {
+            const btn = $(this);
+            const id = btn.data('id');
+            const favored = btn.hasClass('favorited');
+            $.ajax({
+                url: `http://localhost:5000/api/courses/${id}/favorite`,
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                contentType: 'application/json',
+                data: JSON.stringify({ favorite: !favored }),
+                success: () => {
+                    btn.toggleClass('favorited');
+                    showToast(favored ? 'Removed from favorites' : 'Added to favorites', favored ? 'info' : 'success');
+                }
+            });
+        });
+        // New: Handle course item click for navigation (always allowed since enrolled)
+        $(document).on('click', '.course-item-two', function(e) {
+            // Ignore clicks on buttons or overlays
+            if ($(e.target).closest('.view-btn, .fav-btn, .play-overlay').length) {
+                return;
+            }
+            const $item = $(this);
+            const courseId = $item.data('course-id');
+            window.location.href = `course-details.html?id=${courseId}`;
+        });
+        // Logout Handler (same as student-dashboard)
+        $(document).on('click', '#logout-btn, #logout-sidebar, .profile-footer a', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: 'http://localhost:5000/api/auth/logout',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function () {
+                    localStorage.removeItem('token');
+                    showToast('Logout successful.', 'success');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
+                },
+                error: function () {
+                    localStorage.removeItem('token');
+                    showToast('Logout successful.', 'success');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
+                }
+            });
+        });
+        // Handle profile link click with improved error handling (though not needed on this page)
+        $(".profile-link").on("click", function (e) {
+            e.preventDefault();
+            const href = $(this).data("href") || $(this).attr("href");
+            console.log('Profile link clicked, checking profile... Token ID:', decoded.id); // Debug: Log token ID
+            $.ajax({
+                url: 'http://localhost:5000/api/auth/profile',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function(profile) {
+                    console.log('Profile access OK, redirecting to:', href); // Debug: Confirm redirect
+                    window.location.href = href;
+                },
+                error: function(xhr) {
+                    console.error(
+                        "Profile access error:",
+                        xhr.status,
+                        xhr.responseText
+                    );
+                    if (xhr.status === 0) showToast("Server unavailable.", "error");
+                    else if (xhr.status === 401) {
+                        showToast("Session expired.", "error");
+                        localStorage.removeItem("token");
+                        window.location.href = "login.html";
+                    } else
+                        showToast(
+                            `Profile access error (Status: ${xhr.status}).`,
+                            "error"
+                        );
+                },
+            });
+        });
+        const toggleDarkMode = () => {
+            $('body').addClass('dark-mode').removeClass('light-mode');
+            $('#dark-mode-toggle').removeClass('activate');
+            $('#light-mode-toggle').addClass('activate');
+            localStorage.setItem('theme', 'dark');
+        };
+        const toggleLightMode = () => {
+            $('body').addClass('light-mode').removeClass('dark-mode');
+            $('#light-mode-toggle').removeClass('activate');
+            $('#dark-mode-toggle').addClass('activate');
+            localStorage.setItem('theme', 'light');
+        };
+        // Check saved theme on page load
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            toggleDarkMode();
+        } else {
+            toggleLightMode();
+        }
+        // Toggle button click handlers
+        $('#dark-mode-toggle').on('click', toggleDarkMode);
+        $('#light-mode-toggle').on('click', toggleLightMode);
+        // Listen for profile update
+        window.addEventListener('profileUpdated', loadProfile);
+        // Real-time polling for updates (every 30 seconds)
+        setInterval(() => {
+            fetchAllEnrollments();
+        }, 30000);
+        // Refetch on window focus (for real-time after returning from detail page)
+        $(window).on('focus', fetchAllEnrollments);
+        // Init
+        loadProfile();
+        fetchAllEnrollments();
+    });
+    </script>
+</body>
 </html>

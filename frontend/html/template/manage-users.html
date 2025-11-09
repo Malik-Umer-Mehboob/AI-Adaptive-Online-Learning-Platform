@@ -31,119 +31,569 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <!-- Custom CSS for UI Enhancements and Toast -->
+    <!-- Inline CSS for Dark/Light Mode and Toast -->
     <style>
-        .light-mode {
-            background-color: #ffffff;
-            color: #000000;
-        }
-        .dark-mode {
-            background-color: #1a1a1a;
-            color: #ffffff;
-        }
-        .theme-toggle {
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: background-color 0.3s;
-        }
-        .theme-toggle.activate .isax {
-            color: #007bff;
-        }
-        .theme-toggle:hover {
-            background-color: #e9ecef;
-        }
-        .avatar img {
-            display: none;
-        }
-        .avatar.has-image img {
-            display: block;
-            max-width: 100%;
-            height: auto;
-            border-radius: 50%;
-        }
-        .user-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-        .user-table th, .user-table td {
-            vertical-align: middle;
-            padding: 12px;
-        }
-        .user-table .btn {
-            padding: 6px 12px;
-            font-size: 14px;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-        .user-table .btn:hover {
-            transform: translateY(-2px);
-        }
-        .profile-card {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .profile-card-bg img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: auto;
-            opacity: 0.3;
-        }
+      .light-mode {
+        background-color: #ffffff;
+        color: #000000;
+      }
+      .dark-mode {
+        background-color: #1a1a1a;
+        color: #ffffff;
+      }
+      .theme-toggle {
+        cursor: pointer;
+      }
+      .theme-toggle.activate .isax {
+        color: #007bff; /* Active icon color */
+      }
+      .avatar img {
+        display: none; /* Hide image by default */
+      }
+      .avatar.has-image img {
+        display: block; /* Show image if profileImage exists */
+      }
+      #toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+      }
+      .toast {
+        opacity: 0.9;
+        transition: all 0.3s;
+      }
+      .toast-success {
+        background-color: #28a745;
+        color: #fff;
+      }
+      .toast-error {
+        background-color: #dc3545;
+        color: #fff;
+      }
+      @media (max-width: 768px) {
         #toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
+          top: 10px;
+          right: 10px;
         }
-        .toast {
-            opacity: 0.9;
-            transition: all 0.3s;
+      }
+      /* Light Mode Cards */
+      .card-users { 
+        background: linear-gradient(135deg, #a8e6ff, #b3d9ff); 
+        color: #333; 
+      }
+      .card-students { 
+        background: linear-gradient(135deg, #a8f5c2, #b8f5d2); 
+        color: #333; 
+      }
+      .card-courses { 
+        background: linear-gradient(135deg, #a8f0ff, #b8f0ff); 
+        color: #333; 
+      }
+      .card-categories { 
+        background: linear-gradient(135deg, #d1c4e9, #d7bde2); 
+        color: #333; 
+      }
+      /* Dark Mode Cards */
+      .dark-mode .card-users { 
+        background: linear-gradient(135deg, #0056b3, #004085); 
+        color: #ffffff; 
+      }
+      .dark-mode .card-students { 
+        background: linear-gradient(135deg, #1e7e34, #155724); 
+        color: #ffffff; 
+      }
+      .dark-mode .card-courses { 
+        background: linear-gradient(135deg, #117a8b, #0c5460); 
+        color: #ffffff; 
+      }
+      .dark-mode .card-categories { 
+        background: linear-gradient(135deg, #5a2d91, #4a1d7a); 
+        color: #ffffff; 
+      }
+      .table th, .table td {
+        border-right: 1px solid #dee2e6;
+        position: relative;
+      }
+      .table th:last-child, .table td:last-child {
+        border-right: none;
+      }
+      .dark-mode .table th, .dark-mode .table td {
+        border-right: 1px solid #495057;
+      }
+      /* Recent Activities Table Styling */
+      .recent-activities-table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+      }
+      .recent-activities-table thead th {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        border: none;
+        padding: 16px 12px;
+      }
+      .recent-activities-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .recent-activities-table tbody tr:hover {
+        background: rgba(0, 123, 255, 0.05);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      .recent-activities-table tbody td {
+        padding: 16px 12px;
+        vertical-align: middle;
+        border: none;
+        position: relative;
+      }
+      .recent-activities-table tbody td::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 20px;
+        background: #dee2e6;
+      }
+      .recent-activities-table tbody td:last-child::after {
+        display: none;
+      }
+      .dark-mode .recent-activities-table thead th {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      }
+      .dark-mode .recent-activities-table tbody tr {
+        border-bottom: 1px solid #495057;
+      }
+      .dark-mode .recent-activities-table tbody tr:hover {
+        background: rgba(0, 123, 255, 0.1);
+      }
+      .dark-mode .recent-activities-table tbody td::after {
+        background: #495057;
+      }
+      .dark-mode .recent-activities-table {
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.05);
+      }
+      .activity-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        margin-right: 8px;
+      }
+      .role-admin { background: #007bff; color: white; }
+      .role-student { background: #28a745; color: white; }
+      .role-instructor { background: #ffc107; color: #212529; }
+      .dark-mode .role-admin { background: #0d6efd; }
+      .dark-mode .role-student { background: #20c997; }
+      .dark-mode .role-instructor { background: #fd7e14; color: white; }
+      /* Footer Styles */
+      .footer {
+        background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+        color: #ffffff;
+        padding: 30px 0 0; /* Further reduced from 40px to 30px */
+        position: relative;
+      }
+      .light-mode .footer {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #333333;
+      }
+      .footer-top {
+        padding-bottom: 30px; /* Reduced from 40px to 30px */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .light-mode .footer-top {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .footer-about p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      .footer-logo img {
+        max-width: 220px;
+        margin-bottom: 20px;
+      }
+      .footer-widget h5 {
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+      .light-mode .footer-widget h5 {
+        color: #0056b3;
+      }
+      .footer-widget ul li a {
+        color: #cccccc;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        display: block;
+        padding: 5px 0;
+      }
+      .light-mode .footer-widget ul li a {
+        color: #666666;
+      }
+      .footer-widget ul li a:hover {
+        color: #007bff;
+      }
+      .light-mode .footer-widget ul li a:hover {
+        color: #0056b3;
+      }
+      .subscribe-input form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .subscribe-input input {
+        flex: 1;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+      .light-mode .subscribe-input input {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        color: #333333;
+      }
+      .subscribe-input button {
+        border-radius: 25px;
+        padding: 10px 20px;
+        background: #007bff;
+        border: none;
+        color: white;
+        transition: background 0.3s ease;
+      }
+      .subscribe-input button:hover {
+        background: #0056b3;
+      }
+      .footer-contact-info .footer-address {
+        margin-bottom: 15px;
+      }
+      .footer-contact-info .footer-address img {
+        width: 20px;
+        height: 20px;
+      }
+      .footer-contact-info p {
+        margin: 0;
+        font-size: 14px;
+      }
+      .footer-contact-info a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .light-mode .footer-contact-info a {
+        color: #0056b3;
+      }
+      .footer-bottom {
+        padding: 15px 0; /* Reduced from 20px to 15px */
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .light-mode .footer-bottom {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        color: #666666;
+      }
+      .footer-bottom p,
+      .footer-bottom a {
+        color: #ffffff !important; /* Make footer-bottom content white */
+      }
+      .footer-link li {
+        margin: 0 15px;
+      }
+      .footer-link a {
+        color: #cccccc;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      .light-mode .footer-link a {
+        color: #666666;
+      }
+      .footer-link a:hover {
+        color: #007bff;
+      }
+      .light-mode .footer-link a:hover {
+        color: #0056b3;
+      }
+      /* Hover effects for icons (social links and sidebar icons) */
+      .social-link,
+      .isax,
+      .fas {
+        transition: all 0.3s ease;
+      }
+      .social-link:hover,
+      .isax:hover,
+      .fas:hover {
+        transform: scale(1.2);
+        color: #007bff !important;
+      }
+      .light-mode .social-link:hover,
+      .light-mode .isax:hover,
+      .light-mode .fas:hover {
+        color: #0056b3 !important;
+      }
+      @media (max-width: 768px) {
+        .subscribe-input form {
+          flex-direction: column;
         }
-        .toast-success {
-            background-color: #28a745;
-            color: #fff;
+        .footer-link {
+          flex-direction: column;
+          gap: 10px;
         }
-        .toast-error {
-            background-color: #dc3545;
-            color: #fff;
-        }
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: -250px;
-                width: 250px;
-                height: 100%;
-                background: #fff;
-                transition: 0.3s;
-                z-index: 1000;
-            }
-            .sidebar.active {
-                left: 0;
-            }
-            .content {
-                margin-left: 0;
-            }
-            .navbar-header {
-                display: block;
-            }
-            .user-table {
-                font-size: 14px;
-            }
-            .user-table th, .user-table td {
-                padding: 8px;
-            }
-            #toast-container {
-                top: 10px;
-                right: 10px;
-            }
-        }
+      }
+      /* Further reduce height of profile card */
+      .profile-card {
+        padding: 1.5rem !important; /* Reduced from 2rem to 1.5rem */
+      }
+      .profile-card .row-gap-3 {
+        row-gap: 0.5rem !important; /* Reduce row gap */
+      }
+      /* Additional CSS to reduce height and ensure alignment */
+.footer {
+  padding: 20px 0 0 !important;
+}
+
+.footer-top {
+  padding-bottom: 15px !important;
+}
+
+.footer-bottom {
+  padding: 8px 0 !important;
+}
+
+.footer-about p,
+.footer-widget p {
+  margin-bottom: 12px !important;
+  line-height: 1.4 !important;
+}
+
+.footer-widget h5 {
+  margin-bottom: 12px !important;
+}
+
+.footer-widget ul li {
+  padding: 3px 0 !important;
+}
+
+.footer-widget ul li a {
+  padding: 3px 0 !important;
+}
+
+.footer-contact {
+  margin-top: 10px !important;
+}
+
+.footer-contact .mb-1 {
+  margin-bottom: 4px !important;
+}
+
+.footer-contact .mb-2 {
+  margin-bottom: 4px !important;
+}
+
+.subscribe-input {
+  margin-bottom: 10px !important;
+}
+
+.footer-top .row {
+  align-items: flex-start !important;
+}
+
+.footer-widget,
+.footer-about {
+  min-height: auto !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start !important;
+}
+      /* Users Table Styling */
+      .users-table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: none;
+      }
+      .users-table thead th {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        border: none;
+        padding: 16px 12px;
+      }
+      .users-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .users-table tbody tr:hover {
+        background: rgba(0, 123, 255, 0.05);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      .users-table tbody td {
+        padding: 16px 12px;
+        vertical-align: middle;
+        border: none;
+        position: relative;
+      }
+      .users-table tbody td::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 20px;
+        background: #dee2e6;
+      }
+      .users-table tbody td:last-child::after {
+        display: none;
+      }
+      .dark-mode .users-table thead th {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      }
+      .dark-mode .users-table tbody tr {
+        border-bottom: 1px solid #495057;
+      }
+      .dark-mode .users-table tbody tr:hover {
+        background: rgba(0, 123, 255, 0.1);
+      }
+      .dark-mode .users-table tbody td::after {
+        background: #495057;
+      }
+      .dark-mode .users-table {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      .role-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+      .role-student { background: #d4edda; color: #155724; }
+      .role-instructor { background: #fff3cd; color: #856404; }
+      .status-active { background: #d4edda; color: #155724; }
+      .status-inactive { background: #f8d7da; color: #721c24; }
+      .dark-mode .role-student { background: #20c997; color: white; }
+      .dark-mode .role-instructor { background: #fd7e14; color: white; }
+      .dark-mode .status-active { background: #20c997; color: white; }
+      .dark-mode .status-inactive { background: #dc3545; color: white; }
+      .btn-action {
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        margin: 0 2px;
+      }
+      .btn-action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      /* Enhanced styling for name and email columns */
+      .user-name-col {
+        font-weight: 600;
+        color: #007bff;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+      .user-name-col:hover {
+        color: #0056b3;
+      }
+      .user-email-col {
+        color: #6c757d;
+        font-size: 0.9rem;
+      }
+      .user-email-col a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .user-email-col a:hover {
+        text-decoration: underline;
+        color: #007bff;
+      }
+      .dark-mode .user-name-col {
+        color: #4dabf7;
+      }
+      .dark-mode .user-name-col:hover {
+        color: #339af0;
+      }
+      .dark-mode .user-email-col {
+        color: #adb5bd;
+      }
+      .dark-mode .user-email-col a:hover {
+        color: #4dabf7;
+      }
+      /* Button styling for role and status */
+      .role-btn, .status-btn {
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+      .role-btn:hover, .status-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        opacity: 0.8;
+      }
+      .role-student-btn {
+        background-color: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
+      }
+      .role-instructor-btn {
+        background-color: #fff3cd;
+        color: #856404;
+        border-color: #ffeaa7;
+      }
+      .status-active-btn {
+        background-color: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
+      }
+      .status-inactive-btn {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+      }
+      .dark-mode .role-student-btn {
+        background-color: #20c997;
+        color: white;
+        border-color: #1ea391;
+      }
+      .dark-mode .role-instructor-btn {
+        background-color: #fd7e14;
+        color: white;
+        border-color: #e86a0b;
+      }
+      .dark-mode .status-active-btn {
+        background-color: #20c997;
+        color: white;
+        border-color: #1ea391;
+      }
+      .dark-mode .status-inactive-btn {
+        background-color: #dc3545;
+        color: white;
+        border-color: #c82333;
+      }
     </style>
 </head>
-<body class="light-mode">
+<body>
+    <!-- Main Wrapper -->
     <div class="main-wrapper">
         <!-- Header -->
         <header class="header-two">
@@ -159,17 +609,17 @@
                         </a>
                         <div class="navbar-logo">
                             <a class="logo-white header-logo" href="index-3.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 220px">
                             </a>
                             <a class="logo-dark header-logo" href="index-3.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="max-height: 70px; width: auto;">
+                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 220px">
                             </a>
                         </div>
                     </div>
                     <div class="main-menu-wrapper">
                         <div class="menu-header">
                             <a href="index-3.html" class="menu-logo">
-                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
+                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 220px;" />
                             </a>
                             <a id="menu_close" class="menu-close" href="javascript:void(0);">
                                 <i class="fas fa-times"></i>
@@ -227,7 +677,8 @@
                 </div>
             </div>
         </header>
-
+        <!-- /Header -->
+        
         <!-- Breadcrumb -->
         <div class="breadcrumb-bar text-center">
             <div class="container">
@@ -244,16 +695,16 @@
                 </div>
             </div>
         </div>
+        <!-- /Breadcrumb -->
 
-        <!-- Content -->
         <div class="content">
             <div class="container">
                 <!-- Profile Box -->
-                <div class="profile-card overflow-hidden bg-blue-gradient2 bg-5 p-5 mb-4">
+                <div class="profile-card overflow-hidden bg-blue-gradient2 bg-5 p-2">
                     <div class="profile-card-bg">
                         <img src="assets/img/bg/card-bg-01.png" class="profile-card-bg-1" alt="">
                     </div>
-                    <div class="row align-items-center row-gap-3">
+                    <div class="row align-items-center row-gap-2">
                         <div class="col-lg-6">
                             <div class="d-flex align-items-center">
                                 <span class="avatar avatar-xxl avatar-rounded me-3 border border-white border-2 position-relative">
@@ -261,18 +712,22 @@
                                     <span class="verify-tick"><i class="isax isax-verify5"></i></span>
                                 </span>
                                 <div>
-                                    <h5 class="mb-1 text-white d-inline-flex align-items-center"><a class="profile-link" data-href="admin-profile.html" id="profile-name">Super Admin</a><a href="admin-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
+                                    <h5 class="mb-1 text-white d-inline-flex align-items-center">
+                                        <a class="profile-link" data-href="admin-profile.html" id="profile-name">Super Admin</a><a href="admin-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a>
+                                    </h5>
                                     <p class="text-light">Administrator</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="d-flex align-items-center justify-content-lg-end flex-wrap gap-2">
-                                <a href="manage-categories.html" class="btn btn-secondary rounded-pill">Manage Categories</a>
+                                <a href="manage-categories.html" class="btn btn-white rounded-pill me-3">Manage Categories</a>
+                                <a href="manage-courses.html" class="btn btn-secondary rounded-pill">Manage Courses</a>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- /Profile Box -->
 
                 <div class="row">
                     <!-- Sidebar -->
@@ -297,19 +752,13 @@
                                         <a href="manage-courses.html" class="d-inline-flex align-items-center"><i class="isax isax-book me-2"></i>Manage Courses</a>
                                     </li>
                                     <li>
-                                        <a href="manage-subcategories.html" class="d-inline-flex align-items-center"><i class="isax isax-category-2 me-2"></i>Manage Subcategories</a>
-                                    </li>
-                                    <li>
                                         <a href="reports.html" class="d-inline-flex align-items-center"><i class="isax isax-chart me-2"></i>Reports & Analytics</a>
                                     </li>
                                     <li>
                                         <a href="system-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting me-2"></i>System Settings</a>
                                     </li>
-                                    <li>
-                                        <a href="admin-tickets.html" class="d-inline-flex align-items-center"><i class="isax isax-ticket me-2"></i>Support Tickets</a>
-                                    </li>
                                 </ul>
-                                <hr>
+                                <hr />
                                 <h6 class="mb-3">Account Settings</h6>
                                 <ul>
                                     <li>
@@ -322,12 +771,11 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Main Content -->
+                    <!-- /Sidebar -->
                     <div class="col-lg-9">
-                        <h5 class="mb-3 fs-18">Registered Users</h5>
+                        <h5 class="mb-3 fs-18 mt-4">Registered Users</h5>
                         <div class="table-responsive">
-                            <table class="table table-bordered user-table">
+                            <table class="table users-table table-hover">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
@@ -351,317 +799,414 @@
         <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
         <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-bg">
-                <img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
-                <img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt="">
+     <footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row align-items-start">
+        <div class="col-lg-4 mb-3">
+          <div class="footer-about">
+            <div class="footer-logo">
+              <img src="assets/img/logo.png" alt="Logo" style="max-width: 300px; margin-left: -30px;" />
             </div>
-            <div class="footer-top">
-                <div class="container">
-                    <div class="row row-gap-4">
-                        <div class="col-lg-4">
-                            <div class="footer-about">
-                                <div class="footer-logo">
-                                    <img src="assets/img/logo.png" alt="">
-                                </div>
-                                <p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
-                                <div class="d-flex align-items-center">
-                                    <a href="#" class="me-2"><img src="assets/img/icon/appstore.svg" alt=""></a>
-                                    <a href="#"><img src="assets/img/icon/googleplay.svg" alt=""></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="row row-gap-4">
-                                <div class="col-lg-3">
-                                    <div class="footer-widget footer-menu">
-                                        <h5 class="footer-title">For Instructor</h5>
-                                        <ul>
-                                            <li><a href="course-grid.html">Search Mentors</a></li>
-                                            <li><a href="login.html">Login</a></li>
-                                            <li><a href="register.html">Register</a></li>
-                                            <li><a href="course-list.html">Booking</a></li>
-                                            <li><a href="student-dashboard.html">Students Dashboard</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="footer-widget footer-menu">
-                                        <h5 class="footer-title">For Student</h5>
-                                        <ul>
-                                            <li><a href="javascript:void(0);">Appointments</a></li>
-                                            <li><a href="instructor-message.html">Chat</a></li>
-                                            <li><a href="login.html">Login</a></li>
-                                            <li><a href="register.html">Register</a></li>
-                                            <li><a href="instructor-dashboard.html">Instructor Dashboard</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="footer-widget footer-contact">
-                                        <h5 class="footer-title">Newsletter</h5>
-                                        <div class="subscribe-input">
-                                            <form action="javascript:void(0);">
-                                                <input type="email" class="form-control" placeholder="Enter your Email Address">
-                                                <button type="submit" class="btn btn-primary btn-sm inline-flex align-items-center"><i class="isax isax-send-2 me-1"></i>Subscribe</button>
-                                            </form>
-                                        </div>
-                                        <div class="footer-contact-info">
-                                            <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-20.svg" alt="Img" class="img-fluid me-2">
-                                                <p>3556 Beech Street, San Francisco,<br>California, CA 94108</p>
-                                            </div>
-                                            <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-19.svg" alt="Img" class="img-fluid me-2">
-                                                <p><a href="mailto:admin@example.com">admin@example.com</a></p>
-                                            </div>
-                                            <div class="footer-address d-flex align-items-center">
-                                                <img src="assets/img/icon/icon-21.svg" alt="Img" class="img-fluid me-2">
-                                                <p>+19 123-456-7890</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <p style="margin-top: -30px;">
+              AI Adaptive Online Learning Platform empowers <br>educators and learners with innovative LMS features <br> for adaptive learning and collaboration.
+            </p>
+            <div class="d-flex align-items-center gap-3">
+              <a href="#" class="social-link" title="App Store">
+                <i class="fab fa-apple"></i>
+              </a>
+              <a href="#" class="social-link" title="Google Play">
+                <i class="fab fa-google-play"></i>
+              </a>
+              <a href="#" class="social-link" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-link" title="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-link" title="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Innovation Spotlight</h5>
+            <p>Empowering future with AI-driven education.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Stay Updated</h5>
+            <p>Subscribe for updates on courses and features.</p>
+            <div class="subscribe-input">
+              <form action="javascript:void(0);">
+                <div class="input-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Your email address"
+                    aria-label="Email"
+                  />
+                  <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
                 </div>
+              </form>
             </div>
-            <div class="footer-bottom">
-                <div class="container">
-                    <div class="row row-gap-2">
-                        <div class="col-md-6">
-                            <div class="text-center text-md-start">
-                                <p class="text-white">Copyright &copy; 2025 AdaptiveLMS. All rights reserved.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div>
-                                <ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
-                                    <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-                                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="footer-contact mt-2">
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                <span>Iqra University, Defence View, Karachi, Sindh, Pakistan</span>
+              </div>
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-envelope me-2"></i>
+                <a href="mailto:info@AiAdaptiveOnlineLearningPlatform.com">info@AiAdaptiveOnlineLearningPlatform.com</a>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="fas fa-phone me-2"></i>
+                <span>+92 331-8889902</span>
+              </div>
             </div>
-        </footer>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p>&copy; 2025 AI Adaptive Online Learning Platform. All rights reserved</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item"><a href="privacy.html">Privacy Policy</a></li>
+            <li class="list-inline-item"><a href="terms.html">Terms & Conditions</a></li>
+            <li class="list-inline-item"><a href="cookies.html">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+        <!-- /Footer -->
+    </div>
+    <!-- /Main Wrapper -->
 
     <!-- jQuery -->
-    <script src="assets/js/jquery-3.7.1.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+    
+    <!-- Bootstrap Core JS -->
+    <script src="assets/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+
     <!-- Sticky Sidebar JS -->
-    <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
-    <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+    <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
+    <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript"></script>
+    
     <!-- Custom JS -->
-    <script src="assets/js/script.js"></script>
-    <!-- JWT Decode -->
+    <script src="assets/js/script.js" type="text/javascript"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                alert('Please login first.');
-                window.location.href = 'login.html';
-                return;
-            }
+       $(document).ready(function() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        showToast("Please login first.", "error");
+        window.location.href = "login.html";
+        return;
+    }
+    let decoded;
+    try {
+        decoded = jwt_decode(token);
+        console.log("Decoded Token:", decoded);
+    } catch (error) {
+        console.error("Token decode error:", error);
+        showToast("Invalid token. Please login again.", "error");
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+        return;
+    }
+    if (decoded.role !== "admin") {
+        showToast("Access denied: Admins only.", "error");
+        window.location.href = "login.html";
+        return;
+    }
 
-            let decoded;
-            try {
-                decoded = jwt_decode(token);
-                if (decoded.role !== 'admin') {
-                    alert('Access denied: This page is for admins only.');
-                    window.location.href = 'login.html';
-                    return;
+    function showToast(message, type = "success", duration = 3000) {
+        const toastContainer = $("#toast-container");
+        const toastId = `toast-${Date.now()}`;
+        const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center ${
+        type === "success" ? "toast-success" : "toast-error"
+      } fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+        toastContainer.append(toastHtml);
+        const toastElement = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+        setTimeout(() => {
+            toast.hide();
+            $(`#${toastId}`).remove();
+        }, duration);
+    }
+
+    function loadProfile() {
+        console.log("Loading profile for user ID:", decoded.id);
+        $.ajax({
+            url: "http://localhost:5000/api/auth/profile",
+            type: "GET",
+            headers: { Authorization: "Bearer " + token },
+            success: function (profile) {
+                console.log("Profile loaded:", profile);
+                $("#profile-name").text(profile.name || "Admin");
+                $("#profile-email a")
+                    .text(profile.email || "No email")
+                    .attr("href", `mailto:${profile.email || ""}`);
+                if (profile.profileImage) {
+                    $(".dropdown-profile-img")
+                        .attr("src", profile.profileImage)
+                        .parent()
+                        .addClass("has-image");
+                    $("#profile-img")
+                        .attr("src", profile.profileImage)
+                        .parent()
+                        .addClass("has-image");
                 }
-            } catch (error) {
-                alert('Invalid token. Please login again.');
-                localStorage.removeItem('token');
-                window.location.href = 'login.html';
-                return;
-            }
+            },
+            error: function (xhr) {
+                console.error("Profile load error:", {
+                    status: xhr.status,
+                    response: xhr.responseText,
+                });
+                if (xhr.status === 0)
+                    showToast("Unable to connect to server.", "error");
+                else if (xhr.status === 401) {
+                    showToast("Session expired.", "error");
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                } else
+                    showToast(`Profile error (Status: ${xhr.status}).`, "error");
+            },
+        });
+    }
 
-            // Load profile data
-            function loadProfile() {
+    $(".profile-link").on("click", function (e) {
+        e.preventDefault();
+        const href = $(this).data("href") || $(this).attr("href");
+        $.ajax({
+            url: "http://localhost:5000/api/auth/profile",
+            type: "GET",
+            headers: { Authorization: "Bearer " + token },
+            success: function () {
+                window.location.href = href;
+            },
+            error: function (xhr) {
+                console.error(
+                    "Profile access error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+                if (xhr.status === 0) showToast("Server unavailable.", "error");
+                else if (xhr.status === 401) {
+                    showToast("Session expired.", "error");
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                } else
+                    showToast(
+                        `Profile access error (Status: ${xhr.status}).`,
+                        "error"
+                    );
+            },
+        });
+    });
+
+    loadProfile();
+
+    // Theme toggle code (same as before)
+    const toggleDarkMode = () => {
+        $('body').addClass('dark-mode').removeClass('light-mode');
+        $('#dark-mode-toggle').removeClass('activate');
+        $('#light-mode-toggle').addClass('activate');
+        localStorage.setItem('theme', 'dark');
+    };
+
+    const toggleLightMode = () => {
+        $('body').addClass('light-mode').removeClass('dark-mode');
+        $('#light-mode-toggle').removeClass('activate');
+        $('#dark-mode-toggle').addClass('activate');
+        localStorage.setItem('theme', 'light');
+    };
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') toggleDarkMode();
+    else toggleLightMode();
+
+    $('#dark-mode-toggle').on('click', toggleDarkMode);
+    $('#light-mode-toggle').on('click', toggleLightMode);
+
+    // Fetch users code (same, but added comment)
+    // Fetch and display users (excluding current admin)
+    $.ajax({
+        url: 'http://localhost:5000/api/admin/users',
+        type: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token },
+        success: function(response) {
+            let userListHTML = '';
+            if (response.users && response.users.length > 0) {
+                // Fetch current admin profile to get admin ID
                 $.ajax({
                     url: 'http://localhost:5000/api/auth/profile',
                     type: 'GET',
                     headers: { 'Authorization': 'Bearer ' + token },
+                    async: false, // Synchronous to ensure admin ID is available
                     success: function(profile) {
-                        $('#profile-name').text(profile.name || 'Admin User');
-                        $('#profile-email a').text(profile.email || 'No email').attr('href', `mailto:${profile.email || ''}`);
-                        if (profile.profileImage) {
-                            $('.dropdown-profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
-                            $('#profile-img').attr('src', profile.profileImage).parent().addClass('has-image');
+                        const adminId = profile._id; // Assuming _id is the unique identifier
+                        const filteredUsers = response.users.filter(user => user._id !== adminId && user.role !== 'admin');
+                        if (filteredUsers.length > 0) {
+                            filteredUsers.forEach(user => {
+                                const roleClass = user.role === 'student' ? 'role-student-btn' : 'role-instructor-btn';
+                                const statusClass = user.status === 'Active' ? 'status-active-btn' : 'status-inactive-btn';
+                                userListHTML += `
+                                    <tr>
+                                        <td class="user-name-col"><i class="fas fa-user me-1"></i>${user.name || 'Unknown'}</td>
+                                        <td class="user-email-col"><a href="mailto:${user.email || ''}"><i class="fas fa-envelope me-1"></i>${user.email || 'No Email'}</a></td>
+                                        <td><button class="btn role-btn ${roleClass}" data-id="${user._id}" data-role="${user.role}">${user.role || 'User'}</button></td>
+                                        <td><button class="btn status-btn ${statusClass}" data-id="${user._id}" data-status="${user.status}">${user.status || 'Active'}</button></td>
+                                        <td>
+                                            <button class="btn btn-primary btn-action edit-user me-2" data-id="${user._id}" data-role="${user.role}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <button class="btn btn-danger btn-action delete-user" data-id="${user._id}" data-role="${user.role}">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            userListHTML = '<tr><td colspan="5" class="text-center">No non-admin users found.</td></tr>';
                         }
                     },
                     error: function(xhr) {
-                        if (xhr.status === 401) {
-                            showToast('Session expired. Please login again.', 'error');
-                            localStorage.removeItem('token');
-                            window.location.href = 'login.html';
-                        } else {
-                            showToast('Error loading profile.', 'error');
-                        }
+                        showToast('Error fetching admin profile to filter users.', 'error');
+                        userListHTML = '<tr><td colspan="5" class="text-center">Error loading users. Please try again.</td></tr>';
                     }
                 });
-            }
-
-            // Handle profile link click
-            $('.profile-link').on('click', function(e) {
-                e.preventDefault();
-                const href = $(this).data('href') || $(this).attr('href');
-                window.location.href = href;
-            });
-
-            loadProfile();
-
-            // Dark/Light Mode Toggle
-            const toggleDarkMode = () => {
-                $('body').addClass('dark-mode').removeClass('light-mode');
-                $('#dark-mode-toggle').removeClass('activate');
-                $('#light-mode-toggle').addClass('activate');
-                localStorage.setItem('theme', 'dark');
-            };
-
-            const toggleLightMode = () => {
-                $('body').addClass('light-mode').removeClass('dark-mode');
-                $('#light-mode-toggle').removeClass('activate');
-                $('#dark-mode-toggle').addClass('activate');
-                localStorage.setItem('theme', 'light');
-            };
-
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                toggleDarkMode();
             } else {
-                toggleLightMode();
+                userListHTML = '<tr><td colspan="5" class="text-center">No users found.</td></tr>';
             }
+            $('#user-list').html(userListHTML);
+        },
+        error: function(xhr) {
+            $('#user-list').html('<tr><td colspan="5" class="text-center">Error loading users. Please try again.</td></tr>');
+            showToast(`Error loading users: ${xhr.responseText || 'Unknown error'}`, 'error');
+        }
+    });
 
-            $('#dark-mode-toggle').on('click', toggleDarkMode);
-            $('#light-mode-toggle').on('click', toggleLightMode);
-
-            // Mobile Menu Toggle
-            $('#mobile_btn').on('click', function() {
-                $('.theiaStickySidebar').toggleClass('active');
-            });
-            $('#menu_close').on('click', function() {
-                $('.theiaStickySidebar').removeClass('active');
-            });
-
-            // Function to show toast messages
-            function showToast(message, type = 'success', duration = 3000) {
-                const toastContainer = $('#toast-container');
-                const toastId = `toast-${Date.now()}`;
-                const toastHtml = `
-                    <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
-                        <div class="d-flex">
-                            <div class="toast-body">${message}</div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                    </div>
-                `;
-                toastContainer.append(toastHtml);
-
-                const toastElement = document.getElementById(toastId);
-                const toast = new bootstrap.Toast(toastElement);
-                toast.show();
-
-                setTimeout(() => {
-                    toast.hide();
-                    $(`#${toastId}`).remove();
-                }, duration);
-            }
-
-            // Fetch and display users (excluding current admin)
+    // Toggle Role (same as before)
+    $(document).on('click', '.role-btn', function() {
+        const userId = $(this).data('id');
+        const currentRole = $(this).data('role');
+        const newRole = currentRole === 'student' ? 'instructor' : 'student';
+        if (confirm(`Are you sure you want to change role to ${newRole}?`)) {
             $.ajax({
-                url: 'http://localhost:5000/api/admin/users',
-                type: 'GET',
+                url: `http://localhost:5000/api/admin/users/${userId}/role`,
+                type: 'PUT',
                 headers: { 'Authorization': 'Bearer ' + token },
+                data: { role: newRole },
                 success: function(response) {
-                    let userListHTML = '';
-                    if (response.users && response.users.length > 0) {
-                        // Fetch current admin profile to get admin ID
-                        $.ajax({
-                            url: 'http://localhost:5000/api/auth/profile',
-                            type: 'GET',
-                            headers: { 'Authorization': 'Bearer ' + token },
-                            async: false, // Synchronous to ensure admin ID is available
-                            success: function(profile) {
-                                const adminId = profile._id; // Assuming _id is the unique identifier
-                                const filteredUsers = response.users.filter(user => user._id !== adminId && user.role !== 'admin');
-                                if (filteredUsers.length > 0) {
-                                    filteredUsers.forEach(user => {
-                                        userListHTML += `
-                                            <tr>
-                                                <td>${user.name || 'Unknown'}</td>
-                                                <td>${user.email || 'No Email'}</td>
-                                                <td>${user.role || 'User'}</td>
-                                                <td><span class="badge ${user.status === 'Active' ? 'bg-success' : 'bg-secondary'}">${user.status || 'Active'}</span></td>
-                                                <td>
-                                                    <button class="btn btn-primary btn-sm edit-user me-2" data-id="${user._id}" data-role="${user.role}">
-                                                        <i class="fas fa-edit me-1"></i> Edit
-                                                    </button>
-                                                    <button class="btn btn-danger btn-sm delete-user" data-id="${user._id}" data-role="${user.role}">
-                                                        <i class="fas fa-trash me-1"></i> Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        `;
-                                    });
-                                } else {
-                                    userListHTML = '<tr><td colspan="5">No non-admin users found.</td></tr>';
-                                }
-                            },
-                            error: function(xhr) {
-                                showToast('Error fetching admin profile to filter users.', 'error');
-                                userListHTML = '<tr><td colspan="5">Error loading users. Please try again.</td></tr>';
-                            }
-                        });
-                    } else {
-                        userListHTML = '<tr><td colspan="5">No users found.</td></tr>';
-                    }
-                    $('#user-list').html(userListHTML);
+                    showToast(`Role updated to ${newRole} successfully.`, 'success');
+                    setTimeout(() => {
+                        location.reload();  // Yeh reload changes dikha dega
+                    }, 2000);
                 },
                 error: function(xhr) {
-                    $('#user-list').html('<tr><td colspan="5">Error loading users. Please try again.</td></tr>');
-                    showToast(`Error loading users: ${xhr.responseText || 'Unknown error'}`, 'error');
+                    showToast(`Error updating role: ${xhr.responseText || 'Unknown error'}`, 'error');
                 }
             });
+        }
+    });
 
-            // Edit User
-            $(document).on('click', '.edit-user', function() {
-                const userId = $(this).data('id');
-                const role = $(this).data('role');
-                window.location.href = `edit-user.html?id=${userId}&role=${role}`;
-            });
-
-            // Delete User
-            $(document).on('click', '.delete-user', function() {
-                const userId = $(this).data('id');
-                const role = $(this).data('role');
-                if (confirm('Are you sure you want to delete this user?')) {
-                    $.ajax({
-                        url: `http://localhost:5000/api/admin/users/${role}/${userId}`,
-                        type: 'DELETE',
-                        headers: { 'Authorization': 'Bearer ' + token },
-                        success: function(response) {
-                            showToast('User deleted successfully.', 'success');
-                            setTimeout(() => {
-                                location.reload();
-                            }, 2000); // Reload after 2 seconds
-                        },
-                        error: function(xhr) {
-                            showToast(`Error deleting user: ${xhr.responseText || 'Unknown error'}`, 'error');
-                        }
-                    });
+    // Toggle Status (same)
+    $(document).on('click', '.status-btn', function() {
+        const userId = $(this).data('id');
+        const currentStatus = $(this).data('status');
+        const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+        if (confirm(`Are you sure you want to change status to ${newStatus}?`)) {
+            $.ajax({
+                url: `http://localhost:5000/api/admin/users/${userId}/status`,
+                type: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token },
+                data: { status: newStatus },
+                success: function(response) {
+                    showToast(`Status updated to ${newStatus} successfully.`, 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                },
+                error: function(xhr) {
+                    showToast(`Error updating status: ${xhr.responseText || 'Unknown error'}`, 'error');
                 }
             });
-        });
-    </script>
+        }
+    });
+
+    // **EDIT USER - Updated: Ab yeh sirf redirect karega, lekin edit-user.html se wapas aane par handle karenge**
+    $(document).on('click', '.edit-user', function() {
+        const userId = $(this).data('id');
+        const role = $(this).data('role');
+        window.location.href = `edit-user.html?id=${userId}&role=${role}`;
+    });
+
+    // Delete User (same)
+    $(document).on('click', '.delete-user', function() {
+        const userId = $(this).data('id');
+        const role = $(this).data('role');
+        if (confirm('Are you sure you want to delete this user?')) {
+            $.ajax({
+                url: `http://localhost:5000/api/admin/users/${role}/${userId}`,
+                type: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function(response) {
+                    showToast('User deleted successfully.', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                },
+                error: function(xhr) {
+                    showToast(`Error deleting user: ${xhr.responseText || 'Unknown error'}`, 'error');
+                }
+            });
+        }
+    });
+
+    // Mobile Menu Toggle (same)
+    $('#mobile_btn').on('click', function() {
+        $('.theiaStickySidebar').toggleClass('active');
+    });
+    $('#menu_close').on('click', function() {
+        $('.theiaStickySidebar').removeClass('active');
+    });
+
+    // **Naya: Page Load Par Check Karein Agar Edit Se Wapas Aaye Hain To Reload**
+    // Yeh URL param check karega agar edit se wapas aaye hain
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('edited') && urlParams.get('edited') === 'true') {
+        showToast('User updated successfully!', 'success');
+        setTimeout(() => {
+            location.reload();  // Table refresh kar dega fresh data se
+        }, 2000);
+        // URL clean kar dein
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+});    </script>
 </body>
 </html>
