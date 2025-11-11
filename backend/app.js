@@ -1,3 +1,4 @@
+// app.js - Updated with minor fixes (e.g., ensure topics route is properly required, added populate support in comments if needed)
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -23,6 +24,7 @@ const adminRoutes = require('./routes/admin');
 const dashboardRoutes = require('./routes/dashboard');
 const courseRoutes = require('./routes/courses');
 const categoryRoutes = require('./routes/categories');
+const topicRoutes = require('./routes/topics'); // Explicitly require for clarity
 
 const app = express();
 
@@ -107,6 +109,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/topics', topicRoutes); // Use explicit require
 
 // Cache Control for Performance
 app.use((req, res, next) => {

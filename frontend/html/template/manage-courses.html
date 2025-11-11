@@ -9,17 +9,14 @@
     <meta name="keywords" content="LMS template, Learning Management System, e-learning software, online course platform, student management, education portal, virtual classroom, training management system, course tracking, online education">
     <meta name="author" content="Dreams Technologies">
     <meta name="robots" content="index, follow">
-   
     <title>Adaptive LMS | Manage Courses</title>
     <!-- Favicon -->
     <link rel="shortcut icon" href="assets/img/favicon.png">
     <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
     <!-- Theme Settings Js -->
     <script src="assets/js/theme-script.js" type="text/javascript"></script>
-   
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-   
     <!-- Fontawesome CSS -->
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
@@ -29,6 +26,8 @@
     <link rel="stylesheet" href="assets/css/iconsax.css">
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Sortable.js CDN for drag-drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <!-- Inline CSS for Dark/Light Mode and Toast -->
     <style>
       .light-mode {
@@ -582,6 +581,19 @@
         font-size: 0.875rem;
         border-radius: 4px;
       }
+      /* UI Fix: Topic Delete Button Highlight */
+      .delete-topic {
+        background-color: #dc3545 !important;
+        border-color: #dc3545 !important;
+        font-weight: bold;
+      }
+      .delete-topic:hover {
+        background-color: #c82333 !important;
+        transform: scale(1.05);
+      }
+      .delete-topic::after {
+        content: attr(title); /* Tooltip via title attr */
+      }
       /* Modal Styling for Add/Edit Course */
       .modal-content {
         border-radius: 12px;
@@ -679,6 +691,27 @@
       .video-item:hover { background-color: #e9ecef; }
       .dark-mode .video-item:hover { background-color: #6c757d; }
       .fetching { opacity: 0.6; pointer-events: none; }
+      /* Topics Specific CSS */
+      .sortable { list-style: none; }
+      .sortable li { cursor: move; padding: 10px; border: 1px solid #ddd; margin: 5px 0; background: #f8f9fa; }
+      .dark-mode .sortable li { background: #495057; border-color: #6c757d; }
+      .drag-handle { font-size: 20px; cursor: grab; margin-right: 10px; color: #6c757d; }
+      .dark-mode .drag-handle { color: #adb5bd; }
+      .sortable-item:hover { background: #e9ecef; }
+      .dark-mode .sortable-item:hover { background: #6c757d; }
+      /* NEW: Resources Styles for Manage Courses */
+      .resource-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #f8f9fa; }
+      .dark-mode .resource-item { background-color: #495057; border-color: #6c757d; }
+      .resource-item:hover { background-color: #e9ecef; }
+      .dark-mode .resource-item:hover { background-color: #6c757d; }
+      .resources-count { position: absolute; top: 5px; right: 10px; background: #28a745; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+      /* FIXED: Ensure Resources Section Visible */
+      #topic-resources-section { display: block !important; } /* Override any hide */
+      /* NEW: Course Resources Section */
+      #course-resources-section { display: none; }
+      #course-resource-list .resource-item { margin-bottom: 10px; }
+      /* UI Fix: Better button spacing in actions */
+      .btn-group-sm .btn { margin-right: 5px; }
     </style>
 </head>
 <body>
@@ -767,7 +800,7 @@
             </div>
         </header>
         <!-- /Header -->
-       
+ 
         <!-- Breadcrumb -->
         <div class="breadcrumb-bar text-center">
             <div class="container">
@@ -864,7 +897,6 @@
                             <h5 class="mb-0 fs-18">Courses List</h5>
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">Add New Course</button>
                         </div>
-
                         <div class="table-responsive">
                             <table class="table courses-table">
                                 <thead>
@@ -886,7 +918,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Add Course Modal -->
         <div class="modal fade" id="addCourseModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -917,9 +948,9 @@
                                 <label class="form-label">Course Description *</label>
                                 <textarea class="form-control" id="course-description" rows="3" required></textarea>
                             </div>
-                            
+                      
                             <div class="mb-4">
-                                <h6 class="mb-3">Course Videos / Topics</h6>
+                                <h6 class="mb-3">Course Videos / Topics (Single Video, URL, or Playlist)</h6>
                                 <div id="video-section">
                                     <div id="video-list" class="mb-3">
                                         <!-- Video items -->
@@ -941,32 +972,62 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="mb-3">
-                                                    <label class="form-label">OR YouTube URL (Single or Playlist)</label>
-                                                    <input type="text" class="form-control" id="course-video-url" placeholder="https://www.youtube.com/watch?v=... or https://www.youtube.com/playlist?list=...">
+                                                    <label class="form-label">OR YouTube URL / Playlist Link</label>
+                                                    <input type="text" class="form-control" id="course-video-url" placeholder="https://www.youtube.com/watch?v=... or playlist?list=...">
                                                 </div>
                                             </div>
                                         </div>
                                         <button type="button" class="btn btn-outline-primary w-100" id="add-video-btn">
-                                            Add to Course Playlist
+                                            Add Video / Playlist
                                         </button>
                                     </div>
                                 </div>
                                 <div id="video-preview" class="mt-3 p-3 border rounded bg-light">
                                     <p class="text-muted">Video preview will appear here</p>
                                 </div>
-                                
-                                <div class="d-flex justify-content-end mt-3">
-                                    <button type="submit" class="btn btn-primary">
-                                        Save Course
-                                    </button>
+                            </div>
+                            <!-- NEW: Course Level Resources Section -->
+                            <div class="mb-4" id="course-resources-section">
+                                <h6 class="mb-3">Course Resources (PDFs)</h6>
+                                <div id="course-resource-list" class="mb-3">
+                                    <!-- Course resources -->
                                 </div>
-                            </form>
-                        </div>
+                                <div class="border p-3 rounded bg-light">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Resource Name</label>
+                                                <input type="text" class="form-control" id="course-resource-name" placeholder="Enter name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Upload PDF</label>
+                                                <input type="file" class="form-control" id="course-resource-pdf" accept=".pdf">
+                                                <small class="form-text text-muted">Max 50MB</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">OR External URL</label>
+                                                <input type="text" class="form-control" id="course-resource-url" placeholder="https://example.com/resource.pdf">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-success w-100" id="add-course-resource-btn">Add Resource to Course</button>
+                                </div>
+                            </div>
+                          
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="submit" class="btn btn-primary">
+                                    Save Course
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-
         <!-- Edit Course Modal -->
         <div class="modal fade" id="editCourseModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -998,9 +1059,9 @@
                                 <label class="form-label">Course Description *</label>
                                 <textarea class="form-control" id="edit-course-description" rows="3" required></textarea>
                             </div>
-                            
+                      
                             <div class="mb-4">
-                                <h6 class="mb-3">Manage Course Videos / Topics</h6>
+                                <h6 class="mb-3">Manage Course Videos / Topics (Single Video, URL, or Playlist)</h6>
                                 <div id="edit-video-section">
                                     <div id="edit-video-list" class="mb-3">
                                         <!-- Video items -->
@@ -1022,33 +1083,209 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="mb-3">
-                                                    <label class="form-label">OR YouTube URL (Single or Playlist)</label>
-                                                    <input type="text" class="form-control" id="edit-course-video-url" placeholder="https://www.youtube.com/watch?v=... or https://www.youtube.com/playlist?list=...">
+                                                    <label class="form-label">OR YouTube URL / Playlist Link</label>
+                                                    <input type="text" class="form-control" id="edit-course-video-url" placeholder="https://www.youtube.com/watch?v=... or playlist?list=...">
                                                 </div>
                                             </div>
                                         </div>
                                         <button type="button" class="btn btn-outline-primary w-100" id="edit-add-video-btn">
-                                            Add New Video
+                                            Add Video / Playlist
                                         </button>
                                     </div>
                                 </div>
                                 <div id="edit-video-preview" class="mt-3 p-3 border rounded bg-light">
                                     <p class="text-muted">Video preview will appear here</p>
                                 </div>
-                                
-                                <div class="d-flex justify-content-end mt-3">
-                                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">
-                                        Update Course
-                                    </button>
+                            </div>
+                            <!-- NEW: Edit Course Resources Section -->
+                            <div class="mb-4" id="edit-course-resources-section">
+                                <h6 class="mb-3">Manage Course Resources (PDFs)</h6>
+                                <div id="edit-course-resource-list" class="mb-3">
+                                    <!-- Edit course resources -->
                                 </div>
-                            </form>
+                                <div class="border p-3 rounded bg-light">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Resource Name</label>
+                                                <input type="text" class="form-control" id="edit-course-resource-name" placeholder="Enter name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Upload PDF</label>
+                                                <input type="file" class="form-control" id="edit-course-resource-pdf" accept=".pdf">
+                                                <small class="form-text text-muted">Max 50MB</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">OR External URL</label>
+                                                <input type="text" class="form-control" id="edit-course-resource-url" placeholder="https://example.com/resource.pdf">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-success w-100" id="edit-add-course-resource-btn">Add Resource to Course</button>
+                                </div>
+                            </div>
+                          
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">
+                                    Update Course
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- UPDATED: Manage Topics Modal - Added Single Video Add Section and Delete Course Button -->
+        <div class="modal fade" id="manageTopicsModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Manage Topics for <span id="topic-course-name"></span></h5>
+                        <!-- UI Fix: Changed to Delete Topic button, added ms-3 for gap, updated title -->
+                        <button type="button" class="btn btn-danger btn-sm me-2 ms-3" id="delete-course-from-topics-modal" title="Delete selected topic (videos/resources)">Delete Topic</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="selected-course-id">
+                        <div class="mb-3">
+                            <button class="btn btn-primary" id="add-topic-btn">Add New Topic</button>
+                        </div>
+                        <!-- NEW: Single Video Add Section in Topics Modal (Replaced Generate from Playlist) -->
+                        <div class="mb-4 border p-3 rounded bg-light">
+                            <h6 class="mb-3">Add Single Video to Course</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Sub-Topic Name *</label>
+                                        <input type="text" class="form-control" id="topics-modal-video-topic" placeholder="Enter sub-topic name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Upload Video File</label>
+                                        <input type="file" class="form-control" id="topics-modal-video-file" accept="video/*">
+                                        <small class="form-text text-muted">Max 100MB</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">OR YouTube URL (Single Video Only)</label>
+                                        <input type="text" class="form-control" id="topics-modal-video-url" placeholder="https://www.youtube.com/watch?v=...">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-primary w-100" id="add-single-video-to-course">Add Single Video</button>
+                        </div>
+                        <ul id="topics-list" class="sortable list-group">
+                            <!-- Topics loaded here - with Edit button -->
+                        </ul>
+                        <!-- Videos Section - UPDATED for Single Video Only -->
+                        <div id="topic-videos-section" style="display: none;">
+                            <h6 id="topic-videos-title">Manage Videos for Selected Topic (Single Video Only)</h6>
+                            <div id="topic-video-list" class="mb-3">
+                                <!-- Topic videos -->
+                            </div>
+                            <!-- Add video form for topic -->
+                            <div class="border p-3 rounded bg-light">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Sub-Topic Name *</label>
+                                            <input type="text" class="form-control" id="topic-subtopic" placeholder="Enter sub-topic name" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Upload Video File</label>
+                                            <input type="file" class="form-control" id="topic-video-file" accept="video/*">
+                                            <small class="form-text text-muted">Max 100MB</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">OR YouTube URL (Single Video Only)</label>
+                                            <input type="text" class="form-control" id="topic-video-url" placeholder="https://www.youtube.com/watch?v=...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline-primary w-100" id="add-topic-video-btn">Add Single Video to Topic</button>
+                            </div>
+                        </div>
+                        <!-- Resources Section -->
+                        <div id="topic-resources-section" style="display: none;">
+                            <h6 id="topic-resources-title">Manage Resources for Selected Topic</h6>
+                            <div id="topic-resource-list" class="mb-3">
+                                <!-- Resources loaded here -->
+                            </div>
+                            <div class="border p-3 rounded bg-light">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Resource Name</label>
+                                            <input type="text" class="form-control" id="topic-resource-name" placeholder="Enter name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Upload PDF</label>
+                                            <input type="file" class="form-control" id="topic-resource-pdf" accept=".pdf">
+                                            <small class="form-text text-muted">Max 50MB</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">OR External URL</label>
+                                            <input type="text" class="form-control" id="topic-resource-url" placeholder="https://example.com/resource.pdf">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline-success w-100" id="add-topic-resource-btn">Add Resource to Topic</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
+        <!-- NEW: Edit Topic Modal -->
+        <div class="modal fade" id="editTopicModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Topic</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="edit-topic-form">
+                            <input type="hidden" id="edit-topic-id">
+                            <div class="mb-3">
+                                <label class="form-label">Topic Name *</label>
+                                <input type="text" class="form-control" id="edit-topic-name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" id="edit-topic-description" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-control" id="edit-topic-status" required>
+                                    <option value="draft">Draft</option>
+                                    <option value="published">Published</option>
+                                </select>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Update Topic</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Toast Container -->
         <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
         <!-- Footer -->
@@ -1149,18 +1386,15 @@
     <!-- /Main Wrapper -->
     <!-- jQuery -->
     <script src="assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-   
     <!-- Bootstrap Core JS -->
     <script src="assets/js/bootstrap.bundle.min.js" type="text/javascript"></script>
     <!-- Sticky Sidebar JS -->
     <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
     <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript"></script>
-   
     <!-- Custom JS -->
     <script src="assets/js/script.js" type="text/javascript"></script>
-   
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-    <!-- Updated Script for Playlist Support -->
+    <!-- Updated Script -->
 <script>
 $(document).ready(function() {
     const token = localStorage.getItem('token');
@@ -1172,7 +1406,7 @@ $(document).ready(function() {
     let decoded;
     try {
         decoded = jwt_decode(token);
-        console.log('Decoded Token:', decoded); // Debug: Check token contents
+        console.log('Decoded Token:', decoded);
     } catch (error) {
         console.error('Token decode error:', error);
         showToast("Invalid token. Please login again.", "error");
@@ -1207,8 +1441,11 @@ $(document).ready(function() {
         }, duration);
     }
     let videoFiles = [];
+    let resourceFiles = []; // NEW for course resources
     let videoCounter = 0;
-
+    let currentTopicId = '';
+    let currentResourceTopicId = '';
+    let currentCourseIdForTopics = ''; // For topics modal
     function loadProfile() {
         console.log("Loading profile for user ID:", decoded.id);
         $.ajax({
@@ -1216,7 +1453,7 @@ $(document).ready(function() {
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
             success: function(profile) {
-                console.log('Profile loaded:', profile); // Debug: Check profile data
+                console.log('Profile loaded:', profile);
                 $("#profile-name").text(profile.name || 'Admin');
                 $("#profile-email a")
                   .text(profile.email || "No email")
@@ -1251,17 +1488,17 @@ $(document).ready(function() {
             },
         });
     }
-    // Handle profile link click with improved error handling (though not needed on this page)
+    // Handle profile link click
     $(".profile-link").on("click", function (e) {
         e.preventDefault();
         const href = $(this).data("href") || $(this).attr("href");
-        console.log('Profile link clicked, checking profile... Token ID:', decoded.id); // Debug: Log token ID
+        console.log('Profile link clicked, checking profile... Token ID:', decoded.id);
         $.ajax({
             url: 'http://localhost:5000/api/auth/profile',
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
             success: function(profile) {
-                console.log('Profile access OK, redirecting to:', href); // Debug: Confirm redirect
+                console.log('Profile access OK, redirecting to:', href);
                 window.location.href = href;
             },
             error: function(xhr) {
@@ -1283,7 +1520,7 @@ $(document).ready(function() {
             },
         });
     });
-    loadProfile(); // Load profile on page load
+    loadProfile();
     function populateCategorySelect(selectId) {
         $.ajax({
             url: 'http://localhost:5000/api/categories',
@@ -1301,27 +1538,26 @@ $(document).ready(function() {
             }
         });
     }
-
     function generateVideoId() {
         return 'vid_' + Date.now() + '_' + videoCounter++;
     }
-
-    function addVideoToList(listId, previewId, topic, file, url, videoId) {
-        if (!topic.trim()) return showToast('Topic is required.', 'error'), false;
+    function generateResourceId() {
+        return 'res_' + Date.now() + '_' + (videoCounter++); // Reuse counter
+    }
+    // UPDATED: Add video (now allows playlist for course, single for topics)
+    function addVideoToList(listId, previewId, subtopic, file, url, videoId) {
+        if (!subtopic.trim()) return showToast('Sub-topic is required.', 'error'), false;
         if (!file && !url.trim()) return showToast('Add video file or URL.', 'error'), false;
-
-        const isPlaylist = url.includes('playlist?list=');
-
         const videoItem = $(`
             <div class="video-item" data-video-id="${videoId}">
                 <div class="d-flex align-items-center w-100">
                     <i class="fas fa-play-circle me-3 text-primary fs-4"></i>
                     <div class="flex-grow-1">
-                        <strong>${topic}</strong>
+                        <strong>${subtopic}</strong>
                         <small class="d-block text-muted">
-                            ${file ? `File: ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)` : `URL: ${url} ${isPlaylist ? '(Playlist - Multiple Videos)' : ''}`}
+                            ${file ? `File: ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)` : `URL: ${url}`}
                         </small>
-                        <input type="hidden" name="topic-${videoId}" value="${topic}">
+                        <input type="hidden" name="subtopic-${videoId}" value="${subtopic}">
                         <input type="hidden" name="isFile-${videoId}" value="${!!file}">
                         ${file ? `<input type="hidden" name="fileId-${videoId}" value="${videoId}">` : ''}
                         ${url ? `<input type="hidden" name="url-${videoId}" value="${url}">` : ''}
@@ -1330,78 +1566,73 @@ $(document).ready(function() {
                 </div>
             </div>
         `);
-
         if (file) videoFiles.push({ id: videoId, file });
-
         videoItem.find('.remove-video').on('click', function() {
             const id = $(this).closest('.video-item').data('video-id');
             videoFiles = videoFiles.filter(f => f.id !== id);
             $(this).closest('.video-item').fadeOut(300, function() { $(this).remove(); updatePreview(previewId); });
         });
-
         $(`#${listId}`).append(videoItem);
         updatePreview(previewId);
         return true;
     }
-
-    // New: Fetch playlist videos from backend
-    // Updated: Frontend URL fix for playlist fetch
-async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
-    try {
-        const response = await $.ajax({
-            url: 'http://localhost:5000/api/courses/youtube/fetch-playlist',  // Fixed: Added /courses/
-            type: 'POST',
-            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-            data: JSON.stringify({ playlistUrl })
+    // NEW: Add resource to list (for course or topic)
+    function addResourceToList(listId, name, file, url, resId, type = 'pdf') {
+        if (!name && !file && !url) return showToast('Provide name, file, or URL.', 'error'), false;
+        const resourceItem = $(`
+            <div class="resource-item" data-res-id="${resId}">
+                <div class="d-flex align-items-center w-100">
+                    <i class="fas fa-file-pdf me-3 text-success fs-4"></i>
+                    <div class="flex-grow-1">
+                        <strong>${name || (file ? file.name : 'External Resource')}</strong>
+                        <small class="d-block text-muted">
+                            ${file ? `File: ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)` : `URL: ${url}`}
+                        </small>
+                        <input type="hidden" name="resName-${resId}" value="${name || ''}">
+                        <input type="hidden" name="isFile-${resId}" value="${!!file}">
+                        ${file ? `<input type="hidden" name="fileId-${resId}" value="${resId}">` : ''}
+                        ${url ? `<input type="hidden" name="url-${resId}" value="${url}">` : ''}
+                        <input type="hidden" name="type-${resId}" value="${type}">
+                    </div>
+                    <button type="button" class="btn btn-sm btn-danger remove-resource ms-2">Remove</button>
+                </div>
+            </div>
+        `);
+        if (file) resourceFiles.push({ id: resId, file });
+        resourceItem.find('.remove-resource').on('click', function() {
+            const id = $(this).closest('.resource-item').data('res-id');
+            resourceFiles = resourceFiles.filter(f => f.id !== id);
+            $(this).closest('.resource-item').fadeOut(300, function() { $(this).remove(); });
         });
-
-        if (response.videos && response.videos.length > 0) {
-            response.videos.forEach((video, index) => {
-                const id = generateVideoId();
-                addVideoToList(listId, previewId, video.topic, null, video.url, id);
-            });
-            showToast(`${response.videos.length} videos added from playlist!`, 'success');
-        } else {
-            showToast('No videos found in playlist.', 'error');
-        }
-    } catch (error) {
-        console.error('Playlist fetch error:', error);
-        showToast('Failed to fetch playlist. Check URL or API key.', 'error');
+        $(`#${listId}`).append(resourceItem);
+        return true;
     }
-}
     function updatePreview(previewId) {
         const $items = $(`#${previewId.replace('preview', 'list')} .video-item`);
         const $container = $(`#${previewId}`);
         if ($items.length === 0) return $container.html('<p class="text-muted">No videos added.</p>');
-
         let html = '<div class="row">';
         $items.each(function() {
             const topic = $(this).find('strong').text();
             const url = $(this).find(`input[name^="url-"]`).val();
             const isFile = $(this).find(`input[name^="isFile-"]`).val() === 'true';
-            let media = isFile 
+            let media = isFile
                 ? '<div class="text-center"><i class="fas fa-file-video fa-3x text-muted"></i><p class="small">Video File</p></div>'
-                : (getYouTubeEmbedUrl(url) ? `<iframe src="${getYouTubeEmbedUrl(url)}" frameborder="0" allowfullscreen class="rounded"></iframe>` : '<p class="text-muted">Invalid URL</p>');
+                : (getYouTubeEmbedUrl(url) ? `<iframe src="${getYouTubeEmbedUrl(url)}" frameborder="0" allowfullscreen class="rounded"></iframe>` : '<p class="text-muted">URL</p>');
             html += `<div class="col-md-6 mb-3"><div class="border rounded p-3"><h6>${topic}</h6><div class="video-preview-container">${media}</div></div></div>`;
         });
         $container.html(html + '</div>');
     }
-
     function getYouTubeEmbedUrl(url) {
         if (!url) return null;
         try {
             const urlObj = new URL(url);
-            const list = urlObj.searchParams.get('list');
-            if (list) {
-                return `https://www.youtube.com/embed/videoseries?list=${list}`;
-            }
             const videoId = urlObj.searchParams.get('v') || (urlObj.hostname === 'youtu.be' ? urlObj.pathname.slice(1) : null);
             return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
         } catch {
             return null;
         }
     }
-
     function loadCourses() {
         $.ajax({
             url: 'http://localhost:5000/api/courses',
@@ -1413,32 +1644,30 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
                     $tbody.html('<tr><td colspan="6" class="text-center text-muted py-4">No courses found.</td></tr>');
                     return;
                 }
-
                 let html = '';
                 courses.forEach(c => {
                     const count = Array.isArray(c.videos) ? c.videos.length : 0;
+                    const topicCount = Array.isArray(c.topics) ? c.topics.length : 0;
+                    const resCount = Array.isArray(c.resources) ? c.resources.length : 0;
                     const cat = c.category?.name || 'Uncategorized';
                     const first = count > 0 ? c.videos[0].topic : '';
                     const escape = s => String(s || '').replace(/"/g, '&quot;');
                     const videosData = JSON.stringify((c.videos || []).map(v => ({ topic: v.topic, url: v.url, isFile: !!v.isFile })));
-
+                    const resourcesData = JSON.stringify((c.resources || []).map(r => ({ name: r.name, url: r.url, isFile: !!r.isFile })));
                     html += `
                         <tr>
                             <td>${escape(c.name)}</td>
                             <td>${escape(c.description).substring(0,50)}${c.description.length > 50 ? '...' : ''}</td>
                             <td>${escape(cat)}</td>
-                            <td><span class="badge bg-primary">${count} video${count !== 1 ? 's' : ''}</span>${count > 0 ? `<br><small class="text-muted">${escape(first)}</small>` : ''}</td>
+                            <td><span class="badge bg-primary">${count} video${count !== 1 ? 's' : ''}</span> | <span class="badge bg-info">${topicCount} topic${topicCount !== 1 ? 's' : ''}</span>${count > 0 ? `<br><small class="text-muted">${escape(first)}</small>` : ''}</td>
                             <td>${new Date(c.createdAt).toLocaleDateString()}</td>
                             <td>
-                                <button class="btn btn-sm btn-primary me-1 edit-course"
-                                        data-id="${c._id}"
-                                        data-name="${escape(c.name)}"
-                                        data-description="${escape(c.description)}"
-                                        data-category="${c.category?._id || ''}"
-                                        data-videos="${escape(videosData)}">
-                                    Edit
-                                </button>
-                                <button class="btn btn-sm btn-danger delete-course" data-id="${c._id}">Delete</button>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-sm btn-primary edit-course" data-id="${c._id}" data-name="${escape(c.name)}" data-description="${escape(c.description)}" data-category="${c.category?._id || ''}" data-videos="${escape(videosData)}" data-resources="${escape(resourcesData)}">Edit</button>
+                                    <button class="btn btn-sm btn-info manage-topics-btn" data-id="${c._id}" data-name="${escape(c.name)}">Topics</button>
+                                    <!-- UI Fix: Clear label for course delete -->
+                                    <button class="btn btn-sm btn-danger delete-course" data-id="${c._id}" title="Delete entire course">Delete Course</button>
+                                </div>
                             </td>
                         </tr>`;
                 });
@@ -1450,45 +1679,96 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
             }
         });
     }
-
-    // Updated Add Video Button - Handles Playlist Fetch
-    $('#add-video-btn').on('click', async () => {
+    // Add Video Button for Add Course (allows playlist)
+    $('#add-video-btn').on('click', () => {
         const topic = $('#video-topic').val().trim();
         const file = $('#course-video')[0].files[0];
         const url = $('#course-video-url').val().trim();
-        const isPlaylist = url.includes('playlist?list=');
-
         if (file && url) {
-            return showToast('Choose file OR URL, not both.', 'error');
+            return showToast('Choose file OR URL/Playlist, not both.', 'error');
         }
-
         if (file) {
-            // Single file
             const id = generateVideoId();
             if (addVideoToList('video-list', 'video-preview', topic, file, null, id)) {
                 $('#video-topic, #course-video, #course-video-url').val('');
             }
         } else if (url) {
-            if (isPlaylist) {
-                // Fetch playlist
-                $('#add-video-btn').prop('disabled', true).text('Fetching Playlist...').closest('.border').addClass('fetching');
-                await fetchPlaylistVideos(url, 'video-list', 'video-preview');
-                $('#add-video-btn').prop('disabled', false).text('Add to Course Playlist').closest('.border').removeClass('fetching');
-                $('#course-video-url').val('');
-                $('#video-topic').val(''); // Clear topic for playlist
-            } else {
-                // Single video URL
-                const id = generateVideoId();
-                if (addVideoToList('video-list', 'video-preview', topic, null, url, id)) {
-                    $('#video-topic, #course-video-url').val('');
-                }
+            const id = generateVideoId();
+            if (addVideoToList('video-list', 'video-preview', topic, null, url, id)) {
+                $('#video-topic, #course-video-url').val('');
             }
         } else {
-            showToast('Add video file or URL.', 'error');
+            showToast('Add video file or URL/Playlist.', 'error');
         }
     });
-
-    // Add Course - Same as before
+    // NEW: Add Single Video to Course in Topics Modal
+    $('#add-single-video-to-course').on('click', async () => {
+        const courseId = $('#selected-course-id').val();
+        if (!courseId) return showToast('No course selected.', 'error');
+        const subtopic = $('#topics-modal-video-topic').val().trim();
+        const file = $('#topics-modal-video-file')[0].files[0];
+        const url = $('#topics-modal-video-url').val().trim();
+        if (!subtopic) return showToast('Sub-topic required.', 'error');
+        if (!file && !url) return showToast('Video file or URL required.', 'error');
+        if (file && url) return showToast('File OR URL, not both.', 'error');
+        if (url && url.includes('playlist?list=')) return showToast('Playlist not supported here. Use single video URL.', 'error');
+        try {
+            const videoData = { topic: subtopic };
+            const formData = new FormData();
+            if (file) {
+                formData.append('videoFiles', file);
+                videoData.isFile = true;
+            } else {
+                videoData.url = url;
+            }
+            formData.append('videos', JSON.stringify([videoData]));
+            await $.ajax({
+                url: `http://localhost:5000/api/courses/${courseId}/videos`,
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                data: formData,
+                processData: false,
+                contentType: false
+            });
+            showToast('Single video added to course!', 'success');
+            $('#topics-modal-video-topic, #topics-modal-video-file, #topics-modal-video-url').val('');
+            loadCourses(); // Refresh courses list
+        } catch (error) {
+            showToast('Error adding video.', 'error');
+        }
+    });
+    // NEW: Delete Course from Topics Modal (UI Fix: Now labeled as Delete Topic, but functionality same - adjust if needed)
+    $('#delete-course-from-topics-modal').on('click', function() {
+        const courseId = $('#selected-course-id').val();
+        if (!courseId) return showToast('No course selected.', 'error');
+        if (confirm('Yeh poora course delete ho jayega (topics, videos, resources saath mein). Confirm?')) {
+            $.ajax({
+                url: `http://localhost:5000/api/courses/${courseId}`,
+                type: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function() {
+                    showToast('Course deleted!', 'success');
+                    $('#manageTopicsModal').modal('hide');
+                    loadCourses();
+                },
+                error: function() {
+                    showToast('Delete failed.', 'error');
+                }
+            });
+        }
+    });
+    // Add Course Resource (same as before)
+    $('#add-course-resource-btn').on('click', () => {
+        const name = $('#course-resource-name').val().trim();
+        const file = $('#course-resource-pdf')[0].files[0];
+        const url = $('#course-resource-url').val().trim();
+        if (file && url) return showToast('Choose file OR URL, not both.', 'error');
+        const id = generateResourceId();
+        if (addResourceToList('course-resource-list', name, file, url, id)) {
+            $('#course-resource-name, #course-resource-pdf, #course-resource-url').val('');
+        }
+    });
+    // Add Course Form (same)
     $('#add-course-form').on('submit', function(e) {
         e.preventDefault();
         const name = $('#course-name').val().trim();
@@ -1496,15 +1776,13 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
         const cat = $('#course-category').val();
         if (!name || !desc || !cat) return showToast('Fill all fields.', 'error');
         if ($('#video-list .video-item').length === 0) return showToast('Add at least one video.', 'error');
-
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', desc);
         formData.append('category', cat);
-
         const videos = [];
         $('#video-list .video-item').each(function() {
-            const topic = $(this).find('input[name^="topic-"]').val();
+            const topic = $(this).find('input[name^="subtopic-"]').val();
             const fileId = $(this).find('input[name^="fileId-"]').val();
             const url = $(this).find('input[name^="url-"]').val();
             const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
@@ -1518,7 +1796,23 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
             videos.push(obj);
         });
         formData.append('videos', JSON.stringify(videos));
-
+        const resources = [];
+        $('#course-resource-list .resource-item').each(function() {
+            const resName = $(this).find('input[name^="resName-"]').val();
+            const fileId = $(this).find('input[name^="fileId-"]').val();
+            const url = $(this).find('input[name^="url-"]').val();
+            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+            const type = $(this).find('input[name^="type-"]').val();
+            const obj = { name: resName, isFile, type };
+            if (isFile && fileId) {
+                const f = resourceFiles.find(x => x.id === fileId);
+                if (f) formData.append('resourceFiles', f.file);
+            } else if (url) {
+                obj.url = url;
+            }
+            resources.push(obj);
+        });
+        formData.append('resources', JSON.stringify(resources));
         $.ajax({
             url: 'http://localhost:5000/api/courses',
             type: 'POST',
@@ -1530,19 +1824,19 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
                 showToast('Course created!', 'success');
                 $('#addCourseModal').modal('hide');
                 $('#add-course-form')[0].reset();
-                $('#video-list').empty();
+                $('#video-list, #course-resource-list').empty();
                 $('#video-preview').html('<p class="text-muted">Video preview will appear here</p>');
                 videoFiles = [];
+                resourceFiles = [];
                 videoCounter = 0;
-                loadCourses();  // REFRESH LIST
+                loadCourses();
             },
             error: function(xhr) {
                 showToast(xhr.responseJSON?.message || 'Error creating course.', 'error');
             }
         });
     });
-
-    // Edit Course - Updated for playlist too (same logic)
+    // Edit Course (same)
     $(document).on('click', '.edit-course', function() {
         const data = $(this).data();
         $('#edit-course-id').val(data.id);
@@ -1550,53 +1844,56 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
         $('#edit-course-description').val(data.description);
         $('#edit-course-category').val(data.category);
         $('#edit-video-list').empty();
+        $('#edit-course-resource-list').empty();
         videoFiles = [];
+        resourceFiles = [];
         videoCounter = 0;
-
         let videos = [];
+        let resources = [];
         try { videos = JSON.parse(data.videos || '[]'); } catch {}
+        try { resources = JSON.parse(data.resources || '[]'); } catch {}
         videos.forEach((v, i) => {
             const id = `edit_${i}`;
             addVideoToList('edit-video-list', 'edit-video-preview', v.topic, null, v.url, id);
         });
+        resources.forEach((r, i) => {
+            const id = `edit_res_${i}`;
+            addResourceToList('edit-course-resource-list', r.name, null, r.url, id, r.type || 'pdf');
+        });
         updatePreview('edit-video-preview');
         $('#editCourseModal').modal('show');
     });
-
-    // Updated Edit Add Video Button - Handles Playlist
-    $('#edit-add-video-btn').on('click', async () => {
+    $('#edit-add-video-btn').on('click', () => {
         const topic = $('#edit-video-topic').val().trim();
         const file = $('#edit-course-video')[0].files[0];
         const url = $('#edit-course-video-url').val().trim();
-        const isPlaylist = url.includes('playlist?list=');
-
         if (file && url) {
-            return showToast('Choose file OR URL, not both.', 'error');
+            return showToast('Choose file OR URL/Playlist, not both.', 'error');
         }
-
         if (file) {
             const id = generateVideoId();
             if (addVideoToList('edit-video-list', 'edit-video-preview', topic, file, null, id)) {
                 $('#edit-video-topic, #edit-course-video, #edit-course-video-url').val('');
             }
         } else if (url) {
-            if (isPlaylist) {
-                $('#edit-add-video-btn').prop('disabled', true).text('Fetching Playlist...').closest('.border').addClass('fetching');
-                await fetchPlaylistVideos(url, 'edit-video-list', 'edit-video-preview');
-                $('#edit-add-video-btn').prop('disabled', false).text('Add New Video').closest('.border').removeClass('fetching');
-                $('#edit-course-video-url').val('');
-                $('#edit-video-topic').val('');
-            } else {
-                const id = generateVideoId();
-                if (addVideoToList('edit-video-list', 'edit-video-preview', topic, null, url, id)) {
-                    $('#edit-video-topic, #edit-course-video-url').val('');
-                }
+            const id = generateVideoId();
+            if (addVideoToList('edit-video-list', 'edit-video-preview', topic, null, url, id)) {
+                $('#edit-video-topic, #edit-course-video-url').val('');
             }
         } else {
-            showToast('Add video file or URL.', 'error');
+            showToast('Add video file or URL/Playlist.', 'error');
         }
     });
-
+    $('#edit-add-course-resource-btn').on('click', () => {
+        const name = $('#edit-course-resource-name').val().trim();
+        const file = $('#edit-course-resource-pdf')[0].files[0];
+        const url = $('#edit-course-resource-url').val().trim();
+        if (file && url) return showToast('Choose file OR URL, not both.', 'error');
+        const id = generateResourceId();
+        if (addResourceToList('edit-course-resource-list', name, file, url, id)) {
+            $('#edit-course-resource-name, #edit-course-resource-pdf, #edit-course-resource-url').val('');
+        }
+    });
     $('#edit-course-form').on('submit', function(e) {
         e.preventDefault();
         const id = $('#edit-course-id').val();
@@ -1604,10 +1901,9 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
         formData.append('name', $('#edit-course-name').val().trim());
         formData.append('description', $('#edit-course-description').val().trim());
         formData.append('category', $('#edit-course-category').val());
-
         const videos = [];
         $('#edit-video-list .video-item').each(function() {
-            const topic = $(this).find('input[name^="topic-"]').val();
+            const topic = $(this).find('input[name^="subtopic-"]').val();
             const fileId = $(this).find('input[name^="fileId-"]').val();
             const url = $(this).find('input[name^="url-"]').val();
             const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
@@ -1621,7 +1917,23 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
             videos.push(obj);
         });
         formData.append('videos', JSON.stringify(videos));
-
+        const resources = [];
+        $('#edit-course-resource-list .resource-item').each(function() {
+            const resName = $(this).find('input[name^="resName-"]').val();
+            const fileId = $(this).find('input[name^="fileId-"]').val();
+            const url = $(this).find('input[name^="url-"]').val();
+            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+            const type = $(this).find('input[name^="type-"]').val();
+            const obj = { name: resName, isFile, type };
+            if (isFile && fileId) {
+                const f = resourceFiles.find(x => x.id === fileId);
+                if (f) formData.append('resourceFiles', f.file);
+            } else if (url) {
+                obj.url = url;
+            }
+            resources.push(obj);
+        });
+        formData.append('resources', JSON.stringify(resources));
         $.ajax({
             url: `http://localhost:5000/api/courses/${id}`,
             type: 'PUT',
@@ -1632,23 +1944,22 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
             success: function() {
                 showToast('Course updated!', 'success');
                 $('#editCourseModal').modal('hide');
-                loadCourses();  // REFRESH
+                loadCourses();
             },
             error: function(xhr) {
                 showToast(xhr.responseJSON?.message || 'Update failed.', 'error');
             }
         });
     });
-
     $(document).on('click', '.delete-course', function() {
-        if (confirm('Delete this course?')) {
+        if (confirm('Yeh poora course delete ho jayega (topics, videos, resources saath mein). Confirm?')) {
             $.ajax({
                 url: `http://localhost:5000/api/courses/${$(this).data('id')}`,
                 type: 'DELETE',
                 headers: { 'Authorization': 'Bearer ' + token },
                 success: function() {
                     showToast('Deleted!', 'success');
-                    loadCourses();  // REFRESH
+                    loadCourses();
                 },
                 error: function() {
                     showToast('Delete failed.', 'error');
@@ -1656,22 +1967,319 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
             });
         }
     });
-
     $('#addCourseModal').on('shown.bs.modal', function() {
         populateCategorySelect('course-category');
-        $('#video-list').empty();
+        $('#video-list, #course-resource-list').empty();
         $('#video-preview').html('<p class="text-muted">Video preview will appear here</p>');
         videoFiles = [];
+        resourceFiles = [];
         videoCounter = 0;
+        $('#course-resources-section').show();
     });
-
     $('#editCourseModal').on('shown.bs.modal', function() {
         populateCategorySelect('edit-course-category');
+        $('#edit-course-resources-section').show();
     });
-
+    // Topics Management
+    let currentCourseId = '';
+    function loadTopicsForCourse(courseId) {
+        currentCourseId = courseId;
+        $('#selected-course-id').val(courseId);
+        $.ajax({
+            url: `http://localhost:5000/api/topics/course/${courseId}`,
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function(topics) {
+                console.log('Topics loaded:', topics);
+                const $list = $('#topics-list').empty();
+                if (topics.length === 0) {
+                    $list.html('<li class="list-group-item text-center text-muted">No topics yet. Add one above.</li>');
+                }
+                topics.forEach(topic => {
+                    const badgeClass = topic.status === 'published' ? 'bg-success' : 'bg-warning';
+                    const resCount = topic.resources ? topic.resources.length : 0;
+                    $list.append(`
+                        <li class="list-group-item sortable-item d-flex justify-content-between align-items-start" data-id="${topic._id}" data-order="${topic.order}">
+                            <div class="flex-grow-1">
+                                <span class="drag-handle me-2">⋮⋮</span>
+                                <strong class="me-2">${topic.name}</strong>
+                                <span class="badge ${badgeClass} me-2">${topic.status.toUpperCase()}</span>
+                                <small class="d-block text-muted">${topic.videos.length} videos | ${resCount} resources</small>
+                            </div>
+                            <div class="ms-auto btn-group btn-group-sm">
+                                <button class="btn btn-sm btn-warning edit-topic me-1" data-topic='${JSON.stringify(topic).replace(/'/g, "\\'")}'>Edit</button>
+                                <button class="btn btn-sm btn-info videos-btn me-1" data-id="${topic._id}">Videos</button>
+                                <button class="btn btn-sm btn-success resources-btn me-1" data-id="${topic._id}">Resources</button>
+                                <!-- UI Fix: Highlighted topic delete button with title -->
+                                <button class="btn btn-sm btn-danger delete-topic" data-id="${topic._id}" title="Sirf yeh topic delete karega (videos/resources saath mein)">Delete Topic</button>
+                            </div>
+                            ${resCount > 0 ? `<span class="resources-count">${resCount}</span>` : ''}
+                        </li>
+                    `);
+                });
+                new Sortable($list[0], {
+                    animation: 150,
+                    handle: '.drag-handle',
+                    onEnd: async function(evt) {
+                        const items = Array.from($list.find('.sortable-item'));
+                        for (let i = 0; i < items.length; i++) {
+                            const topicId = $(items[i]).data('id');
+                            await $.ajax({
+                                url: `http://localhost:5000/api/topics/${topicId}`,
+                                type: 'PUT',
+                                headers: { 'Authorization': 'Bearer ' + token },
+                                contentType: 'application/json',
+                                data: JSON.stringify({ order: i })
+                            });
+                        }
+                        showToast('Topics order updated!', 'success');
+                    }
+                });
+            },
+            error: function() {
+                showToast('Error loading topics.', 'error');
+            }
+        });
+    }
+    $('#add-topic-btn').on('click', async () => {
+        const name = prompt('Enter topic name:');
+        const description = prompt('Enter description (optional):', '');
+        const status = prompt('Enter status (draft/published):', 'published');
+        if (!name) return showToast('Name required.', 'error');
+        try {
+            await $.ajax({
+                url: 'http://localhost:5000/api/topics',
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                contentType: 'application/json',
+                data: JSON.stringify({ name, description, courseId: currentCourseId, status })
+            });
+            showToast('Topic added!', 'success');
+            loadTopicsForCourse(currentCourseId);
+        } catch (error) {
+            showToast('Error adding topic.', 'error');
+        }
+    });
+    // Edit Topic (same)
+    $(document).on('click', '.edit-topic', function() {
+        const topic = JSON.parse($(this).attr('data-topic'));
+        $('#edit-topic-id').val(topic._id);
+        $('#edit-topic-name').val(topic.name);
+        $('#edit-topic-description').val(topic.description || '');
+        $('#edit-topic-status').val(topic.status);
+        $('#editTopicModal').modal('show');
+    });
+    $('#edit-topic-form').on('submit', async function(e) {
+        e.preventDefault();
+        const id = $('#edit-topic-id').val();
+        const name = $('#edit-topic-name').val().trim();
+        const description = $('#edit-topic-description').val().trim();
+        const status = $('#edit-topic-status').val();
+        if (!name) return showToast('Name required.', 'error');
+        try {
+            await $.ajax({
+                url: `http://localhost:5000/api/topics/${id}`,
+                type: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token },
+                contentType: 'application/json',
+                data: JSON.stringify({ name, description, status })
+            });
+            showToast('Topic updated!', 'success');
+            $('#editTopicModal').modal('hide');
+            loadTopicsForCourse(currentCourseId);
+        } catch (error) {
+            showToast('Update failed.', 'error');
+        }
+    });
+    // Delete Topic (same, now visible - UI Fix: Clear confirm)
+    $(document).on('click', '.delete-topic', async function() {
+        if (confirm('Sirf yeh topic delete ho jayega (related videos/resources bhi). Course safe rahega. Confirm?')) {
+            const id = $(this).data('id');
+            try {
+                await $.ajax({
+                    url: `http://localhost:5000/api/topics/${id}`,
+                    type: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                showToast('Topic deleted!', 'success');
+                loadTopicsForCourse(currentCourseId);
+            } catch (error) {
+                showToast('Delete failed.', 'error');
+            }
+        }
+    });
+    // Videos btn for topic (single only)
+    $(document).on('click', '.videos-btn', async function() {
+        currentTopicId = $(this).data('id');
+        $('#topic-videos-title').text(`Manage Videos for Topic ID: ${currentTopicId} (Single Video Only)`);
+        try {
+            const topic = await $.ajax({
+                url: `http://localhost:5000/api/topics/${currentTopicId}`,
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const $vlist = $('#topic-video-list').empty();
+            topic.videos.forEach(video => {
+                const vId = generateVideoId();
+                $vlist.append(`
+                    <div class="video-item" data-video-id="${vId}">
+                        <strong>${video.topic}</strong>
+                        <small>${video.isFile ? 'File' : 'URL: ' + video.url}</small>
+                        <button class="btn btn-sm btn-danger remove-topic-video ms-2" data-id="${video._id}">Remove</button>
+                    </div>
+                `);
+            });
+            $('#topic-videos-section').show();
+            $('#topic-resources-section').hide();
+        } catch (error) {
+            showToast('Error loading topic videos.', 'error');
+        }
+    });
+    $('#add-topic-video-btn').on('click', async () => {
+        const subtopic = $('#topic-subtopic').val().trim();
+        const file = $('#topic-video-file')[0].files[0];
+        const url = $('#topic-video-url').val().trim();
+        if (!subtopic) return showToast('Sub-topic required.', 'error');
+        if (!file && !url) return showToast('Video file or URL required.', 'error');
+        if (file && url) return showToast('File OR URL, not both.', 'error');
+        if (url && url.includes('playlist?list=')) return showToast('Playlist not supported. Use single video URL.', 'error');
+        try {
+            const videoData = { topic: subtopic };
+            const formData = new FormData();
+            if (file) {
+                formData.append('videoFiles', file);
+                videoData.isFile = true;
+            } else {
+                videoData.url = url;
+            }
+            formData.append('videos', JSON.stringify([videoData]));
+            await $.ajax({
+                url: `http://localhost:5000/api/topics/${currentTopicId}/videos`,
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                data: formData,
+                processData: false,
+                contentType: false
+            });
+            showToast('Video added to topic!', 'success');
+            $('#topic-subtopic, #topic-video-file, #topic-video-url').val('');
+            $(document).trigger('click.videos-btn', [currentTopicId]);
+        } catch (error) {
+            showToast('Error adding video.', 'error');
+        }
+    });
+    $(document).on('click', '.remove-topic-video', async function() {
+        const videoId = $(this).data('id');
+        if (confirm('Remove this video?')) {
+            try {
+                await $.ajax({
+                    url: `http://localhost:5000/api/topics/${currentTopicId}/videos/${videoId}`,
+                    type: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                showToast('Video removed!', 'success');
+                $(this).closest('.video-item').remove();
+            } catch (error) {
+                showToast('Remove failed.', 'error');
+            }
+        }
+    });
+    // Resources (same)
+    $(document).on('click', '.resources-btn', async function() {
+        currentResourceTopicId = $(this).data('id');
+        const topicName = $(this).closest('.sortable-item').find('strong').text();
+        $('#topic-resources-title').text(`Manage Resources for ${topicName}`);
+        try {
+            const topic = await $.ajax({
+                url: `http://localhost:5000/api/topics/${currentResourceTopicId}`,
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const $rlist = $('#topic-resource-list').empty();
+            if (topic.resources && topic.resources.length > 0) {
+                topic.resources.forEach(res => {
+                    $rlist.append(`
+                        <div class="resource-item" data-res-id="${res._id}">
+                            <strong>${res.name || 'Resource'}</strong>
+                            <small class="d-block text-muted">Type: ${res.type} | URL: ${res.url}</small>
+                            <button class="btn btn-sm btn-danger remove-topic-resource ms-2" data-id="${res._id}">Remove</button>
+                        </div>
+                    `);
+                });
+            } else {
+                $rlist.html('<p class="text-muted">No resources added yet.</p>');
+            }
+            $('#topic-resources-section').show();
+            $('#topic-videos-section').hide();
+        } catch (error) {
+            showToast('Error loading resources.', 'error');
+        }
+    });
+    $('#add-topic-resource-btn').on('click', async () => {
+        if (!currentResourceTopicId) return showToast('Select a topic first via Manage Resources.', 'error');
+        const name = $('#topic-resource-name').val().trim();
+        const file = $('#topic-resource-pdf')[0].files[0];
+        const urlInput = $('#topic-resource-url').val().trim();
+        if (!name && !file && !urlInput) return showToast('Provide name, PDF file, or URL.', 'error');
+        if (file && urlInput) return showToast('Choose file OR URL, not both.', 'error');
+        const formData = new FormData();
+        formData.append('name', name || (file ? file.name : 'External Resource'));
+        const resources = [];
+        let type = file ? 'pdf' : 'url';
+        if (file) {
+            formData.append('resourceFiles', file);
+            resources.push({ isFile: true });
+        } else if (urlInput) {
+            resources.push({ isFile: false, url: urlInput });
+        }
+        formData.append('resources', JSON.stringify(resources));
+        formData.append('type', type);
+        try {
+            await $.ajax({
+                url: `http://localhost:5000/api/topics/${currentResourceTopicId}/resources`,
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                data: formData,
+                processData: false,
+                contentType: false
+            });
+            showToast('Resource added to topic!', 'success');
+            $('#topic-resource-name, #topic-resource-pdf, #topic-resource-url').val('');
+            $(document).trigger('click.resources-btn', [currentResourceTopicId]);
+            loadTopicsForCourse(currentCourseId);
+        } catch (error) {
+            console.error('Add resource error:', error);
+            showToast('Add failed: ' + (error.responseJSON?.message || 'Server error.'), 'error');
+        }
+    });
+    $(document).on('click', '.remove-topic-resource', async function() {
+        const resId = $(this).data('id');
+        if (!confirm('Delete this resource?')) return;
+        try {
+            await $.ajax({
+                url: `http://localhost:5000/api/topics/${currentResourceTopicId}/resources/${resId}`,
+                type: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            showToast('Resource deleted!', 'success');
+            $(this).closest('.resource-item').fadeOut(300, function() { $(this).remove(); });
+            loadTopicsForCourse(currentCourseId);
+        } catch (error) {
+            showToast('Delete failed.', 'error');
+        }
+    });
+    // Trigger manage topics modal
+    $(document).on('click', '.manage-topics-btn', function() {
+        const courseId = $(this).data('id');
+        const courseName = $(this).data('name');
+        $('#topic-course-name').text(courseName);
+        loadTopicsForCourse(courseId);
+        $('#manageTopicsModal').modal('show');
+    });
     loadCourses();
     populateCategorySelect('course-category');
     populateCategorySelect('edit-course-category');
+    // Theme toggle
     const toggleDarkMode = () => {
         $('body').addClass('dark-mode').removeClass('light-mode');
         $('#dark-mode-toggle').removeClass('activate');
@@ -1684,14 +2292,12 @@ async function fetchPlaylistVideos(playlistUrl, listId, previewId) {
         $('#dark-mode-toggle').addClass('activate');
         localStorage.setItem('theme', 'light');
     };
-    // Check saved theme on page load
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         toggleDarkMode();
     } else {
         toggleLightMode();
     }
-    // Toggle button click handlers
     $('#dark-mode-toggle').on('click', toggleDarkMode);
     $('#light-mode-toggle').on('click', toggleLightMode);
 });

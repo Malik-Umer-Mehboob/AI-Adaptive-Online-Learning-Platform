@@ -1,3 +1,4 @@
+// routes/courses.js - Added course-level resources handling in POST/PUT, added logout route (even though URL is /api/auth/logout, assuming prefix in app.js; if separate auth routes, move it). Also, ensured populate topics in GET /:id.
 const express = require('express');
 const router = express.Router();
 const { auth, checkRole } = require('../middleware/auth');
@@ -16,11 +17,16 @@ const youtube = google.youtube({
     auth: process.env.YOUTUBE_API_KEY
 });
 
-// Multer setup
+// Multer setup with conditional storage and filter for different file types
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, '../public/uploads/videos');
-        cb(null, uploadPath);
+        if (file.fieldname === 'videoFiles') {
+            cb(null, path.join(__dirname, '../public/uploads/videos'));
+        } else if (file.fieldname === 'resourceFiles') {
+            cb(null, path.join(__dirname, '../public/uploads/resources'));
+        } else {
+            cb(new Error('Invalid file field'));
+        }
     },
     filename: (req, file, cb) => {
         const filename = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
@@ -28,17 +34,32 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 100 * 1024 * 1024 },
-    fileFilter: (req, file, cb) => {
+const fileFilter = (req, file, cb) => {
+    if (file.fieldname === 'videoFiles') {
         const filetypes = /mp4|mov|avi|mkv|webm/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = filetypes.test(file.mimetype);
         if (extname && mimetype) return cb(null, true);
-        cb(new Error('Only video files are allowed!'));
+        return cb(new Error('Only video files are allowed!'));
+    } else if (file.fieldname === 'resourceFiles') {
+        const filetypes = /pdf/;
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = filetypes.test(file.mimetype);
+        if (extname && mimetype) return cb(null, true);
+        return cb(new Error('Only PDF files are allowed!'));
+    } else {
+        cb(new Error('Invalid file field'));
     }
-});
+};
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 100 * 1024 * 1024 }, // 100MB max, covers both
+    fileFilter: fileFilter
+}).fields([
+    { name: 'videoFiles', maxCount: 20 },
+    { name: 'resourceFiles', maxCount: 10 }
+]);
 
 // Helper: Check if YouTube playlist URL
 function isPlaylistUrl(url) {
@@ -296,10 +317,10 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
-// GET course by ID (UPDATED: Now includes averageRating and numRatings)
+// GET course by ID (UPDATED: Now includes averageRating and numRatings, populate topics)
 router.get('/:id', auth, async (req, res) => {
     try {
-        const course = await Course.findById(req.params.id).populate('category');  // Removed 'instructor'
+        const course = await Course.findById(req.params.id).populate('category topics');  // Added topics populate
         if (!course) return res.status(404).json({ message: 'Course not found' });
         const plainCourse = course.toObject();
         // UPDATED: Add averageRating and numRatings
@@ -312,10 +333,10 @@ router.get('/:id', auth, async (req, res) => {
     }
 });
 
-// POST - Create course (UPDATED: Now includes averageRating and numRatings in response)
-router.post('/', auth, checkRole(['admin']), upload.array('videoFiles'), async (req, res) => {
+// POST - Create course (UPDATED: Now includes averageRating and numRatings in response, added resources handling)
+router.post('/', auth, checkRole(['admin']), upload, async (req, res) => {
     try {
-        const { name, description, category, videos: videosJson } = req.body;
+        const { name, description, category, videos: videosJson, resources: resourcesJson } = req.body;
         if (!name || !description || !category) {
             return res.status(400).json({ message: 'Name, description, and category are required.' });
         }
@@ -329,13 +350,13 @@ router.post('/', auth, checkRole(['admin']), upload.array('videoFiles'), async (
             catch (e) { return res.status(400).json({ message: 'Invalid videos JSON' }); }
         }
 
-        const files = req.files || [];
+        const videoFiles = req.files['videoFiles'] || [];
         let fileIndex = 0;
         const finalVideos = [];
 
         for (const v of videos) {
-            if (v.isFile && fileIndex < files.length) {
-                const file = files[fileIndex++];
+            if (v.isFile && fileIndex < videoFiles.length) {
+                const file = videoFiles[fileIndex++];
                 finalVideos.push({
                     topic: v.topic || `Video ${fileIndex}`,
                     url: `/uploads/videos/${file.filename}`,
@@ -375,9 +396,39 @@ router.post('/', auth, checkRole(['admin']), upload.array('videoFiles'), async (
             return res.status(400).json({ message: 'At least one video is required.' });
         }
 
-        const course = new Course({ name, description, category, videos: finalVideos });
+        // Handle resources
+        let finalResources = [];
+        if (resourcesJson) {
+            let resources = [];
+            try { resources = JSON.parse(resourcesJson); }
+            catch (e) { return res.status(400).json({ message: 'Invalid resources JSON' }); }
+
+            const resourceFiles = req.files['resourceFiles'] || [];
+            let resIndex = 0;
+
+            for (const r of resources) {
+                if (r.isFile && resIndex < resourceFiles.length) {
+                    const file = resourceFiles[resIndex++];
+                    finalResources.push({
+                        topic: r.topic || `Resource ${resIndex}`,
+                        url: `/uploads/resources/${file.filename}`,
+                        type: 'pdf',
+                        isFile: true
+                    });
+                } else if (!r.isFile && r.url) {
+                    finalResources.push({
+                        topic: r.topic || 'Resource Link',
+                        url: r.url,
+                        type: 'link',
+                        isFile: false
+                    });
+                }
+            }
+        }
+
+        const course = new Course({ name, description, category, videos: finalVideos, resources: finalResources });
         await course.save();
-        console.log(`Course created with ${finalVideos.length} videos`);
+        console.log(`Course created with ${finalVideos.length} videos and ${finalResources.length} resources`);
         const plainCourse = course.toObject();
         // UPDATED: Add averageRating and numRatings
         const { average, numRatings } = computeAverageRating(course);
@@ -390,10 +441,10 @@ router.post('/', auth, checkRole(['admin']), upload.array('videoFiles'), async (
     }
 });
 
-// PUT - Update course (UPDATED: Now includes averageRating and numRatings in response)
-router.put('/:id', auth, checkRole(['admin']), upload.array('videoFiles'), async (req, res) => {
+// PUT - Update course (UPDATED: Now includes averageRating and numRatings in response, added resources handling)
+router.put('/:id', auth, checkRole(['admin']), upload, async (req, res) => {
     try {
-        const { name, description, category, videos: videosJson } = req.body;
+        const { name, description, category, videos: videosJson, resources: resourcesJson } = req.body;
         const course = await Course.findById(req.params.id);
         if (!course) return res.status(404).json({ message: 'Course not found' });
 
@@ -405,20 +456,21 @@ router.put('/:id', auth, checkRole(['admin']), upload.array('videoFiles'), async
             course.category = category;
         }
 
-        if (videosJson || req.files?.length > 0) {
+        // Handle videos update
+        if (videosJson || (req.files && req.files['videoFiles'] && req.files['videoFiles'].length > 0)) {
             let videos = [];
             if (videosJson) {
                 try { videos = JSON.parse(videosJson); }
                 catch (e) { return res.status(400).json({ message: 'Invalid videos JSON' }); }
             }
 
-            const files = req.files || [];
+            const videoFiles = req.files['videoFiles'] || [];
             let fileIndex = 0;
             const finalVideos = [];
 
             for (const v of videos) {
-                if (v.isFile && fileIndex < files.length) {
-                    const file = files[fileIndex++];
+                if (v.isFile && fileIndex < videoFiles.length) {
+                    const file = videoFiles[fileIndex++];
                     finalVideos.push({
                         topic: v.topic,
                         url: `/uploads/videos/${file.filename}`,
@@ -454,6 +506,39 @@ router.put('/:id', auth, checkRole(['admin']), upload.array('videoFiles'), async
                 }
             }
             course.videos = finalVideos;
+        }
+
+        // Handle resources update
+        if (resourcesJson || (req.files && req.files['resourceFiles'] && req.files['resourceFiles'].length > 0)) {
+            let resources = [];
+            if (resourcesJson) {
+                try { resources = JSON.parse(resourcesJson); }
+                catch (e) { return res.status(400).json({ message: 'Invalid resources JSON' }); }
+            }
+
+            const resourceFiles = req.files['resourceFiles'] || [];
+            let resIndex = 0;
+            const finalResources = [];
+
+            for (const r of resources) {
+                if (r.isFile && resIndex < resourceFiles.length) {
+                    const file = resourceFiles[resIndex++];
+                    finalResources.push({
+                        topic: r.topic,
+                        url: `/uploads/resources/${file.filename}`,
+                        type: 'pdf',
+                        isFile: true
+                    });
+                } else if (!r.isFile && r.url) {
+                    finalResources.push({
+                        topic: r.topic,
+                        url: r.url,
+                        type: 'link',
+                        isFile: false
+                    });
+                }
+            }
+            course.resources = finalResources;
         }
 
         await course.save();
@@ -499,6 +584,19 @@ router.post('/:id/favorite', auth, async (req, res) => {
 
         res.json({ message: 'Favorite updated' });
     } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Logout route (assuming this router is mounted at /api/courses, but comment notes URL /api/auth/logout; adjust mounting if needed)
+router.post('/logout', auth, async (req, res) => {
+    try {
+        // Clear token or handle session logout here (e.g., blacklist token if using JWT)
+        // For JWT, typically client-side deletion; server-side could add to blacklist
+        req.logout?.(); // If using passport, etc.; adjust based on auth setup
+        res.json({ message: 'Logged out successfully' });
+    } catch (error) {
+        console.error('Logout error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });

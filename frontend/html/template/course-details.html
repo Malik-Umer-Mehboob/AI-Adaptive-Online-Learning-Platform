@@ -903,6 +903,60 @@
             .dark-mode .text-muted {
                 color: #adb5bd !important;
             }
+            /* Topics in Student View */
+            .topic-header {
+                cursor: pointer;
+                font-weight: bold;
+                background: #e9ecef;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 5px;
+            }
+            .dark-mode .topic-header {
+                background: #495057;
+            }
+            .nested-videos {
+                border-left: 2px solid #007bff;
+                padding-left: 10px;
+            }
+            .dark-mode .nested-videos {
+                border-left-color: #0d6efd;
+            }
+            .nested-videos li {
+                list-style: none;
+            }
+            /* NEW: Resources Styles for Course Details */
+            .resource-link {
+                display: block;
+                margin: 5px 0;
+                padding: 8px;
+                background: #e9ecef;
+                border-radius: 4px;
+                text-decoration: none;
+                color: #007bff;
+            }
+            .dark-mode .resource-link {
+                background: #495057;
+                color: #0d6efd;
+            }
+            .resource-link:hover {
+                background: #dee2e6;
+                color: #0056b3;
+            }
+            .dark-mode .resource-link:hover {
+                background: #6c757d;
+                color: #0b5ed7;
+            }
+            .nested-resources {
+                margin-top: 10px;
+                padding-left: 20px;
+                border-left: 2px dashed #007bff;
+            }
+            .dark-mode .nested-resources {
+                border-left-color: #0d6efd;
+            }
+            /* UI Fix: Better button spacing in actions (aligned with manage-courses) */
+            .btn-group-sm .btn { margin-right: 5px; }
         </style>
 </head>
 <body>
@@ -972,7 +1026,7 @@
 <a href="student-dashboard.html">Dashboard</a>
 </li>
                             </ul>
-                          
+                      
                             <div class="menu-dropdown">
                                 <div class="cart-item">
                                     <h6>Cart & Wishlist</h6>
@@ -1025,7 +1079,7 @@
                                     </ul>
                                 </div>
                             </div>
-                          
+                      
                         </div>
                         <div class="header-btn d-flex align-items-center">
                             <div class="icon-btn me-2">
@@ -1036,8 +1090,8 @@
                                     <i class="isax isax-moon"></i>
                                 </a>
                             </div>
-                          
-                          
+                      
+                      
                         </div>
                     </div>
                 </div>
@@ -1259,7 +1313,6 @@
   </div>
 </footer>
         <!-- /Footer -->
- 
 </div>
    <!-- /Main Wrapper -->
 <!-- jQuery -->
@@ -1282,7 +1335,6 @@ $(document).ready(function() {
         window.location.href = 'login.html';
         return;
     }
-  
     const urlParams = new URLSearchParams(window.location.search);
     const courseId = urlParams.get('id');
     if (!courseId) {
@@ -1507,7 +1559,7 @@ $(document).ready(function() {
             showToast('Failed to submit comment.', 'error');
         }
     });
-    // Updated: Load course - Description in overview as bullets, professional styling, with average rating
+    // UPDATED: Load course - Description in overview as bullets, professional styling, with average rating, and topics nested + RESOURCES
     async function loadCourse() {
         try {
             const course = await $.ajax({
@@ -1515,7 +1567,7 @@ $(document).ready(function() {
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token }
             });
-            console.log('Course videos loaded:', course.videos);
+            console.log('Course data loaded:', course);
             const enrolled = await isEnrolled(courseId);
             // Compute average rating if not provided by backend
             let averageRating = course.averageRating || 0;
@@ -1541,38 +1593,81 @@ $(document).ready(function() {
             `);
             // Description as bullets in overview
             $('#course-desc-bullets').html(descriptionToBullets(course.description));
-            // Lecture count
-            const videoCount = course.videos ? course.videos.length : 0;
-            $('#lecture-count').text(`${videoCount} Lectures`);
-            // Render playlist items
+            // Render playlist items with topics nesting + RESOURCES
             const playlist = $('#playlist-items');
             playlist.empty();
-            if (!course.videos || videoCount === 0) {
+            let totalLectures = 0;
+            let publishedTopics = 0;
+            if (course.topics && course.topics.length > 0) {
+                // Use topics for nested structure
+                course.topics.forEach((topic, tIndex) => {
+                    if (topic.status !== 'published') return; // Only show published
+                    publishedTopics++;
+                    let videoHtml = '';
+                    topic.videos.forEach((video, vIndex) => {
+                        totalLectures++;
+                        const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
+                        const fullUrl = video.isFile ? `http://localhost:5000${video.url}` : video.url;
+                        videoHtml += `
+                            <li class="playlist-item d-flex align-items-center mb-2 p-2 rounded" data-index="${tIndex}-${vIndex}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
+                                <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                                <div>
+                                    <h6 class="mb-0">${video.topic}</h6>
+                                    <small class="text-muted">Duration: N/A</small>
+                                </div>
+                            </li>
+                        `;
+                    });
+                    let resourcesHtml = '';
+                    if (topic.resources && topic.resources.length > 0) {
+                        resourcesHtml = `<div class="nested-resources"><small class="text-muted">📚 Resources:</small>` +
+                            topic.resources.map(r => `<a href="${r.url.startsWith('http') ? r.url : `http://localhost:5000${r.url}`}" class="resource-link mt-1" target="_blank" download>${r.name || 'Download Resource'}</a>`).join('') +
+                            `</div>`;
+                    }
+                    playlist.append(`
+                        <li class="list-group-item topic-header d-flex justify-content-between align-items-center">
+                            <span>📁 ${topic.name} (${topic.videos.length} videos${topic.resources?.length ? `, ${topic.resources.length} resources` : ''})</span>
+                            <i class="fas fa-chevron-down"></i>
+                            <ul class="nested-videos list-unstyled mt-2 ps-3" style="display: none;">${videoHtml}</ul>
+                            ${resourcesHtml}
+                        </li>
+                    `);
+                });
+                if (publishedTopics === 0) {
+                    playlist.html('<li class="list-group-item text-warning">No published topics available.</li>');
+                }
+            } else if (course.videos && course.videos.length > 0) {
+                // Fallback to flat videos if no topics
+                course.videos.forEach((video, index) => {
+                    totalLectures++;
+                    const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
+                    const isActive = index === 0 ? 'active' : '';
+                    const fullUrl = video.isFile ? `http://localhost:5000${video.url}` : video.url;
+                    playlist.append(`
+                        <li class="list-group-item playlist-item d-flex align-items-center mb-2 p-2 rounded ${isActive}" data-index="${index}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
+                            <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                            <div>
+                                <h6 class="mb-0">${video.topic}</h6>
+                                <small class="text-muted">Duration: N/A</small>
+                            </div>
+                        </li>
+                    `);
+                });
+            } else {
                 playlist.html('<li class="list-group-item text-danger">No videos available.</li>');
                 $('#player-container').html('<p class="text-danger">No videos to play.</p>');
                 return;
             }
-            course.videos.forEach((video, index) => {
-                const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
-                const isActive = index === 0 ? 'active' : '';
-                const fullUrl = video.isFile ? `http://localhost:5000${video.url}` : video.url;
-                playlist.append(`
-                    <li class="list-group-item playlist-item d-flex align-items-center mb-2 p-2 rounded ${isActive}" data-index="${index}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
-                        <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
-                        <div>
-                            <h6 class="mb-0">${video.topic}</h6>
-                            <small class="text-muted">Duration: N/A</small>
-                        </div>
-                    </li>
-                `);
+            // Update lecture count with topics info
+            $('#lecture-count').text(`${totalLectures} Lectures in ${publishedTopics || course.videos?.length || 0} Sections`);
+            // Toggle nested videos on topic header click
+            $(document).off('click', '.topic-header').on('click', '.topic-header', function(e) {
+                if ($(e.target).is('i')) { // Toggle icon click
+                    $(this).find('.nested-videos').slideToggle();
+                    $(this).find('i').toggleClass('fa-chevron-down fa-chevron-up');
+                }
             });
-            // Load first video
-            if (videoCount > 0) {
-                const firstVideo = course.videos[0];
-                const firstUrl = firstVideo.isFile ? `http://localhost:5000${firstVideo.url}` : getYouTubeEmbedUrl(firstVideo.url);
-                loadPlayer(firstUrl, firstVideo.isFile, firstVideo);
-            }
-            // Playlist click
+            // Video click handler
             $(document).off('click', '.playlist-item').on('click', '.playlist-item', function() {
                 $('.playlist-item').removeClass('active');
                 $(this).addClass('active');
@@ -1582,6 +1677,13 @@ $(document).ready(function() {
                 currentVideoIndex = $(this).data('index');
                 loadPlayer(url, isFile, videoData);
             });
+            // Load first video if available
+            if (totalLectures > 0) {
+                const firstItem = $('.playlist-item').first();
+                if (firstItem.length) {
+                    firstItem.trigger('click');
+                }
+            }
             // Enroll button
             $('#enroll-btn').off('click').on('click', async () => {
                 if (enrolled) return;
@@ -1607,6 +1709,27 @@ $(document).ready(function() {
         }
     }
     loadCourse();
+    // Theme toggle (aligned with manage-courses)
+    const toggleDarkMode = () => {
+        $('body').addClass('dark-mode').removeClass('light-mode');
+        $('#dark-mode-toggle').removeClass('activate');
+        $('#light-mode-toggle').addClass('activate');
+        localStorage.setItem('theme', 'dark');
+    };
+    const toggleLightMode = () => {
+        $('body').addClass('light-mode').removeClass('dark-mode');
+        $('#light-mode-toggle').removeClass('activate');
+        $('#dark-mode-toggle').addClass('activate');
+        localStorage.setItem('theme', 'light');
+    };
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        toggleDarkMode();
+    } else {
+        toggleLightMode();
+    }
+    $('#dark-mode-toggle').on('click', toggleDarkMode);
+    $('#light-mode-toggle').on('click', toggleLightMode);
 });
 </script>
 </body>
