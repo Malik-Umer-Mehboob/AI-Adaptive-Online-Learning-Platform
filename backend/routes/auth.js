@@ -7,6 +7,7 @@ const Admin = require('../models/Admin');
 const multer = require('multer');
 const path = require('path');
 const crypto = require('crypto');
+const fs = require('fs'); // Added for directory creation
 const { auth } = require('../middleware/auth'); // Ensure correct import
 
 // Debug: Log to confirm route file is loaded
@@ -22,6 +23,11 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadPath = path.join(__dirname, '../public/uploads');
         console.log('Multer destination:', uploadPath);
+        // Ensure directory exists
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+            console.log('Created uploads directory:', uploadPath);
+        }
         cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
@@ -47,7 +53,7 @@ const upload = multer({
     }
 });
 
-const transporter = nodemailer.createTransport({  // Fixed: createTransport, not createTransporter
+const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER,
@@ -114,26 +120,36 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-// Signin
+// Signin (Updated with separate queries and extra checks)
 router.post('/signin', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        console.log('Signin request received:', { email });
+        console.log('Signin request received:', { email: email ? email.substring(0, 3) + '***' : undefined }); // Privacy
         if (!email || !password) {
             return res.status(400).json({ message: 'Email and password are required.' });
         }
 
-        let user = await Student.findOne({ email }) || await Admin.findOne({ email });
+        let user = await Student.findOne({ email });
         if (!user) {
+            user = await Admin.findOne({ email }); // Separate query for clarity and safety
+        }
+        if (!user) {
+            console.log('User not found for email:', email.substring(0, 3) + '***');
             return res.status(400).json({ message: 'Invalid email or password.' });
         }
 
+        console.log('User found (role:', user.role, '), checking password...');
         const isMatch = await user.matchPassword(password);
         if (!isMatch) {
+            console.log('Password mismatch for user:', user._id);
             return res.status(400).json({ message: 'Invalid email or password.' });
         }
 
+        console.log('Password matched, generating token...');
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET missing in .env file');
+        }
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET,
@@ -144,6 +160,7 @@ router.post('/signin', async (req, res) => {
             ? 'http://127.0.0.1:5500/html/template/admin-dashboard.html'
             : 'http://127.0.0.1:5500/html/template/student-dashboard.html';
 
+        console.log('Signin successful for', user.role);
         res.status(200).json({
             message: 'Signin successful.',
             token,
@@ -151,12 +168,16 @@ router.post('/signin', async (req, res) => {
             redirectUrl
         });
     } catch (error) {
-        console.error('Signin Error:', error);
-        res.status(500).json({ message: 'Server error during signin.', error: error.message });
+        console.error('Signin Error Full Details:', {
+            message: error.message,
+            stack: error.stack,
+            email: email ? email.substring(0, 3) + '***' : 'N/A'
+        });
+        res.status(500).json({ message: 'Server error during signin. Please try again.', error: error.message });
     }
 });
 
-// Forgot Password
+// Forgot Password (Updated query)
 router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
 
@@ -166,7 +187,10 @@ router.post('/forgot-password', async (req, res) => {
             return res.status(400).json({ message: 'Email is required.' });
         }
 
-        let user = await Student.findOne({ email }) || await Admin.findOne({ email });
+        let user = await Student.findOne({ email });
+        if (!user) {
+            user = await Admin.findOne({ email });
+        }
         if (!user) {
             return res.status(400).json({ message: 'No account found with this email.' });
         }
@@ -182,6 +206,10 @@ router.post('/forgot-password', async (req, res) => {
         user.resetOtp = otp;
         user.otpExpires = Date.now() + 15 * 60 * 1000;
         await user.save();
+        // Added: Check if OTP was saved successfully
+        if (!user.resetOtp) {
+            throw new Error('Failed to save OTP to user document');
+        }
         console.log(`Saved OTP to user: ${user.resetOtp}, Expires: ${user.otpExpires}`);
 
         const resetUrl = `http://127.0.0.1:5500/html/template/set-password.html?token=${resetToken}&email=${encodeURIComponent(email)}`;
@@ -199,17 +227,22 @@ router.post('/forgot-password', async (req, res) => {
             `
         };
 
-        // Fixed: Use promise version of sendMail (no callback)
+        // Use promise version of sendMail
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent to', email, 'with OTP:', otp, 'Response:', info.response);
         res.status(200).json({ message: 'Password reset link and OTP sent to your email.', resetToken });
     } catch (error) {
         console.error('Forgot Password Error:', error);
-        res.status(500).json({ message: 'Error sending reset link.', error: error.message });
+        // Improved error message for better debugging
+        let errorMsg = 'Error sending reset link.';
+        if (error.code === 'EAUTH') {
+            errorMsg += ' Check your Gmail App Password in .env file.';
+        }
+        res.status(500).json({ message: errorMsg, error: error.message });
     }
 });
 
-// Reset Password
+// Reset Password (Updated query)
 router.post('/reset-password', async (req, res) => {
     const { token, email, password, confirmPassword, otp } = req.body;
 
@@ -227,12 +260,18 @@ router.post('/reset-password', async (req, res) => {
 
         let decoded;
         try {
+            if (!process.env.JWT_SECRET) {
+                throw new Error('JWT_SECRET missing in .env file');
+            }
             decoded = jwt.verify(token, process.env.JWT_SECRET);
         } catch (error) {
             return res.status(400).json({ message: 'Invalid or expired reset token.' });
         }
 
-        let user = await Student.findOne({ email }) || await Admin.findOne({ email });
+        let user = await Student.findOne({ email });
+        if (!user) {
+            user = await Admin.findOne({ email });
+        }
         if (!user || user._id.toString() !== decoded.id) {
             return res.status(400).json({ message: 'Invalid email or token.' });
         }
@@ -261,7 +300,7 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 
-// Get Profile
+// Get Profile (Updated with port fix)
 router.get('/profile', auth, async (req, res) => {
     try {
         console.log('Profile request for user:', req.user); // Debug
@@ -272,7 +311,7 @@ router.get('/profile', auth, async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
         if (user.profileImage) {
-            user.profileImage = `http://localhost:5000${user.profileImage}`;
+            user.profileImage = `http://localhost:5000${user.profileImage}`;  // Fixed: Port changed to 5000
         }
         res.status(200).json(user);
     } catch (error) {
@@ -281,7 +320,7 @@ router.get('/profile', auth, async (req, res) => {
     }
 });
 
-// Update Profile (Email hardcoded - not updatable)
+// Update Profile (Updated with validation and port fix)
 router.put('/update-profile', auth, upload.single('profileImage'), async (req, res) => {
     try {
         console.log('Update profile request:', req.user); // Debug
@@ -290,18 +329,41 @@ router.put('/update-profile', auth, upload.single('profileImage'), async (req, r
             return res.status(401).json({ message: 'Unauthorized: No user data found.' });
         }
 
+        // Enhanced logging for Multer file
+        console.log('Multer file received:', req.file ? { filename: req.file.filename, path: req.file.path } : 'No file uploaded');
+
+        const { name, phoneNumber, age, bio } = req.body;
+
+        // Validation
+        if (name && (typeof name !== 'string' || name.trim().length < 2)) {
+            return res.status(400).json({ message: 'Name must be at least 2 characters long.' });
+        }
+        if (age && (isNaN(age) || parseInt(age) < 0 || parseInt(age) > 150)) {
+            return res.status(400).json({ message: 'Age must be a valid number between 0 and 150.' });
+        }
+        if (phoneNumber && (typeof phoneNumber !== 'string' || phoneNumber.trim().length < 10)) {
+            return res.status(400).json({ message: 'Phone number must be at least 10 characters.' });
+        }
+        if (bio && (typeof bio !== 'string' || bio.trim().length > 500)) {
+            return res.status(400).json({ message: 'Bio must be less than 500 characters.' });
+        }
+
         const userId = req.user.id;
         const Model = getModelByRole(req.user.role);
         const updateData = {
-            name: req.body.name,
-            // Email removed - hardcoded, not updatable
-            phoneNumber: req.body.phoneNumber,
-            age: req.body.age,
-            bio: req.body.bio,
+            name: name ? name.trim() : undefined,
+            phoneNumber: phoneNumber ? phoneNumber.trim() : undefined,
+            age: age ? parseInt(age) : undefined,
+            bio: bio ? bio.trim() : undefined,
             profileImage: req.file ? `/uploads/${req.file.filename}` : undefined,
         };
 
+        // Remove undefined keys
         Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
+        if (Object.keys(updateData).length === 0) {
+            return res.status(400).json({ message: 'No valid fields to update.' });
+        }
 
         console.log('Updating profile with data:', updateData);
         const user = await Model.findByIdAndUpdate(userId, updateData, { new: true }).select('-password -resetOtp -otpExpires');
@@ -309,9 +371,9 @@ router.put('/update-profile', auth, upload.single('profileImage'), async (req, r
             return res.status(404).json({ message: 'User not found' });
         }
         if (user.profileImage) {
-            user.profileImage = `http://localhost:5000${user.profileImage}`;
+            user.profileImage = `http://localhost:5000${user.profileImage}`;  // Fixed: Port changed to 5000
         }
-        console.log('Profile updated:', user);
+        console.log('Profile updated successfully:', { id: user._id, profileImage: user.profileImage });
         res.status(200).json({ message: 'Profile updated successfully', user });
     } catch (error) {
         console.error('Profile Update Error:', error);

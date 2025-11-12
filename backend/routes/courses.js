@@ -1,4 +1,4 @@
-// routes/courses.js - Added course-level resources handling in POST/PUT, added logout route (even though URL is /api/auth/logout, assuming prefix in app.js; if separate auth routes, move it). Also, ensured populate topics in GET /:id.
+// routes/courses.js
 const express = require('express');
 const router = express.Router();
 const { auth, checkRole } = require('../middleware/auth');
@@ -9,7 +9,23 @@ const Enrollment = require('../models/Enrollment');
 const Favorite = require('../models/Favorite');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { google } = require('googleapis');
+
+// Ensure upload directories exist
+const uploadsDir = path.join(__dirname, '../public/uploads');
+const videoDir = path.join(uploadsDir, 'videos');
+const resourceDir = path.join(uploadsDir, 'resources');
+
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+if (!fs.existsSync(videoDir)) {
+    fs.mkdirSync(videoDir, { recursive: true });
+}
+if (!fs.existsSync(resourceDir)) {
+    fs.mkdirSync(resourceDir, { recursive: true });
+}
 
 // YouTube API setup
 const youtube = google.youtube({
@@ -21,9 +37,9 @@ const youtube = google.youtube({
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === 'videoFiles') {
-            cb(null, path.join(__dirname, '../public/uploads/videos'));
+            cb(null, videoDir);
         } else if (file.fieldname === 'resourceFiles') {
-            cb(null, path.join(__dirname, '../public/uploads/resources'));
+            cb(null, resourceDir);
         } else {
             cb(new Error('Invalid file field'));
         }
@@ -60,6 +76,20 @@ const upload = multer({
     { name: 'videoFiles', maxCount: 20 },
     { name: 'resourceFiles', maxCount: 10 }
 ]);
+
+// Specific upload for videos only
+const uploadVideos = multer({
+    storage: storage,
+    limits: { fileSize: 100 * 1024 * 1024 },
+    fileFilter: fileFilter
+}).array('videoFiles', 20);
+
+// Specific upload for resources only
+const uploadResources = multer({
+    storage: storage,
+    limits: { fileSize: 100 * 1024 * 1024 },
+    fileFilter: fileFilter
+}).array('resourceFiles', 10);
 
 // Helper: Check if YouTube playlist URL
 function isPlaylistUrl(url) {
@@ -333,7 +363,7 @@ router.get('/:id', auth, async (req, res) => {
     }
 });
 
-// POST - Create course (UPDATED: Now includes averageRating and numRatings in response, added resources handling)
+// POST - Create course (UPDATED: FIXED resources: name instead of topic, no isFile, type='url' for external; includes averageRating and numRatings in response)
 router.post('/', auth, checkRole(['admin']), upload, async (req, res) => {
     try {
         const { name, description, category, videos: videosJson, resources: resourcesJson } = req.body;
@@ -396,7 +426,7 @@ router.post('/', auth, checkRole(['admin']), upload, async (req, res) => {
             return res.status(400).json({ message: 'At least one video is required.' });
         }
 
-        // Handle resources
+        // FIXED: Handle resources - use 'name' field, no isFile, type='url' for external
         let finalResources = [];
         if (resourcesJson) {
             let resources = [];
@@ -410,17 +440,15 @@ router.post('/', auth, checkRole(['admin']), upload, async (req, res) => {
                 if (r.isFile && resIndex < resourceFiles.length) {
                     const file = resourceFiles[resIndex++];
                     finalResources.push({
-                        topic: r.topic || `Resource ${resIndex}`,
+                        name: r.name || `Resource ${resIndex}`,  // FIXED: name instead of topic
                         url: `/uploads/resources/${file.filename}`,
-                        type: 'pdf',
-                        isFile: true
+                        type: 'pdf'
                     });
                 } else if (!r.isFile && r.url) {
                     finalResources.push({
-                        topic: r.topic || 'Resource Link',
+                        name: r.name || 'External Resource',
                         url: r.url,
-                        type: 'link',
-                        isFile: false
+                        type: 'url'  // FIXED: 'url' for external
                     });
                 }
             }
@@ -441,7 +469,7 @@ router.post('/', auth, checkRole(['admin']), upload, async (req, res) => {
     }
 });
 
-// PUT - Update course (UPDATED: Now includes averageRating and numRatings in response, added resources handling)
+// PUT - Update course (UPDATED: FIXED resources same as POST; includes averageRating and numRatings in response)
 router.put('/:id', auth, checkRole(['admin']), upload, async (req, res) => {
     try {
         const { name, description, category, videos: videosJson, resources: resourcesJson } = req.body;
@@ -508,7 +536,7 @@ router.put('/:id', auth, checkRole(['admin']), upload, async (req, res) => {
             course.videos = finalVideos;
         }
 
-        // Handle resources update
+        // FIXED: Handle resources update - same as POST
         if (resourcesJson || (req.files && req.files['resourceFiles'] && req.files['resourceFiles'].length > 0)) {
             let resources = [];
             if (resourcesJson) {
@@ -524,17 +552,15 @@ router.put('/:id', auth, checkRole(['admin']), upload, async (req, res) => {
                 if (r.isFile && resIndex < resourceFiles.length) {
                     const file = resourceFiles[resIndex++];
                     finalResources.push({
-                        topic: r.topic,
+                        name: r.name || `Resource ${resIndex}`,  // FIXED: name
                         url: `/uploads/resources/${file.filename}`,
-                        type: 'pdf',
-                        isFile: true
+                        type: 'pdf'
                     });
                 } else if (!r.isFile && r.url) {
                     finalResources.push({
-                        topic: r.topic,
+                        name: r.name || 'External Resource',
                         url: r.url,
-                        type: 'link',
-                        isFile: false
+                        type: 'url'  // FIXED: 'url'
                     });
                 }
             }
@@ -551,6 +577,147 @@ router.put('/:id', auth, checkRole(['admin']), upload, async (req, res) => {
     } catch (error) {
         console.error('Update course error:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// NEW: Add videos to course (incremental, similar to topics)
+router.post('/:id/videos', auth, checkRole(['admin']), uploadVideos, async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) return res.status(404).json({ message: 'Course not found' });
+
+        const { videos: videosJson } = req.body;
+        let videos = [];
+        if (videosJson) {
+            try {
+                videos = JSON.parse(videosJson);
+            } catch (e) {
+                return res.status(400).json({ message: 'Invalid videos JSON' });
+            }
+        }
+
+        const videoFiles = req.files || [];
+        let fileIndex = 0;
+        const newVideos = [];
+
+        for (const v of videos) {
+            if (v.isFile && fileIndex < videoFiles.length) {
+                const file = videoFiles[fileIndex++];
+                newVideos.push({
+                    topic: v.topic || `Video ${course.videos.length + newVideos.length + 1}`,
+                    url: `/uploads/videos/${file.filename}`,
+                    type: 'single',
+                    isFile: true
+                });
+            } else if (!v.isFile && v.url) {
+                try {
+                    if (isPlaylistUrl(v.url)) {
+                        const playlistId = extractPlaylistId(v.url);
+                        if (!playlistId) {
+                            throw new Error('Invalid playlist URL');
+                        }
+                        const playlistVideos = await fetchPlaylistVideos(playlistId);
+                        newVideos.push(...playlistVideos);
+                    } else {
+                        newVideos.push({
+                            topic: v.topic || 'YouTube Video',
+                            url: v.url,
+                            type: 'single',
+                            isFile: false
+                        });
+                    }
+                } catch (playlistError) {
+                    console.error('Playlist fallback - storing as playlist:', playlistError.message);
+                    newVideos.push({
+                        topic: v.topic || 'YouTube Playlist',
+                        url: v.url,
+                        type: 'playlist',
+                        isFile: false
+                    });
+                }
+            }
+        }
+
+        if (newVideos.length === 0) {
+            return res.status(400).json({ message: 'No valid videos provided' });
+        }
+
+        course.videos.push(...newVideos);
+        await course.save();
+
+        const plainCourse = course.toObject();
+        const { average, numRatings } = computeAverageRating(course);
+        plainCourse.averageRating = average;
+        plainCourse.numRatings = numRatings;
+
+        res.json({ message: `${newVideos.length} videos added successfully`, videos: newVideos, course: plainCourse });
+    } catch (error) {
+        console.error('Add videos to course error:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// UPDATED: Add resources to a specific topic in the course (incremental) - Enforces topic selection (but frontend uses /topics, so this is backup)
+router.post('/:id/topics/:topicId/resources', auth, checkRole(['admin']), uploadResources, async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id).populate('topics');
+        if (!course) return res.status(404).json({ message: 'Course not found' });
+
+        const topic = course.topics.find(t => t._id.toString() === req.params.topicId);
+        if (!topic) return res.status(404).json({ message: 'Topic not found in this course' });
+
+        const { resources: resourcesJson } = req.body;
+        let resources = [];
+        if (resourcesJson) {
+            try {
+                resources = JSON.parse(resourcesJson);
+            } catch (e) {
+                return res.status(400).json({ message: 'Invalid resources JSON' });
+            }
+        }
+
+        const resourceFiles = req.files || [];
+        let resIndex = 0;
+        const newResources = [];
+
+        for (const r of resources) {
+            if (r.isFile && resIndex < resourceFiles.length) {
+                const file = resourceFiles[resIndex++];
+                newResources.push({
+                    name: r.name || `Resource ${topic.resources.length + newResources.length + 1}`,  // FIXED: name
+                    url: `/uploads/resources/${file.filename}`,
+                    type: 'pdf'
+                });
+            } else if (!r.isFile && r.url) {
+                newResources.push({
+                    name: r.name || 'External Resource',
+                    url: r.url,
+                    type: 'url'  // FIXED: 'url'
+                });
+            }
+        }
+
+        if (newResources.length === 0) {
+            return res.status(400).json({ message: 'No valid resources provided' });
+        }
+
+        topic.resources.push(...newResources);
+        await topic.save();
+
+        const plainCourse = course.toObject();
+        const { average, numRatings } = computeAverageRating(course);
+        plainCourse.averageRating = average;
+        plainCourse.numRatings = numRatings;
+
+        res.json({ 
+            message: `${newResources.length} resources added successfully to the selected topic`, 
+            resources: newResources, 
+            topic: topic.toObject(), 
+            course: plainCourse 
+        });
+    } catch (error) {
+        console.error('Add resources to topic error:', error);
+        res.status(500).json({ message: error.message });
     }
 });
 

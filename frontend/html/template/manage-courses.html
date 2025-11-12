@@ -712,6 +712,7 @@
       #course-resource-list .resource-item { margin-bottom: 10px; }
       /* UI Fix: Better button spacing in actions */
       .btn-group-sm .btn { margin-right: 5px; }
+      /* Combined Add Section Styles - REMOVED as per requirement */
     </style>
 </head>
 <body>
@@ -800,7 +801,6 @@
             </div>
         </header>
         <!-- /Header -->
- 
         <!-- Breadcrumb -->
         <div class="breadcrumb-bar text-center">
             <div class="container">
@@ -948,7 +948,7 @@
                                 <label class="form-label">Course Description *</label>
                                 <textarea class="form-control" id="course-description" rows="3" required></textarea>
                             </div>
-                      
+                 
                             <div class="mb-4">
                                 <h6 class="mb-3">Course Videos / Topics (Single Video, URL, or Playlist)</h6>
                                 <div id="video-section">
@@ -996,28 +996,28 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label class="form-label">Resource Name</label>
+                                                <label class="form-label">Resource Name (optional, auto-generated from filename if multiple)</label>
                                                 <input type="text" class="form-control" id="course-resource-name" placeholder="Enter name">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label class="form-label">Upload PDF</label>
-                                                <input type="file" class="form-control" id="course-resource-pdf" accept=".pdf">
-                                                <small class="form-text text-muted">Max 50MB</small>
+                                                <label class="form-label">Upload PDF(s)</label>
+                                                <input type="file" class="form-control" id="course-resource-pdf" accept=".pdf" multiple>
+                                                <small class="form-text text-muted">Max 50MB per file (select multiple for batch add)</small>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label class="form-label">OR External URL</label>
+                                                <label class="form-label">OR External URL (single only)</label>
                                                 <input type="text" class="form-control" id="course-resource-url" placeholder="https://example.com/resource.pdf">
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-outline-success w-100" id="add-course-resource-btn">Add Resource to Course</button>
+                                    <button type="button" class="btn btn-outline-success w-100" id="add-course-resource-btn">Add Resource(s) to Course</button>
                                 </div>
                             </div>
-                          
+                     
                             <div class="d-flex justify-content-end mt-3">
                                 <button type="submit" class="btn btn-primary">
                                     Save Course
@@ -1059,7 +1059,7 @@
                                 <label class="form-label">Course Description *</label>
                                 <textarea class="form-control" id="edit-course-description" rows="3" required></textarea>
                             </div>
-                      
+                 
                             <div class="mb-4">
                                 <h6 class="mb-3">Manage Course Videos / Topics (Single Video, URL, or Playlist)</h6>
                                 <div id="edit-video-section">
@@ -1107,28 +1107,28 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label class="form-label">Resource Name</label>
+                                                <label class="form-label">Resource Name (optional, auto-generated from filename if multiple)</label>
                                                 <input type="text" class="form-control" id="edit-course-resource-name" placeholder="Enter name">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label class="form-label">Upload PDF</label>
-                                                <input type="file" class="form-control" id="edit-course-resource-pdf" accept=".pdf">
-                                                <small class="form-text text-muted">Max 50MB</small>
+                                                <label class="form-label">Upload PDF(s)</label>
+                                                <input type="file" class="form-control" id="edit-course-resource-pdf" accept=".pdf" multiple>
+                                                <small class="form-text text-muted">Max 50MB per file (select multiple for batch add)</small>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label class="form-label">OR External URL</label>
+                                                <label class="form-label">OR External URL (single only)</label>
                                                 <input type="text" class="form-control" id="edit-course-resource-url" placeholder="https://example.com/resource.pdf">
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-outline-success w-100" id="edit-add-course-resource-btn">Add Resource to Course</button>
+                                    <button type="button" class="btn btn-outline-success w-100" id="edit-add-course-resource-btn">Add Resource(s) to Course</button>
                                 </div>
                             </div>
-                          
+                     
                             <div class="d-flex justify-content-end mt-3">
                                 <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary">
@@ -1140,14 +1140,12 @@
                 </div>
             </div>
         </div>
-        <!-- UPDATED: Manage Topics Modal - Added Single Video Add Section and Delete Course Button -->
+        <!-- UPDATED: Manage Topics Modal - Simplified: Only add new topic btn, REMOVED combined-add-section -->
         <div class="modal fade" id="manageTopicsModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Manage Topics for <span id="topic-course-name"></span></h5>
-                        <!-- UI Fix: Changed to Delete Topic button, added ms-3 for gap, updated title -->
-                        <button type="button" class="btn btn-danger btn-sm me-2 ms-3" id="delete-course-from-topics-modal" title="Delete selected topic (videos/resources)">Delete Topic</button>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -1155,113 +1153,23 @@
                         <div class="mb-3">
                             <button class="btn btn-primary" id="add-topic-btn">Add New Topic</button>
                         </div>
-                        <!-- NEW: Single Video Add Section in Topics Modal (Replaced Generate from Playlist) -->
-                        <div class="mb-4 border p-3 rounded bg-light">
-                            <h6 class="mb-3">Add Single Video to Course</h6>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Sub-Topic Name *</label>
-                                        <input type="text" class="form-control" id="topics-modal-video-topic" placeholder="Enter sub-topic name" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Upload Video File</label>
-                                        <input type="file" class="form-control" id="topics-modal-video-file" accept="video/*">
-                                        <small class="form-text text-muted">Max 100MB</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">OR YouTube URL (Single Video Only)</label>
-                                        <input type="text" class="form-control" id="topics-modal-video-url" placeholder="https://www.youtube.com/watch?v=...">
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-outline-primary w-100" id="add-single-video-to-course">Add Single Video</button>
-                        </div>
-                        <ul id="topics-list" class="sortable list-group">
-                            <!-- Topics loaded here - with Edit button -->
-                        </ul>
-                        <!-- Videos Section - UPDATED for Single Video Only -->
-                        <div id="topic-videos-section" style="display: none;">
-                            <h6 id="topic-videos-title">Manage Videos for Selected Topic (Single Video Only)</h6>
-                            <div id="topic-video-list" class="mb-3">
-                                <!-- Topic videos -->
-                            </div>
-                            <!-- Add video form for topic -->
-                            <div class="border p-3 rounded bg-light">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label class="form-label">Sub-Topic Name *</label>
-                                            <input type="text" class="form-control" id="topic-subtopic" placeholder="Enter sub-topic name" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label class="form-label">Upload Video File</label>
-                                            <input type="file" class="form-control" id="topic-video-file" accept="video/*">
-                                            <small class="form-text text-muted">Max 100MB</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label class="form-label">OR YouTube URL (Single Video Only)</label>
-                                            <input type="text" class="form-control" id="topic-video-url" placeholder="https://www.youtube.com/watch?v=...">
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-outline-primary w-100" id="add-topic-video-btn">Add Single Video to Topic</button>
-                            </div>
-                        </div>
-                        <!-- Resources Section -->
-                        <div id="topic-resources-section" style="display: none;">
-                            <h6 id="topic-resources-title">Manage Resources for Selected Topic</h6>
-                            <div id="topic-resource-list" class="mb-3">
-                                <!-- Resources loaded here -->
-                            </div>
-                            <div class="border p-3 rounded bg-light">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label class="form-label">Resource Name</label>
-                                            <input type="text" class="form-control" id="topic-resource-name" placeholder="Enter name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label class="form-label">Upload PDF</label>
-                                            <input type="file" class="form-control" id="topic-resource-pdf" accept=".pdf">
-                                            <small class="form-text text-muted">Max 50MB</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label class="form-label">OR External URL</label>
-                                            <input type="text" class="form-control" id="topic-resource-url" placeholder="https://example.com/resource.pdf">
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-outline-success w-100" id="add-topic-resource-btn">Add Resource to Topic</button>
-                            </div>
-                        </div>
+                        <!-- REMOVED: combined-add-section as per pic/requirement -->
                     </div>
                 </div>
             </div>
         </div>
-        <!-- NEW: Edit Topic Modal -->
+        <!-- UPDATED: Edit/Add Topic Modal - Kept as is (full UI for topics) -->
         <div class="modal fade" id="editTopicModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Edit Topic</h5>
+                        <h5 class="modal-title" id="topic-modal-title">Edit Topic</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="edit-topic-form">
+                        <form id="edit-topic-form" enctype="multipart/form-data">
                             <input type="hidden" id="edit-topic-id">
+                            <input type="hidden" id="topic-mode" value="edit"> <!-- add or edit -->
                             <div class="mb-3">
                                 <label class="form-label">Topic Name *</label>
                                 <input type="text" class="form-control" id="edit-topic-name" required>
@@ -1277,9 +1185,77 @@
                                     <option value="published">Published</option>
                                 </select>
                             </div>
+                            <!-- UPDATED: Video Section like editCourse, for single/multiple sub-videos -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">Manage Topic Videos (Single Video, URL)</h6>
+                                <div id="topic-video-section">
+                                    <div id="topic-video-list" class="mb-3">
+                                        <!-- Video items populated on edit -->
+                                    </div>
+                                    <div class="border p-3 rounded bg-light">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Sub-Topic Name *</label>
+                                                    <input type="text" class="form-control" id="topic-video-topic" placeholder="Enter sub-topic name" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Upload Video File</label>
+                                                    <input type="file" class="form-control" id="topic-video-file" accept="video/*">
+                                                    <small class="form-text text-muted">Max 100MB</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">OR YouTube URL (Single Video Only)</label>
+                                                    <input type="text" class="form-control" id="topic-video-url" placeholder="https://www.youtube.com/watch?v=...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary w-100" id="topic-add-video-btn">Add Single Video to Topic</button>
+                                    </div>
+                                </div>
+                                <div id="topic-video-preview" class="mt-3 p-3 border rounded bg-light">
+                                    <p class="text-muted">Video preview will appear here</p>
+                                </div>
+                            </div>
+                            <!-- UPDATED: Resources Section like editCourse -->
+                            <div class="mb-4" id="topic-resources-section">
+                                <h6 class="mb-3">Manage Topic Resources (PDFs)</h6>
+                                <div id="topic-resource-list" class="mb-3">
+                                    <!-- Resources populated on edit -->
+                                </div>
+                                <div class="border p-3 rounded bg-light">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Resource Name (optional, auto-generated from filename if multiple)</label>
+                                                <input type="text" class="form-control" id="topic-resource-name" placeholder="Enter name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Upload PDF(s)</label>
+                                                <input type="file" class="form-control" id="topic-resource-pdf" accept=".pdf" multiple>
+                                                <small class="form-text text-muted">Max 50MB per file (select multiple for batch add)</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">OR External URL (single only)</label>
+                                                <input type="text" class="form-control" id="topic-resource-url" placeholder="https://example.com/resource.pdf">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-success w-100" id="topic-add-resource-btn">Add Resource(s) to Topic</button>
+                                </div>
+                            </div>
                             <div class="d-flex justify-content-end">
                                 <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Update Topic</button>
+                                <button type="button" class="btn btn-danger me-2" id="delete-topic-from-modal" style="display: none;">Delete Topic</button>
+                                <button type="submit" class="btn btn-primary" id="topic-submit-btn">Update Topic</button>
                             </div>
                         </form>
                     </div>
@@ -1394,7 +1370,7 @@
     <!-- Custom JS -->
     <script src="assets/js/script.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-    <!-- Updated Script -->
+    <!-- Updated Script - REMOVED combined handler, changed btn text to Topic -->
 <script>
 $(document).ready(function() {
     const token = localStorage.getItem('token');
@@ -1442,10 +1418,13 @@ $(document).ready(function() {
     }
     let videoFiles = [];
     let resourceFiles = []; // NEW for course resources
+    let topicVideoFiles = []; // NEW for topic videos
+    let topicResourceFiles = []; // NEW for topic resources
     let videoCounter = 0;
     let currentTopicId = '';
     let currentResourceTopicId = '';
     let currentCourseIdForTopics = ''; // For topics modal
+    let topicMode = 'edit'; // add or edit
     function loadProfile() {
         console.log("Loading profile for user ID:", decoded.id);
         $.ajax({
@@ -1541,13 +1520,20 @@ $(document).ready(function() {
     function generateVideoId() {
         return 'vid_' + Date.now() + '_' + videoCounter++;
     }
+    function generateTopicVideoId() {
+        return 'tvid_' + Date.now() + '_' + videoCounter++;
+    }
     function generateResourceId() {
         return 'res_' + Date.now() + '_' + (videoCounter++); // Reuse counter
     }
+    function generateTopicResourceId() {
+        return 'tres_' + Date.now() + '_' + (videoCounter++);
+    }
     // UPDATED: Add video (now allows playlist for course, single for topics)
-    function addVideoToList(listId, previewId, subtopic, file, url, videoId) {
+    function addVideoToList(listId, previewId, subtopic, file, url, videoId, isTopic = false) {
         if (!subtopic.trim()) return showToast('Sub-topic is required.', 'error'), false;
         if (!file && !url.trim()) return showToast('Add video file or URL.', 'error'), false;
+        const filesArray = isTopic ? topicVideoFiles : videoFiles;
         const videoItem = $(`
             <div class="video-item" data-video-id="${videoId}">
                 <div class="d-flex align-items-center w-100">
@@ -1566,19 +1552,24 @@ $(document).ready(function() {
                 </div>
             </div>
         `);
-        if (file) videoFiles.push({ id: videoId, file });
+        if (file) filesArray.push({ id: videoId, file });
         videoItem.find('.remove-video').on('click', function() {
             const id = $(this).closest('.video-item').data('video-id');
-            videoFiles = videoFiles.filter(f => f.id !== id);
+            if (isTopic) {
+                topicVideoFiles = topicVideoFiles.filter(f => f.id !== id);
+            } else {
+                videoFiles = videoFiles.filter(f => f.id !== id);
+            }
             $(this).closest('.video-item').fadeOut(300, function() { $(this).remove(); updatePreview(previewId); });
         });
         $(`#${listId}`).append(videoItem);
         updatePreview(previewId);
         return true;
     }
-    // NEW: Add resource to list (for course or topic)
-    function addResourceToList(listId, name, file, url, resId, type = 'pdf') {
+    // UPDATED: Add resource to list (for course or topic)
+    function addResourceToList(listId, name, file, url, resId, type = 'pdf', isTopic = false) {
         if (!name && !file && !url) return showToast('Provide name, file, or URL.', 'error'), false;
+        const filesArray = isTopic ? topicResourceFiles : resourceFiles;
         const resourceItem = $(`
             <div class="resource-item" data-res-id="${resId}">
                 <div class="d-flex align-items-center w-100">
@@ -1598,10 +1589,14 @@ $(document).ready(function() {
                 </div>
             </div>
         `);
-        if (file) resourceFiles.push({ id: resId, file });
+        if (file) filesArray.push({ id: resId, file });
         resourceItem.find('.remove-resource').on('click', function() {
             const id = $(this).closest('.resource-item').data('res-id');
-            resourceFiles = resourceFiles.filter(f => f.id !== id);
+            if (isTopic) {
+                topicResourceFiles = topicResourceFiles.filter(f => f.id !== id);
+            } else {
+                resourceFiles = resourceFiles.filter(f => f.id !== id);
+            }
             $(this).closest('.resource-item').fadeOut(300, function() { $(this).remove(); });
         });
         $(`#${listId}`).append(resourceItem);
@@ -1664,7 +1659,7 @@ $(document).ready(function() {
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <button class="btn btn-sm btn-primary edit-course" data-id="${c._id}" data-name="${escape(c.name)}" data-description="${escape(c.description)}" data-category="${c.category?._id || ''}" data-videos="${escape(videosData)}" data-resources="${escape(resourcesData)}">Edit</button>
-                                    <button class="btn btn-sm btn-info manage-topics-btn" data-id="${c._id}" data-name="${escape(c.name)}">Topics</button>
+                                    <button class="btn btn-sm btn-info manage-topics-btn" data-id="${c._id}" data-name="${escape(c.name)}">Topic</button> <!-- CHANGED: Content to Topic -->
                                     <!-- UI Fix: Clear label for course delete -->
                                     <button class="btn btn-sm btn-danger delete-course" data-id="${c._id}" title="Delete entire course">Delete Course</button>
                                 </div>
@@ -1701,74 +1696,39 @@ $(document).ready(function() {
             showToast('Add video file or URL/Playlist.', 'error');
         }
     });
-    // NEW: Add Single Video to Course in Topics Modal
-    $('#add-single-video-to-course').on('click', async () => {
-        const courseId = $('#selected-course-id').val();
-        if (!courseId) return showToast('No course selected.', 'error');
-        const subtopic = $('#topics-modal-video-topic').val().trim();
-        const file = $('#topics-modal-video-file')[0].files[0];
-        const url = $('#topics-modal-video-url').val().trim();
-        if (!subtopic) return showToast('Sub-topic required.', 'error');
-        if (!file && !url) return showToast('Video file or URL required.', 'error');
-        if (file && url) return showToast('File OR URL, not both.', 'error');
-        if (url && url.includes('playlist?list=')) return showToast('Playlist not supported here. Use single video URL.', 'error');
-        try {
-            const videoData = { topic: subtopic };
-            const formData = new FormData();
-            if (file) {
-                formData.append('videoFiles', file);
-                videoData.isFile = true;
-            } else {
-                videoData.url = url;
-            }
-            formData.append('videos', JSON.stringify([videoData]));
-            await $.ajax({
-                url: `http://localhost:5000/api/courses/${courseId}/videos`,
-                type: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token },
-                data: formData,
-                processData: false,
-                contentType: false
-            });
-            showToast('Single video added to course!', 'success');
-            $('#topics-modal-video-topic, #topics-modal-video-file, #topics-modal-video-url').val('');
-            loadCourses(); // Refresh courses list
-        } catch (error) {
-            showToast('Error adding video.', 'error');
-        }
-    });
-    // NEW: Delete Course from Topics Modal (UI Fix: Now labeled as Delete Topic, but functionality same - adjust if needed)
-    $('#delete-course-from-topics-modal').on('click', function() {
-        const courseId = $('#selected-course-id').val();
-        if (!courseId) return showToast('No course selected.', 'error');
-        if (confirm('Yeh poora course delete ho jayega (topics, videos, resources saath mein). Confirm?')) {
-            $.ajax({
-                url: `http://localhost:5000/api/courses/${courseId}`,
-                type: 'DELETE',
-                headers: { 'Authorization': 'Bearer ' + token },
-                success: function() {
-                    showToast('Course deleted!', 'success');
-                    $('#manageTopicsModal').modal('hide');
-                    loadCourses();
-                },
-                error: function() {
-                    showToast('Delete failed.', 'error');
-                }
-            });
-        }
-    });
-    // Add Course Resource (same as before)
+    // UPDATED: Add Course Resource(s) - Now supports multiple PDFs
     $('#add-course-resource-btn').on('click', () => {
         const name = $('#course-resource-name').val().trim();
-        const file = $('#course-resource-pdf')[0].files[0];
+        const files = $('#course-resource-pdf')[0].files;
         const url = $('#course-resource-url').val().trim();
-        if (file && url) return showToast('Choose file OR URL, not both.', 'error');
-        const id = generateResourceId();
-        if (addResourceToList('course-resource-list', name, file, url, id)) {
-            $('#course-resource-name, #course-resource-pdf, #course-resource-url').val('');
+        if (files.length > 0 && url) return showToast('Choose file(s) OR URL, not both.', 'error');
+        let addedCount = 0;
+        if (files.length > 0) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.size > 50 * 1024 * 1024) return showToast(`File ${file.name} exceeds 50MB limit.`, 'error');
+                const resName = name || file.name.replace(/\.[^/.]+$/, ''); // Remove extension for name
+                const id = generateResourceId();
+                if (addResourceToList('course-resource-list', resName, file, null, id)) {
+                    addedCount++;
+                }
+            }
+            showToast(`${addedCount} resource(s) added!`, 'success');
+            $('#course-resource-name, #course-resource-url').val('');
+            $('#course-resource-pdf').val(''); // Clear file selection
+        } else if (url) {
+            const id = generateResourceId();
+            if (addResourceToList('course-resource-list', name, null, url, id)) {
+                addedCount = 1;
+                showToast('Resource added!', 'success');
+                $('#course-resource-name, #course-resource-url').val('');
+            }
+        } else {
+            showToast('Provide file(s) or URL.', 'error');
         }
     });
-    // Add Course Form (same)
+    // REMOVED: Combined add handler as per requirement
+    // UPDATED: Add Course Form (same, but now supports multiple resources via list)
     $('#add-course-form').on('submit', function(e) {
         e.preventDefault();
         const name = $('#course-name').val().trim();
@@ -1836,7 +1796,38 @@ $(document).ready(function() {
             }
         });
     });
-    // Edit Course (same)
+    // UPDATED: Edit Course Resource(s) - Now supports multiple PDFs (similar to add)
+    $('#edit-add-course-resource-btn').on('click', () => {
+        const name = $('#edit-course-resource-name').val().trim();
+        const files = $('#edit-course-resource-pdf')[0].files;
+        const url = $('#edit-course-resource-url').val().trim();
+        if (files.length > 0 && url) return showToast('Choose file(s) OR URL, not both.', 'error');
+        let addedCount = 0;
+        if (files.length > 0) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.size > 50 * 1024 * 1024) return showToast(`File ${file.name} exceeds 50MB limit.`, 'error');
+                const resName = name || file.name.replace(/\.[^/.]+$/, '');
+                const id = generateResourceId();
+                if (addResourceToList('edit-course-resource-list', resName, file, null, id)) {
+                    addedCount++;
+                }
+            }
+            showToast(`${addedCount} resource(s) added!`, 'success');
+            $('#edit-course-resource-name, #edit-course-resource-url').val('');
+            $('#edit-course-resource-pdf').val('');
+        } else if (url) {
+            const id = generateResourceId();
+            if (addResourceToList('edit-course-resource-list', name, null, url, id)) {
+                addedCount = 1;
+                showToast('Resource added!', 'success');
+                $('#edit-course-resource-name, #edit-course-resource-url').val('');
+            }
+        } else {
+            showToast('Provide file(s) or URL.', 'error');
+        }
+    });
+    // Edit Course (updated to use edit resource add)
     $(document).on('click', '.edit-course', function() {
         const data = $(this).data();
         $('#edit-course-id').val(data.id);
@@ -1884,16 +1875,7 @@ $(document).ready(function() {
             showToast('Add video file or URL/Playlist.', 'error');
         }
     });
-    $('#edit-add-course-resource-btn').on('click', () => {
-        const name = $('#edit-course-resource-name').val().trim();
-        const file = $('#edit-course-resource-pdf')[0].files[0];
-        const url = $('#edit-course-resource-url').val().trim();
-        if (file && url) return showToast('Choose file OR URL, not both.', 'error');
-        const id = generateResourceId();
-        if (addResourceToList('edit-course-resource-list', name, file, url, id)) {
-            $('#edit-course-resource-name, #edit-course-resource-pdf, #edit-course-resource-url').val('');
-        }
-    });
+    // UPDATED: Edit Course Form Submit (same as add)
     $('#edit-course-form').on('submit', function(e) {
         e.preventDefault();
         const id = $('#edit-course-id').val();
@@ -1980,300 +1962,211 @@ $(document).ready(function() {
         populateCategorySelect('edit-course-category');
         $('#edit-course-resources-section').show();
     });
-    // Topics Management
+    // UPDATED: Topics Management - currentCourseId set on Topic btn click
     let currentCourseId = '';
-    function loadTopicsForCourse(courseId) {
-        currentCourseId = courseId;
-        $('#selected-course-id').val(courseId);
-        $.ajax({
-            url: `http://localhost:5000/api/topics/course/${courseId}`,
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token },
-            success: function(topics) {
-                console.log('Topics loaded:', topics);
-                const $list = $('#topics-list').empty();
-                if (topics.length === 0) {
-                    $list.html('<li class="list-group-item text-center text-muted">No topics yet. Add one above.</li>');
-                }
-                topics.forEach(topic => {
-                    const badgeClass = topic.status === 'published' ? 'bg-success' : 'bg-warning';
-                    const resCount = topic.resources ? topic.resources.length : 0;
-                    $list.append(`
-                        <li class="list-group-item sortable-item d-flex justify-content-between align-items-start" data-id="${topic._id}" data-order="${topic.order}">
-                            <div class="flex-grow-1">
-                                <span class="drag-handle me-2">⋮⋮</span>
-                                <strong class="me-2">${topic.name}</strong>
-                                <span class="badge ${badgeClass} me-2">${topic.status.toUpperCase()}</span>
-                                <small class="d-block text-muted">${topic.videos.length} videos | ${resCount} resources</small>
-                            </div>
-                            <div class="ms-auto btn-group btn-group-sm">
-                                <button class="btn btn-sm btn-warning edit-topic me-1" data-topic='${JSON.stringify(topic).replace(/'/g, "\\'")}'>Edit</button>
-                                <button class="btn btn-sm btn-info videos-btn me-1" data-id="${topic._id}">Videos</button>
-                                <button class="btn btn-sm btn-success resources-btn me-1" data-id="${topic._id}">Resources</button>
-                                <!-- UI Fix: Highlighted topic delete button with title -->
-                                <button class="btn btn-sm btn-danger delete-topic" data-id="${topic._id}" title="Sirf yeh topic delete karega (videos/resources saath mein)">Delete Topic</button>
-                            </div>
-                            ${resCount > 0 ? `<span class="resources-count">${resCount}</span>` : ''}
-                        </li>
-                    `);
-                });
-                new Sortable($list[0], {
-                    animation: 150,
-                    handle: '.drag-handle',
-                    onEnd: async function(evt) {
-                        const items = Array.from($list.find('.sortable-item'));
-                        for (let i = 0; i < items.length; i++) {
-                            const topicId = $(items[i]).data('id');
-                            await $.ajax({
-                                url: `http://localhost:5000/api/topics/${topicId}`,
-                                type: 'PUT',
-                                headers: { 'Authorization': 'Bearer ' + token },
-                                contentType: 'application/json',
-                                data: JSON.stringify({ order: i })
-                            });
-                        }
-                        showToast('Topics order updated!', 'success');
-                    }
-                });
-            },
-            error: function() {
-                showToast('Error loading topics.', 'error');
-            }
-        });
-    }
-    $('#add-topic-btn').on('click', async () => {
-        const name = prompt('Enter topic name:');
-        const description = prompt('Enter description (optional):', '');
-        const status = prompt('Enter status (draft/published):', 'published');
-        if (!name) return showToast('Name required.', 'error');
-        try {
-            await $.ajax({
-                url: 'http://localhost:5000/api/topics',
-                type: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token },
-                contentType: 'application/json',
-                data: JSON.stringify({ name, description, courseId: currentCourseId, status })
-            });
-            showToast('Topic added!', 'success');
-            loadTopicsForCourse(currentCourseId);
-        } catch (error) {
-            showToast('Error adding topic.', 'error');
-        }
+    // UPDATED: Add New Topic - Open modal in add mode
+    $('#add-topic-btn').on('click', function() {
+        if (!currentCourseId) return showToast('No course selected. Open from a course first.', 'error');
+        topicMode = 'add';
+        $('#edit-topic-id').val('');
+        $('#topic-mode').val('add');
+        $('#edit-topic-name').val('');
+        $('#edit-topic-description').val('');
+        $('#edit-topic-status').val('draft');
+        $('#topic-video-list').empty();
+        $('#topic-resource-list').empty();
+        $('#topic-video-preview').html('<p class="text-muted">Video preview will appear here</p>');
+        topicVideoFiles = [];
+        topicResourceFiles = [];
+        $('#topic-modal-title').text('Add New Topic');
+        $('#topic-submit-btn').text('Save Topic').show();
+        $('#delete-topic-from-modal').hide();
+        $('#editTopicModal').modal('show');
     });
-    // Edit Topic (same)
+    // UPDATED: Edit Topic - Populate full form
     $(document).on('click', '.edit-topic', function() {
-        const topic = JSON.parse($(this).attr('data-topic'));
+        const topicStr = $(this).attr('data-topic');
+        let topic;
+        try {
+            topic = JSON.parse(topicStr.replace(/\\'/g, "'"));
+        } catch (e) {
+            showToast('Error loading topic data.', 'error');
+            return;
+        }
+        topicMode = 'edit';
         $('#edit-topic-id').val(topic._id);
+        $('#topic-mode').val('edit');
         $('#edit-topic-name').val(topic.name);
         $('#edit-topic-description').val(topic.description || '');
         $('#edit-topic-status').val(topic.status);
+        // Populate videos
+        $('#topic-video-list').empty();
+        topic.videos.forEach((v, i) => {
+            const id = `topic_edit_vid_${i}`;
+            addVideoToList('topic-video-list', 'topic-video-preview', v.topic, null, v.url || '', id, true);
+        });
+        updatePreview('topic-video-preview');
+        // Populate resources
+        $('#topic-resource-list').empty();
+        topic.resources.forEach((r, i) => {
+            const id = `topic_edit_res_${i}`;
+            addResourceToList('topic-resource-list', r.name || '', null, r.url, id, r.type || 'pdf', true);
+        });
+        $('#topic-modal-title').text('Edit Topic');
+        $('#topic-submit-btn').text('Update Topic').show();
+        $('#delete-topic-from-modal').show().off('click').on('click', function() {
+            if (confirm('Sirf yeh topic delete ho jayega (videos/resources bhi). Confirm?')) {
+                $.ajax({
+                    url: `http://localhost:5000/api/topics/${topic._id}`,
+                    type: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    success: function() {
+                        showToast('Topic deleted!', 'success');
+                        $('#editTopicModal').modal('hide');
+                        loadCourses(); // Refresh
+                    },
+                    error: function() {
+                        showToast('Delete failed.', 'error');
+                    }
+                });
+            }
+        });
         $('#editTopicModal').modal('show');
     });
+    // UPDATED: Topic Video Add Button
+    $('#topic-add-video-btn').on('click', () => {
+        const topic = $('#topic-video-topic').val().trim();
+        const file = $('#topic-video-file')[0].files[0];
+        const url = $('#topic-video-url').val().trim();
+        if (file && url) return showToast('Choose file OR URL, not both.', 'error');
+        if (file) {
+            const id = generateTopicVideoId();
+            if (addVideoToList('topic-video-list', 'topic-video-preview', topic, file, null, id, true)) {
+                $('#topic-video-topic, #topic-video-file, #topic-video-url').val('');
+            }
+        } else if (url) {
+            const id = generateTopicVideoId();
+            if (addVideoToList('topic-video-list', 'topic-video-preview', topic, null, url, id, true)) {
+                $('#topic-video-topic, #topic-video-url').val('');
+            }
+        } else {
+            showToast('Add video file or URL.', 'error');
+        }
+    });
+    // UPDATED: Topic Resource Add Button
+    $('#topic-add-resource-btn').on('click', () => {
+        const name = $('#topic-resource-name').val().trim();
+        const files = $('#topic-resource-pdf')[0].files;
+        const url = $('#topic-resource-url').val().trim();
+        if (files.length > 0 && url) return showToast('Choose file(s) OR URL, not both.', 'error');
+        let addedCount = 0;
+        if (files.length > 0) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.size > 50 * 1024 * 1024) return showToast(`File ${file.name} exceeds 50MB limit.`, 'error');
+                const resName = name || file.name.replace(/\.[^/.]+$/, '');
+                const id = generateTopicResourceId();
+                if (addResourceToList('topic-resource-list', resName, file, null, id, 'pdf', true)) {
+                    addedCount++;
+                }
+            }
+            showToast(`${addedCount} resource(s) added!`, 'success');
+            $('#topic-resource-name, #topic-resource-url').val('');
+            $('#topic-resource-pdf').val('');
+        } else if (url) {
+            const id = generateTopicResourceId();
+            if (addResourceToList('topic-resource-list', name, null, url, id, 'url', true)) {
+                addedCount = 1;
+                showToast('Resource added!', 'success');
+                $('#topic-resource-name, #topic-resource-url').val('');
+            }
+        } else {
+            showToast('Provide file(s) or URL.', 'error');
+        }
+    });
+    // UPDATED: Edit Topic Form Submit - Handles add/edit with videos/resources
     $('#edit-topic-form').on('submit', async function(e) {
         e.preventDefault();
         const id = $('#edit-topic-id').val();
+        const mode = $('#topic-mode').val();
         const name = $('#edit-topic-name').val().trim();
         const description = $('#edit-topic-description').val().trim();
         const status = $('#edit-topic-status').val();
         if (!name) return showToast('Name required.', 'error');
-        try {
-            await $.ajax({
-                url: `http://localhost:5000/api/topics/${id}`,
-                type: 'PUT',
-                headers: { 'Authorization': 'Bearer ' + token },
-                contentType: 'application/json',
-                data: JSON.stringify({ name, description, status })
-            });
-            showToast('Topic updated!', 'success');
-            $('#editTopicModal').modal('hide');
-            loadTopicsForCourse(currentCourseId);
-        } catch (error) {
-            showToast('Update failed.', 'error');
-        }
-    });
-    // Delete Topic (same, now visible - UI Fix: Clear confirm)
-    $(document).on('click', '.delete-topic', async function() {
-        if (confirm('Sirf yeh topic delete ho jayega (related videos/resources bhi). Course safe rahega. Confirm?')) {
-            const id = $(this).data('id');
-            try {
-                await $.ajax({
-                    url: `http://localhost:5000/api/topics/${id}`,
-                    type: 'DELETE',
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                showToast('Topic deleted!', 'success');
-                loadTopicsForCourse(currentCourseId);
-            } catch (error) {
-                showToast('Delete failed.', 'error');
-            }
-        }
-    });
-    // Videos btn for topic (single only)
-    $(document).on('click', '.videos-btn', async function() {
-        currentTopicId = $(this).data('id');
-        $('#topic-videos-title').text(`Manage Videos for Topic ID: ${currentTopicId} (Single Video Only)`);
-        try {
-            const topic = await $.ajax({
-                url: `http://localhost:5000/api/topics/${currentTopicId}`,
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const $vlist = $('#topic-video-list').empty();
-            topic.videos.forEach(video => {
-                const vId = generateVideoId();
-                $vlist.append(`
-                    <div class="video-item" data-video-id="${vId}">
-                        <strong>${video.topic}</strong>
-                        <small>${video.isFile ? 'File' : 'URL: ' + video.url}</small>
-                        <button class="btn btn-sm btn-danger remove-topic-video ms-2" data-id="${video._id}">Remove</button>
-                    </div>
-                `);
-            });
-            $('#topic-videos-section').show();
-            $('#topic-resources-section').hide();
-        } catch (error) {
-            showToast('Error loading topic videos.', 'error');
-        }
-    });
-    $('#add-topic-video-btn').on('click', async () => {
-        const subtopic = $('#topic-subtopic').val().trim();
-        const file = $('#topic-video-file')[0].files[0];
-        const url = $('#topic-video-url').val().trim();
-        if (!subtopic) return showToast('Sub-topic required.', 'error');
-        if (!file && !url) return showToast('Video file or URL required.', 'error');
-        if (file && url) return showToast('File OR URL, not both.', 'error');
-        if (url && url.includes('playlist?list=')) return showToast('Playlist not supported. Use single video URL.', 'error');
-        try {
-            const videoData = { topic: subtopic };
-            const formData = new FormData();
-            if (file) {
-                formData.append('videoFiles', file);
-                videoData.isFile = true;
-            } else {
-                videoData.url = url;
-            }
-            formData.append('videos', JSON.stringify([videoData]));
-            await $.ajax({
-                url: `http://localhost:5000/api/topics/${currentTopicId}/videos`,
-                type: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token },
-                data: formData,
-                processData: false,
-                contentType: false
-            });
-            showToast('Video added to topic!', 'success');
-            $('#topic-subtopic, #topic-video-file, #topic-video-url').val('');
-            $(document).trigger('click.videos-btn', [currentTopicId]);
-        } catch (error) {
-            showToast('Error adding video.', 'error');
-        }
-    });
-    $(document).on('click', '.remove-topic-video', async function() {
-        const videoId = $(this).data('id');
-        if (confirm('Remove this video?')) {
-            try {
-                await $.ajax({
-                    url: `http://localhost:5000/api/topics/${currentTopicId}/videos/${videoId}`,
-                    type: 'DELETE',
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                showToast('Video removed!', 'success');
-                $(this).closest('.video-item').remove();
-            } catch (error) {
-                showToast('Remove failed.', 'error');
-            }
-        }
-    });
-    // Resources (same)
-    $(document).on('click', '.resources-btn', async function() {
-        currentResourceTopicId = $(this).data('id');
-        const topicName = $(this).closest('.sortable-item').find('strong').text();
-        $('#topic-resources-title').text(`Manage Resources for ${topicName}`);
-        try {
-            const topic = await $.ajax({
-                url: `http://localhost:5000/api/topics/${currentResourceTopicId}`,
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const $rlist = $('#topic-resource-list').empty();
-            if (topic.resources && topic.resources.length > 0) {
-                topic.resources.forEach(res => {
-                    $rlist.append(`
-                        <div class="resource-item" data-res-id="${res._id}">
-                            <strong>${res.name || 'Resource'}</strong>
-                            <small class="d-block text-muted">Type: ${res.type} | URL: ${res.url}</small>
-                            <button class="btn btn-sm btn-danger remove-topic-resource ms-2" data-id="${res._id}">Remove</button>
-                        </div>
-                    `);
-                });
-            } else {
-                $rlist.html('<p class="text-muted">No resources added yet.</p>');
-            }
-            $('#topic-resources-section').show();
-            $('#topic-videos-section').hide();
-        } catch (error) {
-            showToast('Error loading resources.', 'error');
-        }
-    });
-    $('#add-topic-resource-btn').on('click', async () => {
-        if (!currentResourceTopicId) return showToast('Select a topic first via Manage Resources.', 'error');
-        const name = $('#topic-resource-name').val().trim();
-        const file = $('#topic-resource-pdf')[0].files[0];
-        const urlInput = $('#topic-resource-url').val().trim();
-        if (!name && !file && !urlInput) return showToast('Provide name, PDF file, or URL.', 'error');
-        if (file && urlInput) return showToast('Choose file OR URL, not both.', 'error');
+        if (mode === 'add' && !currentCourseId) return showToast('Course ID missing. Backend error avoided.', 'error');
         const formData = new FormData();
-        formData.append('name', name || (file ? file.name : 'External Resource'));
-        const resources = [];
-        let type = file ? 'pdf' : 'url';
-        if (file) {
-            formData.append('resourceFiles', file);
-            resources.push({ isFile: true });
-        } else if (urlInput) {
-            resources.push({ isFile: false, url: urlInput });
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('status', status);
+        if (mode === 'add') {
+            formData.append('courseId', currentCourseId); // Ensure appended
         }
+        // Collect videos
+        const videos = [];
+        $('#topic-video-list .video-item').each(function() {
+            const topicName = $(this).find('input[name^="subtopic-"]').val();
+            const fileId = $(this).find('input[name^="fileId-"]').val();
+            const url = $(this).find('input[name^="url-"]').val();
+            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+            const obj = { topic: topicName, isFile };
+            if (isFile && fileId) {
+                const f = topicVideoFiles.find(x => x.id === fileId);
+                if (f) formData.append('videoFiles', f.file);
+            } else if (url) {
+                obj.url = url;
+            }
+            videos.push(obj);
+        });
+        formData.append('videos', JSON.stringify(videos));
+        // Collect resources
+        const resources = [];
+        $('#topic-resource-list .resource-item').each(function() {
+            const resName = $(this).find('input[name^="resName-"]').val();
+            const fileId = $(this).find('input[name^="fileId-"]').val();
+            const url = $(this).find('input[name^="url-"]').val();
+            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+            const type = $(this).find('input[name^="type-"]').val();
+            const obj = { name: resName, isFile, type };
+            if (isFile && fileId) {
+                const f = topicResourceFiles.find(x => x.id === fileId);
+                if (f) formData.append('resourceFiles', f.file);
+            } else if (url) {
+                obj.url = url;
+            }
+            resources.push(obj);
+        });
         formData.append('resources', JSON.stringify(resources));
-        formData.append('type', type);
+        const url = mode === 'add' ? 'http://localhost:5000/api/topics' : `http://localhost:5000/api/topics/${id}`;
+        const method = mode === 'add' ? 'POST' : 'PUT';
         try {
             await $.ajax({
-                url: `http://localhost:5000/api/topics/${currentResourceTopicId}/resources`,
-                type: 'POST',
+                url: url,
+                type: method,
                 headers: { 'Authorization': 'Bearer ' + token },
                 data: formData,
                 processData: false,
                 contentType: false
             });
-            showToast('Resource added to topic!', 'success');
-            $('#topic-resource-name, #topic-resource-pdf, #topic-resource-url').val('');
-            $(document).trigger('click.resources-btn', [currentResourceTopicId]);
-            loadTopicsForCourse(currentCourseId);
+            showToast(`Topic ${mode === 'add' ? 'added' : 'updated'}!`, 'success');
+            $('#editTopicModal').modal('hide');
+            // Clear form
+            $('#edit-topic-form')[0].reset();
+            $('#topic-video-list, #topic-resource-list').empty();
+            $('#topic-video-preview').html('<p class="text-muted">Video preview will appear here</p>');
+            topicVideoFiles = [];
+            topicResourceFiles = [];
+            loadCourses(); // Refresh
         } catch (error) {
-            console.error('Add resource error:', error);
-            showToast('Add failed: ' + (error.responseJSON?.message || 'Server error.'), 'error');
+            showToast('Operation failed: ' + (error.responseJSON?.message || error.message), 'error');
         }
     });
-    $(document).on('click', '.remove-topic-resource', async function() {
-        const resId = $(this).data('id');
-        if (!confirm('Delete this resource?')) return;
-        try {
-            await $.ajax({
-                url: `http://localhost:5000/api/topics/${currentResourceTopicId}/resources/${resId}`,
-                type: 'DELETE',
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            showToast('Resource deleted!', 'success');
-            $(this).closest('.resource-item').fadeOut(300, function() { $(this).remove(); });
-            loadTopicsForCourse(currentCourseId);
-        } catch (error) {
-            showToast('Delete failed.', 'error');
-        }
-    });
-    // Trigger manage topics modal
+    // UPDATED: Trigger manage topics modal (changed button text to "Topic")
     $(document).on('click', '.manage-topics-btn', function() {
         const courseId = $(this).data('id');
         const courseName = $(this).data('name');
+        currentCourseId = courseId; // Set for add topic
         $('#topic-course-name').text(courseName);
-        loadTopicsForCourse(courseId);
+        $('#selected-course-id').val(courseId);
         $('#manageTopicsModal').modal('show');
     });
     loadCourses();

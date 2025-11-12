@@ -549,30 +549,25 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             cursor: pointer; /* Add pointer cursor for clickable areas */
         }
-
         .course-item-two:hover {
             transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             border-color: var(--primary);
         }
-
         .course-img {
             position: relative;
             overflow: hidden;
             height: 220px;
         }
-
         .course-img img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.4s ease;
         }
-
         .course-item-two:hover .course-img img {
             transform: scale(1.08);
         }
-
         .play-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -583,11 +578,9 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-
         .course-item-two:hover .play-overlay {
             opacity: 1;
         }
-
         .play-btn {
             width: 60px;
             height: 60px;
@@ -599,18 +592,15 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
         }
-
         .play-btn:hover {
             transform: scale(1.1);
             background: white;
         }
-
         .play-btn i {
             color: var(--primary);
             font-size: 1.5rem;
             margin-left: 3px;
         }
-
         .video-count-badge {
             position: absolute;
             top: 12px;
@@ -623,7 +613,6 @@
             font-weight: 600;
             backdrop-filter: blur(4px);
         }
-
         .fav-btn {
             position: absolute;
             top: 12px;
@@ -639,30 +628,24 @@
             transition: all 0.3s ease;
             z-index: 2;
         }
-
         .dark-mode .fav-btn {
             background: rgba(0,0,0,0.6);
         }
-
         .fav-btn:hover {
             background: white;
             transform: scale(1.1);
         }
-
         .dark-mode .fav-btn:hover {
             background: rgba(255,255,255,0.9);
         }
-
         .fav-btn i {
             font-size: 1.1rem;
             transition: color 0.3s ease;
             color: var(--text-color);
         }
-
         .fav-btn.favorited i {
             color: #e91e63 !important;
         }
-
         .course-content {
             padding: 1rem; /* Reduced padding to give more space for description */
             flex-grow: 1;
@@ -670,7 +653,6 @@
             flex-direction: column;
             overflow: hidden; /* Prevent content overflow */
         }
-
         .course-title {
             font-size: 1.1rem; /* Slightly smaller title to save space */
             font-weight: 600;
@@ -684,55 +666,44 @@
             cursor: pointer; /* Pointer for clickable */
             transition: color 0.3s ease;
         }
-
         .course-title:hover {
             color: var(--primary);
         }
-
         .rating {
             display: flex;
             align-items: center;
             margin-bottom: 0.5rem; /* Reduced margin */
         }
-
         .rating-stars {
             display: flex;
             margin-right: 0.5rem;
         }
-
         .rating-stars i {
             font-size: 1rem;
             margin-right: 2px;
         }
-
         .rating-stars .filled {
             color: #ffc107;
         }
-
         .rating-stars .empty {
             color: #e9ecef;
         }
-
         .dark-mode .rating-stars .empty {
             color: #444;
         }
-
         .rating-value {
             font-size: 0.875rem;
             color: #ffc107;
             font-weight: 600;
             margin-right: 0.5rem;
         }
-
         .rating-text {
             font-size: 0.875rem;
             color: var(--gray);
         }
-
         .dark-mode .rating-text {
             color: #adb5bd;
         }
-
         .category-badge {
             background: rgba(0,123,255,0.1);
             color: var(--primary);
@@ -743,12 +714,10 @@
             margin-bottom: 0.5rem; /* Reduced margin */
             align-self: flex-start;
         }
-
         .dark-mode .category-badge {
             background: rgba(13,110,253,0.2);
             color: #0d6efd;
         }
-
         .course-desc {
             font-size: 0.9rem; /* Increased font size for better readability */
             color: var(--gray);
@@ -762,19 +731,15 @@
             /* Removed min-height to avoid awkward spacing for short descriptions; now adapts naturally */
             transition: all 0.3s ease; /* Smooth transition on hover or changes */
         }
-
         .course-desc:hover {
             color: var(--text-color); /* Subtle color shift on hover for engagement */
         }
-
         .dark-mode .course-desc {
             color: #adb5bd;
         }
-
         .dark-mode .course-desc:hover {
             color: var(--text-color);
         }
-
         .course-footer {
             display: flex;
             align-items: center;
@@ -783,27 +748,22 @@
             padding-top: 1rem; /* Slightly reduced padding-top */
             border-top: 1px dashed var(--border-color);
         }
-
         .price {
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--primary);
         }
-
         .price.free {
             color: var(--success);
         }
-
         .course-meta {
             font-size: 0.75rem;
             color: var(--gray);
             margin-top: 2px;
         }
-
         .dark-mode .course-meta {
             color: #adb5bd;
         }
-
         .view-btn {
             padding: 0.6rem 1.5rem;
             border-radius: 50px;
@@ -816,33 +776,27 @@
             color: white;
             border: none;
         }
-
         .view-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0,123,255,0.3);
             color: white;
         }
-
         .navbar-logo img.logo {
             width: 120px;
             height: auto;
         }
-
         .footer-logo img {
             width: 150px;
             height: auto;
         }
-
         .toast-success {
             background-color: #28a745;
             color: #ffffff;
         }
-
         .toast-error {
             background-color: #dc3545;
             color: #ffffff;
         }
-
         @media (max-width: 768px) {
             .course-img {
                 height: 200px;
@@ -967,7 +921,7 @@
                                 <a href="student-dashboard.html">Dashboard</a>
                             </li>
                         </ul>
-                     
+                   
                         <div class="menu-dropdown">
                             <div class="cart-item">
                                 <h6>Cart & Wishlist</h6>
@@ -1020,7 +974,7 @@
                                 </ul>
                             </div>
                         </div>
-                     
+                   
                     </div>
                     <div class="header-btn d-flex align-items-center">
                         <div class="icon-btn me-2">
@@ -1031,8 +985,50 @@
                                 <i class="isax isax-moon"></i>
                             </a>
                         </div>
-                     
-                     
+                        <div class="dropdown profile-dropdown">
+                            <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
+                                <span class="avatar">
+                                    <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <div class="profile-header d-flex align-items-center">
+                                    <div class="avatar">
+                                        <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
+                                    </div>
+                                    <div>
+                                        <h6 id="dropdown-profile-name">Student</h6>
+                                        <p id="profile-email"><a href="mailto:"></a></p>
+                                    </div>
+                                </div>
+                                <ul class="profile-body">
+                                    <li>
+                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link" data-href="student-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-courses.html"><i class="isax isax-book me-2"></i>Enrolled Courses</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-certificates.html"><i class="isax isax-note-21 me-2"></i>My Certificates</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-wishlist.html"><i class="isax isax-heart me-2"></i>Wishlist</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-reviews.html"><i class="isax isax-star me-2"></i>Reviews</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-messages.html"><i class="isax isax-messages-3 me-2"></i>Messages</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
+                                    </li>
+                                </ul>
+                                <div class="profile-footer">
+                                    <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100" id="logout-btn"><i class="isax isax-logout me-2"></i>Logout</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1055,7 +1051,7 @@
             </div>
         </div>
         <!-- /Breadcrumb -->
-    
+  
         <!-- Content -->
         <div class="content">
             <div class="container">
@@ -1066,7 +1062,7 @@
                         <div class="col-lg-6">
                             <div class="d-flex align-items-center">
                                 <span class="avatar avatar-xxl avatar-rounded me-3 border border-white border-2 position-relative">
-                                    <img id="profile-img" src="assets/img/default-profile.png" alt="">
+                                    <img id="profile-img" src="" alt="">
                                     <span class="verify-tick"><i class="isax isax-verify5"></i></span>
                                 </span>
                                 <div>
@@ -1076,7 +1072,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6">
-                         
+                       
                         </div>
                     </div>
                 </div>
@@ -1135,11 +1131,11 @@
                                     </div>
                                     <p class="mt-2 text-muted">Loading enrolled courses...</p>
                                 </div>
-                            
+                          
                                 <div class="row" id="enrolled-grid">
                                     <!-- Courses will be loaded here -->
                                 </div>
-                            
+                          
                                 <div class="empty-state text-center py-5" id="empty-enrolled" style="display: none;">
                                     <div class="mb-4">
                                         <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
@@ -1148,7 +1144,7 @@
                                     <p class="text-muted mb-4">Enroll in some courses from the Courses page!</p>
                                     <a href="course-grid.html" class="btn btn-primary">Browse Courses</a>
                                 </div>
-                            
+                          
                                 <!-- Pagination -->
                                 <div class="row align-items-center mt-4" id="enrolled-pagination" style="display: none;">
                                     <div class="col-md-6">
@@ -1180,11 +1176,11 @@
                                     </div>
                                     <p class="mt-2 text-muted">Loading active courses...</p>
                                 </div>
-                            
+                          
                                 <div class="row" id="active-grid">
                                     <!-- Courses will be loaded here -->
                                 </div>
-                            
+                          
                                 <div class="empty-state text-center py-5" id="empty-active" style="display: none;">
                                     <div class="mb-4">
                                         <i class="fas fa-play-circle fa-3x text-muted mb-3"></i>
@@ -1193,7 +1189,7 @@
                                     <p class="text-muted mb-4">Start learning your enrolled courses!</p>
                                     <a href="#enroll-courses" class="btn btn-primary">View Enrolled</a>
                                 </div>
-                            
+                          
                                 <!-- Pagination -->
                                 <div class="row align-items-center mt-4" id="active-pagination" style="display: none;">
                                     <div class="col-md-6">
@@ -1225,11 +1221,11 @@
                                     </div>
                                     <p class="mt-2 text-muted">Loading completed courses...</p>
                                 </div>
-                            
+                          
                                 <div class="row" id="completed-grid">
                                     <!-- Courses will be loaded here -->
                                 </div>
-                            
+                          
                                 <div class="empty-state text-center py-5" id="empty-completed" style="display: none;">
                                     <div class="mb-4">
                                         <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
@@ -1238,7 +1234,7 @@
                                     <p class="text-muted mb-4">Complete your courses to see them here!</p>
                                     <a href="#enroll-courses" class="btn btn-primary">View Enrolled</a>
                                 </div>
-                            
+                          
                                 <!-- Pagination -->
                                 <div class="row align-items-center mt-4" id="completed-pagination" style="display: none;">
                                     <div class="col-md-6">
@@ -1417,10 +1413,10 @@
                 $(`#${toastId}`).remove();
             }, duration);
         }
-        // Load Profile Data (same as student-dashboard)
+        // Load Profile Data (Updated with cache bust)
         function loadProfile() {
             $.ajax({
-                url: 'http://localhost:5000/api/auth/profile',
+                url: `http://localhost:5000/api/auth/profile?t=${new Date().getTime()}`, // Cache bust
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token },
                 cache: false,
@@ -1431,9 +1427,21 @@
                     $("#profile-email a")
                       .text(profile.email || "No email")
                       .attr("href", `mailto:${profile.email || ""}`);
-                    const imgSrc = profile.profileImage ? `${profile.profileImage}?t=${new Date().getTime()}` : 'assets/img/default-profile.png';
-                    $('#profile-img').attr('src', imgSrc);
-                    $(".dropdown-profile-img").attr('src', imgSrc).parent().addClass("has-image");
+                    const timestamp = new Date().getTime();
+                    if (profile.profileImage) {
+                        const imgSrc = `${profile.profileImage}?t=${timestamp}`;
+                        $('#profile-img').attr('src', imgSrc).parent().addClass("has-image");
+                        $(".dropdown-profile-img").attr('src', imgSrc).each(function() {
+                            $(this).parent().addClass("has-image");
+                        });
+                    } else {
+                        $('#profile-img').attr('src', '').parent().removeClass('has-image');
+                        $(".dropdown-profile-img").attr('src', '').each(function() {
+                            $(this).parent().removeClass('has-image');
+                        });
+                    }
+                    // NEW: Clear the localStorage flag after successful reload to prevent repeated triggers
+                    localStorage.removeItem('profileUpdated');
                 },
                 error: function(xhr) {
                     console.error('Error loading profile:', xhr.responseText);
@@ -1641,7 +1649,6 @@
                 const duration = course.duration || '2h 30m';
                 const progress = enroll.progress || 0;
                 const categoryName = course.category?.name || 'General';
-
                 return `
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="course-item-two course-item h-100" data-course-id="${course._id}">
@@ -1843,8 +1850,15 @@
         // Toggle button click handlers
         $('#dark-mode-toggle').on('click', toggleDarkMode);
         $('#light-mode-toggle').on('click', toggleLightMode);
-        // Listen for profile update
+        // Listen for profile update (in case of external updates)
         window.addEventListener('profileUpdated', loadProfile);
+        // NEW: Listen for cross-tab profile updates via localStorage (triggers reload in this tab if updated in another)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'profileUpdated') {
+                console.log('Cross-tab profile update detected, reloading profile...');
+                loadProfile();
+            }
+        });
         // Real-time polling for updates (every 30 seconds)
         setInterval(() => {
             fetchAllEnrollments();
@@ -1855,6 +1869,6 @@
         loadProfile();
         fetchAllEnrollments();
     });
-    </script>
+</script>
 </body>
 </html>

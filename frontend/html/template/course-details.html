@@ -925,6 +925,9 @@
             .nested-videos li {
                 list-style: none;
             }
+            .nested-content {
+                margin-top: 10px;
+            }
             /* NEW: Resources Styles for Course Details */
             .resource-link {
                 display: block;
@@ -1026,7 +1029,7 @@
 <a href="student-dashboard.html">Dashboard</a>
 </li>
                             </ul>
-                      
+                     
                             <div class="menu-dropdown">
                                 <div class="cart-item">
                                     <h6>Cart & Wishlist</h6>
@@ -1079,7 +1082,7 @@
                                     </ul>
                                 </div>
                             </div>
-                      
+                     
                         </div>
                         <div class="header-btn d-flex align-items-center">
                             <div class="icon-btn me-2">
@@ -1090,8 +1093,8 @@
                                     <i class="isax isax-moon"></i>
                                 </a>
                             </div>
-                      
-                      
+                     
+                     
                         </div>
                     </div>
                 </div>
@@ -1156,6 +1159,11 @@
                                                 <!-- Dynamic playlist items here -->
                                             </ul>
                                         </div>
+                                        <!-- In the card-body, after <div class="row"> ... </div> add this: -->
+<div class="mt-4" id="course-resources-section" style="display: none;">
+    <h6>Course Resources</h6>
+    <div id="course-resources"></div>
+</div>
                                     </div>
                                 </div>
                             </div>
@@ -1439,7 +1447,7 @@ $(document).ready(function() {
             container.html('<div class="text-center p-5"><i class="fas fa-spinner fa-spin fa-3x text-primary"></i><p>Loading video...</p></div>');
             const embedUrl = getYouTubeEmbedUrl(url);
             if (!embedUrl) {
-                container.html('<p class="text-danger">Invalid YouTube URL. Ensure video is public.</p>');
+                container.html('<p class="text-danger p-3">Invalid YouTube URL. Ensure video is public.</p>');
                 return;
             }
             const iframe = $(`
@@ -1559,7 +1567,7 @@ $(document).ready(function() {
             showToast('Failed to submit comment.', 'error');
         }
     });
-    // UPDATED: Load course - Description in overview as bullets, professional styling, with average rating, and topics nested + RESOURCES
+    // UPDATED: Load course - FIXED: Added display for course.videos (as additional if topics) & course.resources section; topics nested + RESOURCES + FIXED nesting for resources toggle + expand first topic
     async function loadCourse() {
         try {
             const course = await $.ajax({
@@ -1593,7 +1601,7 @@ $(document).ready(function() {
             `);
             // Description as bullets in overview
             $('#course-desc-bullets').html(descriptionToBullets(course.description));
-            // Render playlist items with topics nesting + RESOURCES
+            // Render playlist items with topics nesting + RESOURCES + FIXED: course.videos as additional section
             const playlist = $('#playlist-items');
             playlist.empty();
             let totalLectures = 0;
@@ -1618,21 +1626,55 @@ $(document).ready(function() {
                             </li>
                         `;
                     });
+                    let nestedHtml = `
+                        <ul class="nested-videos list-unstyled mt-2 ps-3">${videoHtml}</ul>
+                    `;
                     let resourcesHtml = '';
                     if (topic.resources && topic.resources.length > 0) {
                         resourcesHtml = `<div class="nested-resources"><small class="text-muted">📚 Resources:</small>` +
-                            topic.resources.map(r => `<a href="${r.url.startsWith('http') ? r.url : `http://localhost:5000${r.url}`}" class="resource-link mt-1" target="_blank" download>${r.name || 'Download Resource'}</a>`).join('') +
+                            topic.resources.map(r => {
+                                const fullUrl = r.url.startsWith('http') ? r.url : `http://localhost:5000${r.url}`;
+                                return `<a href="${fullUrl}" class="resource-link mt-1 d-block" target="_blank" download>${r.name || 'Download Resource'}</a>`;
+                            }).join('') +
                             `</div>`;
+                        nestedHtml += resourcesHtml;
                     }
                     playlist.append(`
                         <li class="list-group-item topic-header d-flex justify-content-between align-items-center">
                             <span>📁 ${topic.name} (${topic.videos.length} videos${topic.resources?.length ? `, ${topic.resources.length} resources` : ''})</span>
                             <i class="fas fa-chevron-down"></i>
-                            <ul class="nested-videos list-unstyled mt-2 ps-3" style="display: none;">${videoHtml}</ul>
-                            ${resourcesHtml}
+                            <div class="nested-content" style="display: none;">${nestedHtml}</div>
                         </li>
                     `);
                 });
+                // FIXED: Add course.videos as additional section if topics exist
+                if (course.videos && course.videos.length > 0) {
+                    let additionalVideoHtml = '';
+                    course.videos.forEach((video, vIndex) => {
+                        totalLectures++;
+                        const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
+                        const fullUrl = video.isFile ? `http://localhost:5000${video.url}` : video.url;
+                        additionalVideoHtml += `
+                            <li class="playlist-item d-flex align-items-center mb-2 p-2 rounded" data-index="additional-${vIndex}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
+                                <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                                <div>
+                                    <h6 class="mb-0">${video.topic}</h6>
+                                    <small class="text-muted">Duration: N/A</small>
+                                </div>
+                            </li>
+                        `;
+                    });
+                    let additionalNestedHtml = `
+                        <ul class="nested-videos list-unstyled mt-2 ps-3">${additionalVideoHtml}</ul>
+                    `;
+                    playlist.append(`
+                        <li class="list-group-item topic-header d-flex justify-content-between align-items-center">
+                            <span>📁 Additional Course Videos (${course.videos.length} videos)</span>
+                            <i class="fas fa-chevron-down"></i>
+                            <div class="nested-content" style="display: none;">${additionalNestedHtml}</div>
+                        </li>
+                    `);
+                }
                 if (publishedTopics === 0) {
                     playlist.html('<li class="list-group-item text-warning">No published topics available.</li>');
                 }
@@ -1658,15 +1700,38 @@ $(document).ready(function() {
                 $('#player-container').html('<p class="text-danger">No videos to play.</p>');
                 return;
             }
+            // FIXED: Always show course.resources section
+            const resourcesSection = $('#course-resources-section');
+            if (course.resources && course.resources.length > 0) {
+                let resHtml = '<ul class="list-unstyled">';
+                course.resources.forEach(r => {
+                    const fullUrl = r.url.startsWith('http') ? r.url : `http://localhost:5000${r.url}`;
+                    resHtml += `<li class="mb-2"><a href="${fullUrl}" class="resource-link" target="_blank" download>${r.name || 'Download Resource'}</a></li>`;
+                });
+                resHtml += '</ul>';
+                $('#course-resources').html(resHtml);
+                resourcesSection.show();
+            } else {
+                $('#course-resources').html('<p class="text-muted">No course resources available.</p>');
+                resourcesSection.show(); // Show section even if empty
+            }
             // Update lecture count with topics info
             $('#lecture-count').text(`${totalLectures} Lectures in ${publishedTopics || course.videos?.length || 0} Sections`);
-            // Toggle nested videos on topic header click
+            // Toggle nested content (videos + resources) on topic header click - FIXED to include resources
             $(document).off('click', '.topic-header').on('click', '.topic-header', function(e) {
-                if ($(e.target).is('i')) { // Toggle icon click
-                    $(this).find('.nested-videos').slideToggle();
-                    $(this).find('i').toggleClass('fa-chevron-down fa-chevron-up');
-                }
+                e.preventDefault();
+                const $content = $(this).find('.nested-content');
+                $content.slideToggle();
+                $(this).find('i').toggleClass('fa-chevron-down fa-chevron-up');
             });
+            // FIXED: Expand first topic by default if exists
+            if (publishedTopics > 0 || (course.videos && course.videos.length > 0)) {
+                const firstHeader = $('.topic-header').first();
+                if (firstHeader.length) {
+                    firstHeader.find('.nested-content').show();
+                    firstHeader.find('i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
             // Video click handler
             $(document).off('click', '.playlist-item').on('click', '.playlist-item', function() {
                 $('.playlist-item').removeClass('active');

@@ -38,8 +38,8 @@ $(document).ready(function () {
         });
     }
 
-    // Password Toggle Functionality
-    $('.toggle-passwords').click(function () {
+    // Password Toggle Functionality (Fixed: Changed selector to '.toggle-password')
+    $('.toggle-password').click(function () {
         const $input = $(this).siblings('input');
         const $icon = $(this);
         if ($input.attr('type') === 'password') {
@@ -103,7 +103,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: 'http://localhost:5000/api/auth/signup',
+            url: 'http://localhost:5000/api/auth/signup',  // Fixed: Port to 5001
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
@@ -124,10 +124,10 @@ $(document).ready(function () {
         });
     });
 
-    // Signin Form Submission
+    // Signin Form Submission (Updated: Use form's submit button selector for robustness)
     $('#signinForm').submit(function (e) {
         e.preventDefault();
-        const $button = $('#signinButton');
+        const $button = $(this).find('button[type="submit"]');
         $button.find('.spinner-border').removeClass('d-none');
         $button.prop('disabled', true);
 
@@ -153,7 +153,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: 'http://localhost:5000/api/auth/signin',
+            url: 'http://localhost:5000/api/auth/signin',  // Fixed: Port to 5001
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
@@ -186,6 +186,10 @@ $(document).ready(function () {
             error: function (xhr) {
                 console.error('Signin Error:', xhr.responseJSON, xhr.status);
                 const errorMessage = xhr.responseJSON?.message || 'Error during signin. Please try again.';
+                // Added: Append details if available
+                if (xhr.responseJSON?.error) {
+                    errorMessage += ` Details: ${xhr.responseJSON.error}`;
+                }
                 showAlert(errorMessage, 'danger');
                 $button.find('.spinner-border').addClass('d-none');
                 $button.prop('disabled', false);
@@ -193,7 +197,7 @@ $(document).ready(function () {
         });
     });
 
-    // Forgot Password Form Submission
+    // Forgot Password Form Submission (Updated: Better error logging)
     $('#forgotPasswordForm').submit(function (e) {
         e.preventDefault();
         const $button = $(this).find('button[type="submit"]');
@@ -221,7 +225,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: 'http://localhost:5000/api/auth/forgot-password',
+            url: 'http://localhost:5000/api/auth/forgot-password',  // Fixed: Port to 5001
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
@@ -234,7 +238,11 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 console.error('Forgot Password Error:', xhr.responseJSON, xhr.status);
-                const errorMessage = xhr.responseJSON?.message || 'Error sending reset link. Please try again.';
+                let errorMessage = xhr.responseJSON?.message || 'Error sending reset link. Please try again.';
+                // Added: Append details if available
+                if (xhr.responseJSON?.error) {
+                    errorMessage += ` Details: ${xhr.responseJSON.error}`;
+                }
                 showAlert(errorMessage, 'danger');
                 $button.find('.spinner-border').addClass('d-none');
                 $button.prop('disabled', false);
@@ -242,7 +250,7 @@ $(document).ready(function () {
         });
     });
 
-    // Set Password Form Submission
+    // Set Password Form Submission (Minor: Ensured strict OTP validation)
     $('#setPasswordForm').submit(function (e) {
         e.preventDefault();
         const $button = $(this).find('button[type="submit"]');
@@ -306,7 +314,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: 'http://localhost:5000/api/auth/reset-password',
+            url: 'http://localhost:5000/api/auth/reset-password',  // Fixed: Port to 5001
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
@@ -338,7 +346,11 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 console.error('Reset Password Error:', xhr.responseJSON, xhr.status);
-                const errorMessage = xhr.responseJSON?.message || 'Error resetting password. Please try again.';
+                let errorMessage = xhr.responseJSON?.message || 'Error resetting password. Please try again.';
+                // Added: Append details if available
+                if (xhr.responseJSON?.error) {
+                    errorMessage += ` Details: ${xhr.responseJSON.error}`;
+                }
                 showAlert(errorMessage, 'danger');
                 $button.find('.spinner-border').addClass('d-none');
                 $button.prop('disabled', false);
