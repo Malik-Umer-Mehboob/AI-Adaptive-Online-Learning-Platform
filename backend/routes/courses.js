@@ -721,13 +721,22 @@ router.post('/:id/topics/:topicId/resources', auth, checkRole(['admin']), upload
     }
 });
 
-// DELETE - Delete course
+// DELETE - Delete course (FIXED: CASCADE DELETE enrollments + favorites)
 router.delete('/:id', auth, checkRole(['admin']), async (req, res) => {
     try {
-        const course = await Course.findByIdAndDelete(req.params.id);
+        const courseId = req.params.id;
+
+        // CASCADE DELETE: Remove all related enrollments and favorites
+        await Enrollment.deleteMany({ courseId });
+        await Favorite.deleteMany({ courseId });
+        // Add more if needed: await Quiz.deleteMany({ courseId }); etc.
+
+        const course = await Course.findByIdAndDelete(courseId);
         if (!course) return res.status(404).json({ message: 'Course not found' });
-        res.json({ message: 'Course deleted' });
+
+        res.json({ message: 'Course deleted successfully (all enrollments and favorites removed)' });
     } catch (error) {
+        console.error('Delete course error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });

@@ -6,6 +6,7 @@ const Student = require('../models/Student');
 const Admin = require('../models/Admin');
 const Course = require('../models/Course');
 const Enrollment = require('../models/Enrollment');
+const Favorite = require('../models/Favorite');
 
 // Helper: YouTube thumbnail
 function getYouTubeThumbnail(url) {
@@ -74,7 +75,7 @@ router.get('/student/enrollments', auth, checkRole(['student']), async (req, res
     }
 });
 
-// GET - Student dashboard
+// GET - Student dashboard (FIXED: valid counts + enriched recentCourses + favorites + quiz defaults)
 router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) => {
     try {
         const userId = req.user.id;
@@ -84,14 +85,26 @@ router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) 
                 path: 'courseId',
                 populate: { path: 'category', select: 'name' }
             })
-            .sort({ enrolledAt: -1 });
+            .sort({ enrolledAt: -1 })
+            .lean();  // Use lean for performance
 
-        const enrolledCourses = userEnrollments.length;
-        const activeCourses = userEnrollments.filter(e => e.status !== 'completed').length;
-        const completedCourses = userEnrollments.filter(e => e.status === 'completed').length;
-
-        // Fix: Filter out invalid enrollments where courseId is null/undefined before mapping
+        // FILTER INVALID (deleted courses)
         const validEnrollments = userEnrollments.filter(e => e.courseId);
+
+        // CORRECT COUNTS (only valid courses)
+        const enrolledCourses = validEnrollments.length;
+        const activeCourses = validEnrollments.filter(e => e.status !== 'completed').length;
+        const completedCourses = validEnrollments.filter(e => e.status === 'completed').length;
+
+        // Fetch favorites for recent 3 courses
+        const recentCourseIds = validEnrollments.slice(0, 3).map(e => e.courseId._id);
+        const recentFavorites = await Favorite.find({
+            userId,
+            courseId: { $in: recentCourseIds }
+        }).lean();
+        const favoriteCourseIds = new Set(recentFavorites.map(f => f.courseId.toString()));
+
+        // ENRICHED recentCourses (exact match with frontend expectations)
         const recentCourses = validEnrollments.slice(0, 3).map(e => {
             const course = e.courseId;
             const firstVideo = course.videos?.[0];
@@ -105,13 +118,32 @@ router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) 
                 }
             }
 
+            // Compute average rating (reuse your computeAverageRating if available, or inline)
+            let averageRating = 0;
+            let numRatings = 0;
+            if (course.comments && course.comments.length > 0) {
+                const ratedComments = course.comments.filter(c => c.rating && c.rating > 0);
+                numRatings = ratedComments.length;
+                if (numRatings > 0) {
+                    averageRating = parseFloat((ratedComments.reduce((sum, c) => sum + c.rating, 0) / numRatings).toFixed(1));
+                }
+            }
+
             return {
                 id: course._id,
                 title: course.name || 'Untitled',
+                name: course.name || 'Untitled',  // Dual key for compatibility
+                description: course.description || '',
                 image,
-                category: course.category?.name || 'Uncategorized',
-                instructorName: course.instructor?.name || 'Unknown',  // Added if needed
-                instructorImage: course.instructor?.profileImage || 'assets/img/default-profile.png'
+                videos: course.videos || [],
+                duration: course.duration || '2h 30m',  // Default if not present
+                category: course.category?.name || 'General',
+                instructorName: course.instructor?.name || 'Unknown Instructor',
+                instructorImage: course.instructor?.profileImage || 'assets/img/default-profile.png',
+                progress: e.progress || 0,
+                isFavorite: favoriteCourseIds.has(course._id.toString()),
+                averageRating,
+                numRatings
             };
         });
 
@@ -119,11 +151,47 @@ router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) 
             enrolledCourses,
             activeCourses,
             completedCourses,
-            recentCourses
+            recentCourses,
+            latestQuizzes: [],  // Default empty (add quiz logic if needed)
+            quizTitle: 'No Quiz Attempted',
+            quizAnswered: '0/0',
+            totalQuestions: 0
         });
     } catch (error) {
         console.error('Student Dashboard Error:', error.stack);
         res.status(500).json({ message: 'Error fetching dashboard data.', error: error.message });
+    }
+});
+
+// POST - Cleanup invalid enrollments (NEW: for old stale data)
+router.post('/student/cleanup-enrollments', auth, checkRole(['student']), async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const invalid = await Enrollment.aggregate([
+            { $match: { studentId: userId } },
+            {
+                $lookup: {
+                    from: 'courses',
+                    localField: 'courseId',
+                    foreignField: '_id',
+                    as: 'course'
+                }
+            },
+            { $match: { 'course': { $size: 0 } } },
+            { $group: { _id: null, ids: { $push: '$_id' }, count: { $sum: 1 } } }
+        ]);
+
+        let deleted = 0;
+        if (invalid.length > 0 && invalid[0].count > 0) {
+            const result = await Enrollment.deleteMany({ _id: { $in: invalid[0].ids } });
+            deleted = result.deletedCount;
+        }
+
+        res.json({ deleted });
+    } catch (error) {
+        console.error('Cleanup error:', error);
+        res.status(500).json({ message: 'Cleanup failed' });
     }
 });
 

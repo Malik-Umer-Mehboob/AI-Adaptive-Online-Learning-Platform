@@ -1029,7 +1029,7 @@
 <a href="student-dashboard.html">Dashboard</a>
 </li>
                             </ul>
-                     
+                    
                             <div class="menu-dropdown">
                                 <div class="cart-item">
                                     <h6>Cart & Wishlist</h6>
@@ -1082,7 +1082,7 @@
                                     </ul>
                                 </div>
                             </div>
-                     
+                    
                         </div>
                         <div class="header-btn d-flex align-items-center">
                             <div class="icon-btn me-2">
@@ -1093,8 +1093,38 @@
                                     <i class="isax isax-moon"></i>
                                 </a>
                             </div>
-                     
-                     
+                            <div class="dropdown profile-dropdown">
+                                <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
+                                    <span class="avatar">
+                                        <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <div class="profile-header d-flex align-items-center">
+                                        <div class="avatar">
+                                            <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
+                                        </div>
+                                        <div>
+                                            <h6 id="dropdown-profile-name">Student</h6>
+                                            <p id="profile-email"><a href="mailto:"></a></p>
+                                        </div>
+                                    </div>
+                                    <ul class="profile-body">
+                                        <li>
+                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link" data-href="student-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-quiz.html"><i class="isax isax-award me-2"></i>Quiz Attempts</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
+                                        </li>
+                                    </ul>
+                                    <div class="profile-footer">
+                                        <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100" id="logout-btn"><i class="isax isax-logout me-2"></i>Logout</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1343,6 +1373,21 @@ $(document).ready(function() {
         window.location.href = 'login.html';
         return;
     }
+    let decoded;
+    try {
+        decoded = jwt_decode(token);
+        if (decoded.exp < Date.now() / 1000) throw new Error('Expired');
+    } catch (error) {
+        showToast('Session expired. Please login again.', 'error');
+        localStorage.removeItem('token');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+    }
+    if (decoded.role !== 'student') {
+        showToast('Access denied: Students only.', 'error');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+    }
     const urlParams = new URLSearchParams(window.location.search);
     const courseId = urlParams.get('id');
     if (!courseId) {
@@ -1371,6 +1416,107 @@ $(document).ready(function() {
             $(`#${toastId}`).remove();
         }, duration);
     }
+    // Load profile data including image and name
+    function loadProfile() {
+        console.log("Loading profile for user ID:", decoded.id);
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/profile',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            cache: false,
+            success: function(profile) {
+                console.log('Profile loaded:', profile);
+                const displayName = profile.name || 'Student';
+                $("#dropdown-profile-name").text(displayName);
+                $("#profile-email a")
+                  .text(profile.email || "No email")
+                  .attr("href", `mailto:${profile.email || ""}`);
+                const timestamp = new Date().getTime();
+                if (profile.profileImage) {
+                    const imageSrc = profile.profileImage + '?t=' + timestamp;
+                    $(".dropdown-profile-img")
+                      .attr("src", imageSrc)
+                      .parent()
+                      .addClass("has-image");
+                } else {
+                    $(".dropdown-profile-img").attr('src', '').parent().removeClass('has-image');
+                }
+            },
+            error: function(xhr) {
+                console.error('Profile load error:', {
+                    status: xhr.status,
+                    response: xhr.responseText,
+                });
+                if (xhr.status === 0)
+                    showToast("Unable to connect to server.", "error");
+                else if (xhr.status === 401) {
+                    showToast("Session expired.", "error");
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                } else
+                    showToast(`Profile error (Status: ${xhr.status}).`, "error");
+            },
+        });
+    }
+    // Handle profile link click
+    $(".profile-link").on("click", function (e) {
+        e.preventDefault();
+        const href = $(this).data("href") || $(this).attr("href");
+        console.log('Profile link clicked, checking profile... Token ID:', decoded.id);
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/profile',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            cache: false,
+            success: function(profile) {
+                console.log('Profile access OK, redirecting to:', href);
+                window.location.href = href;
+            },
+            error: function(xhr) {
+                console.error(
+                    "Profile access error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+                if (xhr.status === 0) showToast("Server unavailable.", "error");
+                else if (xhr.status === 401) {
+                    showToast("Session expired.", "error");
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                } else
+                    showToast(
+                        `Profile access error (Status: ${xhr.status}).`,
+                        "error"
+                    );
+            },
+        });
+    });
+    // Listen for profile update (in case of external updates)
+    window.addEventListener('profileUpdated', loadProfile);
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'profileUpdated') {
+            loadProfile();
+        }
+    });
+    // Logout Handler
+    $(document).on('click', '#logout-btn', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/logout',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function () {
+                localStorage.removeItem('token');
+                showToast('Logout successful.', 'success');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+            },
+            error: function () {
+                localStorage.removeItem('token');
+                showToast('Logout successful.', 'success');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+            }
+        });
+    });
     // Fixed: Generate star display with colored full/empty stars
     function generateStars(rating) {
         const fullStars = Math.floor(rating);
@@ -1774,6 +1920,7 @@ $(document).ready(function() {
         }
     }
     loadCourse();
+    loadProfile(); // Load profile on page load
     // Theme toggle (aligned with manage-courses)
     const toggleDarkMode = () => {
         $('body').addClass('dark-mode').removeClass('light-mode');

@@ -372,16 +372,6 @@
             height: auto;
         }
 
-        .toast-success {
-            background-color: #28a745;
-            color: #ffffff;
-        }
-
-        .toast-error {
-            background-color: #dc3545;
-            color: #ffffff;
-        }
-
         @media (max-width: 768px) {
             .course-img {
                 height: 200px;
@@ -727,6 +717,38 @@
                 padding: 1.5rem;
             }
         }
+        /* Avatar Image Handling */
+        .avatar img {
+            display: none; /* Hide image by default */
+        }
+        .avatar.has-image img {
+            display: block; /* Show image if profileImage exists */
+        }
+        /* Toast Styles */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        .toast {
+            opacity: 0.9;
+            transition: all 0.3s;
+        }
+        .toast-success {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .toast-error {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        @media (max-width: 768px) {
+            #toast-container {
+                top: 10px;
+                right: 10px;
+            }
+        }
     </style>
 </head>
 <body class="light-mode">
@@ -734,137 +756,131 @@
     <div class="main-wrapper">
         <!-- Header -->
         <header class="header-two">
-            <div class="container">
-                <div class="header-nav">
-                    <div class="navbar-header">
-                        <a id="mobile_btn" href="javascript:void(0);">
-                            <span class="bar-icon">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </span>
-                        </a>
-                        <div class="navbar-logo">
-                            <a class="logo-white header-logo" href="index-3.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 200px;">
-                            </a>
-                            <a class="logo-dark header-logo" href="index-3.html">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 200px;">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="main-menu-wrapper">								
-                        <div class="menu-header">
-                            <a href="index.html" class="menu-logo">
-                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 150px;">
-                            </a>
-                            <a id="menu_close" class="menu-close" href="javascript:void(0);">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </div>
-                        <ul class="main-nav">
-                            <li>
-                                <a href="index-3.html">Home</a>
-                            </li>
-                            <li class="has-submenu active">
-                                <a href="#">Courses</a>
-                                <ul class="submenu">
-                                    <li class="has-submenu">
-                                        <a href="javascript:void(0);">Courses</a>
-                                        <ul class="submenu">
-                                            <li class="active"><a href="course-grid.html">Course Grid</a></li>
-                                            <li><a href="course-list.html">Course List</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="has-submenu">
-                                        <a href="javascript:void(0);">Course Category</a>
-                                        <ul class="submenu">
-                                            <li><a href="course-category.html">Course Category</a></li>
-                                            <li><a href="course-category-2.html">Course Category 2</a></li>
-                                            <li><a href="course-category-3.html">Course Category 3</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="course-details.html">Course Details</a></li>										
-                                    <li><a href="course-resume.html">Course Resume</a></li>
-                                    <li><a href="course-watch.html">Course Watch</a></li>
-                                    <li><a href="cart.html">Course Cart</a></li>
-                                    <li><a href="checkout.html">Course Checkout</a></li>
-                                    <li><a href="add-course.html">Add New Course</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="student-dashboard.html">Dashboard</a>
-                            </li>
-                        </ul>
-                        
-                        <div class="menu-dropdown">
-                            <div class="cart-item">
-                                <h6>Cart & Wishlist</h6>                                
-                                <div class="icon-btn">
-                                    <a href="cart.html" class="position-relative">
-                                        <i class="isax isax-shopping-cart5"></i>
-                                        <span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="dropdown flag-dropdown mb-2">
-                                <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-                                </a>
-                                <ul class="dropdown-menu p-2 mt-2">
-                                    <li>
-                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-                                            <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-                                            <img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-                                            <img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="dropdown mb-2">
-                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    USD
-                                </a>
-                                <ul class="dropdown-menu p-2 mt-2">
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
-                                </ul>
-                            </div>
-                            <div class="dropdown mb-2">
-                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Light
-                                </a>
-                                <ul class="dropdown-menu p-2 mt-2">
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">Light</a></li>
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">Dark</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="header-btn d-flex align-items-center">
-                        <div class="icon-btn me-2">
-                            <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
-                                <i class="isax isax-sun-15"></i>
-                            </a>
-                            <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
-                                <i class="isax isax-moon"></i>
-                            </a>
-                        </div>
-                        
-                        
-                    </div>
+          <div class="container">
+            <div class="header-nav">
+              <div class="navbar-header">
+                <a id="mobile_btn" href="javascript:void(0);">
+                  <span class="bar-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                </a>
+                <div class="navbar-logo">
+                  <a class="logo-white header-logo" href="index-3.html">
+                    <img
+                      src="assets/img/logo.png"
+                      class="logo"
+                      alt="Logo"
+                      style="width: 220px"
+                    />
+                  </a>
+                  <a class="logo-dark header-logo" href="index-3.html">
+                    <img
+                      src="assets/img/logo.png"
+                      class="logo"
+                      alt="Logo"
+                      style="width: 220px"
+                    />
+                  </a>
                 </div>
+              </div>
+              <div class="main-menu-wrapper">
+                <div class="menu-header">
+                  <a href="index-3.html" class="menu-logo">
+                    <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 220px;" />
+                  </a>
+                  <a
+                    id="menu_close"
+                    class="menu-close"
+                    href="javascript:void(0);"
+                  >
+                    <i class="fas fa-times"></i>
+                  </a>
+                </div>
+                <div class="header-btn d-flex align-items-center">
+                  <div class="icon-btn me-2">
+                    <a
+                      href="javascript:void(0);"
+                      id="dark-mode-toggle"
+                      class="theme-toggle activate"
+                    >
+                      <i class="isax isax-sun-15"></i>
+                    </a>
+                    <a
+                      href="javascript:void(0);"
+                      id="light-mode-toggle"
+                      class="theme-toggle"
+                    >
+                      <i class="isax isax-moon"></i>
+                    </a>
+                  </div>
+                  <div class="dropdown profile-dropdown">
+                    <a
+                      href="javascript:void(0);"
+                      class="d-flex align-items-center"
+                      data-bs-toggle="dropdown"
+                    >
+                      <span class="avatar">
+                        <img
+                          src=""
+                          alt="Profile Image"
+                          class="img-fluid rounded-circle dropdown-profile-img"
+                        />
+                      </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end">
+                      <div class="profile-header d-flex align-items-center">
+                        <div class="avatar">
+                          <img
+                            src=""
+                            alt="Profile Image"
+                            class="img-fluid rounded-circle dropdown-profile-img"
+                          />
+                        </div>
+                        <div>
+                          <h6 id="dropdown-profile-name">Student</h6>
+                          <p id="profile-email"><a href="mailto:"></a></p>
+                        </div>
+                      </div>
+                      <ul class="profile-body">
+                        <li>
+                          <a
+                            class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link"
+                            data-href="student-profile.html"
+                            ><i class="isax isax-security-user me-2"></i>My
+                            Profile</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item d-inline-flex align-items-center rounded fw-medium"
+                            href="student-quiz.html"
+                            ><i class="isax isax-award me-2"></i>Quiz Attempts</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item d-inline-flex align-items-center rounded fw-medium"
+                            href="student-settings.html"
+                            ><i class="isax isax-setting-2 me-2"></i>Settings</a
+                          >
+                        </li>
+                      </ul>
+                      <div class="profile-footer">
+                        <a
+                          href="index-3.html"
+                          class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"
+                          id="logout-btn"
+                          ><i class="isax isax-logout me-2"></i>Logout</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </header>
         <!-- /Header -->
 
@@ -1086,7 +1102,7 @@
     </div>
 
     <!-- Toast Container -->
-    <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
     <!-- Scripts -->
     <script src="assets/js/jquery-3.7.1.min.js"></script>
@@ -1127,20 +1143,132 @@ $(document).ready(function() {
 
     let currentFilters = { page: 1, category: '', search: '' };
 
+    // Function to show toast messages
     function showToast(message, type = 'success', duration = 3000) {
-        const id = `toast-${Date.now()}`;
-        const html = `
-            <div id="${id}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade show" role="alert">
+        const toastContainer = $('#toast-container');
+        const toastId = `toast-${Date.now()}`;
+        const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
                 <div class="d-flex">
                     <div class="toast-body">${message}</div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
-            </div>`;
-        $('#toast-container').append(html);
-        const toast = new bootstrap.Toast(document.getElementById(id));
+            </div>
+        `;
+        toastContainer.append(toastHtml);
+        const toastElement = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastElement);
         toast.show();
-        setTimeout(() => $(`#${id}`).fadeOut(300, () => $(this).remove()), duration);
+        setTimeout(() => {
+            toast.hide();
+            $(`#${toastId}`).remove();
+        }, duration);
     }
+
+    // Load profile data including image and name
+    function loadProfile() {
+        console.log("Loading profile for user ID:", decoded.id);
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/profile',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            cache: false,
+            success: function(profile) {
+                console.log('Profile loaded:', profile);
+                const displayName = profile.name || 'Student';
+                $("#dropdown-profile-name").text(displayName);
+                $("#profile-email a")
+                  .text(profile.email || "No email")
+                  .attr("href", `mailto:${profile.email || ""}`);
+                const timestamp = new Date().getTime();
+                if (profile.profileImage) {
+                    const imageSrc = profile.profileImage + '?t=' + timestamp;
+                    $(".dropdown-profile-img")
+                      .attr("src", imageSrc)
+                      .parent()
+                      .addClass("has-image");
+                } else {
+                    $(".dropdown-profile-img").attr('src', '').parent().removeClass('has-image');
+                }
+            },
+            error: function(xhr) {
+                console.error('Profile load error:', {
+                    status: xhr.status,
+                    response: xhr.responseText,
+                });
+                if (xhr.status === 0)
+                    showToast("Unable to connect to server.", "error");
+                else if (xhr.status === 401) {
+                    showToast("Session expired.", "error");
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                } else
+                    showToast(`Profile error (Status: ${xhr.status}).`, "error");
+            },
+        });
+    }
+
+    // Handle profile link click
+    $(".profile-link").on("click", function (e) {
+        e.preventDefault();
+        const href = $(this).data("href") || $(this).attr("href");
+        console.log('Profile link clicked, checking profile... Token ID:', decoded.id);
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/profile',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            cache: false,
+            success: function(profile) {
+                console.log('Profile access OK, redirecting to:', href);
+                window.location.href = href;
+            },
+            error: function(xhr) {
+                console.error(
+                    "Profile access error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+                if (xhr.status === 0) showToast("Server unavailable.", "error");
+                else if (xhr.status === 401) {
+                    showToast("Session expired.", "error");
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                } else
+                    showToast(
+                        `Profile access error (Status: ${xhr.status}).`,
+                        "error"
+                    );
+            },
+        });
+    });
+
+    // Listen for profile update (in case of external updates)
+    window.addEventListener('profileUpdated', loadProfile);
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'profileUpdated') {
+            loadProfile();
+        }
+    });
+
+    // Logout Handler
+    $(document).on('click', '#logout-btn', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/logout',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function () {
+                localStorage.removeItem('token');
+                showToast('Logout successful.', 'success');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+            },
+            error: function () {
+                localStorage.removeItem('token');
+                showToast('Logout successful.', 'success');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+            }
+        });
+    });
 
     function getInitials(name) {
         return (name || 'AD').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -1437,6 +1565,7 @@ $(document).ready(function() {
     // Init
     loadCategories();
     loadCourses();
+    loadProfile(); // Load profile on page load
 });
 </script>
 </body>

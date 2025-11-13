@@ -921,7 +921,7 @@
                                 <a href="student-dashboard.html">Dashboard</a>
                             </li>
                         </ul>
-                   
+                  
                         <div class="menu-dropdown">
                             <div class="cart-item">
                                 <h6>Cart & Wishlist</h6>
@@ -974,7 +974,7 @@
                                 </ul>
                             </div>
                         </div>
-                   
+                  
                     </div>
                     <div class="header-btn d-flex align-items-center">
                         <div class="icon-btn me-2">
@@ -1009,7 +1009,11 @@
                                         <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-courses.html"><i class="isax isax-book me-2"></i>Enrolled Courses</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-certificates.html"><i class="isax isax-note-21 me-2"></i>My Certificates</a>
+ <a
+                        href="course-grid.html"
+                        class="d-inline-flex align-items-center"
+                        ><i class="isax isax-note-215 me-2"></i>Course-Grid</a
+                      >
                                     </li>
                                     <li>
                                         <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-wishlist.html"><i class="isax isax-heart me-2"></i>Wishlist</a>
@@ -1051,7 +1055,7 @@
             </div>
         </div>
         <!-- /Breadcrumb -->
-  
+ 
         <!-- Content -->
         <div class="content">
             <div class="container">
@@ -1072,7 +1076,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6">
-                       
+                      
                         </div>
                     </div>
                 </div>
@@ -1086,7 +1090,11 @@
                                     <li><a href="student-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a></li>
                                     <li><a href="student-profile.html" class="d-inline-flex align-items-center"><i class="fa-solid fa-user me-2"></i>My Profile</a></li>
                                     <li><a href="student-courses.html" class="d-inline-flex align-items-center active"><i class="isax isax-teacher5 me-2"></i>Enrolled Courses</a></li>
-                                    <li><a href="student-certificates.html" class="d-inline-flex align-items-center"><i class="isax isax-note-215 me-2"></i>My Certificates</a></li>
+                                    <li> <a
+                        href="course-grid.html"
+                        class="d-inline-flex align-items-center"
+                        ><i class="isax isax-note-215 me-2"></i>Course-Grid</a
+                      ></li>
                                     <li><a href="student-wishlist.html" class="d-inline-flex align-items-center"><i class="isax isax-heart5 me-2"></i>Wishlist</a></li>
                                     <li><a href="student-reviews.html" class="d-inline-flex align-items-center"><i class="isax isax-star5 me-2"></i>Reviews</a></li>
                                     <li><a href="student-quiz.html" class="d-inline-flex align-items-center"><i class="isax isax-award5 me-2"></i>My Quiz Attempts</a></li>
@@ -1131,11 +1139,11 @@
                                     </div>
                                     <p class="mt-2 text-muted">Loading enrolled courses...</p>
                                 </div>
-                          
+                         
                                 <div class="row" id="enrolled-grid">
                                     <!-- Courses will be loaded here -->
                                 </div>
-                          
+                         
                                 <div class="empty-state text-center py-5" id="empty-enrolled" style="display: none;">
                                     <div class="mb-4">
                                         <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
@@ -1144,7 +1152,7 @@
                                     <p class="text-muted mb-4">Enroll in some courses from the Courses page!</p>
                                     <a href="course-grid.html" class="btn btn-primary">Browse Courses</a>
                                 </div>
-                          
+                         
                                 <!-- Pagination -->
                                 <div class="row align-items-center mt-4" id="enrolled-pagination" style="display: none;">
                                     <div class="col-md-6">
@@ -1176,11 +1184,11 @@
                                     </div>
                                     <p class="mt-2 text-muted">Loading active courses...</p>
                                 </div>
-                          
+                         
                                 <div class="row" id="active-grid">
                                     <!-- Courses will be loaded here -->
                                 </div>
-                          
+                         
                                 <div class="empty-state text-center py-5" id="empty-active" style="display: none;">
                                     <div class="mb-4">
                                         <i class="fas fa-play-circle fa-3x text-muted mb-3"></i>
@@ -1189,7 +1197,7 @@
                                     <p class="text-muted mb-4">Start learning your enrolled courses!</p>
                                     <a href="#enroll-courses" class="btn btn-primary">View Enrolled</a>
                                 </div>
-                          
+                         
                                 <!-- Pagination -->
                                 <div class="row align-items-center mt-4" id="active-pagination" style="display: none;">
                                     <div class="col-md-6">
@@ -1221,11 +1229,11 @@
                                     </div>
                                     <p class="mt-2 text-muted">Loading completed courses...</p>
                                 </div>
-                          
+                         
                                 <div class="row" id="completed-grid">
                                     <!-- Courses will be loaded here -->
                                 </div>
-                          
+                         
                                 <div class="empty-state text-center py-5" id="empty-completed" style="display: none;">
                                     <div class="mb-4">
                                         <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
@@ -1234,7 +1242,7 @@
                                     <p class="text-muted mb-4">Complete your courses to see them here!</p>
                                     <a href="#enroll-courses" class="btn btn-primary">View Enrolled</a>
                                 </div>
-                          
+                         
                                 <!-- Pagination -->
                                 <div class="row align-items-center mt-4" id="completed-pagination" style="display: none;">
                                     <div class="col-md-6">
@@ -1586,26 +1594,27 @@
                 } else {
                     console.warn('No valid course IDs found');
                 }
-                // Enhance enrollments with course data (only if valid courseId)
+                // Enhance enrollments with course data (only if valid courseId AND course exists)
                 allEnrollments = enrollments
                     .map(e => {
                         const validId = getValidCourseId(e.courseId);
                         if (!validId) return null; // Skip invalid
+                        const course = coursesMap[validId];
+                        if (!course) {
+                            // Optionally, clean up invalid enrollment on backend (call API to delete)
+                            $.ajax({
+                                url: `http://localhost:5000/api/dashboard/student/enrollments/${e._id}`,
+                                type: 'DELETE',
+                                headers: { 'Authorization': 'Bearer ' + token },
+                                success: () => console.log(`Cleaned up invalid enrollment: ${e._id}`),
+                                error: (err) => console.error('Failed to clean up enrollment:', err)
+                            });
+                            return null; // Skip if course not found (deleted)
+                        }
                         return {
                             ...e,
                             courseId: validId, // Ensure string
-                            course: coursesMap[validId] || {
-                                _id: validId,
-                                name: 'Unknown Course',
-                                description: 'Course details not available',
-                                videos: [],
-                                averageRating: 0,
-                                numRatings: 0,
-                                duration: 'N/A',
-                                instructor: { name: '', profileImage: '' },
-                                category: { name: 'Uncategorized' },
-                                isFavorite: false
-                            }
+                            course: course
                         };
                     })
                     .filter(e => e !== null); // Remove invalid
