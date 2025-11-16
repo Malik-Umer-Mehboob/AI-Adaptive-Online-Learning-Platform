@@ -28,4 +28,8 @@ const checkRole = (roles) => {
     };
 };
 
-module.exports = { auth, checkRole };
+// New: Convenience middleware for common roles
+const isAdmin = checkRole(['admin']);
+const isStudent = checkRole(['student']);
+
+module.exports = { auth, checkRole, isAdmin, isStudent };

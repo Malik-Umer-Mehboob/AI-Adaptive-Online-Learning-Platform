@@ -1,10 +1,11 @@
-// models/Topic.js - No changes needed, already good with resources type including 'url'.
+// models/Topic.js - Added contentSummary for AI prompt generation from notes/videos.
 const mongoose = require('mongoose');
 
 const topicSchema = new mongoose.Schema({
   name: { type: String, required: true },
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
   description: { type: String, default: '' },
+  contentSummary: { type: String, default: '' }, // New: Short summary of videos/notes for AI question generation
   order: { type: Number, default: 0 },
   status: { type: String, enum: ['draft', 'published'], default: 'draft' },
   resources: [{

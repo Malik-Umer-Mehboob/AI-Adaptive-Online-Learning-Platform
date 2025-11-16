@@ -1,10 +1,11 @@
-// controller/topiccontroller.js
+// controller/topiccontroller.js - Updated: Auto-generate contentSummary from videos/resources on save. Aligned multer with global. No direct assignment changes (course-level).
 const mongoose = require('mongoose');
 const Topic = require('../models/Topic');
 const Course = require('../models/Course');
-const multer = require('multer');
-const path = require('path');
+const { uploadPDF } = require('../middleware/multer'); // Updated: Use global multer for PDFs
 const { google } = require('googleapis');
+const multer = require('multer'); // Added: Import multer for local video storage
+const path = require('path'); // Added: Import path for file handling
 
 // YouTube API setup
 const youtube = google.youtube({
@@ -12,7 +13,7 @@ const youtube = google.youtube({
     auth: process.env.YOUTUBE_API_KEY
 });
 
-// Multer for videos
+// Multer for videos (keep local for now, but can use global uploadVideo)
 const videoStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../public/uploads/videos'));
@@ -34,29 +35,24 @@ const uploadVideos = multer({
     }
 });
 
-// Multer for PDFs/resources
-const pdfStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../public/uploads/resources'));
-    },
-    filename: (req, file, cb) => {
-        const filename = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
-        cb(null, filename);
-    },
-});
-const uploadPDFs = multer({
-    storage: pdfStorage,
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB for PDFs
-    fileFilter: (req, file, cb) => {
-        const filetypes = /pdf/;
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
-        if (extname && mimetype) return cb(null, true);
-        cb(new Error('Only PDF files are allowed!'));
+// Helper: Auto-generate contentSummary (New: For AI prompts)
+function generateContentSummary(topic) {
+    let summary = topic.description || '';
+    if (topic.videos && topic.videos.length > 0) {
+        summary += ` Videos cover: ${topic.videos.map(v => v.topic).join(', ')}.`;
     }
-});
+    if (topic.resources && topic.resources.length > 0) {
+        summary += ` Notes/Resources: ${topic.resources.map(r => r.name || r.type).join(', ')}.`;
+    }
+    return summary.substring(0, 500); // Limit length for DB
+}
 
-// Helper functions
+// Updated: Pre-save hook in controller (or can move to model)
+const autoSummary = async (topic) => {
+    topic.contentSummary = generateContentSummary(topic);
+};
+
+// Helper functions (unchanged)
 function isPlaylistUrl(url) {
     try {
         const urlObj = new URL(url);
@@ -100,14 +96,12 @@ async function fetchPlaylistVideos(playlistId) {
     }
 }
 
-// Improved topic identification
+// Improved topic identification (unchanged)
 async function identifyTopicsFromVideos(videos) {
     const groups = {};
     videos.forEach(video => {
-        // Better grouping: Use first 3-5 words or common prefix
         const titleWords = video.topic.toLowerCase().split(/\s+/).slice(0, 5).join(' ');
         let groupKey = titleWords;
-        // Fallback to full title if too short
         if (titleWords.length < 10) groupKey = video.topic.toLowerCase();
         if (!groups[groupKey]) {
             groups[groupKey] = {
@@ -126,7 +120,7 @@ async function identifyTopicsFromVideos(videos) {
     }));
 }
 
-// UPDATED: Create Topic - Now handles videos and resources like course create
+// UPDATED: Create Topic - Auto-generate contentSummary
 exports.createTopic = async (req, res) => {
     try {
         const { name, courseId, description = '', status = 'draft', videos: videosJson, resources: resourcesJson } = req.body;
@@ -151,7 +145,6 @@ exports.createTopic = async (req, res) => {
                     order: finalVideos.length
                 });
             } else if (!v.isFile && v.url) {
-                // For topics, enforce single video (no playlist)
                 if (isPlaylistUrl(v.url)) {
                     return res.status(400).json({ message: 'Playlists not supported for topics. Use single video URLs.' });
                 }
@@ -164,7 +157,6 @@ exports.createTopic = async (req, res) => {
             }
         }
 
-        // Handle resources - use 'name' field, type='url' for external
         let finalResources = [];
         if (resourcesJson) {
             let resources = [];
@@ -192,6 +184,7 @@ exports.createTopic = async (req, res) => {
         }
 
         const topic = new Topic({ name, courseId, description, status, videos: finalVideos, resources: finalResources });
+        await autoSummary(topic); // New: Generate summary
         await topic.save();
         const course = await Course.findById(courseId);
         if (course && !course.topics.includes(topic._id)) {
@@ -205,7 +198,7 @@ exports.createTopic = async (req, res) => {
     }
 };
 
-// UPDATED: Update Topic - Now handles videos and resources like course update (replaces arrays)
+// UPDATED: Update Topic - Auto-generate contentSummary
 exports.updateTopic = async (req, res) => {
     try {
         const updates = req.body;
@@ -217,7 +210,6 @@ exports.updateTopic = async (req, res) => {
         if (updates.description !== undefined) topic.description = updates.description;
         if (updates.status) topic.status = updates.status;
 
-        // Handle videos update (replace array)
         if (updates.videos || (req.files && req.files.videoFiles && req.files.videoFiles.length > 0)) {
             let videos = [];
             if (updates.videos) {
@@ -252,7 +244,6 @@ exports.updateTopic = async (req, res) => {
             topic.videos = finalVideos;
         }
 
-        // Handle resources update (replace array)
         if (updates.resources || (req.files && req.files.resourceFiles && req.files.resourceFiles.length > 0)) {
             let resources = [];
             if (updates.resources) {
@@ -282,6 +273,7 @@ exports.updateTopic = async (req, res) => {
             topic.resources = finalResources;
         }
 
+        await autoSummary(topic); // New: Regenerate summary
         await topic.save();
         topic.videos.sort((a, b) => (a.order || 0) - (b.order || 0));
         res.json(topic);
@@ -291,7 +283,7 @@ exports.updateTopic = async (req, res) => {
     }
 };
 
-// Other exports remain the same...
+// Other exports (unchanged, but use uploadPDF for resources if needed)
 exports.getTopicsByCourse = async (req, res) => {
     try {
         let topics = await Topic.find({ courseId: req.params.courseId }).sort({ order: 1 });
@@ -323,14 +315,13 @@ exports.deleteTopic = async (req, res) => {
         const topic = await Topic.findById(req.params.id);
         if (!topic) return res.status(404).json({ message: 'Topic not found' });
 
-        // Explicitly remove from course (backup to pre-hook)
         const course = await Course.findById(topic.courseId);
         if (course) {
             course.topics = course.topics.filter(t => t.toString() !== topic._id.toString());
             await course.save();
         }
 
-        await topic.remove(); // Triggers pre-remove hook
+        await topic.remove();
         res.json({ message: 'Topic deleted successfully' });
     } catch (err) {
         console.error('Delete topic error:', err);
@@ -367,11 +358,9 @@ exports.addVideosToTopic = async (req, res) => {
                     order: topic.videos.length + newVideos.length
                 });
             } else if (!v.isFile && v.url) {
-                // FIXED: For topics, enforce single video (no playlist, as per frontend)
                 if (isPlaylistUrl(v.url)) {
                     return res.status(400).json({ message: 'Playlists not supported for topics. Use single video URLs.' });
                 }
-                // Single video: No fetch needed
                 newVideos.push({
                     topic: v.topic || 'YouTube Video',
                     url: v.url,
@@ -384,6 +373,7 @@ exports.addVideosToTopic = async (req, res) => {
         if (newVideos.length === 0) return res.status(400).json({ message: 'No valid videos provided' });
 
         topic.videos.push(...newVideos);
+        await autoSummary(topic); // New: Update summary
         await topic.save();
 
         res.json({ message: `${newVideos.length} videos added successfully`, videos: newVideos });
@@ -393,14 +383,16 @@ exports.addVideosToTopic = async (req, res) => {
     }
 };
 
-// NEW: Add resources to topic (PDF upload or URL) - Confirmed type='url' for external
+// UPDATED: Add resources to topic - Use global uploadPDF
 exports.addResourcesToTopic = async (req, res) => {
     try {
         const topic = await Topic.findById(req.params.id);
         if (!topic) return res.status(404).json({ message: 'Topic not found' });
 
         const { resources: resourcesJson, type = 'pdf', name } = req.body;
+
         let resources = [];
+
         if (resourcesJson) {
             try {
                 resources = JSON.parse(resourcesJson);
@@ -409,7 +401,7 @@ exports.addResourcesToTopic = async (req, res) => {
             }
         }
 
-        const files = req.files || []; // PDF files
+        const files = req.files || []; // From uploadPDF or resourceFiles
         let fileIndex = 0;
         const newResources = [];
 
@@ -419,11 +411,11 @@ exports.addResourcesToTopic = async (req, res) => {
                 newResources.push({
                     type: type || 'pdf',
                     url: `/uploads/resources/${file.filename}`,
-                    name: r.name || file.originalname  // Use r.name from frontend
+                    name: r.name || file.originalname
                 });
             } else if (!r.isFile && r.url) {
                 newResources.push({
-                    type: type || 'url',  // Confirmed: 'url' for external
+                    type: type || 'url',
                     url: r.url,
                     name: r.name || 'External Resource'
                 });
@@ -433,6 +425,7 @@ exports.addResourcesToTopic = async (req, res) => {
         if (newResources.length === 0) return res.status(400).json({ message: 'No valid resources provided' });
 
         topic.resources.push(...newResources);
+        await autoSummary(topic); // New: Update summary
         await topic.save();
 
         res.json({ message: `${newResources.length} resources added successfully`, resources: newResources });
@@ -451,6 +444,7 @@ exports.deleteVideoFromTopic = async (req, res) => {
         if (!video) return res.status(404).json({ message: 'Video not found' });
 
         video.remove();
+        await autoSummary(topic); // New: Update summary after delete
         await topic.save();
 
         res.json({ message: 'Video deleted successfully' });
@@ -478,6 +472,12 @@ exports.autoCreateTopicsFromPlaylist = async (req, res) => {
 
         const savedTopics = await Topic.insertMany(topics.map(t => ({ ...t, courseId })));
 
+        // New: Auto-summary for each
+        for (const topic of savedTopics) {
+            await autoSummary(topic);
+            await topic.save();
+        }
+
         course.topics.push(...savedTopics.map(t => t._id));
         await course.save();
 
@@ -488,6 +488,6 @@ exports.autoCreateTopicsFromPlaylist = async (req, res) => {
     }
 };
 
-// FIXED: Export multer instances to the exports object (no override)
+// FIXED: Export multer instances
 exports.uploadVideos = uploadVideos;
-exports.uploadPDFs = uploadPDFs;
+exports.uploadPDFs = uploadPDF; // Updated: Use global

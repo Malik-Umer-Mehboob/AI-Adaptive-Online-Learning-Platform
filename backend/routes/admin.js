@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const { getModelByRole } = require('./auth');
-const { auth, checkRole } = require('../middleware/auth'); // Updated import
+const { getModelByRole } = require('./auth'); // Assume yeh file mein hai, warna adjust
+const { auth, checkRole, isAdmin } = require('../middleware/auth'); // Updated import with isAdmin
 const Category = require('../models/Category');
 const Course = require('../models/Course');
+const Assignment = require('../models/Assignment'); // Keep for dashboard counts
 
 router.use(auth, checkRole(['admin'])); // Ensure only admins can access these routes
 
-// Get all users (Admin + Students)
+// Existing users routes (unchanged)
 router.get('/users', async (req, res) => {
     try {
         const admins = await getModelByRole('admin').find().select('-password -resetOtp -otpExpires');
         const students = await getModelByRole('student').find().select('-password -resetOtp -otpExpires');
-        const users = [...admins, ...students]; // Combine both arrays
+        const users = [...admins, ...students];
         res.json({ users });
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -20,7 +21,6 @@ router.get('/users', async (req, res) => {
     }
 });
 
-// Get user by role and ID
 router.get('/users/:role/:id', async (req, res) => {
     try {
         const { role, id } = req.params;
@@ -31,7 +31,6 @@ router.get('/users/:role/:id', async (req, res) => {
         const Model = getModelByRole(role);
         const user = await Model.findById(id).select('-password -resetOtp -otpExpires');
         if (!user) return res.status(404).json({ message: 'User not found.' });
-        // Ensure full URL for profileImage if it exists
         if (user.profileImage) {
             user.profileImage = `http://localhost:5000${user.profileImage}`;
         }
@@ -42,7 +41,6 @@ router.get('/users/:role/:id', async (req, res) => {
     }
 });
 
-// Update user profile by ID
 router.put('/update-user/:role/:id', async (req, res) => {
     try {
         const { role, id } = req.params;
@@ -63,7 +61,6 @@ router.put('/update-user/:role/:id', async (req, res) => {
         if (age) user.age = age === 'null' ? null : Number(age);
 
         await user.save();
-        // Ensure full URL for profileImage in response
         if (user.profileImage) {
             user.profileImage = `http://localhost:5000${user.profileImage}`;
         }
@@ -74,7 +71,6 @@ router.put('/update-user/:role/:id', async (req, res) => {
     }
 });
 
-// Delete user by ID
 router.delete('/users/:role/:id', async (req, res) => {
     try {
         const { role, id } = req.params;
@@ -92,7 +88,7 @@ router.delete('/users/:role/:id', async (req, res) => {
     }
 });
 
-// Get all categories
+// Existing categories routes (unchanged)
 router.get('/categories', async (req, res) => {
     try {
         const categories = await Category.find();
@@ -102,7 +98,6 @@ router.get('/categories', async (req, res) => {
     }
 });
 
-// Add category
 router.post('/categories', async (req, res) => {
     const { name, description } = req.body;
     try {
@@ -114,7 +109,6 @@ router.post('/categories', async (req, res) => {
     }
 });
 
-// Update category
 router.put('/categories/:id', async (req, res) => {
     const { name, description } = req.body;
     try {
@@ -126,7 +120,6 @@ router.put('/categories/:id', async (req, res) => {
     }
 });
 
-// Delete category (with cascade)
 router.delete('/categories/:id', async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
@@ -138,12 +131,13 @@ router.delete('/categories/:id', async (req, res) => {
     }
 });
 
-// Dashboard counts (total categories and courses)
+// Existing Dashboard counts (Keep totalAssignments)
 router.get('/dashboard/counts', async (req, res) => {
     try {
         const totalCategories = await Category.countDocuments();
         const totalCourses = await Course.countDocuments();
-        res.json({ totalCategories, totalCourses });
+        const totalAssignments = await Assignment.countDocuments(); // Keep for dashboard
+        res.json({ totalCategories, totalCourses, totalAssignments });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

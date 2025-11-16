@@ -1,4 +1,4 @@
-// models/Course.js - No changes needed, averageRating hook is good, topics ref is correct.
+// models/Course.js - Added assignments field for linking to Assignment model.
 const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
@@ -24,6 +24,7 @@ const courseSchema = new mongoose.Schema({
     description: { type: String, required: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     topics: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Topic' }], // Added: Reference to topics
+    assignments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Assignment' }], // New: Reference to assignments
     videos: [{
         topic: { type: String, required: true },
         url: { type: String }, // YouTube URL یا فائل کا path

@@ -1,19 +1,20 @@
 // backend/routes/dashboard.js
 const express = require('express');
 const router = express.Router();
-const { auth, checkRole } = require('../middleware/auth');
+const { auth, checkRole, isStudent } = require('../middleware/auth'); // Updated with isStudent
 const Student = require('../models/Student');
 const Admin = require('../models/Admin');
 const Course = require('../models/Course');
 const Enrollment = require('../models/Enrollment');
 const Favorite = require('../models/Favorite');
+const Assignment = require('../models/Assignment'); // New
+const Submission = require('../models/Submission'); // New
 
-// Helper: YouTube thumbnail
+// Existing helper (unchanged)
 function getYouTubeThumbnail(url) {
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
     return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : 'assets/img/placeholder.jpg';
 }
-
 // POST - Enroll in course (Fixed: Set progress: 0 and status: 'enrolled' explicitly)
 router.post('/student/enroll', auth, checkRole(['student']), async (req, res) => {
     try {
@@ -76,27 +77,48 @@ router.get('/student/enrollments', auth, checkRole(['student']), async (req, res
 });
 
 // GET - Student dashboard (FIXED: valid counts + enriched recentCourses + favorites + quiz defaults)
-router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) => {
+// Updated: Student dashboard (Added pendingAssignments, mySubmissions)
+router.get('/student/dashboard', isStudent, async (req, res) => {
     try {
         const userId = req.user.id;
 
         const userEnrollments = await Enrollment.find({ studentId: userId })
             .populate({
                 path: 'courseId',
-                populate: { path: 'category', select: 'name' }
+                populate: { path: 'category', select: 'name assignments' } // New: assignments in populate
             })
             .sort({ enrolledAt: -1 })
-            .lean();  // Use lean for performance
+            .lean();
 
-        // FILTER INVALID (deleted courses)
         const validEnrollments = userEnrollments.filter(e => e.courseId);
 
-        // CORRECT COUNTS (only valid courses)
         const enrolledCourses = validEnrollments.length;
         const activeCourses = validEnrollments.filter(e => e.status !== 'completed').length;
         const completedCourses = validEnrollments.filter(e => e.status === 'completed').length;
 
-        // Fetch favorites for recent 3 courses
+        // New: Pending assignments count
+        let pendingAssignments = 0;
+        validEnrollments.forEach(e => {
+            const now = new Date();
+            const courseAssigns = e.courseId.assignments || [];
+            pendingAssignments += courseAssigns.filter(a => new Date(a.dueDate) > now).length;
+        });
+
+        // New: My recent submissions (last 5)
+        const mySubmissions = await Submission.find({ studentId: userId })
+            .populate('assignmentId', 'title')
+            .populate({ path: 'assignmentId', populate: { path: 'courseId', select: 'name' } })
+            .sort({ submittedAt: -1 })
+            .limit(5)
+            .lean();
+        const recentSubmissions = mySubmissions.map(s => ({
+            title: s.assignmentId?.title || 'Unknown',
+            course: s.assignmentId?.courseId?.name || 'Unknown',
+            score: s.evaluation?.score || 'Pending',
+            submittedAt: s.submittedAt.toISOString()
+        }));
+
+        // Existing recent courses (updated with assignments info)
         const recentCourseIds = validEnrollments.slice(0, 3).map(e => e.courseId._id);
         const recentFavorites = await Favorite.find({
             userId,
@@ -104,7 +126,6 @@ router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) 
         }).lean();
         const favoriteCourseIds = new Set(recentFavorites.map(f => f.courseId.toString()));
 
-        // ENRICHED recentCourses (exact match with frontend expectations)
         const recentCourses = validEnrollments.slice(0, 3).map(e => {
             const course = e.courseId;
             const firstVideo = course.videos?.[0];
@@ -118,7 +139,6 @@ router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) 
                 }
             }
 
-            // Compute average rating (reuse your computeAverageRating if available, or inline)
             let averageRating = 0;
             let numRatings = 0;
             if (course.comments && course.comments.length > 0) {
@@ -129,21 +149,26 @@ router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) 
                 }
             }
 
+            // New: Active assignments count for this course
+            const now = new Date();
+            const activeAssigns = course.assignments ? course.assignments.filter(a => new Date(a.dueDate) > now) : 0;
+
             return {
                 id: course._id,
                 title: course.name || 'Untitled',
-                name: course.name || 'Untitled',  // Dual key for compatibility
+                name: course.name || 'Untitled',
                 description: course.description || '',
                 image,
                 videos: course.videos || [],
-                duration: course.duration || '2h 30m',  // Default if not present
+                duration: course.duration || '2h 30m',
                 category: course.category?.name || 'General',
                 instructorName: course.instructor?.name || 'Unknown Instructor',
                 instructorImage: course.instructor?.profileImage || 'assets/img/default-profile.png',
                 progress: e.progress || 0,
                 isFavorite: favoriteCourseIds.has(course._id.toString()),
                 averageRating,
-                numRatings
+                numRatings,
+                activeAssignments: activeAssigns.length // New
             };
         });
 
@@ -151,8 +176,10 @@ router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) 
             enrolledCourses,
             activeCourses,
             completedCourses,
+            pendingAssignments, // New
             recentCourses,
-            latestQuizzes: [],  // Default empty (add quiz logic if needed)
+            recentSubmissions, // New
+            latestQuizzes: [],
             quizTitle: 'No Quiz Attempted',
             quizAnswered: '0/0',
             totalQuestions: 0
@@ -162,7 +189,6 @@ router.get('/student/dashboard', auth, checkRole(['student']), async (req, res) 
         res.status(500).json({ message: 'Error fetching dashboard data.', error: error.message });
     }
 });
-
 // POST - Cleanup invalid enrollments (NEW: for old stale data)
 router.post('/student/cleanup-enrollments', auth, checkRole(['student']), async (req, res) => {
     try {
@@ -203,17 +229,20 @@ router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
         const totalAdmins = await Admin.countDocuments();
         const totalCourses = await Course.countDocuments();
         const totalCategories = (await Course.distinct('category')).length;
+        const totalAssignments = await Assignment.countDocuments(); // New
 
-        // Earnings (if course has price) - Cleaned without .then
+        // New: Pending submissions (unevaluated)
+        const pendingSubmissions = await Submission.countDocuments({ evaluated: false });
+
         const aggResult = await Enrollment.aggregate([
             { $lookup: { from: 'courses', localField: 'courseId', foreignField: '_id', as: 'course' } },
-            { $unwind: { path: '$course', preserveNullAndEmptyArrays: true } }, // Added preserve to handle missing courses
+            { $unwind: { path: '$course', preserveNullAndEmptyArrays: true } },
             { $match: { 'course.price': { $exists: true, $ne: null } } },
-            { $group: { _id: null, total: { $sum: { $toDouble: '$course.price' } } } } // $toDouble to ensure number
+            { $group: { _id: null, total: { $sum: { $toDouble: '$course.price' } } } }
         ]);
         const totalEarnings = aggResult[0]?.total || 0;
 
-        // Recent activities - Cleaned without .then, filter invalid
+        // Updated: Recent activities (Added assignment submissions)
         const activities = await Enrollment.find()
             .populate({
                 path: 'studentId',
@@ -221,17 +250,31 @@ router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
             })
             .populate('courseId', 'name')
             .sort({ enrolledAt: -1 })
-            .limit(5)
+            .limit(3)
             .lean();
 
-        const recentActivities = activities
-            .filter(a => a.studentId && a.courseId) // Skip invalid enrollments
-            .map(a => ({
-                user: a.studentId.name || 'Unknown',
+        // New: Recent submissions as activities
+        const recentSubs = await Submission.find()
+            .populate('studentId', 'name')
+            .populate({ path: 'assignmentId', populate: { path: 'courseId', select: 'name' } })
+            .sort({ submittedAt: -1 })
+            .limit(2)
+            .lean();
+
+        const allActivities = [
+            ...activities.map(a => ({
+                user: a.studentId?.name || 'Unknown',
                 role: 'student',
-                action: `Enrolled in ${a.courseId.name || 'Unknown'}`,
+                action: `Enrolled in ${a.courseId?.name || 'Unknown'}`,
                 date: a.enrolledAt?.toISOString() || new Date().toISOString()
-            }));
+            })),
+            ...recentSubs.map(s => ({
+                user: s.studentId?.name || 'Unknown',
+                role: 'student',
+                action: `Submitted assignment for ${s.assignmentId?.courseId?.name || 'Unknown'}`,
+                date: s.submittedAt?.toISOString() || new Date().toISOString()
+            }))
+        ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
 
         res.json({
             totalUsers,
@@ -239,8 +282,10 @@ router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
             totalAdmins,
             totalCourses,
             totalCategories,
+            totalAssignments, // New
+            pendingSubmissions, // New
             totalEarnings,
-            recentActivities
+            recentActivities: allActivities
         });
     } catch (error) {
         console.error('Admin Dashboard Error:', error.stack);

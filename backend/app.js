@@ -1,4 +1,4 @@
-// app.js - Updated with minor fixes (e.g., ensure topics route is properly required, added populate support in comments if needed)
+// app.js - Updated: Added assignments routes properly, removed alias to admin
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -7,6 +7,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const rateLimit = require('express-rate-limit');
 const createError = require('http-errors');
+const fs = require('fs'); // For file cleanup if needed
 
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -18,13 +19,18 @@ connectDB().catch(err => {
     process.exit(1); // Exit if MongoDB connection fails
 });
 
+// Models (For global use if needed)
+const Assignment = require('./models/Assignment');
+const Submission = require('./models/Submission');
+
 // Routes
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const dashboardRoutes = require('./routes/dashboard');
 const courseRoutes = require('./routes/courses');
 const categoryRoutes = require('./routes/categories');
-const topicRoutes = require('./routes/topics'); // Explicitly require for clarity
+const topicRoutes = require('./routes/topics');
+const assignmentsRoutes = require('./routes/assignments'); // New: Proper include
 
 const app = express();
 
@@ -61,6 +67,14 @@ app.use(cookieParser());
 // Static file serving
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+// Explicit for submissions folder
+app.use('/uploads/submissions', express.static(path.join(__dirname, 'public', 'uploads', 'submissions')));
+
+// Ensure submissions folder exists
+const submissionsDir = path.join(__dirname, 'public', 'uploads', 'submissions');
+if (!fs.existsSync(submissionsDir)) {
+    fs.mkdirSync(submissionsDir, { recursive: true });
+}
 
 // Serve favicon
 app.get('/favicon.ico', (req, res) => {
@@ -109,7 +123,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/categories', categoryRoutes);
-app.use('/api/topics', topicRoutes); // Use explicit require
+app.use('/api/topics', topicRoutes);
+app.use('/api/assignments', assignmentsRoutes); // New: Proper assignments routes
 
 // Cache Control for Performance
 app.use((req, res, next) => {
@@ -123,8 +138,17 @@ app.use((req, res, next) => {
     next(createError(404, `Resource not found: ${req.originalUrl}`));
 });
 
-// Global Error Handler
+// Global Error Handler (Handle file cleanup if PDF upload fails)
 app.use((err, req, res, next) => {
+    // Cleanup uploaded file on error if multer error
+    if (err.message.includes('Only PDF files') || err.code === 'LIMIT_FILE_SIZE') {
+        if (req.file && req.file.path) {
+            fs.unlink(req.file.path, (unlinkErr) => {
+                if (unlinkErr) console.error('File cleanup failed:', unlinkErr);
+            });
+        }
+    }
+
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 

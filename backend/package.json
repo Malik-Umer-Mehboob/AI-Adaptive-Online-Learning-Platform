@@ -21,6 +21,8 @@
     "mongoose": "^8.19.2",
     "morgan": "~1.9.1",
     "multer": "^2.0.2",
-    "nodemailer": "^7.0.9"
+    "nodemailer": "^7.0.9",
+    "ollama": "^0.6.3",
+    "pdf-parse": "^2.4.5"
   }
 }
