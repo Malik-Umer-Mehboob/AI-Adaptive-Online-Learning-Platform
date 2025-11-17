@@ -1052,7 +1052,7 @@
     $('#dark-mode-toggle').on('click', toggleDarkMode);
     $('#light-mode-toggle').on('click', toggleLightMode);
 
-    // Fetch users code (same, but added comment)
+    // Fetch users code (updated: added View Submissions button for students)
     // Fetch and display users (excluding current admin)
     $.ajax({
         url: 'http://localhost:5000/api/admin/users',
@@ -1074,20 +1074,29 @@
                             filteredUsers.forEach(user => {
                                 const roleClass = user.role === 'student' ? 'role-student-btn' : 'role-instructor-btn';
                                 const statusClass = user.status === 'Active' ? 'status-active-btn' : 'status-inactive-btn';
+                                let actionsHtml = `
+                                    <button class="btn btn-primary btn-action edit-user me-2" data-id="${user._id}" data-role="${user.role}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-action delete-user" data-id="${user._id}" data-role="${user.role}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                `;
+                                if (user.role === 'student') {
+                                    actionsHtml = `
+                                        <button class="btn btn-info btn-action view-submissions me-2" data-id="${user._id}">
+                                            <i class="fas fa-file-alt"></i> View Submissions
+                                        </button>
+                                        ${actionsHtml}
+                                    `;
+                                }
                                 userListHTML += `
                                     <tr>
                                         <td class="user-name-col"><i class="fas fa-user me-1"></i>${user.name || 'Unknown'}</td>
                                         <td class="user-email-col"><a href="mailto:${user.email || ''}"><i class="fas fa-envelope me-1"></i>${user.email || 'No Email'}</a></td>
                                         <td><button class="btn role-btn ${roleClass}" data-id="${user._id}" data-role="${user.role}">${user.role || 'User'}</button></td>
                                         <td><button class="btn status-btn ${statusClass}" data-id="${user._id}" data-status="${user.status}">${user.status || 'Active'}</button></td>
-                                        <td>
-                                            <button class="btn btn-primary btn-action edit-user me-2" data-id="${user._id}" data-role="${user.role}">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </button>
-                                            <button class="btn btn-danger btn-action delete-user" data-id="${user._id}" data-role="${user.role}">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </button>
-                                        </td>
+                                        <td>${actionsHtml}</td>
                                     </tr>
                                 `;
                             });
@@ -1109,6 +1118,12 @@
             $('#user-list').html('<tr><td colspan="5" class="text-center">Error loading users. Please try again.</td></tr>');
             showToast(`Error loading users: ${xhr.responseText || 'Unknown error'}`, 'error');
         }
+    });
+
+    // NEW: View Submissions handler
+    $(document).on('click', '.view-submissions', function() {
+        const userId = $(this).data('id');
+        window.location.href = `admin-dashboard.html?viewSubmissions=${userId}`;
     });
 
     // Toggle Role (same as before)

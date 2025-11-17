@@ -948,7 +948,7 @@
                                 <label class="form-label">Course Description *</label>
                                 <textarea class="form-control" id="course-description" rows="3" required></textarea>
                             </div>
-                 
+                
                             <div class="mb-4">
                                 <h6 class="mb-3">Course Videos / Topics (Single Video, URL, or Playlist)</h6>
                                 <div id="video-section">
@@ -1017,7 +1017,7 @@
                                     <button type="button" class="btn btn-outline-success w-100" id="add-course-resource-btn">Add Resource(s) to Course</button>
                                 </div>
                             </div>
-                     
+                    
                             <div class="d-flex justify-content-end mt-3">
                                 <button type="submit" class="btn btn-primary">
                                     Save Course
@@ -1059,7 +1059,7 @@
                                 <label class="form-label">Course Description *</label>
                                 <textarea class="form-control" id="edit-course-description" rows="3" required></textarea>
                             </div>
-                 
+                
                             <div class="mb-4">
                                 <h6 class="mb-3">Manage Course Videos / Topics (Single Video, URL, or Playlist)</h6>
                                 <div id="edit-video-section">
@@ -1128,7 +1128,7 @@
                                     <button type="button" class="btn btn-outline-success w-100" id="edit-add-course-resource-btn">Add Resource(s) to Course</button>
                                 </div>
                             </div>
-                     
+                    
                             <div class="d-flex justify-content-end mt-3">
                                 <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary">
@@ -1660,6 +1660,7 @@ $(document).ready(function() {
                                 <div class="btn-group btn-group-sm">
                                     <button class="btn btn-sm btn-primary edit-course" data-id="${c._id}" data-name="${escape(c.name)}" data-description="${escape(c.description)}" data-category="${c.category?._id || ''}" data-videos="${escape(videosData)}" data-resources="${escape(resourcesData)}">Edit</button>
                                     <button class="btn btn-sm btn-info manage-topics-btn" data-id="${c._id}" data-name="${escape(c.name)}">Topic</button> <!-- CHANGED: Content to Topic -->
+                                    <button class="btn btn-sm btn-success add-assignment" data-id="${c._id}">Add Assignment</button>
                                     <!-- UI Fix: Clear label for course delete -->
                                     <button class="btn btn-sm btn-danger delete-course" data-id="${c._id}" title="Delete entire course">Delete Course</button>
                                 </div>
@@ -1674,6 +1675,11 @@ $(document).ready(function() {
             }
         });
     }
+    // NEW: Handle Add Assignment button click - Redirect to admin-dashboard with courseId
+    $(document).on('click', '.add-assignment', function() {
+        const courseId = $(this).data('id');
+        window.location.href = `admin-dashboard.html?courseId=${courseId}`;
+    });
     // Add Video Button for Add Course (allows playlist)
     $('#add-video-btn').on('click', () => {
         const topic = $('#video-topic').val().trim();

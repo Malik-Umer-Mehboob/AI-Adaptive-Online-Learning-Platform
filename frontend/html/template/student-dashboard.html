@@ -897,6 +897,59 @@
             transition: width 0.3s ease;
             border-radius: 3px;
         }
+        /* My Submissions Card Styling */
+        .submission-card {
+          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          transition: all 0.3s ease;
+          margin-bottom: 16px;
+          border: 1px solid #dee2e6;
+        }
+        .submission-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        .dark-mode .submission-card {
+          background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+          border: 1px solid #495057;
+        }
+        .dark-mode .submission-card:hover {
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+        .submission-header {
+          padding: 16px;
+          background: rgba(40, 167, 69, 0.05);
+          border-bottom: 1px solid #dee2e6;
+        }
+        .dark-mode .submission-header {
+          background: rgba(40, 167, 69, 0.1);
+          border-bottom: 1px solid #495057;
+        }
+        .submission-body {
+          padding: 16px;
+        }
+        .submission-score {
+          font-size: 1.25rem;
+          font-weight: bold;
+          color: var(--success);
+        }
+        .submission-feedback {
+          margin-top: 8px;
+          font-style: italic;
+          color: var(--gray);
+        }
+        .dark-mode .submission-feedback {
+          color: #adb5bd;
+        }
+        .submission-date {
+          font-size: 0.875rem;
+          color: var(--gray);
+        }
+        .dark-mode .submission-date {
+          color: #adb5bd;
+        }
     </style>
   </head>
   <body>
@@ -1300,6 +1353,18 @@
                 <p class="text-muted mb-4">Enroll in some courses from the Courses page!</p>
                 <a href="course-grid.html" class="btn btn-primary">Browse Courses</a>
               </div>
+              <h5 class="mb-3 fs-18">My Submissions</h5>
+              <div id="my-submissions">
+                <!-- Submissions will be loaded here -->
+              </div>
+              <div class="empty-state text-center py-5" id="empty-submissions" style="display: none;">
+                <div class="mb-4">
+                  <i class="fas fa-file-upload fa-3x text-muted mb-3"></i>
+                </div>
+                <h5 class="text-muted mb-3">No submissions yet</h5>
+                <p class="text-muted mb-4">Submit your first assignment to see it here!</p>
+                <a href="student-courses.html" class="btn btn-primary">View Assignments</a>
+              </div>
               <div>
                 <div class="row">
                   <div class="col-xl-7"></div>
@@ -1527,11 +1592,58 @@
                                     <a href="course-details.html?id=${course._id}" class="view-btn">
                                         <i class="fas fa-eye"></i> View Course
                                     </a>
+                                    <a href="course-details.html?id=${course._id}" class="btn btn-outline-primary btn-sm ms-2">
+                                        View Assignments
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>`;
             }).join('');
+        }
+        function loadSubmissions() {
+            $.ajax({
+                url: 'http://localhost:5000/api/student/submissions',
+                type: 'GET',
+                headers: { Authorization: 'Bearer ' + token },
+                success: function(submissions) {
+                    console.log('Submissions loaded:', submissions);
+                    let html = '';
+                    if (submissions && submissions.length > 0) {
+                        submissions.forEach(sub => {
+                            html += `
+                                <div class="submission-card">
+                                    <div class="submission-header">
+                                        <h6 class="mb-1">${sub.assignmentTitle || 'Untitled Assignment'}</h6>
+                                        <small class="submission-date">${new Date(sub.submittedAt || Date.now()).toLocaleDateString()}</small>
+                                    </div>
+                                    <div class="submission-body">
+                                        <div class="submission-score">${sub.score ? sub.score + '/100' : 'Pending Evaluation'}</div>
+                                        <p class="submission-feedback">${sub.feedback || 'No feedback available yet.'}</p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        $('#my-submissions').html(html).show();
+                        $('#empty-submissions').hide();
+                    } else {
+                        $('#my-submissions').hide();
+                        $('#empty-submissions').show();
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Submissions error:', xhr);
+                    if (xhr.status === 401) {
+                        showToast('Session expired.', 'error');
+                        localStorage.removeItem('token');
+                        window.location.href = 'login.html';
+                    } else {
+                        showToast('Error loading submissions.', 'error');
+                    }
+                    $('#my-submissions').hide();
+                    $('#empty-submissions').show();
+                }
+            });
         }
         function loadProfile() {
           console.log("Loading profile for user ID:", decoded.id);
@@ -1760,15 +1872,22 @@
         });
         loadProfile();
         loadDashboardData();
+        loadSubmissions();
         // Listen for profile update event
         window.addEventListener('profileUpdated', function() {
           console.log('Profile updated event received');
           loadProfile();
         });
         // Auto-refresh dashboard every 30 seconds
-        setInterval(loadDashboardData, 30000);
+        setInterval(() => {
+            loadDashboardData();
+            loadSubmissions();
+        }, 30000);
         // Refetch on window focus
-        $(window).on('focus', loadDashboardData);
+        $(window).on('focus', () => {
+            loadDashboardData();
+            loadSubmissions();
+        });
       });
     </script>
   </body>

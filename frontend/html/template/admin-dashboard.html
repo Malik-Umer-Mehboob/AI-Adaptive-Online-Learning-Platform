@@ -107,6 +107,10 @@
         background: linear-gradient(135deg, #d1c4e9, #d7bde2); 
         color: #333; 
       }
+      .card-assignments { 
+        background: linear-gradient(135deg, #ffd700, #ffed4e); 
+        color: #333; 
+      }
       /* Dark Mode Cards */
       .dark-mode .card-users { 
         background: linear-gradient(135deg, #0056b3, #004085); 
@@ -123,6 +127,10 @@
       .dark-mode .card-categories { 
         background: linear-gradient(135deg, #5a2d91, #4a1d7a); 
         color: #ffffff; 
+      }
+      .dark-mode .card-assignments { 
+        background: linear-gradient(135deg, #ffc107, #e0a800); 
+        color: #000; 
       }
       .table th, .table td {
         border-right: 1px solid #dee2e6;
@@ -430,7 +438,7 @@
   justify-content: flex-start !important;
 }
       /* New styles for cards: top margin, border, and hover effect */
-      .card-users, .card-students, .card-courses, .card-categories {
+      .card-users, .card-students, .card-courses, .card-categories, .card-assignments {
         margin-top: 20px; /* Top margin to move cards down a bit */
         border: 1px solid #dee2e6; /* Light mode border */
         border-radius: 8px; /* Slight rounding for better look */
@@ -440,21 +448,151 @@
       .dark-mode .card-users, 
       .dark-mode .card-students, 
       .dark-mode .card-courses, 
-      .dark-mode .card-categories {
+      .dark-mode .card-categories, 
+      .dark-mode .card-assignments {
         border: 1px solid #495057; /* Dark mode border */
       }
       .card-users:hover, 
       .card-students:hover, 
       .card-courses:hover, 
-      .card-categories:hover {
+      .card-categories:hover, .card-assignments:hover {
         transform: translateY(-5px); /* Lift up on hover */
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
       }
       .dark-mode .card-users:hover, 
       .dark-mode .card-students:hover, 
       .dark-mode .card-courses:hover, 
-      .dark-mode .card-categories:hover {
+      .dark-mode .card-categories:hover,
+      .dark-mode .card-assignments:hover {
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Dark mode hover shadow */
+      }
+      /* New: Manage Assignments Section */
+      .manage-assignments-section {
+        margin-top: 30px;
+      }
+      .manage-assignments-section h5 {
+        margin-bottom: 15px;
+        color: #333;
+      }
+      .dark-mode .manage-assignments-section h5 {
+        color: #fff;
+      }
+      .create-assignment-btn {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        transition: all 0.3s;
+      }
+      .create-assignment-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+      }
+      /* Assignments Table */
+      .assignments-table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+      }
+      .assignments-table thead th {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        border: none;
+        padding: 16px 12px;
+      }
+      .assignments-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .assignments-table tbody tr:hover {
+        background: rgba(40, 167, 69, 0.05);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      .assignments-table tbody td {
+        padding: 16px 12px;
+        vertical-align: middle;
+        border: none;
+        position: relative;
+      }
+      .assignments-table tbody td::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 20px;
+        background: #dee2e6;
+      }
+      .assignments-table tbody td:last-child::after {
+        display: none;
+      }
+      .dark-mode .assignments-table thead th {
+        background: linear-gradient(135deg, #198754, #157347);
+      }
+      .dark-mode .assignments-table tbody tr {
+        border-bottom: 1px solid #495057;
+      }
+      .dark-mode .assignments-table tbody tr:hover {
+        background: rgba(40, 167, 69, 0.1);
+      }
+      .dark-mode .assignments-table tbody td::after {
+        background: #495057;
+      }
+      .dark-mode .assignments-table {
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.05);
+      }
+      .evaluate-btn {
+        background: #ffc107;
+        color: #000;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        transition: all 0.3s;
+      }
+      .evaluate-btn:hover {
+        background: #e0a800;
+        color: #000;
+      }
+      .dark-mode .evaluate-btn {
+        background: #ffc107;
+        color: #000;
+      }
+      /* Modals */
+      .modal-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+      }
+      .modal-body label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        display: block;
+      }
+      .modal-body input, .modal-body select, .modal-body textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        margin-bottom: 15px;
+      }
+      .dark-mode .modal-body input, .dark-mode .modal-body select, .dark-mode .modal-body textarea {
+        background: #343a40;
+        color: #fff;
+        border: 1px solid #495057;
+      }
+      .course-select {
+        margin-bottom: 15px;
+      }
+      .course-select option {
+        padding: 10px;
       }
     </style>
   </head>
@@ -730,6 +868,13 @@
                     </li>
                     <li>
                       <a
+                        href="manage-assignments.html"
+                        class="d-inline-flex align-items-center"
+                        ><i class="isax isax-clipboard-document me-2"></i>Manage Assignments</a
+                      >
+                    </li>
+                    <li>
+                      <a
                         href="reports.html"
                         class="d-inline-flex align-items-center"
                         ><i class="isax isax-chart me-2"></i>Reports &
@@ -769,7 +914,7 @@
             <!-- /Sidebar -->
             <div class="col-lg-9">
               <div class="row">
-                <div class="col-md-6 col-xl-4">
+                <div class="col-md-6 col-xl-3">
                   <div class="card card-users">
                     <div class="card-body">
                       <div class="d-flex align-items-center">
@@ -785,7 +930,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-xl-4">
+                <div class="col-md-6 col-xl-3">
                   <div class="card card-students">
                     <div class="card-body">
                       <div class="d-flex align-items-center">
@@ -801,7 +946,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-xl-4">
+                <div class="col-md-6 col-xl-3">
                   <div class="card card-courses">
                     <div class="card-body">
                       <div class="d-flex align-items-center">
@@ -817,7 +962,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-xl-4">
+                <div class="col-md-6 col-xl-3">
                   <div class="card card-categories">
                     <div class="card-body">
                       <div class="d-flex align-items-center">
@@ -828,6 +973,38 @@
                         <div>
                           <span class="d-block">Total Categories</span>
                           <h4 class="fs-24 mt-1" id="total-categories">0</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                  <div class="card card-assignments">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center">
+                        <span
+                          class="icon-box bg-warning-transparent me-2 me-xxl-3 flex-shrink-0"
+                          ><img src="assets/img/icon/clipboard-document.svg" alt=""
+                        /></span>
+                        <div>
+                          <span class="d-block">Total Assignments</span>
+                          <h4 class="fs-24 mt-1" id="total-assignments">0</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                  <div class="card card-pending-submissions">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center">
+                        <span
+                          class="icon-box bg-danger-transparent me-2 me-xxl-3 flex-shrink-0"
+                          ><img src="assets/img/icon/pending-clock.svg" alt=""
+                        /></span>
+                        <div>
+                          <span class="d-block">Pending Submissions</span>
+                          <h4 class="fs-24 mt-1" id="pending-submissions">0</h4>
                         </div>
                       </div>
                     </div>
@@ -850,6 +1027,32 @@
                   </tbody>
                 </table>
               </div>
+              <!-- New: Manage Assignments Section -->
+              <div class="manage-assignments-section">
+                <h5 class="mb-3 fs-18">Manage Assignments</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span>Create and manage assignments for courses.</span>
+                  <button class="btn create-assignment-btn" data-bs-toggle="modal" data-bs-target="#createAssignmentModal">
+                    <i class="fas fa-plus me-1"></i> Create Assignment
+                  </button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table assignments-table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Assignment Title</th>
+                        <th>Course</th>
+                        <th>Due Date</th>
+                        <th>Pending Submissions</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="assignments-table-body">
+                      <!-- Dynamically populated -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -857,6 +1060,90 @@
 
       <!-- Toast Container -->
       <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+      <!-- New: Modal for Create Assignment (Manual/AI Generate) -->
+      <div class="modal fade" id="createAssignmentModal" tabindex="-1" aria-labelledby="createAssignmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="createAssignmentModalLabel">Create Assignment</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="createAssignmentForm">
+                <div class="mb-3">
+                  <label for="courseSelect" class="form-label">Select Course</label>
+                  <select id="courseSelect" class="form-select course-select" required>
+                    <option value="">Choose a course...</option>
+                    <!-- Dynamically populated -->
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="assignmentType" class="form-label">Type</label>
+                  <select id="assignmentType" class="form-select" required>
+                    <option value="manual">Manual</option>
+                    <option value="ai">AI Generate</option>
+                  </select>
+                </div>
+                <div id="manualFields">
+                  <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="questions" class="form-label">Questions (comma-separated)</label>
+                    <textarea class="form-control" id="questions" rows="3" required></textarea>
+                  </div>
+                </div>
+                <div id="aiFields" style="display: none;">
+                  <div class="mb-3">
+                    <label for="prompt" class="form-label">AI Prompt (e.g., "Generate 5 MCQs on Python basics")</label>
+                    <textarea class="form-control" id="prompt" rows="3" required></textarea>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="numQuestions" class="form-label">Number of Questions</label>
+                      <input type="number" class="form-control" id="numQuestions" value="5" min="1" max="20" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="aiType" class="form-label">Question Type</label>
+                      <select id="aiType" class="form-select" required>
+                        <option value="mcq">MCQs</option>
+                        <option value="descriptive">Descriptive</option>
+                        <option value="mixed">Mixed</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="dueDate" class="form-label">Due Date</label>
+                  <input type="datetime-local" class="form-control" id="dueDate" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Assignment</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New: Modal for Evaluate Submission -->
+      <div class="modal fade" id="evaluateModal" tabindex="-1" aria-labelledby="evaluateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="evaluateModalLabel">Evaluate Submission</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p id="evaluateDescription">Loading...</p>
+              <div id="evaluationResult"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Footer -->
      <footer class="footer">
@@ -1120,8 +1407,9 @@
         $('#dark-mode-toggle').on('click', toggleDarkMode);
         $('#light-mode-toggle').on('click', toggleLightMode);
 
+        // New: Load Dashboard Data (Updated for Assignments)
         $.ajax({
-          url: 'http://localhost:5000/api/dashboard/admin/dashboard', // Corrected
+          url: 'http://localhost:5000/api/dashboard/admin/dashboard',
           type: 'GET',
           headers: { Authorization: 'Bearer ' + token },
           success: function (response) {
@@ -1130,6 +1418,8 @@
             $('#total-students').text(response.totalStudents || 0);
             $('#total-courses').text(response.totalCourses || 0);
             $('#total-categories').text(response.totalCategories || 0);
+            $('#total-assignments').text(response.totalAssignments || 0); // New
+            $('#pending-submissions').text(response.pendingSubmissions || 0); // New
             if (response.recentActivities && response.recentActivities.length) {
               let activitiesHTML = '';
               response.recentActivities.forEach((activity) => {
@@ -1177,6 +1467,185 @@
             else showToast(`Dashboard error (Status: ${xhr.status}).`, 'error');
           },
         });
+
+        // New: Load Courses for Select in Modal
+        $.ajax({
+          url: 'http://localhost:5000/api/courses',
+          type: 'GET',
+          headers: { Authorization: 'Bearer ' + token },
+          success: function (response) {
+            const courses = response.courses || response; // Handle both array and object
+            let options = '<option value="">Choose a course...</option>';
+            courses.forEach(course => {
+              options += `<option value="${course._id}">${course.name}</option>`;
+            });
+            $('#courseSelect').html(options);
+          },
+          error: function (xhr) {
+            console.error('Courses load error:', xhr);
+            showToast('Failed to load courses.', 'error');
+          }
+        });
+
+        // New: Handle Assignment Type Toggle
+        $('#assignmentType').on('change', function () {
+          if ($(this).val() === 'manual') {
+            $('#manualFields').show();
+            $('#aiFields').hide();
+            $('#title, #questions').prop('required', true);
+            $('#prompt, #numQuestions, #aiType').prop('required', false);
+          } else {
+            $('#aiFields').show();
+            $('#manualFields').hide();
+            $('#prompt, #numQuestions, #aiType').prop('required', true);
+            $('#title, #questions').prop('required', false);
+          }
+        });
+
+        // New: Create Assignment Form Submit
+        $('#createAssignmentForm').on('submit', function (e) {
+          e.preventDefault();
+          const type = $('#assignmentType').val();
+          const courseId = $('#courseSelect').val();
+          const dueDate = $('#dueDate').val();
+          if (!courseId || !dueDate) {
+            showToast('Please select course and due date.', 'error');
+            return;
+          }
+          const data = { courseId, dueDate };
+          if (type === 'manual') {
+            data.title = $('#title').val();
+            data.questions = $('#questions').val();
+            $.ajax({
+              url: 'http://localhost:5000/api/assignments',
+              type: 'POST',
+              headers: { Authorization: 'Bearer ' + token },
+              contentType: 'application/json',
+              data: JSON.stringify(data),
+              success: function (response) {
+                showToast('Assignment created successfully!', 'success');
+                $('#createAssignmentModal').modal('hide');
+                loadAssignments(); // Reload table
+                $(this)[0].reset();
+              },
+              error: function (xhr) {
+                showToast('Error creating assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+              }
+            });
+          } else {
+            data.prompt = $('#prompt').val();
+            data.numQuestions = parseInt($('#numQuestions').val());
+            data.type = $('#aiType').val();
+            $.ajax({
+              url: 'http://localhost:5000/api/assignments/generate',
+              type: 'POST',
+              headers: { Authorization: 'Bearer ' + token },
+              contentType: 'application/json',
+              data: JSON.stringify(data),
+              success: function (response) {
+                showToast('AI assignment generated successfully!', 'success');
+                $('#createAssignmentModal').modal('hide');
+                loadAssignments(); // Reload table
+                $(this)[0].reset();
+              },
+              error: function (xhr) {
+                showToast('Error generating assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+              }
+            });
+          }
+        });
+
+        // New: Load Assignments Table
+        function loadAssignments() {
+          $.ajax({
+            url: 'http://localhost:5000/api/assignments',
+            type: 'GET',
+            headers: { Authorization: 'Bearer ' + token },
+            success: function (response) {
+              let tableHTML = '';
+              response.forEach(assignment => {
+                const pendingCount = assignment.submissions ? assignment.submissions.filter(s => !s.evaluated).length : 0; // Assume populated or fetch separately
+                tableHTML += `
+                  <tr>
+                    <td>${assignment.title}</td>
+                    <td>${assignment.courseId?.name || 'Unknown'}</td>
+                    <td>${new Date(assignment.dueDate).toLocaleString()}</td>
+                    <td>${pendingCount}</td>
+                    <td>
+                      <button class="btn evaluate-btn" onclick="openEvaluateModal('${assignment._id}')">
+                        Evaluate Pending
+                      </button>
+                    </td>
+                  </tr>
+                `;
+              });
+              if (!response.length) tableHTML = '<tr><td colspan="5">No assignments yet.</td></tr>';
+              $('#assignments-table-body').html(tableHTML);
+            },
+            error: function (xhr) {
+              console.error('Assignments load error:', xhr);
+              showToast('Failed to load assignments.', 'error');
+              $('#assignments-table-body').html('<tr><td colspan="5">Error loading assignments.</td></tr>');
+            }
+          });
+        }
+        loadAssignments(); // Initial load
+
+        // New: Open Evaluate Modal (Fetch submissions for assignment)
+        window.openEvaluateModal = function (assignmentId) {
+          $.ajax({
+            url: `http://localhost:5000/api/assignments/${assignmentId}/submissions`, // Assume endpoint or use getAll and filter
+            type: 'GET',
+            headers: { Authorization: 'Bearer ' + token },
+            success: function (submissions) {
+              const pending = submissions.filter(s => !s.evaluated);
+              if (pending.length === 0) {
+                $('#evaluateDescription').text('No pending submissions for this assignment.');
+                $('#evaluationResult').empty();
+              } else {
+                $('#evaluateDescription').html(`Pending submissions: ${pending.length}. Click evaluate for each.`);
+                let resultHTML = '';
+                pending.forEach(sub => {
+                  resultHTML += `
+                    <div class="mb-3 p-3 border rounded">
+                      <p>Student: ${sub.studentId?.name || 'Unknown'} | Submitted: ${new Date(sub.submittedAt).toLocaleString()}</p>
+                      <button class="btn btn-primary btn-sm" onclick="evaluateSubmission('${sub._id}')">Evaluate</button>
+                      <div id="eval-${sub._id}" class="mt-2"></div>
+                    </div>
+                  `;
+                });
+                $('#evaluationResult').html(resultHTML);
+              }
+              $('#evaluateModal').modal('show');
+            },
+            error: function (xhr) {
+              showToast('Failed to load submissions.', 'error');
+            }
+          });
+        };
+
+        // New: Evaluate Single Submission
+        window.evaluateSubmission = function (submissionId) {
+          $.ajax({
+            url: `http://localhost:5000/api/assignments/submissions/${submissionId}/evaluate`,
+            type: 'POST',
+            headers: { Authorization: 'Bearer ' + token },
+            success: function (response) {
+              showToast('Evaluation completed!', 'success');
+              $(`#eval-${submissionId}`).html(`
+                <div class="alert alert-success">
+                  Score: ${response.evaluation.score}/100<br>
+                  Feedback: ${response.evaluation.feedback}<br>
+                  Remarks: ${response.evaluation.remarks}
+                </div>
+              `);
+              loadAssignments(); // Reload to update counts
+            },
+            error: function (xhr) {
+              showToast('Evaluation failed: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+            }
+          });
+        };
       });
     </script>
   </body>
