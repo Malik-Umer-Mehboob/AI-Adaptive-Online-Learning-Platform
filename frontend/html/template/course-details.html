@@ -960,6 +960,97 @@
             }
             /* UI Fix: Better button spacing in actions (aligned with manage-courses) */
             .btn-group-sm .btn { margin-right: 5px; }
+            /* NEW: Assignments Section Styles */
+            .assignments-section {
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+                background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+                border-left: 5px solid var(--warning);
+                margin-top: 2rem;
+            }
+            .dark-mode .assignments-section {
+                background: linear-gradient(135deg, #343a40, #495057);
+                border-left-color: #fd7e14;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            }
+            .assignments-section h5 {
+                color: var(--warning);
+                font-weight: 600;
+                margin-bottom: 1.5rem;
+                border-bottom: 2px solid #dee2e6;
+                padding-bottom: 0.75rem;
+            }
+            .dark-mode .assignments-section h5 {
+                color: #fd7e14;
+                border-bottom-color: #495057;
+            }
+            .assignment-item {
+                background: white;
+                border-radius: 8px;
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+                border-left: 4px solid var(--warning);
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            .dark-mode .assignment-item {
+                background: #495057;
+                border-left-color: #fd7e14;
+            }
+            .assignment-item:hover {
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                transform: translateY(-2px);
+            }
+            .assignment-title {
+                font-weight: 600;
+                color: var(--text-color);
+                margin-bottom: 0.5rem;
+            }
+            .dark-mode .assignment-title {
+                color: var(--text-color);
+            }
+            .assignment-due {
+                color: var(--gray);
+                font-size: 0.9rem;
+            }
+            .dark-mode .assignment-due {
+                color: #adb5bd;
+            }
+            .assignment-questions {
+                margin-top: 1rem;
+                font-size: 0.9rem;
+                color: var(--gray);
+            }
+            .dark-mode .assignment-questions {
+                color: #adb5bd;
+            }
+            .submit-form {
+                margin-top: 1rem;
+            }
+            .submit-form input[type="file"] {
+                border: 1px solid var(--border-color);
+                padding: 0.5rem;
+                border-radius: 4px;
+            }
+            .status-badge {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.5rem;
+                border-radius: 20px;
+            }
+            .status-pending { background: var(--warning); color: white; }
+            .status-submitted { background: var(--success); color: white; }
+            .status-evaluated { background: var(--primary); color: white; }
+            .status-overdue { background: var(--danger); color: white; }
+            .feedback-text {
+                margin-top: 0.5rem;
+                font-style: italic;
+                color: var(--gray);
+            }
+            .dark-mode .feedback-text {
+                color: #adb5bd;
+            }
         </style>
 </head>
 <body>
@@ -1029,7 +1120,7 @@
 <a href="student-dashboard.html">Dashboard</a>
 </li>
                             </ul>
-                    
+                   
                             <div class="menu-dropdown">
                                 <div class="cart-item">
                                     <h6>Cart & Wishlist</h6>
@@ -1082,7 +1173,7 @@
                                     </ul>
                                 </div>
                             </div>
-                    
+                   
                         </div>
                         <div class="header-btn d-flex align-items-center">
                             <div class="icon-btn me-2">
@@ -1197,6 +1288,15 @@
                                     </div>
                                 </div>
                             </div>
+                          </div>
+                          <!-- NEW: Assignments Section -->
+                          <div class="card mb-4 assignments-section" id="assignments-section">
+                              <div class="card-body">
+                                  <h5 class="mb-3">Assignments <span class="badge bg-warning ms-2" id="pending-count">0</span></h5>
+                                  <div id="assignments-list">
+                                      <p class="text-muted">Loading assignments...</p>
+                                  </div>
+                              </div>
                           </div>
                           <!-- Comments Section -->
                           <div class="card comments-section">
@@ -1713,7 +1813,120 @@ $(document).ready(function() {
             showToast('Failed to submit comment.', 'error');
         }
     });
-    // UPDATED: Load course - FIXED: Added display for course.videos (as additional if topics) & course.resources section; topics nested + RESOURCES + FIXED nesting for resources toggle + expand first topic
+    // NEW: Load Assignments Function
+    async function loadAssignments() {
+        try {
+            const assignments = await $.ajax({
+                url: `http://localhost:5000/api/courses/${courseId}/assignments`,
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const list = $('#assignments-list');
+            let pendingCount = 0;
+            if (assignments.length === 0) {
+                list.html('<p class="text-muted">No assignments available.</p>');
+                $('#pending-count').text(0).hide();
+                return;
+            }
+            // For each assignment, check submission status (fetch from /api/student/submissions?assignmentId=...)
+            const assignHtml = [];
+            for (const assign of assignments) {
+                const now = new Date();
+                const due = new Date(assign.dueDate);
+                const isOverdue = due < now;
+                let status = 'pending';
+                let score = null;
+                let feedback = '';
+                let submissionId = null;
+                try {
+                    // Fetch submission for this assignment
+                    const subs = await $.ajax({
+                        url: `http://localhost:5000/api/dashboard/student/submissions?assignmentId=${assign._id}`,
+                        type: 'GET',
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    if (subs.length > 0) {
+                        const sub = subs[0];
+                        status = sub.evaluated ? 'evaluated' : 'submitted';
+                        score = sub.evaluation?.score;
+                        feedback = sub.evaluation?.feedback || '';
+                        submissionId = sub._id;
+                    } else if (!isOverdue) {
+                        status = 'pending';
+                        pendingCount++;
+                    } else {
+                        status = 'overdue';
+                    }
+                } catch (subErr) {
+                    console.error('Submission check error:', subErr);
+                    if (!isOverdue) pendingCount++;
+                }
+                // Questions display (simple list)
+                const questionsHtml = assign.questions ? assign.questions.map(q => `<li>${q.text || q} ${q.options ? ` (MCQ: ${q.options.join(', ')})` : ' (Descriptive)'}</li>`).join('') : '<li>No questions available.</li>';
+                let actionHtml = '';
+                if (status === 'pending' && !isOverdue) {
+                    actionHtml = `
+                        <form class="submit-form mt-3">
+                            <input type="file" id="pdf-upload-${assign._id}" accept=".pdf" class="form-control mb-2" required>
+                            <button type="submit" class="btn btn-primary">Submit PDF</button>
+                        </form>`;
+                } else if (status === 'submitted' || status === 'evaluated') {
+                    actionHtml = `<span class="status-badge status-${status}">${status.toUpperCase()}</span>`;
+                    if (score) actionHtml += `<div class="score mt-2"><strong>Score: ${score}/100</strong></div>`;
+                    if (feedback) actionHtml += `<div class="feedback-text">${feedback}</div>`;
+                } else {
+                    actionHtml = `<span class="status-badge status-${status}">OVERDUE</span>`;
+                }
+                assignHtml.push(`
+                    <div class="assignment-item">
+                        <h6 class="assignment-title">${assign.title}</h6>
+                        <p class="assignment-due">Due: ${due.toLocaleDateString()} ${isOverdue ? '(Overdue)' : ''}</p>
+                        <ul class="assignment-questions list-unstyled">${questionsHtml}</ul>
+                        ${actionHtml}
+                    </div>
+                `);
+            }
+            list.html(assignHtml.join(''));
+            $('#pending-count').text(pendingCount).show();
+            // Submit handlers for each form
+            $('.submit-form').off('submit').on('submit', async function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const fileInput = form.find('input[type="file"]');
+                const file = fileInput[0].files[0];
+                if (!file || !file.type.startsWith('application/pdf')) {
+                    showToast('Please select a PDF file.', 'error');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    showToast('File too large (max 5MB).', 'error');
+                    return;
+                }
+                const assignId = form.attr('id').replace('pdf-upload-', '');
+                const formData = new FormData();
+                formData.append('pdf', file);
+                try {
+                    await $.ajax({
+                        url: `http://localhost:5000/api/student/submit-assignment/${assignId}`,
+                        type: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        data: formData,
+                        processData: false,
+                        contentType: false
+                    });
+                    showToast('Assignment submitted successfully!', 'success');
+                    loadAssignments(); // Reload to update status
+                } catch (err) {
+                    showToast('Submission failed.', 'error');
+                }
+            });
+        } catch (err) {
+            console.error('Load assignments error:', err);
+            $('#assignments-list').html('<p class="text-danger">Error loading assignments.</p>');
+            $('#pending-count').hide();
+        }
+    }
+    // UPDATED: Load course - FIXED: Added display for course.videos (as additional if topics) & course.resources section; topics nested + RESOURCES + FIXED nesting for resources toggle + expand first topic + CALL loadAssignments()
     async function loadCourse() {
         try {
             const course = await $.ajax({
@@ -1730,7 +1943,8 @@ $(document).ready(function() {
                 averageRating = ratedComments.length > 0 ? (ratedComments.reduce((sum, c) => sum + c.rating, 0) / ratedComments.length).toFixed(1) : 0;
             }
             const stars = generateStars(averageRating);
-            // Header: Name, meta, enroll btn, average rating
+            // Header: Name, meta, enroll btn, average rating + NEW: Pending assignments count
+            const pendingAssigns = course.assignments ? course.assignments.filter(a => new Date(a.dueDate) > new Date()).length : 0;
             $('#course-header').html(`
                 <div class="row align-items-center">
                     <div class="col-lg-8">
@@ -1739,6 +1953,7 @@ $(document).ready(function() {
                             <span>${stars}</span>
                             <small class="ms-2 text-white-50">(${averageRating}) - ${course.comments ? course.comments.filter(c => c.rating).length : 0} ratings</small>
                         </div>
+                        ${pendingAssigns > 0 ? `<p class="text-white-50 mb-0">📝 ${pendingAssigns} pending assignments</p>` : ''}
                     </div>
                     <div class="col-lg-4 text-lg-end enroll-section">
                         <button id="enroll-btn" class="btn-enroll ${enrolled ? 'disabled' : ''}">${enrolled ? 'Enrolled' : 'Enroll Now'}</button>
@@ -1908,10 +2123,13 @@ $(document).ready(function() {
                     });
                     showToast('Enrolled successfully!', 'success');
                     $('#enroll-btn').text('Enrolled').prop('disabled', true).removeClass('btn-enroll').addClass('btn btn-success');
+                    loadCourse(); // Reload to update header and load assignments
                 } catch (err) {
                     showToast('Enrollment failed.', 'error');
                 }
             });
+            // NEW: Load assignments after course load
+            loadAssignments();
             // Load comments
             loadComments();
         } catch (err) {

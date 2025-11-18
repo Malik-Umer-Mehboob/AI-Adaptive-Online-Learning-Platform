@@ -362,6 +362,35 @@
             box-shadow: 0 8px 20px rgba(40,167,69,0.3);
         }
 
+        /* NEW: Assignments Button Style */
+        .assignments-btn {
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--warning);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(255,193,7,0.3);
+        }
+
+        .assignments-btn:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,193,7,0.4);
+            color: white;
+        }
+
+        .dark-mode .assignments-btn {
+            background: #fd7e14;
+        }
+
+        .dark-mode .assignments-btn:hover {
+            background: #e65c00;
+        }
+
         .navbar-logo img.logo {
             width: 120px;
             height: auto;
@@ -389,7 +418,7 @@
                 gap: 0.75rem;
                 text-align: center;
             }
-            .enroll-btn {
+            .enroll-btn, .assignments-btn {
                 width: 100%;
             }
             .course-content {
@@ -1256,16 +1285,22 @@ $(document).ready(function() {
         $.ajax({
             url: 'http://localhost:5000/api/auth/logout',
             type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token },
-            success: function () {
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+            success: function (response) {
+                console.log('Logout success:', response);
                 localStorage.removeItem('token');
                 showToast('Logout successful.', 'success');
-                setTimeout(() => window.location.href = 'login.html', 1500);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
             },
-            error: function () {
+            error: function (xhr) {
+                console.error('Logout error:', xhr.responseText);
                 localStorage.removeItem('token');
                 showToast('Logout successful.', 'success');
-                setTimeout(() => window.location.href = 'login.html', 1500);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
             }
         });
     });
@@ -1383,6 +1418,19 @@ $(document).ready(function() {
                 const numRatings = course.numRatings || 0;
                 const duration = course.duration || '2h 30m';
 
+                let buttonsHtml = `
+                    <button class="btn btn-primary enroll-btn ${enrolled ? 'enrolled' : ''}" data-id="${course._id}" data-name="${course.name}">
+                        ${enrolled ? '<i class="fas fa-check"></i> Enrolled' : '<i class="fas fa-play"></i> Start Free'}
+                    </button>`;
+
+                // NEW: Add "View Assignments" button if enrolled
+                if (enrolled) {
+                    buttonsHtml += `
+                        <a href="course-details.html?id=${course._id}&tab=assignments" class="assignments-btn ms-2">
+                            <i class="fas fa-tasks"></i> Assignments
+                        </a>`;
+                }
+
                 return `
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="course-item-two course-item h-100" data-course-id="${course._id}">
@@ -1410,9 +1458,7 @@ $(document).ready(function() {
                                         <div class="price free">FREE</div>
                                         <div class="course-meta">${videoCount} lessons • ${duration}</div>
                                     </div>
-                                    <button class="btn btn-primary enroll-btn ${enrolled ? 'enrolled' : ''}" data-id="${course._id}" data-name="${course.name}">
-                                        ${enrolled ? '<i class="fas fa-check"></i> Enrolled' : '<i class="fas fa-play"></i> Start Free'}
-                                    </button>
+                                    <div class="d-flex gap-2">${buttonsHtml}</div>
                                 </div>
                             </div>
                         </div>
@@ -1476,6 +1522,8 @@ $(document).ready(function() {
             });
             btn.removeClass('btn-primary').addClass('enrolled btn-success')
                 .html('<i class="fas fa-check"></i> Enrolled').prop('disabled', true);
+            // NEW: After enroll, reload course to add assignments btn
+            loadCourses();
             showToast(`Enrolled in "${name}"!`, 'success');
         } catch (err) {
             showToast('Enrollment failed.', 'error');
@@ -1483,25 +1531,15 @@ $(document).ready(function() {
         }
     });
 
-    // New: Handle course item click for navigation (only if enrolled)
+    // New: Handle course item click for navigation (always allowed since enrolled)
     $(document).on('click', '.course-item-two', function(e) {
         // Ignore clicks on buttons or overlays
-        if ($(e.target).closest('.enroll-btn, .fav-btn, .play-overlay').length) {
+        if ($(e.target).closest('.view-btn, .fav-btn, .play-overlay').length) {
             return;
         }
         const $item = $(this);
         const courseId = $item.data('course-id');
-        const $enrollBtn = $item.find('.enroll-btn');
-        const isEnrolled = $enrollBtn.hasClass('enrolled');
-
-        if (isEnrolled) {
-            window.location.href = `course-details.html?id=${courseId}`;
-        } else {
-            showToast('Please enroll in the course to view details.', 'warning');
-            // Optional: Highlight the enroll button
-            $enrollBtn.addClass('border border-warning').effect('bounce', { times: 2 }, 500);
-            setTimeout(() => $enrollBtn.removeClass('border border-warning'), 2000);
-        }
+        window.location.href = `course-details.html?id=${courseId}`;
     });
 
     $(document).on('change', 'input[name="category"]', function() {

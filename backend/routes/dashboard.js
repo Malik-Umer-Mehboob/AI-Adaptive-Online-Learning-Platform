@@ -15,6 +15,7 @@ function getYouTubeThumbnail(url) {
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
     return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : 'assets/img/placeholder.jpg';
 }
+
 // POST - Enroll in course (Fixed: Set progress: 0 and status: 'enrolled' explicitly)
 router.post('/student/enroll', auth, checkRole(['student']), async (req, res) => {
     try {
@@ -76,9 +77,42 @@ router.get('/student/enrollments', auth, checkRole(['student']), async (req, res
     }
 });
 
-// GET - Student dashboard (FIXED: valid counts + enriched recentCourses + favorites + quiz defaults)
-// Updated: Student dashboard (Added pendingAssignments, mySubmissions)
-router.get('/student/dashboard', isStudent, async (req, res) => {
+// NEW ROUTE: GET /student/submissions - For frontend loadSubmissions() (last 10 submissions with details)
+router.get('/student/submissions', auth, checkRole(['student']), async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const submissions = await Submission.find({ studentId: userId })
+            .populate({
+                path: 'assignmentId',
+                select: 'title dueDate',
+                populate: { 
+                    path: 'courseId', 
+                    select: 'name' 
+                }
+            })
+            .sort({ submittedAt: -1 })
+            .limit(10)
+            .lean();
+
+        const formattedSubs = submissions.map(s => ({
+            _id: s._id,
+            assignmentTitle: s.assignmentId?.title || 'Untitled Assignment',
+            courseName: s.assignmentId?.courseId?.name || 'Unknown Course',
+            submittedAt: s.submittedAt ? new Date(s.submittedAt).toLocaleDateString() : 'Unknown Date',
+            score: s.evaluation?.score ? `${s.evaluation.score}/100` : 'Pending Evaluation',
+            feedback: s.evaluation?.feedback || 'No feedback yet.',
+            evaluated: s.evaluated || false
+        }));
+
+        res.json(formattedSubs);
+    } catch (error) {
+        console.error('Student Submissions Error:', error.stack);
+        res.status(500).json({ message: 'Error loading submissions', error: error.message });
+    }
+});
+
+// GET - Student dashboard (FIXED: Added auth before isStudent + better populate for submissions)
+router.get('/student/dashboard', auth, isStudent, async (req, res) => {  // Added auth here
     try {
         const userId = req.user.id;
 
@@ -104,18 +138,25 @@ router.get('/student/dashboard', isStudent, async (req, res) => {
             pendingAssignments += courseAssigns.filter(a => new Date(a.dueDate) > now).length;
         });
 
-        // New: My recent submissions (last 5)
+        // New: My recent submissions (last 5) - Better populate
         const mySubmissions = await Submission.find({ studentId: userId })
-            .populate('assignmentId', 'title')
-            .populate({ path: 'assignmentId', populate: { path: 'courseId', select: 'name' } })
+            .populate({
+                path: 'assignmentId', 
+                select: 'title', 
+                populate: { 
+                    path: 'courseId', 
+                    select: 'name' 
+                }
+            })
             .sort({ submittedAt: -1 })
             .limit(5)
             .lean();
         const recentSubmissions = mySubmissions.map(s => ({
             title: s.assignmentId?.title || 'Unknown',
             course: s.assignmentId?.courseId?.name || 'Unknown',
-            score: s.evaluation?.score || 'Pending',
-            submittedAt: s.submittedAt.toISOString()
+            score: s.evaluation?.score ? `${s.evaluation.score}/100` : 'Pending',
+            feedback: s.evaluation?.feedback || '',
+            submittedAt: s.submittedAt ? new Date(s.submittedAt).toISOString() : new Date().toISOString()
         }));
 
         // Existing recent courses (updated with assignments info)
@@ -189,7 +230,8 @@ router.get('/student/dashboard', isStudent, async (req, res) => {
         res.status(500).json({ message: 'Error fetching dashboard data.', error: error.message });
     }
 });
-// POST - Cleanup invalid enrollments (NEW: for old stale data)
+
+// POST - Cleanup invalid enrollments (NEW: for old stale data) - Minor fix for aggregate
 router.post('/student/cleanup-enrollments', auth, checkRole(['student']), async (req, res) => {
     try {
         const userId = req.user.id;
@@ -209,21 +251,22 @@ router.post('/student/cleanup-enrollments', auth, checkRole(['student']), async 
         ]);
 
         let deleted = 0;
-        if (invalid.length > 0 && invalid[0].count > 0) {
+        if (invalid.length > 0 && invalid[0]?.count > 0 && invalid[0].ids.length > 0) {
             const result = await Enrollment.deleteMany({ _id: { $in: invalid[0].ids } });
             deleted = result.deletedCount;
         }
 
         res.json({ deleted });
     } catch (error) {
-        console.error('Cleanup error:', error);
-        res.status(500).json({ message: 'Cleanup failed' });
+        console.error('Cleanup error:', error.stack);
+        res.status(500).json({ message: 'Cleanup failed', error: error.message });
     }
 });
 
-// GET - Admin dashboard
+// GET - Admin dashboard (unchanged, but added console for debug)
 router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
     try {
+        console.log('Admin dashboard accessed by user:', req.user.id); // Debug log
         const totalUsers = await Student.countDocuments() + await Admin.countDocuments();
         const totalStudents = await Student.countDocuments();
         const totalAdmins = await Admin.countDocuments();
