@@ -1,4 +1,4 @@
-// app.js - Updated: Added assignments routes properly, removed alias to admin
+// app.js (Updated: Added submissions routes for instant AI evaluation)
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -31,6 +31,8 @@ const courseRoutes = require('./routes/courses');
 const categoryRoutes = require('./routes/categories');
 const topicRoutes = require('./routes/topics');
 const assignmentsRoutes = require('./routes/assignments'); // New: Proper include
+const studentRoutes = require('./routes/student'); // New: Student-specific routes
+const submissionsRoutes = require('./routes/submissions'); // New: Submissions routes with instant AI eval
 
 const app = express();
 
@@ -125,6 +127,8 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/topics', topicRoutes);
 app.use('/api/assignments', assignmentsRoutes); // New: Proper assignments routes
+app.use('/api/student', studentRoutes); // New: Student routes (includes /submissions)
+app.use('/api/submissions', submissionsRoutes); // New: Submissions routes (POST /submissions, GET /my)
 
 // Cache Control for Performance
 app.use((req, res, next) => {

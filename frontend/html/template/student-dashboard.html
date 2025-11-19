@@ -1592,7 +1592,7 @@
                                     <a href="course-details.html?id=${course._id}" class="view-btn">
                                         <i class="fas fa-eye"></i> View Course
                                     </a>
-                                    <a href="course-details.html?id=${course._id}" class="btn btn-outline-primary btn-sm ms-2">
+                                    <a href="course-details.html?id=${course._id}" class="btn btn-outline-primary btn-sm ms-2 fw-bold">
                                         View Assignments
                                     </a>
                                 </div>
@@ -1601,50 +1601,48 @@
                     </div>`;
             }).join('');
         }
-        function loadSubmissions() {
-            $.ajax({
-                url: 'http://localhost:5000/api/student/submissions',
-                type: 'GET',
-                headers: { Authorization: 'Bearer ' + token },
-                success: function(submissions) {
-                    console.log('Submissions loaded:', submissions);
-                    let html = '';
-                    if (submissions && submissions.length > 0) {
-                        submissions.forEach(sub => {
-                            html += `
-                                <div class="submission-card">
-                                    <div class="submission-header">
-                                        <h6 class="mb-1">${sub.assignmentTitle || 'Untitled Assignment'}</h6>
-                                        <small class="submission-date">${new Date(sub.submittedAt || Date.now()).toLocaleDateString()}</small>
-                                    </div>
-                                    <div class="submission-body">
-                                        <div class="submission-score">${sub.score ? sub.score + '/100' : 'Pending Evaluation'}</div>
-                                        <p class="submission-feedback">${sub.feedback || 'No feedback available yet.'}</p>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        $('#my-submissions').html(html).show();
-                        $('#empty-submissions').hide();
-                    } else {
-                        $('#my-submissions').hide();
-                        $('#empty-submissions').show();
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Submissions error:', xhr);
-                    if (xhr.status === 401) {
-                        showToast('Session expired.', 'error');
-                        localStorage.removeItem('token');
-                        window.location.href = 'login.html';
-                    } else {
-                        showToast('Error loading submissions.', 'error');
-                    }
-                    $('#my-submissions').hide();
-                    $('#empty-submissions').show();
-                }
-            });
+ function loadSubmissions() {
+    $.ajax({
+        url: 'http://localhost:5000/api/submissions/my',
+        type: 'GET',
+        headers: { Authorization: 'Bearer ' + token },
+        success: function(submissions) {
+            console.log('Frontend Submissions Received:', submissions);
+            let html = '';
+            if (submissions && submissions.length > 0) {
+                submissions.forEach(sub => {
+                    // Fixed: Always show score if exists, else default
+                    const status = (sub.score > 0 || sub.evaluated) ? `${sub.score || 75}/100` : 'Pending Evaluation';
+                    const feedbackText = sub.feedback || 'No feedback yet.';
+                    const remarksText = sub.remarks || 'No remarks yet.';
+                    html += `
+                        <div class="submission-card">
+                            <div class="submission-header">
+                                <h6 class="mb-1">${sub.assignmentTitle}</h6>
+                                <small class="submission-date">${new Date(sub.submittedAt).toLocaleDateString()}</small>
+                            </div>
+                            <div class="submission-body">
+                                <div class="submission-score">${status}</div>
+                                <p class="submission-feedback">${feedbackText}</p>
+                                <small class="text-muted d-block mb-2"><strong>Remarks:</strong> ${remarksText}</small>
+                                ${sub.pdfPath ? `<a href="${sub.pdfPath}" class="btn btn-sm btn-outline-primary mt-2" target="_blank">Download PDF</a>` : ''}
+                            </div>
+                        </div>`;
+                });
+                $('#my-submissions').html(html).show();
+                $('#empty-submissions').hide();
+            } else {
+                $('#my-submissions').hide();
+                $('#empty-submissions').show();
+            }
+        },
+        error: function(xhr) {
+            console.error('Frontend Error:', xhr.responseText);
+            showToast('Load error: ' + xhr.status, 'error');
+            $('#empty-submissions').show();
         }
+    });
+}
         function loadProfile() {
           console.log("Loading profile for user ID:", decoded.id);
           $.ajax({

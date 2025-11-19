@@ -317,6 +317,14 @@
             border-top: 1px dashed var(--border-color);
         }
 
+        /* Improved: Ensure buttons container wraps and has better spacing */
+        .course-footer .d-flex {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: flex-end; /* Align buttons to the right */
+        }
+
         .price {
             font-size: 1.25rem;
             font-weight: 700;
@@ -362,11 +370,11 @@
             box-shadow: 0 8px 20px rgba(40,167,69,0.3);
         }
 
-        /* NEW: Assignments Button Style */
+        /* Improved: Assignments Button Style - Slightly smaller padding for better fit */
         .assignments-btn {
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 1.2rem; /* Reduced padding for compact fit */
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 0.8rem; /* Slightly smaller font */
             font-weight: 600;
             background: var(--warning);
             color: white;
@@ -374,6 +382,9 @@
             transition: all 0.3s ease;
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(255,193,7,0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
         }
 
         .assignments-btn:hover {
@@ -414,15 +425,32 @@
                 line-height: 1.5;
             }
             .course-footer {
-                flex-direction: column;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
                 gap: 0.75rem;
-                text-align: center;
+                text-align: left;
+            }
+            .course-footer .d-flex {
+                justify-content: flex-end;
+                flex: 1;
+                min-width: 0; /* Allow shrinking */
             }
             .enroll-btn, .assignments-btn {
-                width: 100%;
+                width: auto;
+                flex-shrink: 0;
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
             }
             .course-content {
                 padding: 0.75rem; /* Further reduce padding on mobile */
+            }
+            .price {
+                font-size: 1.1rem;
+            }
+            .course-meta {
+                font-size: 0.7rem;
             }
         }
         /* Footer Styles */
@@ -1426,7 +1454,7 @@ $(document).ready(function() {
                 // NEW: Add "View Assignments" button if enrolled
                 if (enrolled) {
                     buttonsHtml += `
-                        <a href="course-details.html?id=${course._id}&tab=assignments" class="assignments-btn ms-2">
+                        <a href="course-details.html?id=${course._id}&tab=assignments" class="assignments-btn ms-2 fw-bold">
                             <i class="fas fa-tasks"></i> Assignments
                         </a>`;
                 }
@@ -1504,7 +1532,7 @@ $(document).ready(function() {
         `);
     }
 
-    // Event Handlers
+    // Improved: Event Handlers - Update only the specific card after enrollment for smoother UI
     $(document).on('click', '.enroll-btn:not(.enrolled)', async function(e) {
         e.stopPropagation(); // Prevent course item click
         const btn = $(this);
@@ -1520,10 +1548,19 @@ $(document).ready(function() {
                 contentType: 'application/json',
                 data: JSON.stringify({ courseId: id })
             });
+            
+            // Update enroll button
             btn.removeClass('btn-primary').addClass('enrolled btn-success')
-                .html('<i class="fas fa-check"></i> Enrolled').prop('disabled', true);
-            // NEW: After enroll, reload course to add assignments btn
-            loadCourses();
+                .html('<i class="fas fa-check"></i> Enrolled')
+                .prop('disabled', true);
+            
+            // Improved: Dynamically add the full Assignments button without reloading entire list
+            const assignmentsBtn = `
+                <a href="course-details.html?id=${id}&tab=assignments" class="assignments-btn ms-2 fw-bold">
+                    <i class="fas fa-tasks"></i> Assignments
+                </a>`;
+            btn.parent().append(assignmentsBtn); // Append to the d-flex container
+            
             showToast(`Enrolled in "${name}"!`, 'success');
         } catch (err) {
             showToast('Enrollment failed.', 'error');

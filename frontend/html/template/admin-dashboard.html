@@ -111,6 +111,10 @@
         background: linear-gradient(135deg, #ffd700, #ffed4e); 
         color: #333; 
       }
+      .card-pending-submissions { 
+        background: linear-gradient(135deg, #ffcccc, #ff9999); 
+        color: #333; 
+      }
       /* Dark Mode Cards */
       .dark-mode .card-users { 
         background: linear-gradient(135deg, #0056b3, #004085); 
@@ -131,6 +135,21 @@
       .dark-mode .card-assignments { 
         background: linear-gradient(135deg, #ffc107, #e0a800); 
         color: #000; 
+      }
+      .dark-mode .card-pending-submissions { 
+        background: linear-gradient(135deg, #dc3545, #c82333); 
+        color: #ffffff; 
+      }
+      /* Equal Height for All Dashboard Cards */
+      .card-users, 
+      .card-students, 
+      .card-courses, 
+      .card-categories, 
+      .card-assignments, 
+      .card-pending-submissions {
+        height: 120px;
+        display: flex;
+        align-items: center;
       }
       .table th, .table td {
         border-right: 1px solid #dee2e6;
@@ -438,7 +457,7 @@
   justify-content: flex-start !important;
 }
       /* New styles for cards: top margin, border, and hover effect */
-      .card-users, .card-students, .card-courses, .card-categories, .card-assignments {
+      .card-users, .card-students, .card-courses, .card-categories, .card-assignments, .card-pending-submissions {
         margin-top: 20px; /* Top margin to move cards down a bit */
         border: 1px solid #dee2e6; /* Light mode border */
         border-radius: 8px; /* Slight rounding for better look */
@@ -449,13 +468,15 @@
       .dark-mode .card-students, 
       .dark-mode .card-courses, 
       .dark-mode .card-categories, 
-      .dark-mode .card-assignments {
+      .dark-mode .card-assignments,
+      .dark-mode .card-pending-submissions {
         border: 1px solid #495057; /* Dark mode border */
       }
       .card-users:hover, 
       .card-students:hover, 
       .card-courses:hover, 
-      .card-categories:hover, .card-assignments:hover {
+      .card-categories:hover, .card-assignments:hover,
+      .card-pending-submissions:hover {
         transform: translateY(-5px); /* Lift up on hover */
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
       }
@@ -463,7 +484,8 @@
       .dark-mode .card-students:hover, 
       .dark-mode .card-courses:hover, 
       .dark-mode .card-categories:hover,
-      .dark-mode .card-assignments:hover {
+      .dark-mode .card-assignments:hover,
+      .dark-mode .card-pending-submissions:hover {
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Dark mode hover shadow */
       }
       /* New: Manage Assignments Section */
@@ -1031,9 +1053,9 @@
               <div class="manage-assignments-section">
                 <h5 class="mb-3 fs-18">Manage Assignments</h5>
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <span>Create and manage assignments for courses.</span>
+                  <span>Generate AI-based assignments for courses.</span>
                   <button class="btn create-assignment-btn" data-bs-toggle="modal" data-bs-target="#createAssignmentModal">
-                    <i class="fas fa-plus me-1"></i> Create Assignment
+                    <i class="fas fa-plus me-1"></i> Generate AI Assignment
                   </button>
                 </div>
                 <div class="table-responsive">
@@ -1061,12 +1083,12 @@
       <!-- Toast Container -->
       <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-      <!-- New: Modal for Create Assignment (Manual/AI Generate) -->
+      <!-- Updated: Modal for AI Generate Assignment Only (Manual removed) -->
       <div class="modal fade" id="createAssignmentModal" tabindex="-1" aria-labelledby="createAssignmentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="createAssignmentModalLabel">Create Assignment</h5>
+              <h5 class="modal-title" id="createAssignmentModalLabel">Generate AI Assignment</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -1079,47 +1101,28 @@
                   </select>
                 </div>
                 <div class="mb-3">
-                  <label for="assignmentType" class="form-label">Type</label>
-                  <select id="assignmentType" class="form-select" required>
-                    <option value="manual">Manual</option>
-                    <option value="ai">AI Generate</option>
-                  </select>
+                  <label for="prompt" class="form-label">AI Prompt (e.g., "Generate 5 MCQs on Python basics")</label>
+                  <textarea class="form-control" id="prompt" rows="3" required></textarea>
                 </div>
-                <div id="manualFields">
-                  <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="title" required>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="numQuestions" class="form-label">Number of Questions</label>
+                    <input type="number" class="form-control" id="numQuestions" value="5" min="1" max="20" required>
                   </div>
-                  <div class="mb-3">
-                    <label for="questions" class="form-label">Questions (comma-separated)</label>
-                    <textarea class="form-control" id="questions" rows="3" required></textarea>
-                  </div>
-                </div>
-                <div id="aiFields" style="display: none;">
-                  <div class="mb-3">
-                    <label for="prompt" class="form-label">AI Prompt (e.g., "Generate 5 MCQs on Python basics")</label>
-                    <textarea class="form-control" id="prompt" rows="3" required></textarea>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <label for="numQuestions" class="form-label">Number of Questions</label>
-                      <input type="number" class="form-control" id="numQuestions" value="5" min="1" max="20" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="aiType" class="form-label">Question Type</label>
-                      <select id="aiType" class="form-select" required>
-                        <option value="mcq">MCQs</option>
-                        <option value="descriptive">Descriptive</option>
-                        <option value="mixed">Mixed</option>
-                      </select>
-                    </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="aiType" class="form-label">Question Type</label>
+                    <select id="aiType" class="form-select" required>
+                      <option value="mcq">MCQs</option>
+                      <option value="descriptive">Descriptive</option>
+                      <option value="mixed">Mixed</option>
+                    </select>
                   </div>
                 </div>
                 <div class="mb-3">
                   <label for="dueDate" class="form-label">Due Date</label>
                   <input type="datetime-local" class="form-control" id="dueDate" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Create Assignment</button>
+                <button type="submit" class="btn btn-primary">Generate & Create Assignment</button>
               </form>
             </div>
           </div>
@@ -1487,75 +1490,44 @@
           }
         });
 
-        // New: Handle Assignment Type Toggle
-        $('#assignmentType').on('change', function () {
-          if ($(this).val() === 'manual') {
-            $('#manualFields').show();
-            $('#aiFields').hide();
-            $('#title, #questions').prop('required', true);
-            $('#prompt, #numQuestions, #aiType').prop('required', false);
-          } else {
-            $('#aiFields').show();
-            $('#manualFields').hide();
-            $('#prompt, #numQuestions, #aiType').prop('required', true);
-            $('#title, #questions').prop('required', false);
-          }
-        });
-
-        // New: Create Assignment Form Submit
+        // Updated: Create Assignment Form Submit (Only AI, no manual toggle)
         $('#createAssignmentForm').on('submit', function (e) {
           e.preventDefault();
-          const type = $('#assignmentType').val();
           const courseId = $('#courseSelect').val();
+          const prompt = $('#prompt').val();
+          const numQuestions = parseInt($('#numQuestions').val());
+          const aiType = $('#aiType').val();
           const dueDate = $('#dueDate').val();
-          if (!courseId || !dueDate) {
-            showToast('Please select course and due date.', 'error');
+          if (!courseId || !prompt || !dueDate) {
+            showToast('Please fill all fields: course, prompt, and due date.', 'error');
             return;
           }
-          const data = { courseId, dueDate };
-          if (type === 'manual') {
-            data.title = $('#title').val();
-            data.questions = $('#questions').val();
-            $.ajax({
-              url: 'http://localhost:5000/api/assignments',
-              type: 'POST',
-              headers: { Authorization: 'Bearer ' + token },
-              contentType: 'application/json',
-              data: JSON.stringify(data),
-              success: function (response) {
-                showToast('Assignment created successfully!', 'success');
-                $('#createAssignmentModal').modal('hide');
-                loadAssignments(); // Reload table
-                $(this)[0].reset();
-              },
-              error: function (xhr) {
-                showToast('Error creating assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
-              }
-            });
-          } else {
-            data.prompt = $('#prompt').val();
-            data.numQuestions = parseInt($('#numQuestions').val());
-            data.type = $('#aiType').val();
-            $.ajax({
-              url: 'http://localhost:5000/api/assignments/generate',
-              type: 'POST',
-              headers: { Authorization: 'Bearer ' + token },
-              contentType: 'application/json',
-              data: JSON.stringify(data),
-              success: function (response) {
-                showToast('AI assignment generated successfully!', 'success');
-                $('#createAssignmentModal').modal('hide');
-                loadAssignments(); // Reload table
-                $(this)[0].reset();
-              },
-              error: function (xhr) {
-                showToast('Error generating assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
-              }
-            });
-          }
+          const data = { 
+            courseId, 
+            prompt, 
+            numQuestions, 
+            type: aiType, 
+            dueDate 
+          };
+          $.ajax({
+            url: 'http://localhost:5000/api/assignments/generate',
+            type: 'POST',
+            headers: { Authorization: 'Bearer ' + token },
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+              showToast('AI assignment generated successfully!', 'success');
+              $('#createAssignmentModal').modal('hide');
+              loadAssignments(); // Reload table
+              $(this)[0].reset();
+            },
+            error: function (xhr) {
+              showToast('Error generating assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+            }
+          });
         });
 
-        // New: Load Assignments Table
+        // Updated: Load Assignments Table (Use pendingSubmissions from backend)
         function loadAssignments() {
           $.ajax({
             url: 'http://localhost:5000/api/assignments',
@@ -1564,7 +1536,7 @@
             success: function (response) {
               let tableHTML = '';
               response.forEach(assignment => {
-                const pendingCount = assignment.submissions ? assignment.submissions.filter(s => !s.evaluated).length : 0; // Assume populated or fetch separately
+                const pendingCount = assignment.pendingSubmissions || 0; // From backend now
                 tableHTML += `
                   <tr>
                     <td>${assignment.title}</td>

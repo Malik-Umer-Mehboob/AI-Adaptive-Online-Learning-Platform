@@ -1,3 +1,4 @@
+// models/Assignment.js
 const mongoose = require('mongoose');
 
 const assignmentSchema = new mongoose.Schema({
@@ -8,11 +9,16 @@ const assignmentSchema = new mongoose.Schema({
     generatedByAI: { type: Boolean, default: false },
     promptUsed: { type: String }, // Admin's prompt for AI generation
     type: { type: String, enum: ['mcq', 'descriptive', 'mixed'], default: 'mixed' },
-    numQuestions: { type: Number, default: 5 }
+    numQuestions: { type: Number, default: 5 },
+    submissions: [{  // <-- Added this array for populate and tracking submissions
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Submission'
+    }]
 }, { timestamps: true });
 
 // Index for queries
 assignmentSchema.index({ courseId: 1 });
 assignmentSchema.index({ dueDate: 1 });
+assignmentSchema.index({ submissions: 1 });  // New index for submissions queries
 
 module.exports = mongoose.model('Assignment', assignmentSchema);

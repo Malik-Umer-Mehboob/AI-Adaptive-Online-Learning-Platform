@@ -1,3 +1,4 @@
+// models/Submission.js (Updated: No changes needed, but confirming field names for reference)
 const mongoose = require('mongoose');
 
 const submissionSchema = new mongoose.Schema({
@@ -7,7 +8,7 @@ const submissionSchema = new mongoose.Schema({
     submittedAt: { type: Date, default: Date.now },
     evaluated: { type: Boolean, default: false },
     evaluation: {
-        score: { type: Number }, // Out of 100
+        score: { type: Number, min: 0, max: 100 }, // Out of 100, with validation
         feedback: { type: String },
         remarks: { type: String }
     }
@@ -16,5 +17,6 @@ const submissionSchema = new mongoose.Schema({
 // Index for queries
 submissionSchema.index({ assignmentId: 1, studentId: 1 });
 submissionSchema.index({ evaluated: 1 });
+submissionSchema.index({ submittedAt: -1 });  // New index for sorting by submission date
 
 module.exports = mongoose.model('Submission', submissionSchema);

@@ -1120,7 +1120,7 @@
 <a href="student-dashboard.html">Dashboard</a>
 </li>
                             </ul>
-                   
+                  
                             <div class="menu-dropdown">
                                 <div class="cart-item">
                                     <h6>Cart & Wishlist</h6>
@@ -1173,7 +1173,7 @@
                                     </ul>
                                 </div>
                             </div>
-                   
+                  
                         </div>
                         <div class="header-btn d-flex align-items-center">
                             <div class="icon-btn me-2">
@@ -1813,11 +1813,12 @@ $(document).ready(function() {
             showToast('Failed to submit comment.', 'error');
         }
     });
-    // NEW: Load Assignments Function
+    // UPDATED: Load Assignments Function - FIXED URL, submissions fetch (all then filter), questions display (simple strings), submit URL
     async function loadAssignments() {
         try {
+            // FIXED: Correct URL - /api/assignments/:courseId
             const assignments = await $.ajax({
-                url: `http://localhost:5000/api/courses/${courseId}/assignments`,
+                url: `http://localhost:5000/api/assignments/${courseId}`,
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token }
             });
@@ -1828,7 +1829,17 @@ $(document).ready(function() {
                 $('#pending-count').text(0).hide();
                 return;
             }
-            // For each assignment, check submission status (fetch from /api/student/submissions?assignmentId=...)
+            // FIXED: Fetch all student submissions once, then filter per assignment
+            let allSubs = [];
+            try {
+                allSubs = await $.ajax({
+                    url: `http://localhost:5000/api/dashboard/student/submissions`,
+                    type: 'GET',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+            } catch (subErr) {
+                console.warn('Could not fetch submissions:', subErr);
+            }
             const assignHtml = [];
             for (const assign of assignments) {
                 const now = new Date();
@@ -1838,36 +1849,29 @@ $(document).ready(function() {
                 let score = null;
                 let feedback = '';
                 let submissionId = null;
-                try {
-                    // Fetch submission for this assignment
-                    const subs = await $.ajax({
-                        url: `http://localhost:5000/api/dashboard/student/submissions?assignmentId=${assign._id}`,
-                        type: 'GET',
-                        headers: { 'Authorization': 'Bearer ' + token }
-                    });
-                    if (subs.length > 0) {
-                        const sub = subs[0];
-                        status = sub.evaluated ? 'evaluated' : 'submitted';
-                        score = sub.evaluation?.score;
-                        feedback = sub.evaluation?.feedback || '';
-                        submissionId = sub._id;
-                    } else if (!isOverdue) {
-                        status = 'pending';
-                        pendingCount++;
-                    } else {
-                        status = 'overdue';
-                    }
-                } catch (subErr) {
-                    console.error('Submission check error:', subErr);
-                    if (!isOverdue) pendingCount++;
+                // FIXED: Filter submissions client-side by assignmentId (string compare)
+                const subsForAssign = allSubs.filter(s => s.assignmentId && s.assignmentId._id === assign._id);
+                if (subsForAssign.length > 0) {
+                    const sub = subsForAssign[0];
+                    status = sub.evaluated ? 'evaluated' : 'submitted';
+                    score = sub.evaluation?.score;
+                    feedback = sub.evaluation?.feedback || '';
+                    submissionId = sub._id;
+                } else if (!isOverdue) {
+                    status = 'pending';
+                    pendingCount++;
+                } else {
+                    status = 'overdue';
                 }
-                // Questions display (simple list)
-                const questionsHtml = assign.questions ? assign.questions.map(q => `<li>${q.text || q} ${q.options ? ` (MCQ: ${q.options.join(', ')})` : ' (Descriptive)'}</li>`).join('') : '<li>No questions available.</li>';
+                // FIXED: Questions display - simple array of strings
+                const questionsHtml = assign.questions && assign.questions.length > 0 
+                    ? assign.questions.map(q => `<li>${q}</li>`).join('') 
+                    : '<li>No questions available.</li>';
                 let actionHtml = '';
                 if (status === 'pending' && !isOverdue) {
                     actionHtml = `
-                        <form class="submit-form mt-3">
-                            <input type="file" id="pdf-upload-${assign._id}" accept=".pdf" class="form-control mb-2" required>
+                        <form class="submit-form mt-3" data-assign-id="${assign._id}">
+                            <input type="file" accept=".pdf" class="form-control mb-2" required>
                             <button type="submit" class="btn btn-primary">Submit PDF</button>
                         </form>`;
                 } else if (status === 'submitted' || status === 'evaluated') {
@@ -1888,8 +1892,8 @@ $(document).ready(function() {
             }
             list.html(assignHtml.join(''));
             $('#pending-count').text(pendingCount).show();
-            // Submit handlers for each form
-            $('.submit-form').off('submit').on('submit', async function(e) {
+            // FIXED: Submit handlers - Use data-assign-id, correct URL /api/assignments/:assignId/submit
+            $(document).off('submit', '.submit-form').on('submit', '.submit-form', async function(e) {
                 e.preventDefault();
                 const form = $(this);
                 const fileInput = form.find('input[type="file"]');
@@ -1902,12 +1906,13 @@ $(document).ready(function() {
                     showToast('File too large (max 5MB).', 'error');
                     return;
                 }
-                const assignId = form.attr('id').replace('pdf-upload-', '');
+                const assignId = form.data('assign-id');
                 const formData = new FormData();
                 formData.append('pdf', file);
+                // FIXED: No assignmentId in body, since it's in params
                 try {
                     await $.ajax({
-                        url: `http://localhost:5000/api/student/submit-assignment/${assignId}`,
+                        url: `http://localhost:5000/api/assignments/${assignId}/submit`,
                         type: 'POST',
                         headers: { 'Authorization': 'Bearer ' + token },
                         data: formData,

@@ -3,13 +3,14 @@ const Assignment = require('../models/Assignment');
 const Submission = require('../models/Submission');
 const Course = require('../models/Course');
 const Enrollment = require('../models/Enrollment');
-const ollama = require('ollama');
+// Fixed Import: Destructure default for CommonJS
+const { default: ollama } = require('ollama');
 const pdf = require('pdf-parse');
 const fs = require('fs');
 const path = require('path');
 const { uploadPDF } = require('../middleware/multer');
 
-// Manual Assignment Create
+// Manual Assignment Create (Kept for compatibility, but frontend won't use it now)
 exports.createAssignment = async (req, res) => {
     try {
         const { courseId, title, questions, dueDate } = req.body;
@@ -39,12 +40,12 @@ exports.createAssignment = async (req, res) => {
     }
 };
 
-// AI Generate Questions & Create Assignment
+// AI Generate Questions & Create Assignment (Now with fixed import and object format)
 exports.generateQuestions = async (req, res) => {
     try {
-        const { courseId, prompt, numQuestions = 5, type = 'mixed' } = req.body;
-        if (!courseId || !prompt) {
-            return res.status(400).json({ message: 'Course ID and prompt required' });
+        const { courseId, prompt, numQuestions = 5, type = 'mixed', dueDate } = req.body;
+        if (!courseId || !prompt || !dueDate) {
+            return res.status(400).json({ message: 'Course ID, prompt, and dueDate required' });
         }
         const course = await Course.findById(courseId).populate('topics');
         if (!course) return res.status(404).json({ message: 'Course not found' });
@@ -66,8 +67,9 @@ exports.generateQuestions = async (req, res) => {
 
         const fullPrompt = `${prompt}. Course content to base questions on: ${courseContent}. Generate exactly ${numQuestions} ${type} questions. Format as numbered list: 1. Question text? (For MCQs: options A) B) C) D)).`;
 
+        // Fixed: Use object format with default import
         const response = await ollama.generate({
-            model: 'llama3', // Your model
+            model: 'llama3',
             prompt: fullPrompt
         });
 
@@ -82,7 +84,7 @@ exports.generateQuestions = async (req, res) => {
             courseId,
             title: `AI Generated Assignment: ${prompt.substring(0, 50)}...`,
             questions: questions.slice(0, numQuestions),
-            dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Default 7 days
+            dueDate: new Date(dueDate),
             generatedByAI: true,
             promptUsed: fullPrompt,
             type,
@@ -136,13 +138,55 @@ exports.getAssignmentsByCourse = async (req, res) => {
     }
 };
 
-// Get All Assignments (for admin)
+// Get All Assignments (for admin) - Updated to include pending submissions count
 exports.getAllAssignments = async (req, res) => {
     try {
-        const assignments = await Assignment.find().populate('courseId', 'name description');
-        res.json(assignments);
+        // Populate course and submissions for pending count
+        const assignments = await Assignment.find()
+            .populate('courseId', 'name description')
+            .populate({
+                path: 'submissions',
+                populate: { path: 'studentId', select: 'name' }
+            });
+        
+        // Add pending count to each assignment
+        const assignmentsWithCounts = assignments.map(assignment => {
+            const pendingCount = assignment.submissions ? 
+                assignment.submissions.filter(s => !s.evaluated).length : 0;
+            return {
+                ...assignment.toObject(),
+                pendingSubmissions: pendingCount
+            };
+        });
+
+        res.json(assignmentsWithCounts);
     } catch (error) {
         console.error('Get all assignments error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// NEW: Get Submissions by Assignment (for admin evaluate modal)
+exports.getSubmissionsByAssignment = async (req, res) => {
+    try {
+        const { assignmentId } = req.params;
+        const assignment = await Assignment.findById(assignmentId);
+        if (!assignment) return res.status(404).json({ message: 'Assignment not found' });
+
+        const submissions = await Submission.find({ assignmentId })
+            .populate({
+                path: 'studentId',
+                select: 'name email'
+            })
+            .sort({ submittedAt: -1 })
+            .lean();
+
+        // Filter pending (not evaluated)
+        const pendingSubmissions = submissions.filter(s => !s.evaluated);
+
+        res.json(pendingSubmissions);
+    } catch (error) {
+        console.error('Get submissions by assignment error:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
@@ -150,7 +194,7 @@ exports.getAllAssignments = async (req, res) => {
 // Submit Assignment (Student PDF upload)
 exports.submitAssignment = async (req, res) => {
     try {
-        const { assignmentId } = req.body;
+        const { assignmentId } = req.params; // Fixed: Use params, not body
         if (!assignmentId || !req.file) {
             return res.status(400).json({ message: 'Assignment ID and PDF required' });
         }
@@ -176,6 +220,10 @@ exports.submitAssignment = async (req, res) => {
         });
         await submission.save();
 
+        // Add to assignment submissions if not already (assume model has submissions array)
+        assignment.submissions.push(submission._id);
+        await assignment.save();
+
         res.json({ message: 'Assignment submitted successfully', submission });
     } catch (error) {
         console.error('Submit assignment error:', error);
@@ -183,7 +231,7 @@ exports.submitAssignment = async (req, res) => {
     }
 };
 
-// AI Evaluate Submission
+// AI Evaluate Submission (Fixed import applies here too)
 exports.evaluateSubmission = async (req, res) => {
     try {
         const { submissionId } = req.params;
@@ -201,6 +249,7 @@ exports.evaluateSubmission = async (req, res) => {
         const questions = submission.assignmentId.questions.join('\n');
         const evalPrompt = `Evaluate student answers for these questions: ${questions}. Student submission text: ${studentAnswer}. Provide: Score out of 100, detailed feedback, and remarks. Format: Score: XX\nFeedback: ...\nRemarks: ...`;
 
+        // Fixed: Use object format with default import
         const response = await ollama.generate({
             model: 'llama3',
             prompt: evalPrompt

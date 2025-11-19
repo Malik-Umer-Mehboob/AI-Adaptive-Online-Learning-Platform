@@ -7,6 +7,7 @@ const {
     generateQuestions, 
     getAssignmentsByCourse, 
     getAllAssignments, 
+    getSubmissionsByAssignment, // New
     submitAssignment, 
     evaluateSubmission 
 } = require('../controllers/assignmentController');
@@ -23,6 +24,9 @@ router.get('/', auth, isAdmin, getAllAssignments);
 
 // Student/Admin: Get by course
 router.get('/:courseId', auth, getAssignmentsByCourse);
+
+// Admin: Get submissions for assignment (New route for frontend openEvaluateModal)
+router.get('/:assignmentId/submissions', auth, isAdmin, getSubmissionsByAssignment);
 
 // Student: Submit (PDF upload)
 router.post('/:assignmentId/submit', auth, isStudent, uploadPDF.single('pdf'), submitAssignment);
