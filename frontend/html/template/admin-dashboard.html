@@ -1129,6 +1129,38 @@
         </div>
       </div>
 
+      <!-- New: Modal for Edit Assignment -->
+      <div class="modal fade" id="editAssignmentModal" tabindex="-1" aria-labelledby="editAssignmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editAssignmentModalLabel">Edit Assignment</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="editAssignmentForm">
+                <div class="mb-3">
+                  <label for="editTitle" class="form-label">Assignment Title</label>
+                  <input type="text" class="form-control" id="editTitle" required>
+                </div>
+                <div class="mb-3">
+                  <label for="editCourseSelect" class="form-label">Select Course</label>
+                  <select id="editCourseSelect" class="form-select course-select" required>
+                    <option value="">Choose a course...</option>
+                    <!-- Dynamically populated -->
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="editDueDate" class="form-label">Due Date</label>
+                  <input type="datetime-local" class="form-control" id="editDueDate" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Assignment</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- New: Modal for Evaluate Submission -->
       <div class="modal fade" id="evaluateModal" tabindex="-1" aria-labelledby="evaluateModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -1482,7 +1514,7 @@
             courses.forEach(course => {
               options += `<option value="${course._id}">${course.name}</option>`;
             });
-            $('#courseSelect').html(options);
+            $('#courseSelect, #editCourseSelect').html(options);
           },
           error: function (xhr) {
             console.error('Courses load error:', xhr);
@@ -1527,6 +1559,73 @@
           });
         });
 
+        // New: Edit Assignment
+        let currentEditId = null;
+        window.editAssignment = function (id) {
+          currentEditId = id;
+          $.ajax({
+            url: `http://localhost:5000/api/assignments/${id}`,
+            type: 'GET',
+            headers: { Authorization: 'Bearer ' + token },
+            success: function (assignment) {
+              $('#editTitle').val(assignment.title || '');
+              $('#editCourseSelect').val(assignment.courseId?._id || '');
+              $('#editDueDate').val(new Date(assignment.dueDate).toISOString().slice(0, 16));
+              $('#editAssignmentModal').modal('show');
+            },
+            error: function (xhr) {
+              showToast('Failed to load assignment for edit.', 'error');
+            }
+          });
+        };
+
+        $('#editAssignmentForm').on('submit', function (e) {
+          e.preventDefault();
+          if (!currentEditId) return;
+          const title = $('#editTitle').val();
+          const courseId = $('#editCourseSelect').val();
+          const dueDate = $('#editDueDate').val();
+          if (!title || !courseId || !dueDate) {
+            showToast('Please fill all fields.', 'error');
+            return;
+          }
+          const data = { title, courseId, dueDate };
+          $.ajax({
+            url: `http://localhost:5000/api/assignments/${currentEditId}`,
+            type: 'PUT',
+            headers: { Authorization: 'Bearer ' + token },
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+              showToast('Assignment updated successfully!', 'success');
+              $('#editAssignmentModal').modal('hide');
+              loadAssignments(); // Reload table
+              $(this)[0].reset();
+            },
+            error: function (xhr) {
+              showToast('Error updating assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+            }
+          });
+        });
+
+        // New: Delete Assignment
+        window.deleteAssignment = function (id) {
+          if (confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) {
+            $.ajax({
+              url: `http://localhost:5000/api/assignments/${id}`,
+              type: 'DELETE',
+              headers: { Authorization: 'Bearer ' + token },
+              success: function () {
+                showToast('Assignment deleted successfully!', 'success');
+                loadAssignments(); // Reload table
+              },
+              error: function (xhr) {
+                showToast('Error deleting assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+              }
+            });
+          }
+        };
+
         // Updated: Load Assignments Table (Use pendingSubmissions from backend)
         function loadAssignments() {
           $.ajax({
@@ -1544,9 +1643,9 @@
                     <td>${new Date(assignment.dueDate).toLocaleString()}</td>
                     <td>${pendingCount}</td>
                     <td>
-                      <button class="btn evaluate-btn" onclick="openEvaluateModal('${assignment._id}')">
-                        Evaluate Pending
-                      </button>
+                      <button class="btn btn-primary btn-sm me-1" onclick="editAssignment('${assignment._id}')">Edit</button>
+                      <button class="btn btn-danger btn-sm me-1" onclick="deleteAssignment('${assignment._id}')">Delete</button>
+                      <button class="btn btn-info btn-sm" onclick="openEvaluateModal('${assignment._id}')">Evaluate</button>
                     </td>
                   </tr>
                 `;

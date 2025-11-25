@@ -1,4 +1,4 @@
-// routes/assignments.js - Assignment routes
+// routes/assignments.js - Assignment routes (Updated: Added GET /:id for edit)
 const express = require('express');
 const router = express.Router();
 const { auth, checkRole, isAdmin, isStudent } = require('../middleware/auth');
@@ -7,9 +7,12 @@ const {
     generateQuestions, 
     getAssignmentsByCourse, 
     getAllAssignments, 
+    getAssignmentById, // New: For single assignment fetch (edit)
     getSubmissionsByAssignment, // New
     submitAssignment, 
-    evaluateSubmission 
+    evaluateSubmission,
+    updateAssignment, // New: For edit
+    deleteAssignment // New: For delete
 } = require('../controllers/assignmentController');
 const { uploadPDF } = require('../middleware/multer');
 
@@ -22,8 +25,17 @@ router.post('/generate', auth, isAdmin, generateQuestions);
 // Admin: Get all
 router.get('/', auth, isAdmin, getAllAssignments);
 
+// Admin: Get single by ID (for edit)
+router.get('/:id', auth, isAdmin, getAssignmentById);
+
 // Student/Admin: Get by course
 router.get('/:courseId', auth, getAssignmentsByCourse);
+
+// Admin: Update (Edit)
+router.put('/:id', auth, isAdmin, updateAssignment);
+
+// Admin: Delete
+router.delete('/:id', auth, isAdmin, deleteAssignment);
 
 // Admin: Get submissions for assignment (New route for frontend openEvaluateModal)
 router.get('/:assignmentId/submissions', auth, isAdmin, getSubmissionsByAssignment);

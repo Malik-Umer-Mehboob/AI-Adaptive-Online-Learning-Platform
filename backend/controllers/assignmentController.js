@@ -1,14 +1,29 @@
-// controllers/assignmentController.js - All assignment logic here
+// controllers/assignmentController.js - Fixed: PDF to image with pdf2pic + Tesseract OCR for scanned PDFs
 const Assignment = require('../models/Assignment');
 const Submission = require('../models/Submission');
 const Course = require('../models/Course');
 const Enrollment = require('../models/Enrollment');
-// Fixed Import: Destructure default for CommonJS
-const { default: ollama } = require('ollama');
-const pdf = require('pdf-parse');
-const fs = require('fs');
+// Fixed Import: Standard CJS for ollama (ESM default export)
+const ollama = require('ollama').default;
+const pdfParse = require('pdf-parse'); // For text-based PDFs
+const { fromPath } = require('pdf2pic'); // NEW: PDF to images (needs Ghostscript)
+const { createWorker } = require('tesseract.js'); // For OCR on images
+const fs = require('fs').promises; // Use promises for async
 const path = require('path');
 const { uploadPDF } = require('../middleware/multer');
+
+// NEW: Get Single Assignment by ID (for admin edit)
+exports.getAssignmentById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const assignment = await Assignment.findById(id).populate('courseId', 'name');
+        if (!assignment) return res.status(404).json({ message: 'Assignment not found' });
+        res.json(assignment);
+    } catch (error) {
+        console.error('Get assignment by ID error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
 
 // Manual Assignment Create (Kept for compatibility, but frontend won't use it now)
 exports.createAssignment = async (req, res) => {
@@ -191,13 +206,100 @@ exports.getSubmissionsByAssignment = async (req, res) => {
     }
 };
 
-// Submit Assignment (Student PDF upload)
+// NEW: Update Assignment (for admin edit)
+exports.updateAssignment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, courseId, dueDate } = req.body;
+        if (!title || !courseId || !dueDate) {
+            return res.status(400).json({ message: 'Title, courseId, and dueDate required' });
+        }
+
+        const assignment = await Assignment.findById(id);
+        if (!assignment) return res.status(404).json({ message: 'Assignment not found' });
+
+        // Update course reference if changed
+        if (assignment.courseId.toString() !== courseId) {
+            const oldCourse = await Course.findById(assignment.courseId);
+            if (oldCourse) {
+                oldCourse.assignments = oldCourse.assignments.filter(a => a.toString() !== id);
+                await oldCourse.save();
+            }
+
+            const newCourse = await Course.findById(courseId);
+            if (newCourse) {
+                if (!newCourse.assignments.includes(assignment._id)) {
+                    newCourse.assignments.push(assignment._id);
+                    await newCourse.save();
+                }
+            }
+
+            assignment.courseId = courseId;
+        }
+
+        assignment.title = title;
+        assignment.dueDate = new Date(dueDate);
+        await assignment.save();
+
+        const updatedAssignment = await Assignment.findById(id).populate('courseId', 'name');
+
+        res.json({ message: 'Assignment updated successfully', assignment: updatedAssignment });
+    } catch (error) {
+        console.error('Update assignment error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// NEW: Delete Assignment (for admin delete)
+exports.deleteAssignment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const assignment = await Assignment.findById(id).populate('courseId');
+        if (!assignment) return res.status(404).json({ message: 'Assignment not found' });
+
+        // Remove from course
+        if (assignment.courseId && assignment.courseId.assignments) {
+            assignment.courseId.assignments = assignment.courseId.assignments.filter(a => a.toString() !== id);
+            await assignment.courseId.save();
+        }
+
+        // Delete related submissions
+        const submissions = await Submission.find({ assignmentId: id });
+        for (const submission of submissions) {
+            // Delete PDF file if exists - Fixed path logic
+            if (submission.pdfPath) {
+                let relativePath = submission.pdfPath.replace(/\\/g, '/');
+                const uploadsIndex = relativePath.toLowerCase().indexOf('uploads/');
+                if (uploadsIndex !== -1) {
+                    relativePath = relativePath.substring(uploadsIndex);
+                }
+                const fullPath = path.join(__dirname, '..', 'public', relativePath);
+                if (fs.existsSync(fullPath)) {
+                    require('fs').unlinkSync(fullPath); // Sync for delete
+                }
+            }
+        }
+        await Submission.deleteMany({ assignmentId: id });
+
+        // Delete assignment
+        await Assignment.findByIdAndDelete(id);
+
+        res.json({ message: 'Assignment and related submissions deleted successfully' });
+    } catch (error) {
+        console.error('Delete assignment error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// Submit Assignment (Student PDF upload) - Fixed: Store clean relative path from 'uploads/submissions'
 exports.submitAssignment = async (req, res) => {
     try {
-        const { assignmentId } = req.params; // Fixed: Use params, not body
+        const { assignmentId } = req.params;
         if (!assignmentId || !req.file) {
             return res.status(400).json({ message: 'Assignment ID and PDF required' });
         }
+
+        console.log('Multer file received - path:', req.file.path); // Debug log
 
         const assignment = await Assignment.findById(assignmentId).populate('courseId');
         if (!assignment) return res.status(404).json({ message: 'Assignment not found' });
@@ -212,17 +314,31 @@ exports.submitAssignment = async (req, res) => {
         const existing = await Submission.findOne({ studentId: req.user.id, assignmentId });
         if (existing) return res.status(400).json({ message: 'Already submitted' });
 
+        // Fixed: Extract relative path starting from 'uploads/submissions/' (handles Windows/Linux, casing)
+        let filePath = req.file.path.replace(/\\/g, '/'); // Normalize to forward slashes
+        const publicIndex = filePath.toLowerCase().indexOf('public/');
+        if (publicIndex !== -1) {
+            filePath = filePath.substring(publicIndex + 7); // Strip 'public/' (case-insensitive)
+        }
+        const uploadsIndex = filePath.toLowerCase().indexOf('uploads/');
+        if (uploadsIndex !== -1) {
+            filePath = filePath.substring(uploadsIndex); // Keep from 'uploads/' onwards
+        }
+        console.log('Stored relative PDF path:', filePath); // Debug log
+
         const submission = new Submission({
             assignmentId,
             studentId: req.user.id,
-            pdfPath: req.file.path.replace('public/', ''), // Relative path
+            pdfPath: filePath, // e.g., 'uploads/submissions/1763534538045-691569eaa000a9c280ff394a.pdf'
             submittedAt: now
         });
         await submission.save();
 
-        // Add to assignment submissions if not already (assume model has submissions array)
-        assignment.submissions.push(submission._id);
-        await assignment.save();
+        // Add to assignment submissions if model has array
+        if (assignment.submissions && !assignment.submissions.includes(submission._id)) {
+            assignment.submissions.push(submission._id);
+            await assignment.save();
+        }
 
         res.json({ message: 'Assignment submitted successfully', submission });
     } catch (error) {
@@ -231,29 +347,109 @@ exports.submitAssignment = async (req, res) => {
     }
 };
 
-// AI Evaluate Submission (Fixed import applies here too)
+// AI Evaluate Submission - Fixed: PDF to image with pdf2pic + Tesseract OCR for scanned PDFs
 exports.evaluateSubmission = async (req, res) => {
+    let submissionId; // Declare outside
+    let submission;   // Declare outside
+    let fullPath;     // Declare outside
+    let relativePath; // Declare outside (for logging)
+
     try {
-        const { submissionId } = req.params;
-        const submission = await Submission.findById(submissionId).populate('assignmentId');
+        submissionId = req.params.submissionId; // Assign here (destructure safe)
+        console.log('Evaluating submission ID:', submissionId); // Debug
+        
+        submission = await Submission.findById(submissionId).populate('assignmentId');
         if (!submission || submission.evaluated) {
             return res.status(400).json({ message: 'Submission not found or already evaluated' });
         }
+        console.log('Submission loaded, stored PDF Path:', submission.pdfPath); // Debug
 
-        // PDF extract
-        const fullPath = path.join(__dirname, '../public', submission.pdfPath);
-        const dataBuffer = fs.readFileSync(fullPath);
-        const pdfData = await pdf(dataBuffer);
-        const studentAnswer = pdfData.text.trim();
+        // Fixed: Reconstruct full path with normalization and stripping
+        relativePath = submission.pdfPath.replace(/\\/g, '/'); // Normalize
+        const uploadsIndex = relativePath.toLowerCase().indexOf('uploads/');
+        if (uploadsIndex !== -1) {
+            relativePath = relativePath.substring(uploadsIndex); // Ensure starts with 'uploads/'
+        }
+        fullPath = path.join(__dirname, '..', 'public', relativePath); // controllers/../public + relative
+        console.log('Reconstructed full PDF path:', fullPath); // Debug
+        console.log('File exists at full path?', require('fs').existsSync(fullPath)); // Debug
+
+        if (!require('fs').existsSync(fullPath)) {
+            return res.status(404).json({ 
+                message: 'PDF file not found. Check upload path or re-submit the assignment.' 
+            });
+        }
+
+        const dataBuffer = require('fs').readFileSync(fullPath);
+        console.log('PDF buffer loaded, size (bytes):', dataBuffer.length); // Debug
+
+        let studentAnswer = '';
+
+        // Step 1: Try pdf-parse for text-based PDFs (fast)
+        console.log('Starting PDF parse with pdf-parse...');
+        let pdfData;
+        try {
+            pdfData = pdfParse(dataBuffer);
+            console.log('pdfData pages:', pdfData.numpages || 'unknown'); // Debug
+        } catch (parseError) {
+            console.error('PDF Parse specific error:', parseError);
+        }
+
+        if (pdfData && pdfData.text && typeof pdfData.text === 'string' && pdfData.text.trim().length > 0) {
+            studentAnswer = pdfData.text.trim();
+            console.log('Text extracted via pdf-parse, length:', studentAnswer.length);
+        } else {
+            // Step 2: Fallback to PDF to images + OCR for scanned PDFs
+            console.log('pdf-parse failed, converting PDF to images with pdf2pic...');
+            const tempDir = path.join(__dirname, '..', 'temp');
+            await fs.mkdir(tempDir, { recursive: true });
+
+            const convert = fromPath(fullPath, {
+                density: 200,       // High quality
+                saveFilename: "page",
+                savePath: tempDir,
+                format: "png",
+                width: 1500,
+                height: 1500
+            });
+
+            const convertResult = await convert.bulk(-1); // Convert all pages
+            console.log(`Converted ${convertResult.length} pages to images.`);
+
+            // Step 3: OCR on each image using worker
+            console.log('Running OCR on images...');
+            const worker = await createWorker('eng');
+            let ocrText = '';
+            for (let i = 0; i < convertResult.length; i++) {
+                const imagePath = convertResult[i].path;
+                console.log(`OCR on page ${i+1}: ${imagePath}`);
+                const { data: { text } } = await worker.recognize(imagePath);
+                ocrText += text + '\n--- Page Break ---\n'; // Combine with marker
+                await fs.unlink(imagePath); // Clean up image
+            }
+            await worker.terminate();
+            studentAnswer = ocrText.trim();
+            console.log('OCR extracted total text length:', studentAnswer.length);
+
+            // Clean up temp dir
+            await fs.rm(tempDir, { recursive: true, force: true });
+        }
+
+        if (studentAnswer.length === 0) {
+            return res.status(400).json({ message: 'PDF is empty or unreadable even after OCR. Try a clearer scan or typed PDF.' });
+        }
+
+        console.log('Extracted student text preview:', studentAnswer.substring(0, 200) + '...'); // Debug preview
 
         const questions = submission.assignmentId.questions.join('\n');
-        const evalPrompt = `Evaluate student answers for these questions: ${questions}. Student submission text: ${studentAnswer}. Provide: Score out of 100, detailed feedback, and remarks. Format: Score: XX\nFeedback: ...\nRemarks: ...`;
+        const evalPrompt = `Evaluate student answers for these questions: ${questions}\n\nStudent submission text (from PDF): ${studentAnswer}\n\nProvide: Score out of 100, detailed feedback on each question, and overall remarks. Format exactly: Score: XX\nFeedback: ...\nRemarks: ...`;
+        console.log('Ollama prompt length:', evalPrompt.length); // Debug
 
-        // Fixed: Use object format with default import
         const response = await ollama.generate({
             model: 'llama3',
             prompt: evalPrompt
         });
+        console.log('Ollama response received, length:', response.response.length); // Debug
 
         const evalText = response.response;
         const scoreMatch = evalText.match(/Score:\s*(\d+)/i);
@@ -265,9 +461,18 @@ exports.evaluateSubmission = async (req, res) => {
         submission.evaluated = true;
         await submission.save();
 
+        console.log('Evaluation saved: Score', score); // Debug
+
         res.json({ message: 'Evaluation completed', evaluation: submission.evaluation });
     } catch (error) {
-        console.error('Evaluate submission error:', error);
+        console.error('Detailed Evaluation Error:', {
+            message: error.message,
+            stack: error.stack,
+            submissionId,  // Now accessible
+            pdfPath: submission?.pdfPath,  // Safe with ?
+            fullPathAttempt: fullPath,     // Now accessible
+            relativePathAttempt: relativePath  // Extra for debug
+        });
         res.status(500).json({ message: 'Evaluation failed', error: error.message });
     }
 };

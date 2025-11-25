@@ -1,10 +1,20 @@
+// middleware/multer.js - Clean version: Only multer config, no controller exports
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+
+// Ensure directories exist (absolute paths from project root)
+const projectRoot = path.resolve(__dirname, '..'); // backend root
+const videoDir = path.join(projectRoot, 'public', 'uploads', 'videos');
+const submissionDir = path.join(projectRoot, 'public', 'uploads', 'submissions');
+
+if (!fs.existsSync(videoDir)) fs.mkdirSync(videoDir, { recursive: true });
+if (!fs.existsSync(submissionDir)) fs.mkdirSync(submissionDir, { recursive: true });
 
 // Existing: For video uploads
 const videoStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/Uploads/videos/');
+    cb(null, videoDir); // Absolute path
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -23,13 +33,14 @@ const uploadVideo = multer({
   limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit
 });
 
-// New: For PDF submissions (assignments)
+// Updated: For PDF submissions (absolute destination, better filename)
 const pdfStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/Uploads/submissions/'); // New folder for submissions
+    cb(null, submissionDir); // Absolute path
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + req.user?.id + path.extname(file.originalname)); // Include user ID for uniqueness
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname)); // No user.id to avoid issues if missing
   }
 });
 
@@ -45,4 +56,4 @@ const uploadPDF = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit for PDFs
 });
 
-module.exports = { uploadVideo, uploadPDF }; // Export both
+module.exports = { uploadVideo, uploadPDF };
