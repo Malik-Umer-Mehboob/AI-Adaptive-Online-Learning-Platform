@@ -1,4 +1,4 @@
-// app.js (Updated: Added submissions routes for instant AI evaluation)
+// app.js (No changes needed for logout - already mounting authRoutes.router correctly)
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');

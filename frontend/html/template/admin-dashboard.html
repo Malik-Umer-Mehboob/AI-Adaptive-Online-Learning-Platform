@@ -15,35 +15,26 @@
     />
     <meta name="author" content="Dreams Technologies" />
     <meta name="robots" content="index, follow" />
-
     <title>Adaptive LMS | Advanced Learning Management System Template</title>
-
     <!-- Favicon -->
     <link rel="shortcut icon" href="assets/img/favicon.png" />
     <link rel="apple-touch-icon" href="assets/img/apple-icon.png" />
-
     <!-- Theme Settings Js -->
     <script src="assets/js/theme-script.js" type="text/javascript"></script>
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-
     <!-- Fontawesome CSS -->
     <link
       rel="stylesheet"
       href="assets/plugins/fontawesome/css/fontawesome.min.css"
     />
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css" />
-
     <!-- Feather CSS -->
     <link rel="stylesheet" href="assets/css/feather.css" />
-
     <!-- Iconsax CSS -->
     <link rel="stylesheet" href="assets/css/iconsax.css" />
-
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/style.css" />
-
     <!-- Inline CSS for Dark/Light Mode and Toast -->
     <style>
       .light-mode {
@@ -91,152 +82,207 @@
         }
       }
       /* Light Mode Cards */
-      .card-users { 
-        background: linear-gradient(135deg, #a8e6ff, #b3d9ff); 
-        color: #333; 
+      .card-users {
+        background: linear-gradient(135deg, #a8e6ff, #b3d9ff);
+        color: #333;
       }
-      .card-students { 
-        background: linear-gradient(135deg, #a8f5c2, #b8f5d2); 
-        color: #333; 
+      .card-students {
+        background: linear-gradient(135deg, #a8f5c2, #b8f5d2);
+        color: #333;
       }
-      .card-courses { 
-        background: linear-gradient(135deg, #a8f0ff, #b8f0ff); 
-        color: #333; 
+      .card-courses {
+        background: linear-gradient(135deg, #a8f0ff, #b8f0ff);
+        color: #333;
       }
-      .card-categories { 
-        background: linear-gradient(135deg, #d1c4e9, #d7bde2); 
-        color: #333; 
+      .card-categories {
+        background: linear-gradient(135deg, #d1c4e9, #d7bde2);
+        color: #333;
       }
-      .card-assignments { 
-        background: linear-gradient(135deg, #ffd700, #ffed4e); 
-        color: #333; 
+      .card-assignments {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #333;
       }
-      .card-pending-submissions { 
-        background: linear-gradient(135deg, #ffcccc, #ff9999); 
-        color: #333; 
+      .card-pending-submissions {
+        background: linear-gradient(135deg, #ffcccc, #ff9999);
+        color: #333;
       }
       /* Dark Mode Cards */
-      .dark-mode .card-users { 
-        background: linear-gradient(135deg, #0056b3, #004085); 
-        color: #ffffff; 
+      .dark-mode .card-users {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        color: #ffffff;
       }
-      .dark-mode .card-students { 
-        background: linear-gradient(135deg, #1e7e34, #155724); 
-        color: #ffffff; 
+      .dark-mode .card-students {
+        background: linear-gradient(135deg, #1e7e34, #155724);
+        color: #ffffff;
       }
-      .dark-mode .card-courses { 
-        background: linear-gradient(135deg, #117a8b, #0c5460); 
-        color: #ffffff; 
+      .dark-mode .card-courses {
+        background: linear-gradient(135deg, #117a8b, #0c5460);
+        color: #ffffff;
       }
-      .dark-mode .card-categories { 
-        background: linear-gradient(135deg, #5a2d91, #4a1d7a); 
-        color: #ffffff; 
+      .dark-mode .card-categories {
+        background: linear-gradient(135deg, #5a2d91, #4a1d7a);
+        color: #ffffff;
       }
-      .dark-mode .card-assignments { 
-        background: linear-gradient(135deg, #ffc107, #e0a800); 
-        color: #000; 
+      .dark-mode .card-assignments {
+        background: linear-gradient(135deg, #ffc107, #e0a800);
+        color: #000;
       }
-      .dark-mode .card-pending-submissions { 
-        background: linear-gradient(135deg, #dc3545, #c82333); 
-        color: #ffffff; 
+      .dark-mode .card-pending-submissions {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: #ffffff;
       }
       /* Equal Height for All Dashboard Cards */
-      .card-users, 
-      .card-students, 
-      .card-courses, 
-      .card-categories, 
-      .card-assignments, 
+      .card-users,
+      .card-students,
+      .card-courses,
+      .card-categories,
+      .card-assignments,
       .card-pending-submissions {
         height: 120px;
         display: flex;
         align-items: center;
       }
-      .table th, .table td {
-        border-right: 1px solid #dee2e6;
-        position: relative;
-      }
-      .table th:last-child, .table td:last-child {
-        border-right: none;
-      }
-      .dark-mode .table th, .dark-mode .table td {
-        border-right: 1px solid #495057;
-      }
-      /* Recent Activities Table Styling */
-      .recent-activities-table {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border: none;
-      }
-      .recent-activities-table thead th {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        color: white;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.875rem;
-        letter-spacing: 0.5px;
-        border: none;
-        padding: 16px 12px;
-      }
-      .recent-activities-table tbody tr {
+      /* New Unique Style: Glassmorphism for Sections */
+      .glass-section {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
-        border-bottom: 1px solid #e9ecef;
       }
-      .recent-activities-table tbody tr:hover {
-        background: rgba(0, 123, 255, 0.05);
-        transform: translateY(-1px);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      .dark-mode .glass-section {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       }
-      .recent-activities-table tbody td {
-        padding: 16px 12px;
-        vertical-align: middle;
-        border: none;
+      .glass-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      }
+      /* Unique Slider Styles */
+      .slider-container {
         position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 20px;
       }
-      .recent-activities-table tbody td::after {
-        content: '';
+      .dark-mode .slider-container {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+      }
+      .slider-wrapper {
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+      }
+      .slide-item {
+        min-width: calc(33.333% - 10px);
+        margin: 0 5px;
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .dark-mode .slide-item {
+        background: #34495e;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      .slide-item:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+      .slider-nav {
         position: absolute;
-        right: 0;
         top: 50%;
         transform: translateY(-50%);
-        width: 1px;
-        height: 20px;
-        background: #dee2e6;
-      }
-      .recent-activities-table tbody td:last-child::after {
-        display: none;
-      }
-      .dark-mode .recent-activities-table thead th {
-        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
-      }
-      .dark-mode .recent-activities-table tbody tr {
-        border-bottom: 1px solid #495057;
-      }
-      .dark-mode .recent-activities-table tbody tr:hover {
-        background: rgba(0, 123, 255, 0.1);
-      }
-      .dark-mode .recent-activities-table tbody td::after {
-        background: #495057;
-      }
-      .dark-mode .recent-activities-table {
-        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.05);
-      }
-      .activity-icon {
-        width: 20px;
-        height: 20px;
+        background: rgba(0, 123, 255, 0.8);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        display: inline-flex;
+        cursor: pointer;
+        display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 10px;
-        margin-right: 8px;
+        transition: all 0.3s ease;
+        z-index: 10;
       }
-      .role-admin { background: #007bff; color: white; }
-      .role-student { background: #28a745; color: white; }
-      .role-instructor { background: #ffc107; color: #212529; }
-      .dark-mode .role-admin { background: #0d6efd; }
-      .dark-mode .role-student { background: #20c997; }
-      .dark-mode .role-instructor { background: #fd7e14; color: white; }
+      .slider-nav:hover {
+        background: #007bff;
+        transform: translateY(-50%) scale(1.1);
+      }
+      .slider-nav.prev {
+        left: 10px;
+      }
+      .slider-nav.next {
+        right: 10px;
+      }
+      .slider-dots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 15px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(0, 123, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .dot.active {
+        background: #007bff;
+        transform: scale(1.2);
+      }
+      .activity-title {
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 5px;
+      }
+      .activity-details {
+        font-size: 0.875rem;
+        color: #666;
+      }
+      .dark-mode .activity-details {
+        color: #ccc;
+      }
+      .assignment-card {
+        height: 200px;
+      }
+      .assignment-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #28a745;
+        margin-bottom: 10px;
+      }
+      .assignment-meta {
+        font-size: 0.875rem;
+        color: #666;
+        margin-bottom: 5px;
+      }
+      .dark-mode .assignment-meta {
+        color: #ccc;
+      }
+      .assignment-actions {
+        margin-top: auto;
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .btn-sm-unique {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        border-radius: 20px;
+      }
       /* Footer Styles */
       .footer {
         background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
@@ -390,10 +436,15 @@
           flex-direction: column;
           gap: 10px;
         }
+        .slide-item {
+          min-width: calc(100% - 10px);
+        }
       }
       /* Further reduce height of profile card */
       .profile-card {
         padding: 1.5rem !important; /* Reduced from 2rem to 1.5rem */
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
       }
       .profile-card .row-gap-3 {
         row-gap: 0.5rem !important; /* Reduce row gap */
@@ -402,53 +453,41 @@
 .footer {
   padding: 20px 0 0 !important;
 }
-
 .footer-top {
   padding-bottom: 15px !important;
 }
-
 .footer-bottom {
   padding: 8px 0 !important;
 }
-
 .footer-about p,
 .footer-widget p {
   margin-bottom: 12px !important;
   line-height: 1.4 !important;
 }
-
 .footer-widget h5 {
   margin-bottom: 12px !important;
 }
-
 .footer-widget ul li {
   padding: 3px 0 !important;
 }
-
 .footer-widget ul li a {
   padding: 3px 0 !important;
 }
-
 .footer-contact {
   margin-top: 10px !important;
 }
-
 .footer-contact .mb-1 {
   margin-bottom: 4px !important;
 }
-
 .footer-contact .mb-2 {
   margin-bottom: 4px !important;
 }
-
 .subscribe-input {
   margin-bottom: 10px !important;
 }
-
 .footer-top .row {
   align-items: flex-start !important;
 }
-
 .footer-widget,
 .footer-about {
   min-height: auto !important;
@@ -464,134 +503,35 @@
         transition: all 0.3s ease; /* Smooth transition for hover */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle initial shadow */
       }
-      .dark-mode .card-users, 
-      .dark-mode .card-students, 
-      .dark-mode .card-courses, 
-      .dark-mode .card-categories, 
+      .dark-mode .card-users,
+      .dark-mode .card-students,
+      .dark-mode .card-courses,
+      .dark-mode .card-categories,
       .dark-mode .card-assignments,
       .dark-mode .card-pending-submissions {
         border: 1px solid #495057; /* Dark mode border */
       }
-      .card-users:hover, 
-      .card-students:hover, 
-      .card-courses:hover, 
+      .card-users:hover,
+      .card-students:hover,
+      .card-courses:hover,
       .card-categories:hover, .card-assignments:hover,
       .card-pending-submissions:hover {
         transform: translateY(-5px); /* Lift up on hover */
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
       }
-      .dark-mode .card-users:hover, 
-      .dark-mode .card-students:hover, 
-      .dark-mode .card-courses:hover, 
+      .dark-mode .card-users:hover,
+      .dark-mode .card-students:hover,
+      .dark-mode .card-courses:hover,
       .dark-mode .card-categories:hover,
       .dark-mode .card-assignments:hover,
       .dark-mode .card-pending-submissions:hover {
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Dark mode hover shadow */
       }
-      /* New: Manage Assignments Section */
-      .manage-assignments-section {
-        margin-top: 30px;
-      }
-      .manage-assignments-section h5 {
-        margin-bottom: 15px;
-        color: #333;
-      }
-      .dark-mode .manage-assignments-section h5 {
-        color: #fff;
-      }
-      .create-assignment-btn {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 25px;
-        transition: all 0.3s;
-      }
-      .create-assignment-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-      }
-      /* Assignments Table */
-      .assignments-table {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border: none;
-      }
-      .assignments-table thead th {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.875rem;
-        letter-spacing: 0.5px;
-        border: none;
-        padding: 16px 12px;
-      }
-      .assignments-table tbody tr {
-        transition: all 0.3s ease;
-        border-bottom: 1px solid #e9ecef;
-      }
-      .assignments-table tbody tr:hover {
-        background: rgba(40, 167, 69, 0.05);
-        transform: translateY(-1px);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      }
-      .assignments-table tbody td {
-        padding: 16px 12px;
-        vertical-align: middle;
-        border: none;
-        position: relative;
-      }
-      .assignments-table tbody td::after {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 1px;
-        height: 20px;
-        background: #dee2e6;
-      }
-      .assignments-table tbody td:last-child::after {
-        display: none;
-      }
-      .dark-mode .assignments-table thead th {
-        background: linear-gradient(135deg, #198754, #157347);
-      }
-      .dark-mode .assignments-table tbody tr {
-        border-bottom: 1px solid #495057;
-      }
-      .dark-mode .assignments-table tbody tr:hover {
-        background: rgba(40, 167, 69, 0.1);
-      }
-      .dark-mode .assignments-table tbody td::after {
-        background: #495057;
-      }
-      .dark-mode .assignments-table {
-        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.05);
-      }
-      .evaluate-btn {
-        background: #ffc107;
-        color: #000;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 12px;
-        transition: all 0.3s;
-      }
-      .evaluate-btn:hover {
-        background: #e0a800;
-        color: #000;
-      }
-      .dark-mode .evaluate-btn {
-        background: #ffc107;
-        color: #000;
-      }
       /* Modals */
       .modal-header {
         background: linear-gradient(135deg, #007bff, #0056b3);
         color: white;
+        border-radius: 12px 12px 0 0;
       }
       .modal-body label {
         font-weight: 600;
@@ -763,7 +703,6 @@
         </div>
       </header>
       <!-- /Header -->
-
       <!-- Breadcrumb -->
       <div class="breadcrumb-bar text-center">
         <div class="container">
@@ -783,7 +722,6 @@
         </div>
       </div>
       <!-- /Breadcrumb -->
-
       <div class="content">
         <div class="container">
           <!-- Profile Box -->
@@ -844,7 +782,6 @@
             </div>
           </div>
           <!-- /Profile Box -->
-
           <div class="row">
             <!-- Sidebar -->
             <div class="col-lg-3 theiaStickySidebar">
@@ -1033,57 +970,63 @@
                   </div>
                 </div>
               </div>
-              <h5 class="mb-3 fs-18">Recent Activities</h5>
-              <div class="table-responsive">
-                <table class="table recent-activities-table table-hover">
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Role</th>
-                      <th>Action</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody id="recent-activities">
-                    <!-- Dynamically populated -->
-                  </tbody>
-                </table>
-              </div>
-              <!-- New: Manage Assignments Section -->
-              <div class="manage-assignments-section">
-                <h5 class="mb-3 fs-18">Manage Assignments</h5>
+              <!-- Unique Slider for Recent Activities -->
+              <div class="glass-section">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <span>Generate AI-based assignments for courses.</span>
+                  <h5 class="fs-18 mb-0">Recent Activities</h5>
+                  <button class="btn create-assignment-btn" data-bs-toggle="modal" data-bs-target="#activityModal">
+                    <i class="fas fa-plus me-1"></i> View All
+                  </button>
+                </div>
+                <div class="slider-container" id="activities-slider-container">
+                  <div class="slider-wrapper" id="activities-slider">
+                    <!-- Dynamically populated -->
+                  </div>
+                  <button class="slider-nav prev" id="prev-activities-nav"><i class="fas fa-chevron-left"></i></button>
+                  <button class="slider-nav next" id="next-activities-nav"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="slider-dots" id="activities-dots"></div>
+              </div>
+              <!-- New: Manage Assignments Section with Unique Slider -->
+              <div class="glass-section">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="fs-18 mb-0">Manage Assignments</h5>
                   <button class="btn create-assignment-btn" data-bs-toggle="modal" data-bs-target="#createAssignmentModal">
                     <i class="fas fa-plus me-1"></i> Generate AI Assignment
                   </button>
                 </div>
-                <div class="table-responsive">
-                  <table class="table assignments-table table-hover">
-                    <thead>
-                      <tr>
-                        <th>Assignment Title</th>
-                        <th>Course</th>
-                        <th>Due Date</th>
-                        <th>Pending Submissions</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="assignments-table-body">
-                      <!-- Dynamically populated -->
-                    </tbody>
-                  </table>
+                <div class="slider-container" id="assignments-slider-container">
+                  <div class="slider-wrapper" id="assignments-slider">
+                    <!-- Dynamically populated -->
+                  </div>
+                  <button class="slider-nav prev" id="prev-assignments-nav"><i class="fas fa-chevron-left"></i></button>
+                  <button class="slider-nav next" id="next-assignments-nav"><i class="fas fa-chevron-right"></i></button>
                 </div>
+                <div class="slider-dots" id="assignments-dots"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <!-- Toast Container -->
       <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
-
-      <!-- Updated: Modal for AI Generate Assignment Only (Manual removed) -->
+      <!-- Modal for Activities (New) -->
+      <div class="modal fade" id="activityModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">All Recent Activities</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div id="all-activities-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Updated: Modal for AI Generate Assignment -->
       <div class="modal fade" id="createAssignmentModal" tabindex="-1" aria-labelledby="createAssignmentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -1128,8 +1071,7 @@
           </div>
         </div>
       </div>
-
-      <!-- New: Modal for Edit Assignment -->
+      <!-- Modal for Edit Assignment -->
       <div class="modal fade" id="editAssignmentModal" tabindex="-1" aria-labelledby="editAssignmentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -1160,8 +1102,7 @@
           </div>
         </div>
       </div>
-
-      <!-- New: Modal for Evaluate Submission -->
+      <!-- Modal for Evaluate Submission -->
       <div class="modal fade" id="evaluateModal" tabindex="-1" aria-labelledby="evaluateModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -1179,7 +1120,6 @@
           </div>
         </div>
       </div>
-
       <!-- Footer -->
      <footer class="footer">
   <div class="footer-top">
@@ -1276,16 +1216,13 @@
       <!-- /Footer -->
     </div>
     <!-- /Main Wrapper -->
-
     <!-- jQuery -->
     <script src="assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-
     <!-- Bootstrap Core JS -->
     <script
       src="assets/js/bootstrap.bundle.min.js"
       type="text/javascript"
     ></script>
-
     <!-- Sticky Sidebar JS -->
     <script
       src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"
@@ -1295,12 +1232,9 @@
       src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"
       type="text/javascript"
     ></script>
-
     <!-- Custom JS -->
     <script src="assets/js/script.js" type="text/javascript"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-
     <script>
       $(document).ready(function () {
         const token = localStorage.getItem("token");
@@ -1325,7 +1259,6 @@
           window.location.href = "login.html";
           return;
         }
-
         function showToast(message, type = "success", duration = 3000) {
           const toastContainer = $("#toast-container");
           const toastId = `toast-${Date.now()}`;
@@ -1348,7 +1281,6 @@
             $(`#${toastId}`).remove();
           }, duration);
         }
-
         function loadProfile() {
           console.log("Loading profile for user ID:", decoded.id);
           $.ajax({
@@ -1388,7 +1320,6 @@
             },
           });
         }
-
         $(".profile-link").on("click", function (e) {
           e.preventDefault();
           const href = $(this).data("href") || $(this).attr("href");
@@ -1418,31 +1349,32 @@
             },
           });
         });
-
         loadProfile();
-
         const toggleDarkMode = () => {
           $('body').addClass('dark-mode').removeClass('light-mode');
           $('#dark-mode-toggle').removeClass('activate');
           $('#light-mode-toggle').addClass('activate');
           localStorage.setItem('theme', 'dark');
         };
-
         const toggleLightMode = () => {
           $('body').addClass('light-mode').removeClass('dark-mode');
           $('#light-mode-toggle').removeClass('activate');
           $('#dark-mode-toggle').addClass('activate');
           localStorage.setItem('theme', 'light');
         };
-
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') toggleDarkMode();
         else toggleLightMode();
-
         $('#dark-mode-toggle').on('click', toggleDarkMode);
         $('#light-mode-toggle').on('click', toggleLightMode);
-
-        // New: Load Dashboard Data (Updated for Assignments)
+        // Slider variables for Activities
+        let activities = [];
+        let currentActivityIndex = 0;
+        const itemsPerSlide = 3;
+        // Slider variables for Assignments
+        let assignments = [];
+        let currentAssignmentIndex = 0;
+        // Load Dashboard Data
         $.ajax({
           url: 'http://localhost:5000/api/dashboard/admin/dashboard',
           type: 'GET',
@@ -1453,63 +1385,108 @@
             $('#total-students').text(response.totalStudents || 0);
             $('#total-courses').text(response.totalCourses || 0);
             $('#total-categories').text(response.totalCategories || 0);
-            $('#total-assignments').text(response.totalAssignments || 0); // New
-            $('#pending-submissions').text(response.pendingSubmissions || 0); // New
-            if (response.recentActivities && response.recentActivities.length) {
-              let activitiesHTML = '';
-              response.recentActivities.forEach((activity) => {
-                let roleClass = '';
-                if (activity.role === 'admin') roleClass = 'role-admin';
-                else if (activity.role === 'student') roleClass = 'role-student';
-                else if (activity.role === 'instructor') roleClass = 'role-instructor';
-                activitiesHTML += `
-                            <tr>
-                                <td>${activity.user || 'Unknown'}</td>
-                                <td><span class="activity-icon ${roleClass}">${activity.role ? activity.role.charAt(0).toUpperCase() : '?'}</span>${activity.role || 'Unknown'}</td>
-                                <td>${activity.action || 'No Action'}</td>
-                                <td>${new Date(activity.date).toLocaleString() || 'No Date'}</td>
-                            </tr>
-                        `;
-              });
-              $('#recent-activities').html(activitiesHTML);
-            } else {
-              $('#recent-activities').html(
-                '<tr><td colspan="4">No recent activities.</td></tr>'
-              );
-            }
+            $('#total-assignments').text(response.totalAssignments || 0);
+            $('#pending-submissions').text(response.pendingSubmissions || 0);
+            activities = response.recentActivities || [];
+            updateActivitiesSlider();
+            updateAllActivitiesList(); // For modal
           },
           error: function (xhr) {
-            console.error('Dashboard data error:', {
-              status: xhr.status,
-              response: xhr.responseText,
-            });
-            if (xhr.status === 0)
-              showToast(
-                'Server unavailable. Ensure backend is running.',
-                'error'
-              );
-            else if (xhr.status === 401) {
-              showToast('Session expired.', 'error');
-              localStorage.removeItem('token');
-              window.location.href = 'login.html';
-            } else if (xhr.status === 404)
-              showToast(
-                'Dashboard endpoint not found. Check backend setup.',
-                'error'
-              );
-            else if (xhr.status === 500)
-              showToast('Server error. Try again later.', 'error');
-            else showToast(`Dashboard error (Status: ${xhr.status}).`, 'error');
+            console.error('Dashboard data error:', xhr);
+            showToast('Dashboard error.', 'error');
           },
         });
-
-        // New: Load Courses for Select in Modal
+        // Function to update Activities Slider
+        function updateActivitiesSlider() {
+          const $slider = $('#activities-slider');
+          const $dots = $('#activities-dots');
+          const totalSlides = Math.ceil(activities.length / itemsPerSlide);
+          $slider.empty();
+          $dots.empty();
+          for (let i = 0; i < totalSlides; i++) {
+            const start = i * itemsPerSlide;
+            const end = start + itemsPerSlide;
+            const slideActivities = activities.slice(start, end);
+            let slideHTML = '<div class="d-flex w-100">';
+            slideActivities.forEach((activity, idx) => {
+              let roleClass = '';
+              if (activity.role === 'admin') roleClass = 'role-admin';
+              else if (activity.role === 'student') roleClass = 'role-student';
+              else if (activity.role === 'instructor') roleClass = 'role-instructor';
+              slideHTML += `
+                <div class="slide-item">
+                  <div class="activity-title">${activity.user || 'Unknown'} <span class="activity-icon ${roleClass}">${activity.role ? activity.role.charAt(0).toUpperCase() : '?'}</span></div>
+                  <div class="activity-details">${activity.action || 'No Action'}</div>
+                  <div class="activity-details">${new Date(activity.date).toLocaleString() || 'No Date'}</div>
+                </div>
+              `;
+            });
+            slideHTML += '</div>';
+            $slider.append(slideHTML);
+            const dot = `<span class="dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></span>`;
+            $dots.append(dot);
+          }
+          updateSliderTransform($slider, currentActivityIndex, itemsPerSlide, 'activities');
+          updateSliderNav(currentActivityIndex, totalSlides, 'activities');
+        }
+        // Function to update All Activities List for Modal
+        function updateAllActivitiesList() {
+          let listHTML = '';
+          activities.forEach((activity) => {
+            let roleClass = '';
+            if (activity.role === 'admin') roleClass = 'role-admin';
+            else if (activity.role === 'student') roleClass = 'role-student';
+            else if (activity.role === 'instructor') roleClass = 'role-instructor';
+            listHTML += `
+              <div class="slide-item mb-3">
+                <div class="activity-title">${activity.user || 'Unknown'} <span class="activity-icon ${roleClass}">${activity.role ? activity.role.charAt(0).toUpperCase() : '?'}</span></div>
+                <div class="activity-details">${activity.action || 'No Action'}</div>
+                <div class="activity-details">${new Date(activity.date).toLocaleString() || 'No Date'}</div>
+              </div>
+            `;
+          });
+          $('#all-activities-list').html(listHTML || '<p>No activities available.</p>');
+        }
+        // Generic function to update slider transform
+        function updateSliderTransform($slider, index, itemsPerSlide, type) {
+          const slideWidth = 100 / itemsPerSlide;
+          const transform = `translateX(-${index * slideWidth}%)`;
+          $slider.css('transform', transform);
+        }
+        // Generic function to update nav and dots
+        function updateSliderNav(index, totalSlides, type) {
+          const $prev = $(`#prev-${type}-nav`);
+          const $next = $(`#next-${type}-nav`);
+          const $dots = $(`#${type}-dots .dot`);
+          $prev.prop('disabled', index === 0);
+          $next.prop('disabled', index >= totalSlides - 1);
+          $dots.removeClass('active').eq(index).addClass('active');
+        }
+        // Activities Slider Navigation
+        $('#next-activities-nav').on('click', function() {
+          const totalSlides = Math.ceil(activities.length / itemsPerSlide);
+          if (currentActivityIndex < totalSlides - 1) {
+            currentActivityIndex++;
+            updateActivitiesSlider();
+          }
+        });
+        $('#prev-activities-nav').on('click', function() {
+          if (currentActivityIndex > 0) {
+            currentActivityIndex--;
+            updateActivitiesSlider();
+          }
+        });
+        $('#activities-dots').on('click', '.dot', function() {
+          currentActivityIndex = $(this).data('slide');
+          updateActivitiesSlider();
+        });
+        // Load Courses for Select in Modal
         $.ajax({
           url: 'http://localhost:5000/api/courses',
           type: 'GET',
           headers: { Authorization: 'Bearer ' + token },
           success: function (response) {
-            const courses = response.courses || response; // Handle both array and object
+            const courses = response.courses || response;
             let options = '<option value="">Choose a course...</option>';
             courses.forEach(course => {
               options += `<option value="${course._id}">${course.name}</option>`;
@@ -1521,8 +1498,7 @@
             showToast('Failed to load courses.', 'error');
           }
         });
-
-        // Updated: Create Assignment Form Submit (Only AI, no manual toggle)
+        // Create Assignment Form Submit
         $('#createAssignmentForm').on('submit', function (e) {
           e.preventDefault();
           const courseId = $('#courseSelect').val();
@@ -1531,35 +1507,28 @@
           const aiType = $('#aiType').val();
           const dueDate = $('#dueDate').val();
           if (!courseId || !prompt || !dueDate) {
-            showToast('Please fill all fields: course, prompt, and due date.', 'error');
+            showToast('Please fill all fields.', 'error');
             return;
           }
-          const data = { 
-            courseId, 
-            prompt, 
-            numQuestions, 
-            type: aiType, 
-            dueDate 
-          };
+          const data = { courseId, prompt, numQuestions, type: aiType, dueDate };
           $.ajax({
             url: 'http://localhost:5000/api/assignments/generate',
             type: 'POST',
             headers: { Authorization: 'Bearer ' + token },
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function (response) {
+            success: function () {
               showToast('AI assignment generated successfully!', 'success');
               $('#createAssignmentModal').modal('hide');
-              loadAssignments(); // Reload table
+              loadAssignments();
               $(this)[0].reset();
             },
             error: function (xhr) {
-              showToast('Error generating assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+              showToast('Error: ' + (xhr.responseJSON?.message || 'Unknown'), 'error');
             }
           });
         });
-
-        // New: Edit Assignment
+        // Edit Assignment
         let currentEditId = null;
         window.editAssignment = function (id) {
           currentEditId = id;
@@ -1573,12 +1542,11 @@
               $('#editDueDate').val(new Date(assignment.dueDate).toISOString().slice(0, 16));
               $('#editAssignmentModal').modal('show');
             },
-            error: function (xhr) {
-              showToast('Failed to load assignment for edit.', 'error');
+            error: function () {
+              showToast('Failed to load assignment.', 'error');
             }
           });
         };
-
         $('#editAssignmentForm').on('submit', function (e) {
           e.preventDefault();
           if (!currentEditId) return;
@@ -1597,89 +1565,123 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function () {
-              showToast('Assignment updated successfully!', 'success');
+              showToast('Assignment updated!', 'success');
               $('#editAssignmentModal').modal('hide');
-              loadAssignments(); // Reload table
+              loadAssignments();
               $(this)[0].reset();
             },
             error: function (xhr) {
-              showToast('Error updating assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+              showToast('Error: ' + (xhr.responseJSON?.message || 'Unknown'), 'error');
             }
           });
         });
-
-        // New: Delete Assignment
+        // Delete Assignment
         window.deleteAssignment = function (id) {
-          if (confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) {
+          if (confirm('Delete this assignment?')) {
             $.ajax({
               url: `http://localhost:5000/api/assignments/${id}`,
               type: 'DELETE',
               headers: { Authorization: 'Bearer ' + token },
               success: function () {
-                showToast('Assignment deleted successfully!', 'success');
-                loadAssignments(); // Reload table
+                showToast('Assignment deleted!', 'success');
+                loadAssignments();
               },
               error: function (xhr) {
-                showToast('Error deleting assignment: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+                showToast('Error: ' + (xhr.responseJSON?.message || 'Unknown'), 'error');
               }
             });
           }
         };
-
-        // Updated: Load Assignments Table (Use pendingSubmissions from backend)
+        // Load Assignments
         function loadAssignments() {
           $.ajax({
             url: 'http://localhost:5000/api/assignments',
             type: 'GET',
             headers: { Authorization: 'Bearer ' + token },
             success: function (response) {
-              let tableHTML = '';
-              response.forEach(assignment => {
-                const pendingCount = assignment.pendingSubmissions || 0; // From backend now
-                tableHTML += `
-                  <tr>
-                    <td>${assignment.title}</td>
-                    <td>${assignment.courseId?.name || 'Unknown'}</td>
-                    <td>${new Date(assignment.dueDate).toLocaleString()}</td>
-                    <td>${pendingCount}</td>
-                    <td>
-                      <button class="btn btn-primary btn-sm me-1" onclick="editAssignment('${assignment._id}')">Edit</button>
-                      <button class="btn btn-danger btn-sm me-1" onclick="deleteAssignment('${assignment._id}')">Delete</button>
-                      <button class="btn btn-info btn-sm" onclick="openEvaluateModal('${assignment._id}')">Evaluate</button>
-                    </td>
-                  </tr>
-                `;
-              });
-              if (!response.length) tableHTML = '<tr><td colspan="5">No assignments yet.</td></tr>';
-              $('#assignments-table-body').html(tableHTML);
+              assignments = response || [];
+              currentAssignmentIndex = 0;
+              updateAssignmentsSlider();
             },
             error: function (xhr) {
               console.error('Assignments load error:', xhr);
               showToast('Failed to load assignments.', 'error');
-              $('#assignments-table-body').html('<tr><td colspan="5">Error loading assignments.</td></tr>');
             }
           });
         }
+        // Function to update Assignments Slider
+        function updateAssignmentsSlider() {
+          const $slider = $('#assignments-slider');
+          const $dots = $('#assignments-dots');
+          const totalSlides = Math.ceil(assignments.length / itemsPerSlide);
+          $slider.empty();
+          $dots.empty();
+          for (let i = 0; i < totalSlides; i++) {
+            const start = i * itemsPerSlide;
+            const end = start + itemsPerSlide;
+            const slideAssignments = assignments.slice(start, end);
+            let slideHTML = '<div class="d-flex w-100">';
+            slideAssignments.forEach((assignment) => {
+              const pendingCount = assignment.pendingSubmissions || 0;
+              slideHTML += `
+                <div class="slide-item assignment-card">
+                  <div class="assignment-title">${assignment.title}</div>
+                  <div class="assignment-meta">Course: ${assignment.courseId?.name || 'Unknown'}</div>
+                  <div class="assignment-meta">Due: ${new Date(assignment.dueDate).toLocaleString()}</div>
+                  <div class="assignment-meta">Pending: ${pendingCount}</div>
+                  <div class="assignment-actions">
+                    <button class="btn btn-primary btn-sm-unique" onclick="editAssignment('${assignment._id}')">Edit</button>
+                    <button class="btn btn-danger btn-sm-unique" onclick="deleteAssignment('${assignment._id}')">Delete</button>
+                    <button class="btn btn-info btn-sm-unique" onclick="openEvaluateModal('${assignment._id}')">Evaluate</button>
+                  </div>
+                </div>
+              `;
+            });
+            slideHTML += '</div>';
+            $slider.append(slideHTML);
+            const dot = `<span class="dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></span>`;
+            $dots.append(dot);
+          }
+          updateSliderTransform($slider, currentAssignmentIndex, itemsPerSlide, 'assignments');
+          updateSliderNav(currentAssignmentIndex, totalSlides, 'assignments');
+        }
+        // Assignments Slider Navigation
+        $('#next-assignments-nav').on('click', function() {
+          const totalSlides = Math.ceil(assignments.length / itemsPerSlide);
+          if (currentAssignmentIndex < totalSlides - 1) {
+            currentAssignmentIndex++;
+            updateAssignmentsSlider();
+          }
+        });
+        $('#prev-assignments-nav').on('click', function() {
+          if (currentAssignmentIndex > 0) {
+            currentAssignmentIndex--;
+            updateAssignmentsSlider();
+          }
+        });
+        $('#assignments-dots').on('click', '.dot', function() {
+          currentAssignmentIndex = $(this).data('slide');
+          updateAssignmentsSlider();
+        });
         loadAssignments(); // Initial load
-
-        // New: Open Evaluate Modal (Fetch submissions for assignment)
+        // Open Evaluate Modal
         window.openEvaluateModal = function (assignmentId) {
           $.ajax({
-            url: `http://localhost:5000/api/assignments/${assignmentId}/submissions`, // Assume endpoint or use getAll and filter
+            url: `http://localhost:5000/api/assignments/${assignmentId}/submissions`,
             type: 'GET',
             headers: { Authorization: 'Bearer ' + token },
             success: function (submissions) {
               const pending = submissions.filter(s => !s.evaluated);
               if (pending.length === 0) {
-                $('#evaluateDescription').text('No pending submissions for this assignment.');
+                $('#evaluateDescription').text('No pending submissions.');
                 $('#evaluationResult').empty();
               } else {
-                $('#evaluateDescription').html(`Pending submissions: ${pending.length}. Click evaluate for each.`);
+                $('#evaluateDescription').html(`Pending: ${pending.length}`);
                 let resultHTML = '';
                 pending.forEach(sub => {
                   resultHTML += `
                     <div class="mb-3 p-3 border rounded">
-                      <p>Student: ${sub.studentId?.name || 'Unknown'} | Submitted: ${new Date(sub.submittedAt).toLocaleString()}</p>
+                      <p>Student: ${sub.studentId?.name || 'Unknown'} | ${new Date(sub.submittedAt).toLocaleString()}</p>
                       <button class="btn btn-primary btn-sm" onclick="evaluateSubmission('${sub._id}')">Evaluate</button>
                       <div id="eval-${sub._id}" class="mt-2"></div>
                     </div>
@@ -1689,13 +1691,12 @@
               }
               $('#evaluateModal').modal('show');
             },
-            error: function (xhr) {
+            error: function () {
               showToast('Failed to load submissions.', 'error');
             }
           });
         };
-
-        // New: Evaluate Single Submission
+        // Evaluate Submission
         window.evaluateSubmission = function (submissionId) {
           $.ajax({
             url: `http://localhost:5000/api/assignments/submissions/${submissionId}/evaluate`,
@@ -1710,10 +1711,10 @@
                   Remarks: ${response.evaluation.remarks}
                 </div>
               `);
-              loadAssignments(); // Reload to update counts
+              loadAssignments();
             },
             error: function (xhr) {
-              showToast('Evaluation failed: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
+              showToast('Evaluation failed.', 'error');
             }
           });
         };

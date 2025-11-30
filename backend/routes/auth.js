@@ -1,3 +1,4 @@
+// routes/auth.js - Updated: Added Logout Route
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -394,6 +395,25 @@ router.get('/user-info', auth, async (req, res) => {
     } catch (error) {
         console.error('User Info Error:', error);
         res.status(500).json({ message: 'Error fetching user info', error: error.message });
+    }
+});
+
+// NEW: Logout Route - Clears cookie (if used) and returns success
+router.get('/logout', (req, res) => {
+    try {
+        console.log('Logout request received');
+        // Clear JWT cookie if it exists (assuming 'jwt' as cookie name from signin)
+        res.clearCookie('jwt', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+        // Frontend should also clear localStorage/sessionStorage token
+        console.log('Logout successful');
+        res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+        console.error('Logout Error:', error);
+        res.status(500).json({ message: 'Logout failed', error: error.message });
     }
 });
 

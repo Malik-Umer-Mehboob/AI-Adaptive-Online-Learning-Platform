@@ -9,6 +9,7 @@ const pdfParse = require('pdf-parse'); // For text-based PDFs
 const { fromPath } = require('pdf2pic'); // NEW: PDF to images (needs Ghostscript)
 const { createWorker } = require('tesseract.js'); // For OCR on images
 const fs = require('fs').promises; // Use promises for async
+const fsSync = require('fs'); // Sync methods like existsSync, unlinkSync, readFileSync
 const path = require('path');
 const { uploadPDF } = require('../middleware/multer');
 
@@ -274,8 +275,8 @@ exports.deleteAssignment = async (req, res) => {
                     relativePath = relativePath.substring(uploadsIndex);
                 }
                 const fullPath = path.join(__dirname, '..', 'public', relativePath);
-                if (fs.existsSync(fullPath)) {
-                    require('fs').unlinkSync(fullPath); // Sync for delete
+                if (fsSync.existsSync(fullPath)) {
+                    fsSync.unlinkSync(fullPath); // Sync for delete
                 }
             }
         }
@@ -372,15 +373,15 @@ exports.evaluateSubmission = async (req, res) => {
         }
         fullPath = path.join(__dirname, '..', 'public', relativePath); // controllers/../public + relative
         console.log('Reconstructed full PDF path:', fullPath); // Debug
-        console.log('File exists at full path?', require('fs').existsSync(fullPath)); // Debug
+        console.log('File exists at full path?', fsSync.existsSync(fullPath)); // Debug
 
-        if (!require('fs').existsSync(fullPath)) {
+        if (!fsSync.existsSync(fullPath)) {
             return res.status(404).json({ 
                 message: 'PDF file not found. Check upload path or re-submit the assignment.' 
             });
         }
 
-        const dataBuffer = require('fs').readFileSync(fullPath);
+        const dataBuffer = fsSync.readFileSync(fullPath);
         console.log('PDF buffer loaded, size (bytes):', dataBuffer.length); // Debug
 
         let studentAnswer = '';
