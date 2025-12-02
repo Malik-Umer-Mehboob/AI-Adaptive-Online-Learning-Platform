@@ -970,6 +970,11 @@
                 border-left: 5px solid var(--warning);
                 margin-top: 2rem;
             }
+            @media (max-width: 768px) {
+                .assignments-section .assignment-item {
+                    margin-bottom: 1rem; /* Responsive spacing */
+                }
+            }
             .dark-mode .assignments-section {
                 background: linear-gradient(135deg, #343a40, #495057);
                 border-left-color: #fd7e14;
@@ -1120,7 +1125,7 @@
 <a href="student-dashboard.html">Dashboard</a>
 </li>
                             </ul>
-                  
+                
                             <div class="menu-dropdown">
                                 <div class="cart-item">
                                     <h6>Cart & Wishlist</h6>
@@ -1173,7 +1178,7 @@
                                     </ul>
                                 </div>
                             </div>
-                  
+                
                         </div>
                         <div class="header-btn d-flex align-items-center">
                             <div class="icon-btn me-2">
@@ -1464,6 +1469,7 @@
     <script src="assets/plugins/ion-rangeslider/js/custom-rangeslider.js" type="text/javascript"></script>
 <!-- Custom JS -->
 <script src="assets/js/script.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -1813,124 +1819,143 @@ $(document).ready(function() {
             showToast('Failed to submit comment.', 'error');
         }
     });
-    // UPDATED: Load Assignments Function - FIXED URL, submissions fetch (all then filter), questions display (simple strings), submit URL
-    async function loadAssignments() {
+    // UPDATED: Load Assignments (PDF focus, auto status update after submit, FIXED: Optional submission fetch, due date compare with toLocaleDateString + FULL URL FOR PDF)
+   // UPDATED: Load Assignments (PDF focus, auto status update after submit, FIXED: Better error logging + optional submission fetch + FULL BACKEND URL FOR PDF)
+async function loadAssignments() {
+    try {
+        const assignments = await $.ajax({
+            url: `http://localhost:5000/api/assignments/${courseId}`,
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            cache: false // FIXED: No cache, fresh fetch
+        });
+        const list = $('#assignments-list');
+        let pendingCount = 0;
+        if (assignments.length === 0) {
+            list.html('<p class="text-muted">No assignments available.</p>');
+            $('#pending-count').text(0).hide();
+            return;
+        }
+        // Fetch submissions (optional - if error, default to pending)
+        let allSubs = [];
         try {
-            // FIXED: Correct URL - /api/assignments/:courseId
-            const assignments = await $.ajax({
-                url: `http://localhost:5000/api/assignments/${courseId}`,
+            allSubs = await $.ajax({
+                url: `http://localhost:5000/api/submissions/my`, // FIXED: Use /api/submissions/my if dashboard not available
                 type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token }
+                headers: { 'Authorization': 'Bearer ' + token },
+                cache: false
             });
-            const list = $('#assignments-list');
-            let pendingCount = 0;
-            if (assignments.length === 0) {
-                list.html('<p class="text-muted">No assignments available.</p>');
-                $('#pending-count').text(0).hide();
+        } catch (subErr) {
+            console.warn('Submissions fetch error (non-critical):', subErr);
+            // Continue without submissions data - show as pending
+        }
+        const assignHtml = [];
+        for (const assign of assignments) {
+            const now = new Date();
+            const due = new Date(assign.dueDate);
+            const isOverdue = due < now;
+            let status = 'pending';
+            let score = null;
+            let feedback = '';
+            let submissionId = null;
+            const subsForAssign = allSubs.filter(s => s.assignmentId && s.assignmentId._id === assign._id.toString()); // FIXED: String compare
+            if (subsForAssign.length > 0) {
+                const sub = subsForAssign[0];
+                if (sub.evaluated) {
+                    status = 'evaluated';
+                    score = sub.evaluation?.score;
+                    feedback = sub.evaluation?.feedback || sub.evaluation?.remarks || '';
+                } else {
+                    status = 'submitted'; // Or 'evaluating' if just submitted
+                }
+                submissionId = sub._id;
+            } else if (!isOverdue) {
+                status = 'pending';
+                pendingCount++;
+            } else {
+                status = 'overdue';
+            }
+            // FIXED: FULL BACKEND URL FOR PDF - Prepend http://localhost:5000 to avoid port mismatch
+            const fullPdfUrl = assign.pdfUrl ? `http://localhost:5000${assign.pdfUrl}` : '';
+            let actionHtml = '';
+            if (status === 'pending' && !isOverdue) {
+                actionHtml = `
+                    <a href="${fullPdfUrl}" class="btn btn-outline-primary mb-2" download>📥 Download Assignment PDF</a>
+                    <form class="submit-form mt-3" data-assign-id="${assign._id}">
+                        <input type="file" accept=".pdf" class="form-control mb-2" required>
+                        <button type="submit" class="btn btn-primary">Submit Solved PDF</button>
+                    </form>`;
+            } else if (status === 'submitted') {
+                actionHtml = `<span class="status-badge status-submitted">Submitted - Evaluating...</span><p class="text-muted small mt-1">AI checking your work (may take 1-2 min)</p>`;
+            } else if (status === 'evaluated') {
+                actionHtml = `
+                    <span class="status-badge status-evaluated">Evaluated</span>
+                    <a href="${fullPdfUrl}" class="btn btn-outline-secondary btn-sm mt-2" download>📥 Re-download PDF</a>
+                    ${score ? `<div class="score mt-2"><strong>Score: ${score}/100</strong></div>` : ''}
+                    <div class="feedback-text mt-1">${feedback}</div>`;
+            } else {
+                actionHtml = `<span class="status-badge status-overdue">OVERDUE</span>
+                    <a href="${fullPdfUrl}" class="btn btn-outline-secondary btn-sm mt-2" download>📥 Download PDF</a>`;
+            }
+            assignHtml.push(`
+                <div class="assignment-item">
+                    <h6 class="assignment-title">${assign.title}</h6>
+                    <p class="assignment-due">Due: ${due.toLocaleDateString()} ${isOverdue ? '(Overdue)' : ''}</p>
+                    <p class="text-muted small">Solve questions from PDF and upload your answers.</p>
+                    ${actionHtml}
+                </div>
+            `);
+        }
+        list.html(assignHtml.join(''));
+        $('#pending-count').text(pendingCount).show();
+        // Submit handler (with auto reload after submit for eval)
+        $(document).off('submit', '.submit-form').on('submit', '.submit-form', async function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const fileInput = form.find('input[type="file"]');
+            const file = fileInput[0].files[0];
+            if (!file || !file.type.startsWith('application/pdf')) {
+                showToast('Please select a PDF file.', 'error');
                 return;
             }
-            // FIXED: Fetch all student submissions once, then filter per assignment
-            let allSubs = [];
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('File too large (max 5MB).', 'error');
+                return;
+            }
+            const assignId = form.data('assign-id');
+            const formData = new FormData();
+            formData.append('pdf', file);
             try {
-                allSubs = await $.ajax({
-                    url: `http://localhost:5000/api/dashboard/student/submissions`,
-                    type: 'GET',
-                    headers: { 'Authorization': 'Bearer ' + token }
+                await $.ajax({
+                    url: `http://localhost:5000/api/assignments/${assignId}/submit`,
+                    type: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    data: formData,
+                    processData: false,
+                    contentType: false
                 });
-            } catch (subErr) {
-                console.warn('Could not fetch submissions:', subErr);
+                showToast('Submitted! AI evaluating...', 'success');
+                // Auto reload after 10s to show feedback
+                setTimeout(() => loadAssignments(), 10000);
+            } catch (err) {
+                // FIXED: Better submit error log
+                console.error('Submit error details:', err.status, err.responseJSON?.message || err.message);
+                showToast('Submission failed: ' + (err.responseJSON?.message || 'Try again'), 'error');
             }
-            const assignHtml = [];
-            for (const assign of assignments) {
-                const now = new Date();
-                const due = new Date(assign.dueDate);
-                const isOverdue = due < now;
-                let status = 'pending';
-                let score = null;
-                let feedback = '';
-                let submissionId = null;
-                // FIXED: Filter submissions client-side by assignmentId (string compare)
-                const subsForAssign = allSubs.filter(s => s.assignmentId && s.assignmentId._id === assign._id);
-                if (subsForAssign.length > 0) {
-                    const sub = subsForAssign[0];
-                    status = sub.evaluated ? 'evaluated' : 'submitted';
-                    score = sub.evaluation?.score;
-                    feedback = sub.evaluation?.feedback || '';
-                    submissionId = sub._id;
-                } else if (!isOverdue) {
-                    status = 'pending';
-                    pendingCount++;
-                } else {
-                    status = 'overdue';
-                }
-                // FIXED: Questions display - simple array of strings
-                const questionsHtml = assign.questions && assign.questions.length > 0 
-                    ? assign.questions.map(q => `<li>${q}</li>`).join('') 
-                    : '<li>No questions available.</li>';
-                let actionHtml = '';
-                if (status === 'pending' && !isOverdue) {
-                    actionHtml = `
-                        <form class="submit-form mt-3" data-assign-id="${assign._id}">
-                            <input type="file" accept=".pdf" class="form-control mb-2" required>
-                            <button type="submit" class="btn btn-primary">Submit PDF</button>
-                        </form>`;
-                } else if (status === 'submitted' || status === 'evaluated') {
-                    actionHtml = `<span class="status-badge status-${status}">${status.toUpperCase()}</span>`;
-                    if (score) actionHtml += `<div class="score mt-2"><strong>Score: ${score}/100</strong></div>`;
-                    if (feedback) actionHtml += `<div class="feedback-text">${feedback}</div>`;
-                } else {
-                    actionHtml = `<span class="status-badge status-${status}">OVERDUE</span>`;
-                }
-                assignHtml.push(`
-                    <div class="assignment-item">
-                        <h6 class="assignment-title">${assign.title}</h6>
-                        <p class="assignment-due">Due: ${due.toLocaleDateString()} ${isOverdue ? '(Overdue)' : ''}</p>
-                        <ul class="assignment-questions list-unstyled">${questionsHtml}</ul>
-                        ${actionHtml}
-                    </div>
-                `);
-            }
-            list.html(assignHtml.join(''));
-            $('#pending-count').text(pendingCount).show();
-            // FIXED: Submit handlers - Use data-assign-id, correct URL /api/assignments/:assignId/submit
-            $(document).off('submit', '.submit-form').on('submit', '.submit-form', async function(e) {
-                e.preventDefault();
-                const form = $(this);
-                const fileInput = form.find('input[type="file"]');
-                const file = fileInput[0].files[0];
-                if (!file || !file.type.startsWith('application/pdf')) {
-                    showToast('Please select a PDF file.', 'error');
-                    return;
-                }
-                if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                    showToast('File too large (max 5MB).', 'error');
-                    return;
-                }
-                const assignId = form.data('assign-id');
-                const formData = new FormData();
-                formData.append('pdf', file);
-                // FIXED: No assignmentId in body, since it's in params
-                try {
-                    await $.ajax({
-                        url: `http://localhost:5000/api/assignments/${assignId}/submit`,
-                        type: 'POST',
-                        headers: { 'Authorization': 'Bearer ' + token },
-                        data: formData,
-                        processData: false,
-                        contentType: false
-                    });
-                    showToast('Assignment submitted successfully!', 'success');
-                    loadAssignments(); // Reload to update status
-                } catch (err) {
-                    showToast('Submission failed.', 'error');
-                }
-            });
-        } catch (err) {
-            console.error('Load assignments error:', err);
-            $('#assignments-list').html('<p class="text-danger">Error loading assignments.</p>');
-            $('#pending-count').hide();
-        }
+        });
+    } catch (err) {
+        // FIXED: Better error logging - status + message
+        console.error('Load assignments error details:', {
+            status: err.status,
+            message: err.responseJSON?.message || err.message || 'Unknown error',
+            courseId: courseId, // Debug courseId
+            fullError: err // Full object for expand
+        });
+        showToast(`Error loading assignments (Status: ${err.status || 'N/A'}): ${err.responseJSON?.message || 'Try refresh'}`, 'error');
+        $('#assignments-list').html('<p class="text-danger">Error loading assignments. <button class="btn btn-sm btn-primary" onclick="loadAssignments()">Retry</button></p>');
+        $('#pending-count').hide();
     }
+}
     // UPDATED: Load course - FIXED: Added display for course.videos (as additional if topics) & course.resources section; topics nested + RESOURCES + FIXED nesting for resources toggle + expand first topic + CALL loadAssignments()
     async function loadCourse() {
         try {
@@ -2116,23 +2141,26 @@ $(document).ready(function() {
                 }
             }
             // Enroll button
-            $('#enroll-btn').off('click').on('click', async () => {
-                if (enrolled) return;
-                try {
-                    await $.ajax({
-                        url: 'http://localhost:5000/api/dashboard/student/enroll',
-                        type: 'POST',
-                        headers: { 'Authorization': 'Bearer ' + token },
-                        contentType: 'application/json',
-                        data: JSON.stringify({ courseId })
-                    });
-                    showToast('Enrolled successfully!', 'success');
-                    $('#enroll-btn').text('Enrolled').prop('disabled', true).removeClass('btn-enroll').addClass('btn btn-success');
-                    loadCourse(); // Reload to update header and load assignments
-                } catch (err) {
-                    showToast('Enrollment failed.', 'error');
-                }
-            });
+            // FIXED: Enroll button handler (remove newline in body)
+$('#enroll-btn').off('click').on('click', async () => {
+    if (enrolled) return;
+    try {
+        const enrollBody = { courseId }; // FIXED: Clean body, no newline
+        await $.ajax({
+            url: 'http://localhost:5000/api/dashboard/student/enroll',
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            contentType: 'application/json',
+            data: JSON.stringify(enrollBody) // FIXED: Stringify clean object
+        });
+        showToast('Enrolled successfully!', 'success');
+        $('#enroll-btn').text('Enrolled').prop('disabled', true).removeClass('btn-enroll').addClass('btn btn-success');
+        loadCourse(); // Reload to update header and load assignments
+    } catch (err) {
+        console.error('Enroll error details:', err.status, err.responseJSON?.message || err.message);
+        showToast('Enrollment failed: ' + (err.responseJSON?.message || 'Try again'), 'error');
+    }
+});
             // NEW: Load assignments after course load
             loadAssignments();
             // Load comments

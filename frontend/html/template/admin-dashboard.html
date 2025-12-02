@@ -162,7 +162,7 @@
         transform: translateY(-5px);
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
       }
-      /* Unique Slider Styles */
+      /* Unique Slider Styles - FIXED: Responsive for mobile */
       .slider-container {
         position: relative;
         overflow: hidden;
@@ -189,6 +189,11 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+      }
+      @media (max-width: 768px) {
+        .slide-item {
+          min-width: calc(100% - 10px); /* FIXED: Full width on mobile */
+        }
       }
       .dark-mode .slide-item {
         background: #34495e;
@@ -556,6 +561,46 @@
       .course-select option {
         padding: 10px;
       }
+      /* PDF Link Styles */
+      .pdf-link {
+        color: #007bff;
+        text-decoration: underline;
+        font-size: 0.875rem;
+      }
+      .pdf-link:hover {
+        color: #0056b3;
+      }
+      .dark-mode .pdf-link {
+        color: #4dabf7;
+      }
+      .dark-mode .pdf-link:hover {
+        color: #82c1ff;
+      }
+      /* Evaluation Alert Styles - FIXED: Better classes */
+      .eval-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        border-radius: 4px;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      .eval-info {
+        background-color: #cce5ff;
+        color: #004085;
+        border: 1px solid #b8daff;
+        border-radius: 4px;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      .dark-mode .eval-success {
+        background-color: #28a745;
+        color: #fff;
+      }
+      .dark-mode .eval-info {
+        background-color: #007bff;
+        color: #fff;
+      }
     </style>
   </head>
   <body>
@@ -689,11 +734,7 @@
                       </li>
                     </ul>
                     <div class="profile-footer">
-                      <a
-                        href="index-3.html"
-                        class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"
-                        ><i class="isax isax-logout me-2"></i>Logout</a
-                      >
+                      <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100" id="logout-btn"><i class="isax isax-logout me-2"></i>Logout</a>
                     </div>
                   </div>
                 </div>
@@ -863,6 +904,7 @@
                       <a
                         href="index-3.html"
                         class="d-inline-flex align-items-center"
+                        id="logout-btn"
                         ><i class="isax isax-logout5 me-2"></i>Logout</a
                       >
                     </li>
@@ -1104,10 +1146,10 @@
       </div>
       <!-- Modal for Evaluate Submission -->
       <div class="modal fade" id="evaluateModal" tabindex="-1" aria-labelledby="evaluateModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="evaluateModalLabel">Evaluate Submission</h5>
+              <h5 class="modal-title" id="evaluateModalLabel">Evaluate Submissions</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -1349,6 +1391,25 @@
             },
           });
         });
+        // FIXED: Logout handler for sidebar button
+        $(document).on('click', '#logout-btn', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: 'http://localhost:5000/api/auth/logout',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function () {
+                    localStorage.removeItem('token');
+                    showToast('Logout successful.', 'success');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
+                },
+                error: function () {
+                    localStorage.removeItem('token');
+                    showToast('Logout successful.', 'success');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
+                }
+            });
+        });
         loadProfile();
         const toggleDarkMode = () => {
           $('body').addClass('dark-mode').removeClass('light-mode');
@@ -1370,7 +1431,7 @@
         // Slider variables for Activities
         let activities = [];
         let currentActivityIndex = 0;
-        const itemsPerSlide = 3;
+        let itemsPerSlide = window.innerWidth < 768 ? 1 : 3; // FIXED: Responsive items per slide
         // Slider variables for Assignments
         let assignments = [];
         let currentAssignmentIndex = 0;
@@ -1462,6 +1523,12 @@
           $next.prop('disabled', index >= totalSlides - 1);
           $dots.removeClass('active').eq(index).addClass('active');
         }
+        // FIXED: Responsive resize listener for sliders
+        $(window).on('resize', function() {
+            itemsPerSlide = window.innerWidth < 768 ? 1 : 3;
+            updateActivitiesSlider();
+            updateAssignmentsSlider();
+        });
         // Activities Slider Navigation
         $('#next-activities-nav').on('click', function() {
           const totalSlides = Math.ceil(activities.length / itemsPerSlide);
@@ -1623,12 +1690,14 @@
             let slideHTML = '<div class="d-flex w-100">';
             slideAssignments.forEach((assignment) => {
               const pendingCount = assignment.pendingSubmissions || 0;
+              const pdfUrl = assignment.pdfUrl || ''; // PDF URL
               slideHTML += `
                 <div class="slide-item assignment-card">
                   <div class="assignment-title">${assignment.title}</div>
                   <div class="assignment-meta">Course: ${assignment.courseId?.name || 'Unknown'}</div>
                   <div class="assignment-meta">Due: ${new Date(assignment.dueDate).toLocaleString()}</div>
                   <div class="assignment-meta">Pending: ${pendingCount}</div>
+                  ${pdfUrl ? `<div class="assignment-meta"><a href="${pdfUrl}" target="_blank" class="pdf-link" download>Download PDF</a></div>` : ''}
                   <div class="assignment-actions">
                     <button class="btn btn-primary btn-sm-unique" onclick="editAssignment('${assignment._id}')">Edit</button>
                     <button class="btn btn-danger btn-sm-unique" onclick="deleteAssignment('${assignment._id}')">Delete</button>
@@ -1676,13 +1745,13 @@
                 $('#evaluateDescription').text('No pending submissions.');
                 $('#evaluationResult').empty();
               } else {
-                $('#evaluateDescription').html(`Pending: ${pending.length}`);
+                $('#evaluateDescription').html(`<strong>Pending Submissions: ${pending.length}</strong>`);
                 let resultHTML = '';
                 pending.forEach(sub => {
                   resultHTML += `
                     <div class="mb-3 p-3 border rounded">
-                      <p>Student: ${sub.studentId?.name || 'Unknown'} | ${new Date(sub.submittedAt).toLocaleString()}</p>
-                      <button class="btn btn-primary btn-sm" onclick="evaluateSubmission('${sub._id}')">Evaluate</button>
+                      <p><strong>Student:</strong> ${sub.studentId?.name || 'Unknown'} | <strong>Submitted:</strong> ${new Date(sub.submittedAt).toLocaleString()}</p>
+                      <button class="btn btn-primary btn-sm" onclick="evaluateSubmission('${sub._id}')">AI Evaluate</button>
                       <div id="eval-${sub._id}" class="mt-2"></div>
                     </div>
                   `;
@@ -1696,25 +1765,25 @@
             }
           });
         };
-        // Evaluate Submission
+        // Evaluate Submission - FIXED: Use eval-success class for result
         window.evaluateSubmission = function (submissionId) {
           $.ajax({
             url: `http://localhost:5000/api/assignments/submissions/${submissionId}/evaluate`,
             type: 'POST',
             headers: { Authorization: 'Bearer ' + token },
             success: function (response) {
-              showToast('Evaluation completed!', 'success');
+              showToast('AI Evaluation completed!', 'success');
               $(`#eval-${submissionId}`).html(`
-                <div class="alert alert-success">
-                  Score: ${response.evaluation.score}/100<br>
-                  Feedback: ${response.evaluation.feedback}<br>
-                  Remarks: ${response.evaluation.remarks}
+                <div class="alert eval-success">
+                  <strong>Score:</strong> ${response.evaluation.score}/100<br>
+                  <strong>Feedback:</strong> ${response.evaluation.feedback}<br>
+                  <strong>Remarks:</strong> ${response.evaluation.remarks}
                 </div>
               `);
               loadAssignments();
             },
             error: function (xhr) {
-              showToast('Evaluation failed.', 'error');
+              showToast('Evaluation failed: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
             }
           });
         };

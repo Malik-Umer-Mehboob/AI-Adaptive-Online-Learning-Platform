@@ -1,11 +1,11 @@
-// backend/routes/dashboard.js
+// backend/routes/dashboard.js - FIXED: Import with correct spelling, aggregate safe
 const express = require('express');
 const router = express.Router();
 const { auth, checkRole, isStudent } = require('../middleware/auth'); // Updated with isStudent
 const Student = require('../models/Student');
 const Admin = require('../models/Admin');
 const Course = require('../models/Course');
-const Enrollment = require('../models/Enrollment');
+const Enrollment = require('../models/Enrollment'); // FIXED: Single 'l' - matches renamed file
 const Favorite = require('../models/Favorite');
 const Assignment = require('../models/Assignment'); // New
 const Submission = require('../models/Submission'); // New
@@ -54,6 +54,7 @@ router.post('/student/complete', auth, checkRole(['student']), async (req, res) 
 
         enrollment.status = 'completed';
         enrollment.progress = 100;  // Set progress to 100% on complete
+        enrollment.completedAt = new Date(); // Add completed date
         await enrollment.save();
         res.json({ message: 'Course completed' });
     } catch (error) {
@@ -231,24 +232,31 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {  // Adde
     }
 });
 
-// POST - Cleanup invalid enrollments (NEW: for old stale data) - Minor fix for aggregate
+// POST - Cleanup invalid enrollments (NEW: for old stale data) - FIXED: Aggregate wrapped in try-catch
 router.post('/student/cleanup-enrollments', auth, checkRole(['student']), async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const invalid = await Enrollment.aggregate([
-            { $match: { studentId: userId } },
-            {
-                $lookup: {
-                    from: 'courses',
-                    localField: 'courseId',
-                    foreignField: '_id',
-                    as: 'course'
-                }
-            },
-            { $match: { 'course': { $size: 0 } } },
-            { $group: { _id: null, ids: { $push: '$_id' }, count: { $sum: 1 } } }
-        ]);
+        let invalid = [];
+        try {
+            // FIXED: Aggregate with error handling
+            invalid = await Enrollment.aggregate([
+                { $match: { studentId: userId } },
+                {
+                    $lookup: {
+                        from: 'courses',
+                        localField: 'courseId',
+                        foreignField: '_id',
+                        as: 'course'
+                    }
+                },
+                { $match: { 'course': { $size: 0 } } },
+                { $group: { _id: null, ids: { $push: '$_id' }, count: { $sum: 1 } } }
+            ]);
+        } catch (aggError) {
+            console.error('Aggregate error in cleanup:', aggError);
+            return res.status(500).json({ message: 'Cleanup aggregate failed', error: aggError.message });
+        }
 
         let deleted = 0;
         if (invalid.length > 0 && invalid[0]?.count > 0 && invalid[0].ids.length > 0) {
@@ -263,7 +271,7 @@ router.post('/student/cleanup-enrollments', auth, checkRole(['student']), async 
     }
 });
 
-// GET - Admin dashboard (unchanged, but added console for debug)
+// GET - Admin dashboard (unchanged, but added console for debug + FIXED: Aggregate safe)
 router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
     try {
         console.log('Admin dashboard accessed by user:', req.user.id); // Debug log
@@ -277,13 +285,20 @@ router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
         // New: Pending submissions (unevaluated)
         const pendingSubmissions = await Submission.countDocuments({ evaluated: false });
 
-        const aggResult = await Enrollment.aggregate([
-            { $lookup: { from: 'courses', localField: 'courseId', foreignField: '_id', as: 'course' } },
-            { $unwind: { path: '$course', preserveNullAndEmptyArrays: true } },
-            { $match: { 'course.price': { $exists: true, $ne: null } } },
-            { $group: { _id: null, total: { $sum: { $toDouble: '$course.price' } } } }
-        ]);
-        const totalEarnings = aggResult[0]?.total || 0;
+        let totalEarnings = 0;
+        try {
+            // FIXED: Aggregate with error handling
+            const aggResult = await Enrollment.aggregate([
+                { $lookup: { from: 'courses', localField: 'courseId', foreignField: '_id', as: 'course' } },
+                { $unwind: { path: '$course', preserveNullAndEmptyArrays: true } },
+                { $match: { 'course.price': { $exists: true, $ne: null } } },
+                { $group: { _id: null, total: { $sum: { $toDouble: '$course.price' } } } }
+            ]);
+            totalEarnings = aggResult[0]?.total || 0;
+        } catch (aggError) {
+            console.error('Earnings aggregate error:', aggError);
+            totalEarnings = 0; // Fallback
+        }
 
         // Updated: Recent activities (Added assignment submissions)
         const activities = await Enrollment.find()

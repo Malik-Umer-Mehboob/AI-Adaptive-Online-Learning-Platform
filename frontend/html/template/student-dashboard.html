@@ -897,7 +897,7 @@
             transition: width 0.3s ease;
             border-radius: 3px;
         }
-        /* My Submissions Card Styling */
+        /* My Submissions Card Styling - Improved UI */
         .submission-card {
           background: linear-gradient(135deg, #f8f9fa, #e9ecef);
           border-radius: 12px;
@@ -922,33 +922,140 @@
           padding: 16px;
           background: rgba(40, 167, 69, 0.05);
           border-bottom: 1px solid #dee2e6;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
         }
         .dark-mode .submission-header {
           background: rgba(40, 167, 69, 0.1);
           border-bottom: 1px solid #495057;
         }
-        .submission-body {
-          padding: 16px;
-        }
-        .submission-score {
-          font-size: 1.25rem;
-          font-weight: bold;
-          color: var(--success);
-        }
-        .submission-feedback {
-          margin-top: 8px;
-          font-style: italic;
-          color: var(--gray);
-        }
-        .dark-mode .submission-feedback {
-          color: #adb5bd;
+        .submission-header h6 {
+          margin: 0;
+          font-weight: 600;
+          color: var(--text-color);
+          flex-grow: 1;
         }
         .submission-date {
           font-size: 0.875rem;
           color: var(--gray);
+          white-space: nowrap;
         }
         .dark-mode .submission-date {
           color: #adb5bd;
+        }
+        .submission-body {
+          padding: 16px;
+        }
+        .submission-score {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-bottom: 12px;
+        }
+        .submission-score.pending {
+          color: var(--gray);
+        }
+        .submission-score.good {
+          color: var(--success);
+        }
+        .submission-score.poor {
+          color: var(--danger);
+        }
+        .submission-score i {
+          font-size: 1.25rem;
+        }
+        .submission-feedback {
+          margin-bottom: 12px;
+          font-style: italic;
+          color: var(--gray);
+          padding: 8px;
+          background: rgba(0, 123, 255, 0.05);
+          border-left: 3px solid var(--primary);
+          border-radius: 4px;
+        }
+        .dark-mode .submission-feedback {
+          color: #adb5bd;
+          background: rgba(13, 110, 253, 0.1);
+        }
+        .submission-remarks {
+          background: rgba(40, 167, 69, 0.05);
+          padding: 12px;
+          border-radius: 6px;
+          border-left: 3px solid var(--success);
+          margin-bottom: 12px;
+        }
+        .dark-mode .submission-remarks {
+          background: rgba(40, 167, 69, 0.1);
+        }
+        .submission-remarks strong {
+          color: var(--text-color);
+          display: block;
+          margin-bottom: 4px;
+        }
+        .submission-remarks p {
+          margin: 0;
+          color: var(--gray);
+        }
+        .dark-mode .submission-remarks p {
+          color: #adb5bd;
+        }
+        .download-link {
+          text-align: center;
+        }
+        .download-link a {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 16px;
+          background: var(--primary);
+          color: white !important;
+          text-decoration: none;
+          border-radius: 20px;
+          font-size: 0.875rem;
+          transition: all 0.3s ease;
+        }
+        .download-link a:hover {
+          background: #0056b3;
+          transform: translateY(-1px);
+        }
+        .course-name-badge {
+          background: rgba(0, 123, 255, 0.1);
+          color: var(--primary);
+          padding: 4px 8px;
+          border-radius: 12px;
+          font-size: 0.75rem;
+          font-weight: 500;
+          display: inline-block;
+          margin-bottom: 4px;
+        }
+        .dark-mode .course-name-badge {
+          background: rgba(13, 110, 253, 0.2);
+          color: #0d6efd;
+        }
+        .show-all-btn {
+          display: block;
+          margin: 20px auto 0;
+          padding: 10px 20px;
+          background: var(--primary);
+          color: white;
+          border: none;
+          border-radius: 25px;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          text-align: center;
+        }
+        .show-all-btn:hover {
+          background: #0056b3;
+          transform: translateY(-2px);
+        }
+        .dark-mode .show-all-btn {
+          background: #0d6efd;
+        }
+        .dark-mode .show-all-btn:hover {
+          background: #0b5ed7;
         }
     </style>
   </head>
@@ -1353,6 +1460,7 @@
                 <p class="text-muted mb-4">Enroll in some courses from the Courses page!</p>
                 <a href="course-grid.html" class="btn btn-primary">Browse Courses</a>
               </div>
+              <button class="show-all-btn" id="show-all-courses" style="display: none;">Show All Courses</button>
               <h5 class="mb-3 fs-18">My Submissions</h5>
               <div id="my-submissions">
                 <!-- Submissions will be loaded here -->
@@ -1365,6 +1473,7 @@
                 <p class="text-muted mb-4">Submit your first assignment to see it here!</p>
                 <a href="student-courses.html" class="btn btn-primary">View Assignments</a>
               </div>
+              <button class="show-all-btn" id="show-all-submissions" style="display: none;">Show All Submissions</button>
               <div>
                 <div class="row">
                   <div class="col-xl-7"></div>
@@ -1561,6 +1670,29 @@
             }
             return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
         }
+        let showAllCourses = false;
+        let showAllSubmissions = false;
+        let allEnrollments = [];
+        let allSubmissions = [];
+        // NEW: Cache for course names to avoid multiple fetches
+        const courseNameCache = {};
+        // NEW: Function to fetch course name by ID (async)
+        async function fetchCourseName(courseId) {
+          if (courseNameCache[courseId]) return courseNameCache[courseId];
+          try {
+            const response = await $.ajax({
+              url: `http://localhost:5000/api/courses/${courseId}`,
+              type: 'GET',
+              headers: { Authorization: 'Bearer ' + token }
+            });
+            const name = response.name || 'Unknown Course';
+            courseNameCache[courseId] = name;
+            return name;
+          } catch (err) {
+            console.error('Error fetching course name:', err);
+            return 'Unknown Course';
+          }
+        }
         function generateEnrollmentHTML(enrollments, startIndex, endIndex) {
             return enrollments.slice(startIndex - 1, endIndex).map(enroll => {
                 const course = enroll.course;
@@ -1592,57 +1724,129 @@
                                     <a href="course-details.html?id=${course._id}" class="view-btn">
                                         <i class="fas fa-eye"></i> View Course
                                     </a>
-                                    <a href="course-details.html?id=${course._id}" class="btn btn-outline-primary btn-sm ms-2 fw-bold">
-                                        View Assignments
-                                    </a>
+                                    <button class="btn btn-outline-primary btn-sm ms-2 enroll-btn" data-course-id="${course._id}">Enroll</button>
                                 </div>
                             </div>
                         </div>
                     </div>`;
             }).join('');
         }
- function loadSubmissions() {
-    $.ajax({
-        url: 'http://localhost:5000/api/submissions/my',
-        type: 'GET',
-        headers: { Authorization: 'Bearer ' + token },
-        success: function(submissions) {
-            console.log('Frontend Submissions Received:', submissions);
+        function renderRecentCourses(enrollments) {
+          allEnrollments = enrollments;
+          const limit = showAllCourses ? enrollments.length : 3;
+          const recentHTML = generateEnrollmentHTML(enrollments, 1, limit + 1);
+          $('#recent-courses-grid').html(recentHTML).show();
+          $('#empty-recent-courses').hide();
+          const showAllBtn = $('#show-all-courses');
+          if (enrollments.length > 3) {
+            showAllBtn.show();
+            showAllBtn.text(showAllCourses ? 'Show Less Courses' : 'Show All Courses');
+          } else {
+            showAllBtn.hide();
+          }
+        }
+        async function loadSubmissions() {
+            $.ajax({
+                url: 'http://localhost:5000/api/submissions/my',
+                type: 'GET',
+                headers: { Authorization: 'Bearer ' + token },
+                success: async function(submissions) {
+                    console.log('Frontend Submissions Received:', submissions);
+                    allSubmissions = submissions;
+                    // FIXED: Await rendering to handle async course name fetches
+                    await renderSubmissions(submissions);
+                },
+                error: function(xhr) {
+                    console.error('Frontend Error:', xhr.responseText);
+                    showToast('Load error: ' + xhr.status, 'error');
+                    $('#empty-submissions').show();
+                }
+            });
+        }
+        // UPDATED: Make renderSubmissions async and fetch course names if missing
+        async function renderSubmissions(submissions) {
             let html = '';
+            const limit = showAllSubmissions ? submissions.length : 3;
             if (submissions && submissions.length > 0) {
-                submissions.forEach(sub => {
-                    // Fixed: Always show score if exists, else default
-                    const status = (sub.score > 0 || sub.evaluated) ? `${sub.score || 75}/100` : 'Pending Evaluation';
-                    const feedbackText = sub.feedback || 'No feedback yet.';
-                    const remarksText = sub.remarks || 'No remarks yet.';
-                    html += `
+                // FIXED: Process submissions async to fetch missing course names
+                const processedSubs = await Promise.all(submissions.slice(0, limit).map(async sub => {
+                    let courseName = sub.course?.name || sub.assignment?.course?.name || sub.assignment?.courseTitle || null;
+                    // FIXED: If courseName is missing and we have a course ID (from assignment.course._id or similar), fetch it
+                    if (!courseName && sub.assignment?.course?._id) {
+                        courseName = await fetchCourseName(sub.assignment.course._id);
+                    } else if (!courseName && sub.course?._id) {
+                        courseName = await fetchCourseName(sub.course._id);
+                    }
+                    if (!courseName) courseName = 'Unknown Course'; // Final fallback
+                    // Extract assignment title if available, but prioritize course name for header
+                    const assignmentTitle = sub.assignmentTitle || sub.assignment?.title || sub.assignment?.name || 'Untitled Assignment';
+                    // Improved score logic: Avoid default 75, show actual or pending
+                    let status = 'Pending Evaluation';
+                    let scoreClass = 'pending';
+                    if (sub.score !== undefined && sub.score !== null) {
+                        status = `${sub.score}/100`;
+                        scoreClass = sub.score >= 50 ? 'good' : 'poor';
+                    } else if (sub.evaluated) {
+                        status = 'Graded (Score Pending)';
+                        scoreClass = 'warning';
+                    }
+                    const feedbackText = sub.feedback || 'No feedback provided.';
+                    const remarksText = sub.remarks || 'No remarks provided.';
+                    // FIXED: Full backend URL for PDF download (port 5000)
+                    const fullPdfUrl = sub.pdfPath ? `http://localhost:5000${sub.pdfPath}` : '';
+                    return `
                         <div class="submission-card">
                             <div class="submission-header">
-                                <h6 class="mb-1">${sub.assignmentTitle}</h6>
-                                <small class="submission-date">${new Date(sub.submittedAt).toLocaleDateString()}</small>
+                                <div>
+                                    <h6 class="mb-1">${assignmentTitle}</h6>
+                                    <span class="course-name-badge"><i class="fas fa-book me-1"></i>${courseName}</span>
+                                </div>
+                                <small class="submission-date"><i class="fas fa-calendar-alt me-1"></i>${new Date(sub.submittedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</small>
                             </div>
                             <div class="submission-body">
-                                <div class="submission-score">${status}</div>
-                                <p class="submission-feedback">${feedbackText}</p>
-                                <small class="text-muted d-block mb-2"><strong>Remarks:</strong> ${remarksText}</small>
-                                ${sub.pdfPath ? `<a href="${sub.pdfPath}" class="btn btn-sm btn-outline-primary mt-2" target="_blank">Download PDF</a>` : ''}
+                                <div class="submission-score ${scoreClass}">
+                                    <i class="fas ${scoreClass === 'good' ? 'fa-check-circle' : scoreClass === 'poor' ? 'fa-exclamation-triangle' : 'fa-clock'}"></i>
+                                    ${status}
+                                </div>
+                                ${feedbackText !== 'No feedback provided.' ? `<p class="submission-feedback"><i class="fas fa-comment me-1"></i>${feedbackText}</p>` : ''}
+                                <div class="submission-remarks">
+                                    <strong><i class="fas fa-sticky-note me-1"></i>Remarks:</strong>
+                                    <p>${remarksText}</p>
+                                </div>
+                                ${sub.pdfPath ? `
+                                    <div class="download-link">
+                                        <a href="${fullPdfUrl}" target="_blank">
+                                            <i class="fas fa-download"></i> Download PDF
+                                        </a>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>`;
-                });
+                }));
+                html = processedSubs.join('');
                 $('#my-submissions').html(html).show();
                 $('#empty-submissions').hide();
+                const showAllBtn = $('#show-all-submissions');
+                if (submissions.length > 3) {
+                    showAllBtn.show();
+                    showAllBtn.text(showAllSubmissions ? 'Show Less Submissions' : 'Show All Submissions');
+                } else {
+                    showAllBtn.hide();
+                }
             } else {
                 $('#my-submissions').hide();
                 $('#empty-submissions').show();
+                $('#show-all-submissions').hide();
             }
-        },
-        error: function(xhr) {
-            console.error('Frontend Error:', xhr.responseText);
-            showToast('Load error: ' + xhr.status, 'error');
-            $('#empty-submissions').show();
         }
-    });
-}
+        $('#show-all-courses').on('click', function() {
+            showAllCourses = !showAllCourses;
+            renderRecentCourses(allEnrollments);
+        });
+        $('#show-all-submissions').on('click', async function() {
+            showAllSubmissions = !showAllSubmissions;
+            await renderSubmissions(allSubmissions);
+        });
         function loadProfile() {
           console.log("Loading profile for user ID:", decoded.id);
           $.ajax({
@@ -1760,13 +1964,12 @@
                                 isFavorite: course.isFavorite || false,
                                 image: course.image // For thumbnail fallback
                             }
-                        })).slice(0, 3); // Limit to 3 recent
-                        const recentHTML = generateEnrollmentHTML(recentEnrollments, 1, recentEnrollments.length + 1);
-                        $('#recent-courses-grid').html(recentHTML).show();
-                        $('#empty-recent-courses').hide();
+                        }));
+                        renderRecentCourses(recentEnrollments);
                     } else {
                         $('#recent-courses-grid').hide();
                         $('#empty-recent-courses').show();
+                        $('#show-all-courses').hide();
                     }
                     if (response.latestQuizzes && response.latestQuizzes.length > 0) {
                         let quizzesHTML = '';
@@ -1816,6 +2019,25 @@
                 },
             });
         }
+        // Dashboard script mein add (loadDashboardData ke baad)
+        $(document).on('click', '.enroll-btn', async function(e) {
+            e.preventDefault();
+            const courseId = $(this).data('course-id');
+            try {
+                await $.ajax({
+                    url: 'http://localhost:5000/api/dashboard/student/enroll',
+                    type: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    contentType: 'application/json',
+                    data: JSON.stringify({ courseId })
+                });
+                showToast('Enrolled!', 'success');
+                $(this).text('Enrolled').prop('disabled', true).removeClass('btn-outline-primary').addClass('btn-success');
+                loadDashboardData(); // Reload to update list
+            } catch (err) {
+                showToast('Enroll failed: ' + err.responseJSON?.message, 'error');
+            }
+        });
         // New: Handle course item click for navigation (always allowed since enrolled)
         $(document).on('click', '.course-item-two', function(e) {
             // Ignore clicks on buttons or overlays
