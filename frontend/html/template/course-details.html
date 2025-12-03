@@ -960,15 +960,19 @@
             }
             /* UI Fix: Better button spacing in actions (aligned with manage-courses) */
             .btn-group-sm .btn { margin-right: 5px; }
-            /* NEW: Assignments Section Styles */
+            /* UPDATED: Assignments Section Styles - Now with blue one-sided border like overview/comments, enhanced hover/animations for better UI */
             .assignments-section {
                 border-radius: 12px;
                 overflow: hidden;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
                 transition: all 0.3s ease;
                 background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-                border-left: 5px solid var(--warning);
+                border-left: 5px solid #007bff; /* Changed to blue border like overview/comments */
                 margin-top: 2rem;
+            }
+            .assignments-section:hover {
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Added hover effect for better UI */
+                transform: translateY(-2px);
             }
             @media (max-width: 768px) {
                 .assignments-section .assignment-item {
@@ -977,18 +981,21 @@
             }
             .dark-mode .assignments-section {
                 background: linear-gradient(135deg, #343a40, #495057);
-                border-left-color: #fd7e14;
+                border-left-color: #0d6efd; /* Blue for dark mode */
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             }
+            .dark-mode .assignments-section:hover {
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            }
             .assignments-section h5 {
-                color: var(--warning);
-                font-weight: 600;
+                color: #007bff; /* Changed to blue like overview */
+                font-weight: 700; /* Bolder for better UI */
                 margin-bottom: 1.5rem;
                 border-bottom: 2px solid #dee2e6;
                 padding-bottom: 0.75rem;
             }
             .dark-mode .assignments-section h5 {
-                color: #fd7e14;
+                color: #0d6efd; /* Blue for dark mode */
                 border-bottom-color: #495057;
             }
             .assignment-item {
@@ -996,29 +1003,34 @@
                 border-radius: 8px;
                 padding: 1.5rem;
                 margin-bottom: 1rem;
-                border-left: 4px solid var(--warning);
+                border-left: 4px solid #007bff; /* Blue accent like comments */
                 transition: all 0.3s ease;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             }
             .dark-mode .assignment-item {
                 background: #495057;
-                border-left-color: #fd7e14;
+                border-left-color: #0d6efd;
             }
             .assignment-item:hover {
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                transform: translateY(-2px);
+                transform: translateY(-2px); /* Enhanced hover lift */
+                border-left-color: #0056b3; /* Darker blue on hover for better UI */
+            }
+            .dark-mode .assignment-item:hover {
+                border-left-color: #0b5ed7;
             }
             .assignment-title {
-                font-weight: 600;
-                color: var(--text-color);
+                font-weight: 700; /* Bolder title for better UI */
+                color: #333;
                 margin-bottom: 0.5rem;
             }
             .dark-mode .assignment-title {
-                color: var(--text-color);
+                color: #fff;
             }
             .assignment-due {
-                color: var(--gray);
+                color: #6c757d;
                 font-size: 0.9rem;
+                font-weight: 500; /* Slightly bolder for emphasis */
             }
             .dark-mode .assignment-due {
                 color: #adb5bd;
@@ -1026,7 +1038,8 @@
             .assignment-questions {
                 margin-top: 1rem;
                 font-size: 0.9rem;
-                color: var(--gray);
+                color: #6c757d;
+                font-style: italic; /* Added italic for better readability */
             }
             .dark-mode .assignment-questions {
                 color: #adb5bd;
@@ -1035,26 +1048,38 @@
                 margin-top: 1rem;
             }
             .submit-form input[type="file"] {
-                border: 1px solid var(--border-color);
+                border: 1px solid #ced4da;
                 padding: 0.5rem;
                 border-radius: 4px;
+                transition: border-color 0.3s ease; /* Smooth focus for better UI */
+            }
+            .submit-form input[type="file"]:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
             }
             .status-badge {
                 font-size: 0.8rem;
                 padding: 0.25rem 0.5rem;
                 border-radius: 20px;
+                font-weight: 600; /* Bolder badges */
             }
-            .status-pending { background: var(--warning); color: white; }
-            .status-submitted { background: var(--success); color: white; }
-            .status-evaluated { background: var(--primary); color: white; }
-            .status-overdue { background: var(--danger); color: white; }
+            .status-pending { background: #007bff; color: white; } /* Blue for pending to match theme */
+            .status-submitted { background: #28a745; color: white; }
+            .status-evaluated { background: #17a2b8; color: white; } /* Info blue for evaluated */
+            .status-overdue { background: #dc3545; color: white; }
             .feedback-text {
                 margin-top: 0.5rem;
                 font-style: italic;
-                color: var(--gray);
+                color: #6c757d;
+                background: rgba(0,123,255,0.1); /* Light blue bg for feedback */
+                padding: 0.75rem;
+                border-radius: 6px;
+                border-left: 3px solid #007bff; /* Blue accent */
             }
             .dark-mode .feedback-text {
                 color: #adb5bd;
+                background: rgba(13,110,253,0.2);
+                border-left-color: #0d6efd;
             }
         </style>
 </head>
@@ -1125,7 +1150,7 @@
 <a href="student-dashboard.html">Dashboard</a>
 </li>
                             </ul>
-                
+             
                             <div class="menu-dropdown">
                                 <div class="cart-item">
                                     <h6>Cart & Wishlist</h6>
@@ -1178,7 +1203,7 @@
                                     </ul>
                                 </div>
                             </div>
-                
+             
                         </div>
                         <div class="header-btn d-flex align-items-center">
                             <div class="icon-btn me-2">
@@ -1294,10 +1319,10 @@
                                 </div>
                             </div>
                           </div>
-                          <!-- NEW: Assignments Section -->
+                          <!-- UPDATED: Assignments Section with blue border and improved UI -->
                           <div class="card mb-4 assignments-section" id="assignments-section">
                               <div class="card-body">
-                                  <h5 class="mb-3">Assignments <span class="badge bg-warning ms-2" id="pending-count">0</span></h5>
+                                  <h5 class="mb-3">Assignments <span class="badge bg-primary ms-2" id="pending-count">0</span></h5> <!-- Changed badge to primary blue -->
                                   <div id="assignments-list">
                                       <p class="text-muted">Loading assignments...</p>
                                   </div>
@@ -1819,8 +1844,7 @@ $(document).ready(function() {
             showToast('Failed to submit comment.', 'error');
         }
     });
-    // UPDATED: Load Assignments (PDF focus, auto status update after submit, FIXED: Optional submission fetch, due date compare with toLocaleDateString + FULL URL FOR PDF)
-   // UPDATED: Load Assignments (PDF focus, auto status update after submit, FIXED: Better error logging + optional submission fetch + FULL BACKEND URL FOR PDF)
+    // UPDATED: Load Assignments (PDF focus, auto status update after submit, FIXED: Optional submission fetch, due date compare with toLocaleDateString + FULL URL FOR PDF) - NOW RETURNS PENDING COUNT
 async function loadAssignments() {
     try {
         const assignments = await $.ajax({
@@ -1834,7 +1858,7 @@ async function loadAssignments() {
         if (assignments.length === 0) {
             list.html('<p class="text-muted">No assignments available.</p>');
             $('#pending-count').text(0).hide();
-            return;
+            return 0;
         }
         // Fetch submissions (optional - if error, default to pending)
         let allSubs = [];
@@ -1886,16 +1910,14 @@ async function loadAssignments() {
                         <button type="submit" class="btn btn-primary">Submit Solved PDF</button>
                     </form>`;
             } else if (status === 'submitted') {
-                actionHtml = `<span class="status-badge status-submitted">Submitted - Evaluating...</span><p class="text-muted small mt-1">AI checking your work (may take 1-2 min)</p>`;
+                actionHtml = `<span class="status-badge status-submitted">Assignment Submitted</span><p class="text-muted small mt-1">AI checking your work (may take 1-2 min)</p>`;
             } else if (status === 'evaluated') {
                 actionHtml = `
                     <span class="status-badge status-evaluated">Evaluated</span>
-                    <a href="${fullPdfUrl}" class="btn btn-outline-secondary btn-sm mt-2" download>📥 Re-download PDF</a>
                     ${score ? `<div class="score mt-2"><strong>Score: ${score}/100</strong></div>` : ''}
                     <div class="feedback-text mt-1">${feedback}</div>`;
             } else {
-                actionHtml = `<span class="status-badge status-overdue">OVERDUE</span>
-                    <a href="${fullPdfUrl}" class="btn btn-outline-secondary btn-sm mt-2" download>📥 Download PDF</a>`;
+                actionHtml = `<span class="status-badge status-overdue">OVERDUE</span>`;
             }
             assignHtml.push(`
                 <div class="assignment-item">
@@ -1907,7 +1929,7 @@ async function loadAssignments() {
             `);
         }
         list.html(assignHtml.join(''));
-        $('#pending-count').text(pendingCount).show();
+        $('#pending-count').text(pendingCount).toggle(pendingCount > 0);
         // Submit handler (with auto reload after submit for eval)
         $(document).off('submit', '.submit-form').on('submit', '.submit-form', async function(e) {
             e.preventDefault();
@@ -1934,7 +1956,24 @@ async function loadAssignments() {
                     processData: false,
                     contentType: false
                 });
-                showToast('Submitted! AI evaluating...', 'success');
+                showToast('Assignment submitted successfully!', 'success');
+                // Prevent resubmission: Replace form with submitted message
+                form.replaceWith(`<span class="status-badge status-submitted">Assignment Submitted</span><p class="text-muted small mt-1">AI checking your work (may take 1-2 min)</p>`);
+                // Immediate pending count update
+                let currentPending = parseInt($('#pending-count').text()) || 0;
+                currentPending = Math.max(0, currentPending - 1);
+                $('#pending-count').text(currentPending).toggle(currentPending > 0);
+                // Update header pending display
+                const headerPendingEl = $('#course-header p:contains("pending")');
+                if (headerPendingEl.length) {
+                    let num = parseInt(headerPendingEl.text().match(/(\d+)/)?.[1] || 0) - 1;
+                    num = Math.max(0, num);
+                    if (num > 0) {
+                        headerPendingEl.text(`📝 ${num} pending assignment${num !== 1 ? 's' : ''}`);
+                    } else {
+                        headerPendingEl.remove();
+                    }
+                }
                 // Auto reload after 10s to show feedback
                 setTimeout(() => loadAssignments(), 10000);
             } catch (err) {
@@ -1943,6 +1982,7 @@ async function loadAssignments() {
                 showToast('Submission failed: ' + (err.responseJSON?.message || 'Try again'), 'error');
             }
         });
+        return pendingCount;
     } catch (err) {
         // FIXED: Better error logging - status + message
         console.error('Load assignments error details:', {
@@ -1954,9 +1994,10 @@ async function loadAssignments() {
         showToast(`Error loading assignments (Status: ${err.status || 'N/A'}): ${err.responseJSON?.message || 'Try refresh'}`, 'error');
         $('#assignments-list').html('<p class="text-danger">Error loading assignments. <button class="btn btn-sm btn-primary" onclick="loadAssignments()">Retry</button></p>');
         $('#pending-count').hide();
+        return 0;
     }
 }
-    // UPDATED: Load course - FIXED: Added display for course.videos (as additional if topics) & course.resources section; topics nested + RESOURCES + FIXED nesting for resources toggle + expand first topic + CALL loadAssignments()
+    // UPDATED: Load course - FIXED: Added display for course.videos (as additional if topics) & course.resources section; topics nested + RESOURCES + FIXED nesting for resources toggle + expand first topic + CALL loadAssignments() EARLY FOR PENDING COUNT
     async function loadCourse() {
         try {
             const course = await $.ajax({
@@ -1973,8 +2014,9 @@ async function loadAssignments() {
                 averageRating = ratedComments.length > 0 ? (ratedComments.reduce((sum, c) => sum + c.rating, 0) / ratedComments.length).toFixed(1) : 0;
             }
             const stars = generateStars(averageRating);
-            // Header: Name, meta, enroll btn, average rating + NEW: Pending assignments count
-            const pendingAssigns = course.assignments ? course.assignments.filter(a => new Date(a.dueDate) > new Date()).length : 0;
+            // First, load assignments to get accurate pending count
+            const pendingAssigns = await loadAssignments();
+            // Header: Name, meta, enroll btn, average rating + UPDATED: Accurate pending assignments count below rating
             $('#course-header').html(`
                 <div class="row align-items-center">
                     <div class="col-lg-8">
@@ -1983,7 +2025,7 @@ async function loadAssignments() {
                             <span>${stars}</span>
                             <small class="ms-2 text-white-50">(${averageRating}) - ${course.comments ? course.comments.filter(c => c.rating).length : 0} ratings</small>
                         </div>
-                        ${pendingAssigns > 0 ? `<p class="text-white-50 mb-0">📝 ${pendingAssigns} pending assignments</p>` : ''}
+                        ${pendingAssigns > 0 ? `<p class="text-white-50 mb-0">📝 ${pendingAssigns} pending assignment${pendingAssigns !== 1 ? 's' : ''}</p>` : ''}
                     </div>
                     <div class="col-lg-4 text-lg-end enroll-section">
                         <button id="enroll-btn" class="btn-enroll ${enrolled ? 'disabled' : ''}">${enrolled ? 'Enrolled' : 'Enroll Now'}</button>
@@ -2161,8 +2203,6 @@ $('#enroll-btn').off('click').on('click', async () => {
         showToast('Enrollment failed: ' + (err.responseJSON?.message || 'Try again'), 'error');
     }
 });
-            // NEW: Load assignments after course load
-            loadAssignments();
             // Load comments
             loadComments();
         } catch (err) {

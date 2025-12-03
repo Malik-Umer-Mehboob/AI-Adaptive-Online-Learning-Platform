@@ -142,25 +142,31 @@
         display: flex;
         align-items: center;
       }
-      /* New Unique Style: Glassmorphism for Sections */
+      /* New Unique Style: Glassmorphism for Sections - UPDATED: Added blue one-sided border */
       .glass-section {
         background: rgba(255, 255, 255, 0.25);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 16px;
+        border-radius: 12px;
+        border-left: 5px solid #007bff; /* Added same blue one-sided border */
         padding: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         transition: all 0.3s ease;
-      }
-      .dark-mode .glass-section {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
       }
       .glass-section:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+      .dark-mode .glass-section {
+        background: linear-gradient(135deg, #343a40, #495057);
+        border: 1px solid #495057;
+        border-left-color: #0d6efd; /* Blue for dark mode */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      .dark-mode .glass-section:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       }
       /* Unique Slider Styles - FIXED: Responsive for mobile */
       .slider-container {
@@ -561,7 +567,7 @@
       .course-select option {
         padding: 10px;
       }
-      /* PDF Link Styles */
+      /* PDF Link Styles - REMOVED: No longer needed */
       .pdf-link {
         color: #007bff;
         text-decoration: underline;
@@ -1012,7 +1018,7 @@
                   </div>
                 </div>
               </div>
-              <!-- Unique Slider for Recent Activities -->
+              <!-- Unique Slider for Recent Activities - UPDATED: Now with blue border via glass-section -->
               <div class="glass-section">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <h5 class="fs-18 mb-0">Recent Activities</h5>
@@ -1029,7 +1035,7 @@
                 </div>
                 <div class="slider-dots" id="activities-dots"></div>
               </div>
-              <!-- New: Manage Assignments Section with Unique Slider -->
+              <!-- New: Manage Assignments Section with Unique Slider - UPDATED: Now with blue border via glass-section, REMOVED PDF link -->
               <div class="glass-section">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <h5 class="fs-18 mb-0">Manage Assignments</h5>
@@ -1676,7 +1682,7 @@
             }
           });
         }
-        // Function to update Assignments Slider
+        // Function to update Assignments Slider - UPDATED: REMOVED PDF download link
         function updateAssignmentsSlider() {
           const $slider = $('#assignments-slider');
           const $dots = $('#assignments-dots');
@@ -1690,14 +1696,11 @@
             let slideHTML = '<div class="d-flex w-100">';
             slideAssignments.forEach((assignment) => {
               const pendingCount = assignment.pendingSubmissions || 0;
-              const pdfUrl = assignment.pdfUrl || ''; // PDF URL
               slideHTML += `
                 <div class="slide-item assignment-card">
                   <div class="assignment-title">${assignment.title}</div>
                   <div class="assignment-meta">Course: ${assignment.courseId?.name || 'Unknown'}</div>
                   <div class="assignment-meta">Due: ${new Date(assignment.dueDate).toLocaleString()}</div>
-                  <div class="assignment-meta">Pending: ${pendingCount}</div>
-                  ${pdfUrl ? `<div class="assignment-meta"><a href="${pdfUrl}" target="_blank" class="pdf-link" download>Download PDF</a></div>` : ''}
                   <div class="assignment-actions">
                     <button class="btn btn-primary btn-sm-unique" onclick="editAssignment('${assignment._id}')">Edit</button>
                     <button class="btn btn-danger btn-sm-unique" onclick="deleteAssignment('${assignment._id}')">Delete</button>

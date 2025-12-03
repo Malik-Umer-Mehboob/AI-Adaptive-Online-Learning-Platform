@@ -897,165 +897,253 @@
             transition: width 0.3s ease;
             border-radius: 3px;
         }
-        /* My Submissions Card Styling - Improved UI */
-        .submission-card {
+        /* My Submissions Card Styling - Enhanced Professional UI - Compact Version */
+        .submissions-section {
           background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-          border-radius: 12px;
+          border-radius: 12px; /* Reduced from 16px for compactness */
           overflow: hidden;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* Reduced shadow */
           transition: all 0.3s ease;
-          margin-bottom: 16px;
+          margin-bottom: 16px; /* Reduced from 24px */
           border: 1px solid #dee2e6;
+          position: relative;
         }
-        .submission-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        .submissions-section::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 3px; /* Reduced from 4px */
+          background: linear-gradient(90deg, var(--success), var(--primary));
         }
-        .dark-mode .submission-card {
+        .submissions-section:hover {
+          transform: translateY(-2px); /* Reduced lift from -4px */
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12); /* Reduced shadow */
+        }
+        .dark-mode .submissions-section {
           background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
           border: 1px solid #495057;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); /* Reduced shadow */
         }
-        .dark-mode .submission-card:hover {
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        .dark-mode .submissions-section:hover {
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35); /* Reduced shadow */
         }
         .submission-header {
-          padding: 16px;
-          background: rgba(40, 167, 69, 0.05);
+          padding: 12px 16px; /* Reduced from 20px 24px */
+          background: linear-gradient(135deg, rgba(40, 167, 69, 0.06), rgba(40, 167, 69, 0.03)); /* Lighter background */
           border-bottom: 1px solid #dee2e6;
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
+          position: relative;
         }
         .dark-mode .submission-header {
-          background: rgba(40, 167, 69, 0.1);
+          background: linear-gradient(135deg, rgba(40, 167, 69, 0.12), rgba(40, 167, 69, 0.06)); /* Adjusted for dark */
           border-bottom: 1px solid #495057;
         }
-        .submission-header h6 {
-          margin: 0;
-          font-weight: 600;
-          color: var(--text-color);
+        .submission-header::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 3px; /* Reduced from 4px */
+          background: linear-gradient(to bottom, var(--success), #20c997);
+        }
+        .submission-header-content {
           flex-grow: 1;
         }
+        .submission-header h6 {
+          margin: 0 0 4px 0; /* Reduced from 8px */
+          font-weight: 700;
+          color: var(--text-color);
+          font-size: 1rem; /* Reduced from 1.1rem */
+          line-height: 1.3; /* Reduced from 1.4 */
+        }
         .submission-date {
-          font-size: 0.875rem;
+          font-size: 0.8rem; /* Reduced from 0.85rem */
           color: var(--gray);
+          display: flex;
+          align-items: center;
           white-space: nowrap;
         }
         .dark-mode .submission-date {
           color: #adb5bd;
         }
+        .submission-date i {
+          margin-right: 4px; /* Reduced from 6px */
+          width: 12px; /* Reduced from 14px */
+        }
         .submission-body {
-          padding: 16px;
+          padding: 12px 16px; /* Reduced from 20px 24px */
         }
         .submission-score {
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: 1.5rem;
-          font-weight: bold;
-          margin-bottom: 12px;
+          gap: 8px; /* Reduced from 12px */
+          font-size: 1.5rem; /* Reduced from 2rem */
+          font-weight: 700;
+          margin-bottom: 12px; /* Reduced from 16px */
+          padding: 8px 12px; /* Reduced from 12px 16px */
+          background: linear-gradient(135deg, rgba(0, 123, 255, 0.06), rgba(0, 123, 255, 0.03)); /* Lighter background */
+          border-radius: 8px; /* Reduced from 12px */
+          border-left: 3px solid var(--primary); /* Reduced from 4px */
         }
         .submission-score.pending {
           color: var(--gray);
+          background: linear-gradient(135deg, rgba(108, 117, 125, 0.06), rgba(108, 117, 125, 0.03));
+          border-left-color: var(--gray);
         }
         .submission-score.good {
           color: var(--success);
+          background: linear-gradient(135deg, rgba(40, 167, 74, 0.06), rgba(40, 167, 74, 0.03));
+          border-left-color: var(--success);
         }
         .submission-score.poor {
           color: var(--danger);
+          background: linear-gradient(135deg, rgba(220, 53, 69, 0.06), rgba(220, 53, 69, 0.03));
+          border-left-color: var(--danger);
+        }
+        .submission-score.warning {
+          color: var(--warning);
+          background: linear-gradient(135deg, rgba(255, 193, 7, 0.06), rgba(255, 193, 7, 0.03));
+          border-left-color: var(--warning);
         }
         .submission-score i {
-          font-size: 1.25rem;
+          font-size: 1.2rem; /* Reduced from 1.5rem */
+          width: 20px; /* Reduced from 24px */
         }
         .submission-feedback {
-          margin-bottom: 12px;
+          margin-bottom: 12px; /* Reduced from 16px */
           font-style: italic;
           color: var(--gray);
-          padding: 8px;
-          background: rgba(0, 123, 255, 0.05);
-          border-left: 3px solid var(--primary);
-          border-radius: 4px;
+          padding: 8px 12px; /* Reduced from 12px 16px */
+          background: linear-gradient(135deg, rgba(0, 123, 255, 0.06), rgba(0, 123, 255, 0.03)); /* Lighter background */
+          border-left: 3px solid var(--primary); /* Reduced from 4px */
+          border-radius: 6px; /* Reduced from 8px */
+          position: relative;
+          transition: all 0.3s ease;
+          font-size: 0.9rem; /* Added slight reduction for compactness */
+          line-height: 1.4; /* Added tighter line height */
+        }
+        .submission-feedback:hover {
+          background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 123, 255, 0.05));
         }
         .dark-mode .submission-feedback {
           color: #adb5bd;
-          background: rgba(13, 110, 253, 0.1);
+          background: linear-gradient(135deg, rgba(13, 110, 253, 0.12), rgba(13, 110, 253, 0.06));
+        }
+        .submission-feedback::before {
+          content: '💬';
+          position: absolute;
+          left: 8px; /* Reduced from 12px */
+          top: 8px; /* Reduced from 12px */
+          font-size: 1rem; /* Reduced from 1.2rem */
+        }
+        .submission-feedback > * {
+          margin-left: 24px; /* Reduced from 32px */
         }
         .submission-remarks {
-          background: rgba(40, 167, 69, 0.05);
-          padding: 12px;
-          border-radius: 6px;
-          border-left: 3px solid var(--success);
-          margin-bottom: 12px;
+          background: linear-gradient(135deg, rgba(40, 167, 69, 0.06), rgba(40, 167, 69, 0.03)); /* Lighter background */
+          padding: 12px; /* Reduced from 16px */
+          border-radius: 6px; /* Reduced from 8px */
+          border-left: 3px solid var(--success); /* Reduced from 4px */
+          margin-bottom: 12px; /* Reduced from 16px */
+          position: relative;
+          transition: all 0.3s ease;
+          font-size: 0.9rem; /* Added slight reduction for compactness */
         }
         .dark-mode .submission-remarks {
-          background: rgba(40, 167, 69, 0.1);
+          background: linear-gradient(135deg, rgba(40, 167, 69, 0.12), rgba(40, 167, 69, 0.06));
+        }
+        .submission-remarks:hover {
+          background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
         }
         .submission-remarks strong {
           color: var(--text-color);
-          display: block;
-          margin-bottom: 4px;
+          display: flex;
+          align-items: center;
+          margin-bottom: 4px; /* Reduced from 8px */
+          font-weight: 600;
+          font-size: 0.95rem; /* Reduced from 1rem */
+        }
+        .dark-mode .submission-remarks strong {
+          color: var(--text-color);
         }
         .submission-remarks p {
           margin: 0;
           color: var(--gray);
+          line-height: 1.4; /* Reduced from 1.5 for compactness */
         }
         .dark-mode .submission-remarks p {
           color: #adb5bd;
         }
+        .submission-remarks::before {
+          content: '📝';
+          position: absolute;
+          left: 8px; /* Reduced from 12px */
+          top: 12px; /* Reduced from 16px */
+          font-size: 1rem; /* Reduced from 1.1rem */
+        }
+        .submission-remarks > * {
+          margin-left: 24px; /* Reduced from 32px */
+        }
         .download-link {
           text-align: center;
+          margin-top: 8px; /* Reduced from 12px */
         }
         .download-link a {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          padding: 8px 16px;
-          background: var(--primary);
+          gap: 6px; /* Reduced from 8px */
+          padding: 8px 16px; /* Reduced from 10px 20px */
+          background: linear-gradient(135deg, var(--primary), #0056b3);
           color: white !important;
           text-decoration: none;
-          border-radius: 20px;
-          font-size: 0.875rem;
+          border-radius: 20px; /* Reduced from 25px */
+          font-size: 0.85rem; /* Reduced from 0.9rem */
+          font-weight: 500;
           transition: all 0.3s ease;
+          box-shadow: 0 1px 6px rgba(0, 123, 255, 0.15); /* Reduced shadow */
         }
         .download-link a:hover {
-          background: #0056b3;
-          transform: translateY(-1px);
+          background: linear-gradient(135deg, #0056b3, #004085);
+          transform: translateY(-1px); /* Reduced from -2px */
+          box-shadow: 0 3px 8px rgba(0, 123, 255, 0.25); /* Reduced shadow */
+          color: white !important;
         }
-        .course-name-badge {
-          background: rgba(0, 123, 255, 0.1);
-          color: var(--primary);
-          padding: 4px 8px;
-          border-radius: 12px;
-          font-size: 0.75rem;
-          font-weight: 500;
-          display: inline-block;
-          margin-bottom: 4px;
+        .dark-mode .download-link a {
+          background: linear-gradient(135deg, #0d6efd, #0b5ed7);
         }
-        .dark-mode .course-name-badge {
-          background: rgba(13, 110, 253, 0.2);
-          color: #0d6efd;
+        .dark-mode .download-link a:hover {
+          background: linear-gradient(135deg, #0b5ed7, #0a58ca);
         }
         .show-all-btn {
           display: block;
-          margin: 20px auto 0;
-          padding: 10px 20px;
-          background: var(--primary);
+          margin: 16px auto 0; /* Reduced from 24px */
+          padding: 10px 24px; /* Reduced from 12px 28px */
+          background: linear-gradient(135deg, var(--primary), #0056b3);
           color: white;
           border: none;
-          border-radius: 25px;
+          border-radius: 25px; /* Reduced from 30px */
           font-weight: 600;
+          font-size: 0.95rem; /* Reduced from 1rem */
           transition: all 0.3s ease;
           text-align: center;
+          box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15); /* Reduced shadow */
         }
         .show-all-btn:hover {
-          background: #0056b3;
-          transform: translateY(-2px);
+          background: linear-gradient(135deg, #0056b3, #004085);
+          transform: translateY(-1px); /* Reduced from -2px */
+          box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25); /* Reduced shadow */
+          color: white;
         }
         .dark-mode .show-all-btn {
-          background: #0d6efd;
+          background: linear-gradient(135deg, #0d6efd, #0b5ed7);
         }
         .dark-mode .show-all-btn:hover {
-          background: #0b5ed7;
+          background: linear-gradient(135deg, #0b5ed7, #0a58ca);
         }
     </style>
   </head>
@@ -1685,12 +1773,12 @@
               type: 'GET',
               headers: { Authorization: 'Bearer ' + token }
             });
-            const name = response.name || 'Unknown Course';
+            const name = response.name || 'Course Not Available';
             courseNameCache[courseId] = name;
             return name;
           } catch (err) {
             console.error('Error fetching course name:', err);
-            return 'Unknown Course';
+            return 'Course Not Available';
           }
         }
         function generateEnrollmentHTML(enrollments, startIndex, endIndex) {
@@ -1770,16 +1858,14 @@
             if (submissions && submissions.length > 0) {
                 // FIXED: Process submissions async to fetch missing course names
                 const processedSubs = await Promise.all(submissions.slice(0, limit).map(async sub => {
-                    let courseName = sub.course?.name || sub.assignment?.course?.name || sub.assignment?.courseTitle || null;
+                    let courseName = sub.assignmentId?.courseId?.name || null;
                     // FIXED: If courseName is missing and we have a course ID (from assignment.course._id or similar), fetch it
-                    if (!courseName && sub.assignment?.course?._id) {
-                        courseName = await fetchCourseName(sub.assignment.course._id);
-                    } else if (!courseName && sub.course?._id) {
-                        courseName = await fetchCourseName(sub.course._id);
+                    if (!courseName && sub.assignmentId?.courseId?._id) {
+                        courseName = await fetchCourseName(sub.assignmentId.courseId._id);
                     }
-                    if (!courseName) courseName = 'Unknown Course'; // Final fallback
-                    // Extract assignment title if available, but prioritize course name for header
-                    const assignmentTitle = sub.assignmentTitle || sub.assignment?.title || sub.assignment?.name || 'Untitled Assignment';
+                    if (!courseName) courseName = 'Course Not Available'; // Final fallback
+                    // FIXED: Use course name as display title
+                    const displayTitle = courseName;
                     // Improved score logic: Avoid default 75, show actual or pending
                     let status = 'Pending Evaluation';
                     let scoreClass = 'pending';
@@ -1795,20 +1881,19 @@
                     // FIXED: Full backend URL for PDF download (port 5000)
                     const fullPdfUrl = sub.pdfPath ? `http://localhost:5000${sub.pdfPath}` : '';
                     return `
-                        <div class="submission-card">
+                        <div class="submissions-section">
                             <div class="submission-header">
-                                <div>
-                                    <h6 class="mb-1">${assignmentTitle}</h6>
-                                    <span class="course-name-badge"><i class="fas fa-book me-1"></i>${courseName}</span>
+                                <div class="submission-header-content">
+                                    <h6 class="mb-1">${displayTitle}</h6>
                                 </div>
                                 <small class="submission-date"><i class="fas fa-calendar-alt me-1"></i>${new Date(sub.submittedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</small>
                             </div>
                             <div class="submission-body">
                                 <div class="submission-score ${scoreClass}">
-                                    <i class="fas ${scoreClass === 'good' ? 'fa-check-circle' : scoreClass === 'poor' ? 'fa-exclamation-triangle' : 'fa-clock'}"></i>
+                                    <i class="fas ${scoreClass === 'good' ? 'fa-check-circle' : scoreClass === 'poor' ? 'fa-exclamation-triangle' : scoreClass === 'warning' ? 'fa-exclamation-circle' : 'fa-clock'}"></i>
                                     ${status}
                                 </div>
-                                ${feedbackText !== 'No feedback provided.' ? `<p class="submission-feedback"><i class="fas fa-comment me-1"></i>${feedbackText}</p>` : ''}
+                                ${feedbackText !== 'No feedback provided.' ? `<div class="submission-feedback"><i class="fas fa-comment me-1"></i>${feedbackText}</div>` : ''}
                                 <div class="submission-remarks">
                                     <strong><i class="fas fa-sticky-note me-1"></i>Remarks:</strong>
                                     <p>${remarksText}</p>

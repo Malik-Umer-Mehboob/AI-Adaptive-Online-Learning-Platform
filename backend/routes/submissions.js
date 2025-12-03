@@ -1,4 +1,4 @@
-// routes/submissions.js - FIXED: Model 'llama3.2:3b' for speed
+// routes/submissions.js - FIXED: Proper nested populate for courseId.name
 const express = require('express');
 const router = express.Router();
 const ollama = require('ollama').default; // FIXED: Use package
@@ -124,16 +124,23 @@ router.post('/submissions', auth, isStudent, uploadPDF.single('pdfFile'), async 
     }
 });
 
-// GET /my - Student submissions list (FIXED: Use /my for frontend call)
+// GET /my - Student submissions list (FIXED: Nested populate for assignmentId.courseId.name)
 router.get('/my', auth, isStudent, async (req, res) => {
     try {
         const submissions = await Submission.find({ studentId: req.user.id })
-            .populate('assignmentId', 'title courseId')
+            .populate({
+                path: 'assignmentId',
+                populate: {
+                    path: 'courseId',
+                    select: 'name'
+                },
+                select: 'title'
+            })
             .sort({ submittedAt: -1 })
             .lean();
 
         const formatted = submissions.map(sub => {
-            const evalData = sub.evaluation || { score: 0, feedback: 'Pending', remarks: '' };
+            const evalData = sub.evaluation || { score: null, feedback: 'Pending', remarks: '' };
             return {
                 ...sub,
                 pdfUrl: sub.pdfPath ? `http://localhost:5000${sub.pdfPath}` : null, // FIXED: Full URL
