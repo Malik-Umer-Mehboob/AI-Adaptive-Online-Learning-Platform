@@ -184,9 +184,17 @@
         transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         will-change: transform;
       }
+      .slide-group {
+        flex: 0 0 100%;
+        width: 100%;
+        padding: 0 5px;
+      }
+      .slide-group .d-flex {
+        width: 100%;
+        gap: 10px;
+      }
       .slide-item {
-        min-width: calc(33.333% - 10px);
-        margin: 0 5px;
+        flex: 1;
         background: white;
         border-radius: 12px;
         padding: 15px;
@@ -198,7 +206,7 @@
       }
       @media (max-width: 768px) {
         .slide-item {
-          min-width: calc(100% - 10px); /* FIXED: Full width on mobile */
+          flex: 1;
         }
       }
       .dark-mode .slide-item {
@@ -446,9 +454,6 @@
         .footer-link {
           flex-direction: column;
           gap: 10px;
-        }
-        .slide-item {
-          min-width: calc(100% - 10px);
         }
       }
       /* Further reduce height of profile card */
@@ -724,20 +729,7 @@
                           ><i class="isax isax-book me-2"></i>Manage Courses</a
                         >
                       </li>
-                      <li>
-                        <a
-                          class="dropdown-item d-inline-flex align-items-center rounded fw-medium"
-                          href="reports.html"
-                          ><i class="isax isax-chart me-2"></i>Reports</a
-                        >
-                      </li>
-                      <li>
-                        <a
-                          class="dropdown-item d-inline-flex align-items-center rounded fw-medium"
-                          href="admin-settings.html"
-                          ><i class="isax isax-setting-2 me-2"></i>Settings</a
-                        >
-                      </li>
+                      
                     </ul>
                     <div class="profile-footer">
                       <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100" id="logout-btn"><i class="isax isax-logout me-2"></i>Logout</a>
@@ -879,33 +871,12 @@
                         ><i class="isax isax-clipboard-document me-2"></i>Manage Assignments</a
                       >
                     </li>
-                    <li>
-                      <a
-                        href="reports.html"
-                        class="d-inline-flex align-items-center"
-                        ><i class="isax isax-chart me-2"></i>Reports &
-                        Analytics</a
-                      >
-                    </li>
-                    <li>
-                      <a
-                        href="system-settings.html"
-                        class="d-inline-flex align-items-center"
-                        ><i class="isax isax-setting me-2"></i>System
-                        Settings</a
-                      >
-                    </li>
+                    
                   </ul>
                   <hr />
-                  <h6 class="mb-3">Account Settings</h6>
+                  <h6 class="mb-3">Exit Account</h6>
                   <ul>
-                    <li>
-                      <a
-                        href="admin-settings.html"
-                        class="d-inline-flex align-items-center"
-                        ><i class="isax isax-setting-25 me-2"></i>Settings</a
-                      >
-                    </li>
+                  
                     <li>
                       <a
                         href="index-3.html"
@@ -1474,7 +1445,7 @@
             const start = i * itemsPerSlide;
             const end = start + itemsPerSlide;
             const slideActivities = activities.slice(start, end);
-            let slideHTML = '<div class="d-flex w-100">';
+            let slideHTML = '<div class="slide-group"><div class="d-flex">';
             slideActivities.forEach((activity, idx) => {
               let roleClass = '';
               if (activity.role === 'admin') roleClass = 'role-admin';
@@ -1488,7 +1459,7 @@
                 </div>
               `;
             });
-            slideHTML += '</div>';
+            slideHTML += '</div></div>';
             $slider.append(slideHTML);
             const dot = `<span class="dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></span>`;
             $dots.append(dot);
@@ -1514,10 +1485,9 @@
           });
           $('#all-activities-list').html(listHTML || '<p>No activities available.</p>');
         }
-        // Generic function to update slider transform
+        // Generic function to update slider transform - FIXED: Correct transform for full page slides
         function updateSliderTransform($slider, index, itemsPerSlide, type) {
-          const slideWidth = 100 / itemsPerSlide;
-          const transform = `translateX(-${index * slideWidth}%)`;
+          const transform = `translateX(-${index * 100}%)`;
           $slider.css('transform', transform);
         }
         // Generic function to update nav and dots
@@ -1693,7 +1663,7 @@
             const start = i * itemsPerSlide;
             const end = start + itemsPerSlide;
             const slideAssignments = assignments.slice(start, end);
-            let slideHTML = '<div class="d-flex w-100">';
+            let slideHTML = '<div class="slide-group"><div class="d-flex">';
             slideAssignments.forEach((assignment) => {
               const pendingCount = assignment.pendingSubmissions || 0;
               slideHTML += `
@@ -1709,7 +1679,7 @@
                 </div>
               `;
             });
-            slideHTML += '</div>';
+            slideHTML += '</div></div>';
             $slider.append(slideHTML);
             const dot = `<span class="dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></span>`;
             $dots.append(dot);

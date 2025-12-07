@@ -96,6 +96,49 @@
           right: 10px;
         }
       }
+      /* Sidebar Menu Styling - EXACT SAME SPACING & HEIGHT AS DASHBOARD */
+      .settings-sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .settings-sidebar ul li {
+        margin-bottom: 12px; /* Dashboard jaisa exact gap */
+      }
+
+      .settings-sidebar ul li:last-child {
+        margin-bottom: 0;
+      }
+
+      .settings-sidebar ul li a {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 8px;
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .settings-sidebar ul li a:hover,
+      .settings-sidebar ul li a.active {
+        background-color: rgba(0, 123, 255, 0.1);
+        color: #007bff;
+      }
+
+      .dark-mode .settings-sidebar ul li a:hover,
+      .dark-mode .settings-sidebar ul li a.active {
+        background-color: rgba(13, 110, 253, 0.2);
+        color: #0d6efd;
+      }
+
+      .settings-sidebar ul li a i {
+        font-size: 1.1rem;
+        width: 28px;
+        text-align: center;
+      }
       /* Light Mode Cards */
       .card-users {
         background: linear-gradient(135deg, #a8e6ff, #b3d9ff);
@@ -220,7 +263,7 @@
       .footer {
         background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
         color: #ffffff;
-        padding: 30px 0 0; /* Further reduced from 40px to 30px */
+        padding: 30px 0 0;
         position: relative;
       }
       .light-mode .footer {
@@ -228,7 +271,7 @@
         color: #333333;
       }
       .footer-top {
-        padding-bottom: 30px; /* Reduced from 40px to 30px */
+        padding-bottom: 30px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
       .light-mode .footer-top {
@@ -315,7 +358,7 @@
         color: #0056b3;
       }
       .footer-bottom {
-        padding: 15px 0; /* Reduced from 20px to 15px */
+        padding: 15px 0;
         text-align: center;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
       }
@@ -325,7 +368,7 @@
       }
       .footer-bottom p,
       .footer-bottom a {
-        color: #ffffff !important; /* Make footer-bottom content white */
+        color: #ffffff !important;
       }
       .footer-link li {
         margin: 0 15px;
@@ -344,7 +387,7 @@
       .light-mode .footer-link a:hover {
         color: #0056b3;
       }
-      /* Hover effects for icons (social links and sidebar icons) */
+      /* Hover effects for icons */
       .social-link,
       .isax,
       .fas {
@@ -372,10 +415,10 @@
       }
       /* Further reduce height of profile card */
       .profile-card {
-        padding: 1.5rem !important; /* Reduced from 2rem to 1.5rem */
+        padding: 1.5rem !important;
       }
       .profile-card .row-gap-3 {
-        row-gap: 0.5rem !important; /* Reduce row gap */
+        row-gap: 0.5rem !important;
       }
       /* Additional CSS to reduce height and ensure alignment */
 .footer {
@@ -423,23 +466,23 @@
   flex-direction: column;
   justify-content: flex-start !important;
 }
-      /* Professional UI for Profile Details Card - Updated for Dark Mode Visibility */
+      /* Professional UI for Profile Details Card */
       .profile-details-card {
         border-radius: 8px;
         border: 2px solid transparent;
         background: linear-gradient(#e3f2fd, #f0f8ff) padding-box, linear-gradient(135deg, #007bff, #0056b3) border-box;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Reduced shadow intensity for less dark shading */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         overflow: hidden;
         transition: all 0.3s ease;
-        margin-top: 30px; /* Increased top margin for better spacing */
+        margin-top: 30px;
       }
       .profile-details-card:hover {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* Slightly reduced hover shadow */
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
         transform: translateY(-2px);
       }
       .dark-mode .profile-details-card {
         background: linear-gradient(#343a40, #495057) padding-box, linear-gradient(135deg, #0d6efd, #0b5ed7) border-box;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Reduced shadow for dark mode */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       }
       .dark-mode .profile-details-card:hover {
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
@@ -460,10 +503,10 @@
       }
       .profile-details-card .card-body {
         padding: 2rem;
-        background: linear-gradient(to bottom, #e3f2fd, #f0f8ff); /* Light blue gradient for body */
+        background: linear-gradient(to bottom, #e3f2fd, #f0f8ff);
       }
       .dark-mode .profile-details-card .card-body {
-        background: linear-gradient(to bottom, #343a40, #495057); /* Dark gradient for dark mode */
+        background: linear-gradient(to bottom, #343a40, #495057);
       }
       .profile-details-card .form-label {
         font-weight: 600;
@@ -472,7 +515,7 @@
         font-size: 0.95rem;
       }
       .dark-mode .profile-details-card .form-label {
-        color: #ffffff; /* White text for better visibility in dark mode */
+        color: #ffffff;
       }
       .profile-details-card .form-control {
         border: 1px solid #ced4da;
@@ -500,7 +543,7 @@
       }
       .dark-mode .profile-details-card .form-control[readonly] {
         background: #6c757d;
-        color: #ffffff; /* White text for readonly fields in dark mode */
+        color: #ffffff;
       }
       .profile-details-card .form-text {
         color: #6c757d;
@@ -529,9 +572,6 @@
         background: linear-gradient(135deg, #0b5ed7, #0a58ca);
         box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
       }
-      .profile-details-card .mb-3 {
-        margin-bottom: 1.5rem;
-      }
       @media (max-width: 768px) {
         .profile-details-card .card-body {
           padding: 1.5rem;
@@ -547,7 +587,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            cursor: pointer; /* Add pointer cursor for clickable areas */
+            cursor: pointer;
         }
         .course-item-two:hover {
             transform: translateY(-8px);
@@ -647,23 +687,23 @@
             color: #e91e63 !important;
         }
         .course-content {
-            padding: 1rem; /* Reduced padding to give more space for description */
+            padding: 1rem;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevent content overflow */
+            overflow: hidden;
         }
         .course-title {
-            font-size: 1.1rem; /* Slightly smaller title to save space */
+            font-size: 1.1rem;
             font-weight: 600;
-            margin: 0.5rem 0; /* Reduced margin */
+            margin: 0.5rem 0;
             line-height: 1.3;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            color: var(--text-color); /* Ensure color for non-link */
-            cursor: pointer; /* Pointer for clickable */
+            color: var(--text-color);
+            cursor: pointer;
             transition: color 0.3s ease;
         }
         .course-title:hover {
@@ -672,7 +712,7 @@
         .rating {
             display: flex;
             align-items: center;
-            margin-bottom: 0.5rem; /* Reduced margin */
+            margin-bottom: 0.5rem;
         }
         .rating-stars {
             display: flex;
@@ -711,7 +751,7 @@
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 500;
-            margin-bottom: 0.5rem; /* Reduced margin */
+            margin-bottom: 0.5rem;
             align-self: flex-start;
         }
         .dark-mode .category-badge {
@@ -719,20 +759,19 @@
             color: #0d6efd;
         }
         .course-desc {
-            font-size: 0.9rem; /* Increased font size for better readability */
+            font-size: 0.9rem;
             color: var(--gray);
-            margin-bottom: 0.75rem; /* Reduced margin-bottom */
+            margin-bottom: 0.75rem;
             flex-grow: 1;
             display: -webkit-box;
-            -webkit-line-clamp: 3; /* Adjusted to 3 lines for balanced visibility without too much space */
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            line-height: 1.6; /* Improved line height for smoother reading flow */
-            /* Removed min-height to avoid awkward spacing for short descriptions; now adapts naturally */
-            transition: all 0.3s ease; /* Smooth transition on hover or changes */
+            line-height: 1.6;
+            transition: all 0.3s ease;
         }
         .course-desc:hover {
-            color: var(--text-color); /* Subtle color shift on hover for engagement */
+            color: var(--text-color);
         }
         .dark-mode .course-desc {
             color: #adb5bd;
@@ -745,7 +784,7 @@
             align-items: center;
             justify-content: space-between;
             margin-top: auto;
-            padding-top: 1rem; /* Slightly reduced padding-top */
+            padding-top: 1rem;
             border-top: 1px dashed var(--border-color);
         }
         .price {
@@ -802,11 +841,11 @@
                 height: 200px;
             }
             .course-title {
-                font-size: 1rem; /* Smaller on mobile */
+                font-size: 1rem;
             }
             .course-desc {
-                -webkit-line-clamp: 2; /* Reduce to 2 lines on mobile for better space usage */
-                font-size: 0.85rem; /* Slightly smaller on mobile */
+                -webkit-line-clamp: 2;
+                font-size: 0.85rem;
                 line-height: 1.5;
             }
             .course-footer {
@@ -818,15 +857,14 @@
                 width: 100%;
             }
             .course-content {
-                padding: 0.75rem; /* Further reduce padding on mobile */
+                padding: 0.75rem;
             }
         }
-        /* UI Improvements: Enhanced card hover and spacing */
         .course-item-two {
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother transition */
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .course-content {
-            padding: 1rem; /* Adjusted for smaller box */
+            padding: 1rem;
         }
         .progress-bar-custom {
             height: 6px;
@@ -887,149 +925,45 @@
                                 <i class="fas fa-times"></i>
                             </a>
                         </div>
-                        <ul class="main-nav">
-                            <li>
-                                <a href="index-3.html">Home</a>
-                            </li>
-                            <li class="has-submenu">
-                                <a href="#">Courses</a>
-                                <ul class="submenu">
-                                    <li class="has-submenu">
-                                        <a href="javascript:void(0);">Courses</a>
-                                        <ul class="submenu">
-                                            <li><a href="course-grid.html">Course Grid</a></li>
-                                            <li><a href="course-list.html">Course List</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="has-submenu">
-                                        <a href="javascript:void(0);">Course Category</a>
-                                        <ul class="submenu">
-                                            <li><a href="course-category.html">Course Category</a></li>
-                                            <li><a href="course-category-2.html">Course Category 2</a></li>
-                                            <li><a href="course-category-3.html">Course Category 3</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="course-details.html">Course Details</a></li>
-                                    <li><a href="course-resume.html">Course Resume</a></li>
-                                    <li><a href="course-watch.html">Course Watch</a></li>
-                                    <li><a href="cart.html">Course Cart</a></li>
-                                    <li><a href="checkout.html">Course Checkout</a></li>
-                                    <li><a href="add-course.html">Add New Course</a></li>
-                                </ul>
-                            </li>
-                            <li class="active">
-                                <a href="student-dashboard.html">Dashboard</a>
-                            </li>
-                        </ul>
-                  
-                        <div class="menu-dropdown">
-                            <div class="cart-item">
-                                <h6>Cart & Wishlist</h6>
-                                <div class="icon-btn">
-                                    <a href="cart.html" class="position-relative">
-                                        <i class="isax isax-shopping-cart5"></i>
-                                        <span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="dropdown flag-dropdown mb-2">
-                                <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+                        <div class="header-btn d-flex align-items-center">
+                            <div class="icon-btn me-2">
+                                <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
+                                    <i class="isax isax-sun-15"></i>
                                 </a>
-                                <ul class="dropdown-menu p-2 mt-2">
-                                    <li>
-                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-                                            <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-                                            <img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-                                            <img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="dropdown mb-2">
-                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    USD
+                                <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
+                                    <i class="isax isax-moon"></i>
                                 </a>
-                                <ul class="dropdown-menu p-2 mt-2">
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
-                                </ul>
                             </div>
-                            <div class="dropdown mb-2">
-                                <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Light
-                                </a>
-                                <ul class="dropdown-menu p-2 mt-2">
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">Light</a></li>
-                                    <li><a class="dropdown-item rounded" href="javascript:void(0);">Dark</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                  
-                    </div>
-                    <div class="header-btn d-flex align-items-center">
-                        <div class="icon-btn me-2">
-                            <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
-                                <i class="isax isax-sun-15"></i>
-                            </a>
-                            <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
-                                <i class="isax isax-moon"></i>
-                            </a>
-                        </div>
-                        <div class="dropdown profile-dropdown">
-                            <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
-                                <span class="avatar">
-                                    <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
-                                </span>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <div class="profile-header d-flex align-items-center">
-                                    <div class="avatar">
+                            <div class="dropdown profile-dropdown">
+                                <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
+                                    <span class="avatar">
                                         <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <div class="profile-header d-flex align-items-center">
+                                        <div class="avatar">
+                                            <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
+                                        </div>
+                                        <div>
+                                            <h6 id="dropdown-profile-name">Student</h6>
+                                            <p id="profile-email"><a href="mailto:"></a></p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h6 id="dropdown-profile-name">Student</h6>
-                                        <p id="profile-email"><a href="mailto:"></a></p>
+                                    <ul class="profile-body">
+                                        <li>
+                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link" data-href="student-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-quiz.html"><i class="isax isax-award me-2"></i>Quiz Attempts</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
+                                        </li>
+                                    </ul>
+                                    <div class="profile-footer">
+                                        <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100" id="logout-btn"><i class="isax isax-logout me-2"></i>Logout</a>
                                     </div>
-                                </div>
-                                <ul class="profile-body">
-                                    <li>
-                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link" data-href="student-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-courses.html"><i class="isax isax-book me-2"></i>Enrolled Courses</a>
-                                    </li>
-                                    <li>
- <a
-                        href="course-grid.html"
-                        class="d-inline-flex align-items-center"
-                        ><i class="isax isax-note-215 me-2"></i>Course-Grid</a
-                      >
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-wishlist.html"><i class="isax isax-heart me-2"></i>Wishlist</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-reviews.html"><i class="isax isax-star me-2"></i>Reviews</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-messages.html"><i class="isax isax-messages-3 me-2"></i>Messages</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
-                                    </li>
-                                </ul>
-                                <div class="profile-footer">
-                                    <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100" id="logout-btn"><i class="isax isax-logout me-2"></i>Logout</a>
                                 </div>
                             </div>
                         </div>
@@ -1082,36 +1016,52 @@
                 </div>
                 <!-- /Profile Card -->
                 <div class="row">
-                    <div class="col-lg-3 theiaStickySidebar">
-                        <div class="settings-sidebar">
-                            <div>
-                                <h6 class="mb-3">Main Menu</h6>
-                                <ul class="mb-3 pb-1">
-                                    <li><a href="student-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a></li>
-                                    <li><a href="student-profile.html" class="d-inline-flex align-items-center"><i class="fa-solid fa-user me-2"></i>My Profile</a></li>
-                                    <li><a href="student-courses.html" class="d-inline-flex align-items-center active"><i class="isax isax-teacher5 me-2"></i>Enrolled Courses</a></li>
-                                    <li> <a
-                        href="course-grid.html"
-                        class="d-inline-flex align-items-center"
-                        ><i class="isax isax-note-215 me-2"></i>Course-Grid</a
-                      ></li>
-                                    <li><a href="student-wishlist.html" class="d-inline-flex align-items-center"><i class="isax isax-heart5 me-2"></i>Wishlist</a></li>
-                                    <li><a href="student-reviews.html" class="d-inline-flex align-items-center"><i class="isax isax-star5 me-2"></i>Reviews</a></li>
-                                    <li><a href="student-quiz.html" class="d-inline-flex align-items-center"><i class="isax isax-award5 me-2"></i>My Quiz Attempts</a></li>
-                                    <li><a href="student-order-history.html" class="d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Order History</a></li>
-                                    <li><a href="student-referral.html" class="d-inline-flex align-items-center"><i class="isax isax-tag-user5 me-2"></i>Referrals</a></li>
-                                    <li><a href="student-messages.html" class="d-inline-flex align-items-center"><i class="isax isax-messages-35 me-2"></i>Messages</a></li>
-                                    <li><a href="student-tickets.html" class="d-inline-flex align-items-center"><i class="isax isax-ticket5 me-2"></i>Support Tickets</a></li>
-                                </ul>
-                                <hr>
-                                <h6 class="mb-3">Account Settings</h6>
-                                <ul>
-                                    <li><a href="student-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a></li>
-                                    <li><a href="javascript:void(0);" id="logout-sidebar" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                   <!-- Sidebar -->
+<div class="col-lg-3 theiaStickySidebar">
+  <div class="settings-sidebar">
+    <div>
+      <h6 class="mb-3">Main Menu</h6>
+      <ul class="mb-3 pb-1">
+        <li>
+          <a href="student-dashboard.html" class="d-inline-flex align-items-center">
+            <i class="isax isax-grid-35 me-2"></i>Dashboard
+          </a>
+        </li>
+        <li>
+          <a class="profile-link d-inline-flex align-items-center" data-href="student-profile.html">
+            <i class="fa-solid fa-user me-2"></i>My Profile
+          </a>
+        </li>
+        <li>
+          <a href="student-courses.html" class="d-inline-flex align-items-center active">
+            <i class="isax isax-teacher5 me-2"></i>Enrolled Courses
+          </a>
+        </li>
+        <li>
+          <a href="course-grid.html" class="d-inline-flex align-items-center">
+            <i class="isax isax-note-215 me-2"></i>Course-Grid
+          </a>
+        </li>
+        <li>
+          <a href="student-wishlist.html" class="d-inline-flex align-items-center">
+            <i class="isax isax-heart5 me-2"></i>Wishlist
+          </a>
+        </li>
+       
+      </ul>
+      <hr />
+      <h6 class="mb-3">Exit Account</h6>
+      <ul>
+        <li>
+          <a href="index-3.html" class="d-inline-flex align-items-center" id="logout-sidebar">
+            <i class="isax isax-logout5 me-2"></i>Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- /Sidebar -->
                     <div class="col-lg-9">
                         <div class="page-title d-flex flex-wrap gap-3 align-items-center justify-content-between">
                             <h5>Enrolled Courses</h5>
@@ -1132,7 +1082,6 @@
                         <div class="tab-content">
                             <!-- Enrolled Tab -->
                             <div class="tab-pane fade active show" id="enroll-courses" role="tabpanel">
-                                <!-- Loading State -->
                                 <div id="loading-enrolled" class="text-center py-5">
                                     <div class="spinner-border text-primary" role="status">
                                         <span class="visually-hidden">Loading...</span>
@@ -1140,9 +1089,7 @@
                                     <p class="mt-2 text-muted">Loading enrolled courses...</p>
                                 </div>
                          
-                                <div class="row" id="enrolled-grid">
-                                    <!-- Courses will be loaded here -->
-                                </div>
+                                <div class="row" id="enrolled-grid"></div>
                          
                                 <div class="empty-state text-center py-5" id="empty-enrolled" style="display: none;">
                                     <div class="mb-4">
@@ -1153,7 +1100,6 @@
                                     <a href="course-grid.html" class="btn btn-primary">Browse Courses</a>
                                 </div>
                          
-                                <!-- Pagination -->
                                 <div class="row align-items-center mt-4" id="enrolled-pagination" style="display: none;">
                                     <div class="col-md-6">
                                         <p class="pagination-text mb-0" id="enrolled-pagination-text">Page 1 of 1</p>
@@ -1177,7 +1123,6 @@
                             </div>
                             <!-- Active Tab -->
                             <div class="tab-pane fade" id="active-courses" role="tabpanel">
-                                <!-- Loading State -->
                                 <div id="loading-active" class="text-center py-5">
                                     <div class="spinner-border text-primary" role="status">
                                         <span class="visually-hidden">Loading...</span>
@@ -1185,9 +1130,7 @@
                                     <p class="mt-2 text-muted">Loading active courses...</p>
                                 </div>
                          
-                                <div class="row" id="active-grid">
-                                    <!-- Courses will be loaded here -->
-                                </div>
+                                <div class="row" id="active-grid"></div>
                          
                                 <div class="empty-state text-center py-5" id="empty-active" style="display: none;">
                                     <div class="mb-4">
@@ -1198,7 +1141,6 @@
                                     <a href="#enroll-courses" class="btn btn-primary">View Enrolled</a>
                                 </div>
                          
-                                <!-- Pagination -->
                                 <div class="row align-items-center mt-4" id="active-pagination" style="display: none;">
                                     <div class="col-md-6">
                                         <p class="pagination-text mb-0" id="active-pagination-text">Page 1 of 1</p>
@@ -1222,7 +1164,6 @@
                             </div>
                             <!-- Completed Tab -->
                             <div class="tab-pane fade" id="complete-courses" role="tabpanel">
-                                <!-- Loading State -->
                                 <div id="loading-completed" class="text-center py-5">
                                     <div class="spinner-border text-primary" role="status">
                                         <span class="visually-hidden">Loading...</span>
@@ -1230,9 +1171,7 @@
                                     <p class="mt-2 text-muted">Loading completed courses...</p>
                                 </div>
                          
-                                <div class="row" id="completed-grid">
-                                    <!-- Courses will be loaded here -->
-                                </div>
+                                <div class="row" id="completed-grid"></div>
                          
                                 <div class="empty-state text-center py-5" id="empty-completed" style="display: none;">
                                     <div class="mb-4">
@@ -1243,7 +1182,6 @@
                                     <a href="#enroll-courses" class="btn btn-primary">View Enrolled</a>
                                 </div>
                          
-                                <!-- Pagination -->
                                 <div class="row align-items-center mt-4" id="completed-pagination" style="display: none;">
                                     <div class="col-md-6">
                                         <p class="pagination-text mb-0" id="completed-pagination-text">Page 1 of 1</p>
@@ -1378,506 +1316,411 @@
     <!-- Custom JS -->
     <script src="assets/js/script.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-    <script>
-    $(document).ready(function() {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            showToast('Please login to view enrolled courses.', 'error');
-            setTimeout(() => window.location.href = 'login.html', 2000);
-            return;
-        }
-        let decoded;
-        try {
-            decoded = jwt_decode(token);
-            if (decoded.exp < Date.now() / 1000) throw new Error('Expired');
-        } catch (error) {
-            showToast('Session expired. Please login again.', 'error');
-            localStorage.removeItem('token');
-            setTimeout(() => window.location.href = 'login.html', 2000);
-            return;
-        }
-        if (decoded.role !== 'student') {
-            showToast('Access denied: Students only.', 'error');
-            setTimeout(() => window.location.href = 'login.html', 2000);
-            return;
-        }
-        function showToast(message, type = 'success', duration = 3000) {
-            const toastContainer = $('#toast-container');
-            const toastId = `toast-${Date.now()}`;
-            const toastHtml = `
-                <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
-                    <div class="d-flex">
-                        <div class="toast-body">${message}</div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
+   <script>
+$(document).ready(function() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showToast('Please login to view enrolled courses.', 'error');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+    }
+
+    let decoded;
+    try {
+        decoded = jwt_decode(token);
+        if (decoded.exp < Date.now() / 1000) throw new Error('Expired');
+    } catch (error) {
+        showToast('Session expired. Please login again.', 'error');
+        localStorage.removeItem('token');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+    }
+
+    if (decoded.role !== 'student') {
+        showToast('Access denied: Students only.', 'error');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+    }
+
+    function showToast(message, type = 'success', duration = 3000) {
+        const toastContainer = $('#toast-container');
+        const toastId = `toast-${Date.now()}`;
+        const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
-            `;
-            toastContainer.append(toastHtml);
-            const toastElement = document.getElementById(toastId);
-            const toast = new bootstrap.Toast(toastElement);
-            toast.show();
-            setTimeout(() => {
-                toast.hide();
-                $(`#${toastId}`).remove();
-            }, duration);
+            </div>
+        `;
+        toastContainer.append(toastHtml);
+        const toast = new bootstrap.Toast(document.getElementById(toastId));
+        toast.show();
+    }
+
+    function getYouTubeThumbnail(url) {
+        if (!url) return 'assets/img/course/course-placeholder.jpg';
+        let videoId = null;
+        const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+        const embedMatch = url.match(/youtube\.com\/embed\/([^&\n?#]+)/);
+        if (watchMatch) videoId = watchMatch[1];
+        else if (embedMatch) videoId = embedMatch[1];
+        return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
+    }
+
+    function generateStars(rating) {
+        let stars = '';
+        const fullStars = Math.floor(rating);
+        const hasHalf = rating % 1 >= 0.5;
+        for (let i = 1; i <= 5; i++) {
+            if (i <= fullStars) stars += '<i class="fas fa-star filled"></i>';
+            else if (i === fullStars + 1 && hasHalf) stars += '<i class="fas fa-star-half-alt filled"></i>';
+            else stars += '<i class="far fa-star empty"></i>';
         }
-        // Load Profile Data (Updated with cache bust)
-        function loadProfile() {
-            $.ajax({
-                url: `http://localhost:5000/api/auth/profile?t=${new Date().getTime()}`, // Cache bust
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token },
-                cache: false,
-                success: function(profile) {
-                    console.log('Profile Data Loaded:', profile);
-                    const displayName = profile.name || 'Student';
-                    $("#dropdown-profile-name, #profile-name a:first").text(displayName);
-                    $("#profile-email a")
-                      .text(profile.email || "No email")
-                      .attr("href", `mailto:${profile.email || ""}`);
-                    const timestamp = new Date().getTime();
-                    if (profile.profileImage) {
-                        const imgSrc = `${profile.profileImage}?t=${timestamp}`;
-                        $('#profile-img').attr('src', imgSrc).parent().addClass("has-image");
-                        $(".dropdown-profile-img").attr('src', imgSrc).each(function() {
-                            $(this).parent().addClass("has-image");
-                        });
-                    } else {
-                        $('#profile-img').attr('src', '').parent().removeClass('has-image');
-                        $(".dropdown-profile-img").attr('src', '').each(function() {
-                            $(this).parent().removeClass('has-image');
-                        });
-                    }
-                    // NEW: Clear the localStorage flag after successful reload to prevent repeated triggers
-                    localStorage.removeItem('profileUpdated');
-                },
-                error: function(xhr) {
-                    console.error('Error loading profile:', xhr.responseText);
-                    showToast('Error loading profile.', 'error');
-                    if (xhr.status === 401) {
-                        localStorage.removeItem('token');
-                        showToast('Session expired. Please login again.', 'error');
-                        setTimeout(() => window.location.href = 'login.html', 2000);
-                    }
+        return stars;
+    }
+
+    function getValidCourseId(id) {
+        if (!id) return null;
+        let idStr = typeof id === 'string' ? id : (id.toString ? id.toString() : String(id));
+        if (idStr.length === 24 && /^[0-9a-fA-F]{24}$/.test(idStr)) {
+            return idStr.toLowerCase();
+        }
+        console.warn('Invalid courseId skipped:', id);
+        return null;
+    }
+
+    let allEnrollments = [];
+    let studentReviewsMap = {};
+    let filteredEnrollments = { enrolled: [], active: [], completed: [] };
+    let currentTab = 'enrolled';
+    const pageSize = 9;
+    const currentPage = { enrolled: 1, active: 1, completed: 1 };
+
+    async function fetchStudentReviews() {
+        try {
+            const reviewsRes = await $.ajax({
+                url: `http://localhost:5000/api/dashboard/student/reviews`,
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            studentReviewsMap = {};
+            reviewsRes.forEach(r => {
+                if (r.courseId) {
+                    studentReviewsMap[getValidCourseId(r.courseId)] = r.rating || 0;
                 }
             });
+        } catch (err) {
+            console.error('Error fetching student reviews:', err);
+            studentReviewsMap = {};
         }
-        // Utility Functions (from course-grid)
-        function getInitials(name) {
-            return (name || 'AD').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-        }
-        function getYouTubeThumbnail(url) {
-            if (!url) return 'assets/img/course/course-placeholder.jpg';
-            let videoId = null;
-            const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-            const embedMatch = url.match(/youtube\.com\/embed\/([^&\n?#]+)/);
-            if (watchMatch) videoId = watchMatch[1];
-            else if (embedMatch) videoId = embedMatch[1];
-            else if (url.includes('playlist?list=')) {
-                const playlistMatch = url.match(/list=([a-zA-Z0-9_-]+)/);
-                if (playlistMatch) {
-                    return `https://i.ytimg.com/vi/${playlistMatch[1].substring(0,11)}/mqdefault.jpg`;
+    }
+
+    async function fetchAllEnrollments() {
+        try {
+            await fetchStudentReviews();
+
+            const enrollRes = await $.ajax({
+                url: `http://localhost:5000/api/dashboard/student/enrollments`,
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            let enrollments = enrollRes || [];
+
+            // Ensure status is valid (fallback if missing or wrong)
+            enrollments = enrollments.map(e => {
+                const prog = e.progress || 0;
+                if (!e.status || !['enrolled', 'in-progress', 'completed'].includes(e.status)) {
+                    if (prog >= 100) e.status = 'completed';
+                    else if (prog > 0) e.status = 'in-progress';
+                    else e.status = 'enrolled';
                 }
-                return 'assets/img/course/playlist-placeholder.jpg';
-            }
-            return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
-        }
-        function generateStars(rating) {
-            let stars = '';
-            const fullStars = Math.floor(rating);
-            const hasHalf = rating % 1 >= 0.5;
-            for (let i = 1; i <= 5; i++) {
-                if (i <= fullStars) {
-                    stars += '<i class="fas fa-star filled"></i>';
-                } else if (i === fullStars + 1 && hasHalf) {
-                    stars += '<i class="fas fa-star-half-alt filled"></i>';
-                } else {
-                    stars += '<i class="far fa-star empty"></i>';
-                }
-            }
-            return stars;
-        }
-        // Helper to get valid course ID string
-        function getValidCourseId(id) {
-            if (!id) return null;
-            let idStr = typeof id === 'string' ? id : (id.toString ? id.toString() : String(id));
-            // Check if it's a valid 24-char hex ObjectId
-            if (idStr.length === 24 && /^[0-9a-fA-F]{24}$/.test(idStr)) {
-                return idStr.toLowerCase(); // Normalize to lowercase hex
-            }
-            console.warn('Invalid courseId skipped:', id, '->', idStr);
-            return null;
-        }
-        // Global enrollments data
-        let allEnrollments = [];
-        let studentReviewsMap = {}; // New: Map courseId to student rating
-        let filteredEnrollments = { enrolled: [], active: [], completed: [] };
-        let currentTab = 'enrolled';
-        const pageSize = 9;
-        const currentPage = { enrolled: 1, active: 1, completed: 1 };
-        // Fetch student's reviews
-        async function fetchStudentReviews() {
-            try {
-                const reviewsRes = await $.ajax({
-                    url: `http://localhost:5000/api/dashboard/student/reviews`,
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                studentReviewsMap = {};
-                reviewsRes.forEach(r => {
-                    if (r.courseId) {
-                        studentReviewsMap[getValidCourseId(r.courseId)] = r.rating || 0;
-                    }
-                });
-                console.log('Student Reviews Map:', studentReviewsMap);
-            } catch (err) {
-                console.error('Error fetching student reviews:', err);
-                // Removed showToast to avoid error message; fallback to empty map
-                studentReviewsMap = {};
-            }
-        }
-        // Fetch all enrollments once
-        async function fetchAllEnrollments() {
-            try {
-                // Fetch reviews first for dynamic ratings
-                await fetchStudentReviews();
-                const enrollRes = await $.ajax({
-                    url: `http://localhost:5000/api/dashboard/student/enrollments`,
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                let enrollments = enrollRes || [];
-                console.log('Raw Enrollments Fetched:', enrollments);
-                // Compute status if not present (based on progress) - Fixed: Use prog = e.progress || 0 for strict check
-                enrollments = enrollments.map(e => {
-                    const prog = e.progress || 0; // Default to 0 if undefined
-                    console.log(`Enrollment ID: ${e._id}, Progress: ${prog}, Original Status: ${e.status}`); // Debug log
-                    if (!e.status) {
-                        if (prog >= 100) {
-                            e.status = 'completed';
-                        } else if (prog > 0) {
-                            e.status = 'active';
-                        } else {
-                            e.status = 'enrolled';
-                        }
-                    }
-                    return e;
-                });
-                // Get unique valid course IDs (fix for ObjectId cast error)
-                const courseIds = [...new Set(enrollments.map(e => getValidCourseId(e.courseId)).filter(id => id))];
-                console.log('Valid Course IDs:', courseIds); // Debug log
-                let coursesMap = {};
-                if (courseIds.length > 0) {
-                    // Bulk fetch first (now with valid strings)
-                    try {
-                        const params = new URLSearchParams({ ids: courseIds.join(',') });
-                        const coursesRes = await $.ajax({
-                            url: `http://localhost:5000/api/courses?${params}`,
-                            headers: { 'Authorization': 'Bearer ' + token }
-                        });
-                        // Backend returns array directly for ids query
-                        coursesRes.forEach(c => coursesMap[c._id] = c);
-                        console.log('Bulk fetched courses:', coursesRes.length);
-                    } catch (bulkErr) {
-                        console.warn('Bulk fetch failed, using individual fetches:', bulkErr);
-                        // Fallback to individual fetches with valid ID
-                        for (const id of courseIds) { // Now id is valid string
-                            try {
-                                const c = await $.ajax({
-                                    url: `http://localhost:5000/api/courses/${id}`,
-                                    headers: { 'Authorization': 'Bearer ' + token }
-                                });
-                                coursesMap[id] = c;
-                            } catch (singleErr) {
-                                console.error('Failed to fetch course:', id, singleErr);
-                            }
-                        }
-                    }
-                } else {
-                    console.warn('No valid course IDs found');
-                }
-                // Enhance enrollments with course data (only if valid courseId AND course exists)
-                allEnrollments = enrollments
-                    .map(e => {
-                        const validId = getValidCourseId(e.courseId);
-                        if (!validId) return null; // Skip invalid
-                        const course = coursesMap[validId];
-                        if (!course) {
-                            // Optionally, clean up invalid enrollment on backend (call API to delete)
-                            $.ajax({
-                                url: `http://localhost:5000/api/dashboard/student/enrollments/${e._id}`,
-                                type: 'DELETE',
-                                headers: { 'Authorization': 'Bearer ' + token },
-                                success: () => console.log(`Cleaned up invalid enrollment: ${e._id}`),
-                                error: (err) => console.error('Failed to clean up enrollment:', err)
+                return e;
+            });
+
+            const courseIds = [...new Set(enrollments.map(e => getValidCourseId(e.courseId)).filter(id => id))];
+            let coursesMap = {};
+
+            if (courseIds.length > 0) {
+                try {
+                    const params = new URLSearchParams({ ids: courseIds.join(',') });
+                    const coursesRes = await $.ajax({
+                        url: `http://localhost:5000/api/courses?${params}`,
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    coursesRes.forEach(c => coursesMap[c._id] = c);
+                } catch (bulkErr) {
+                    console.warn('Bulk fetch failed, using individual fetches:', bulkErr);
+                    for (const id of courseIds) {
+                        try {
+                            const c = await $.ajax({
+                                url: `http://localhost:5000/api/courses/${id}`,
+                                headers: { 'Authorization': 'Bearer ' + token }
                             });
-                            return null; // Skip if course not found (deleted)
+                            coursesMap[id] = c;
+                        } catch (singleErr) {
+                            console.error('Failed to fetch course:', id, singleErr);
                         }
-                        return {
-                            ...e,
-                            courseId: validId, // Ensure string
-                            course: course
-                        };
-                    })
-                    .filter(e => e !== null); // Remove invalid
-                console.log('Enhanced Enrollments:', allEnrollments);
-                // Filter by status
-                filteredEnrollments.enrolled = allEnrollments.filter(e => e.status === 'enrolled');
-                filteredEnrollments.active = allEnrollments.filter(e => e.status === 'active');
-                filteredEnrollments.completed = allEnrollments.filter(e => e.status === 'completed');
-                // Update counts
-                $('#enrolled-count').text(filteredEnrollments.enrolled.length);
-                $('#active-count').text(filteredEnrollments.active.length);
-                $('#completed-count').text(filteredEnrollments.completed.length);
-                // Load initial tab
-                loadTabContent('enrolled', 1);
-                if (allEnrollments.length === 0) {
-                    showToast('No valid enrollments found. Check backend data.', 'warning');
-                } else {
-                    showToast('Enrollments loaded successfully!', 'success');
+                    }
                 }
-            } catch (err) {
-                console.error('Error fetching enrollments:', err);
-                showToast('Failed to load enrollments. Please refresh the page.', 'error');
-                // Fallback: Show empty states
-                $('.tab-pane').each(function() {
-                    const tabId = $(this).attr('id').replace('-courses', '');
-                    $(this).find('.empty-state').show();
-                    $(this).find(`#loading-${tabId}`).hide();
-                    $(`#${tabId}-pagination`).hide();
-                });
             }
+
+            allEnrollments = enrollments
+                .map(e => {
+                    const validId = getValidCourseId(e.courseId);
+                    if (!validId) return null;
+                    const course = coursesMap[validId];
+                    if (!course) return null;
+                    return { ...e, courseId: validId, course };
+                })
+                .filter(e => e !== null);
+
+            // CORRECT FILTERING - based on progress (independent of status name)
+            filteredEnrollments.enrolled = allEnrollments.filter(e => e.status !== 'completed' && (e.progress || 0) === 0);
+            filteredEnrollments.active   = allEnrollments.filter(e => e.status !== 'completed' && (e.progress || 0) > 0);
+            filteredEnrollments.completed = allEnrollments.filter(e => e.status === 'completed');
+
+            $('#enrolled-count').text(filteredEnrollments.enrolled.length);
+            $('#active-count').text(filteredEnrollments.active.length);
+            $('#completed-count').text(filteredEnrollments.completed.length);
+
+            loadTabContent('enrolled', 1);
+            showToast('Enrollments loaded successfully!', 'success');
+        } catch (err) {
+            console.error('Error fetching enrollments:', err);
+            showToast('Failed to load enrollments. Please refresh.', 'error');
+            $('.tab-pane').each(function() {
+                const tabId = $(this).attr('id').replace('-courses', '');
+                $(this).find('.empty-state').show();
+                $(this).find(`#loading-${tabId}`).hide();
+            });
         }
-        // Generate HTML for a list of enrollments (Updated to match course-grid exactly, with progress in meta)
-        function generateEnrollmentHTML(enrollments, startIndex, endIndex) {
-            return enrollments.slice(startIndex - 1, endIndex).map(enroll => {
-                const course = enroll.course;
-                const videoCount = (course.videos || []).length;
-                const firstUrl = course.videos?.[0]?.url;
-                const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
-                const rating = course.averageRating || 0;
-                const numRatings = course.numRatings || 0;
-                const duration = course.duration || '2h 30m';
-                const progress = enroll.progress || 0;
-                const categoryName = course.category?.name || 'General';
-                return `
-                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
-                        <div class="course-item-two course-item h-100" data-course-id="${course._id}">
-                            <div class="course-img">
-                                <img src="${thumbnail}" alt="${course.name}" onerror="this.src='assets/img/course/course-placeholder.jpg'">
-                                <div class="play-overlay">
-                                    <div class="play-btn"><i class="fas fa-play"></i></div>
-                                </div>
-                                ${videoCount > 1 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
-                                <button class="fav-btn ${course.isFavorite ? 'favorited' : ''}" data-id="${course._id}">
-                                    <i class="fas fa-heart"></i>
-                                </button>
+    }
+
+    function generateEnrollmentHTML(enrollments, startIndex, endIndex) {
+        return enrollments.slice(startIndex - 1, endIndex).map(enroll => {
+            const course = enroll.course;
+            const videoCount = (course.videos || []).length;
+            const firstUrl = course.videos?.[0]?.url;
+            const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
+            const rating = course.averageRating || 0;
+            const numRatings = course.numRatings || 0;
+            const duration = course.duration || '2h 30m';
+            const progress = enroll.progress || 0;
+            const categoryName = course.category?.name || 'General';
+
+            return `
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                    <div class="course-item-two course-item h-100" data-course-id="${course._id}">
+                        <div class="course-img">
+                            <img src="${thumbnail}" alt="${course.name}" onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                            <div class="play-overlay">
+                                <div class="play-btn"><i class="fas fa-play"></i></div>
                             </div>
-                            <div class="course-content">
-                                <div class="category-badge">${categoryName}</div>
-                                <h6 class="course-title">${course.name}</h6>
-                                <div class="rating">
-                                    <div class="rating-stars">${generateStars(rating)}</div>
-                                    ${rating > 0 ? `<span class="rating-value">${rating}</span>` : ''}
-                                    <span class="rating-text">(${numRatings})</span>
+                            ${videoCount > 1 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
+                            <button class="fav-btn ${course.isFavorite ? 'favorited' : ''}" data-id="${course._id}">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="course-content">
+                            <div class="category-badge">${categoryName}</div>
+                            <h6 class="course-title">${course.name}</h6>
+                            <div class="rating">
+                                <div class="rating-stars">${generateStars(rating)}</div>
+                                ${rating > 0 ? `<span class="rating-value">${rating}</span>` : ''}
+                                <span class="rating-text">(${numRatings})</span>
+                            </div>
+                            <p class="course-desc">${course.description || ''}</p>
+                            <div class="course-footer">
+                                <div>
+                                    <div class="price free">FREE</div>
+                                    <div class="course-meta">${videoCount} lessons • ${duration} • ${progress}% Complete</div>
                                 </div>
-                                <p class="course-desc">${course.description}</p>
-                                <div class="course-footer">
-                                    <div>
-                                        <div class="price free">FREE</div>
-                                        <div class="course-meta">${videoCount} lessons • ${duration} • ${progress}% Complete</div>
-                                    </div>
-                                    <a href="course-details.html?id=${course._id}" class="view-btn">
-                                        <i class="fas fa-eye"></i> View Course
-                                    </a>
-                                </div>
+                                <a href="course-details.html?id=${course._id}" class="view-btn">
+                                    <i class="fas fa-eye"></i> View Course
+                                </a>
                             </div>
                         </div>
-                    </div>`;
-            }).join('');
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    function loadTabContent(tab, page = 1) {
+        const enrollments = filteredEnrollments[tab];
+        const total = enrollments.length;
+        const totalPages = Math.ceil(total / pageSize);
+        const startIndex = (page - 1) * pageSize + 1;
+        const endIndex = Math.min(startIndex + pageSize - 1, total);
+
+        $(`#loading-${tab}, #empty-${tab}`).hide();
+        const grid = $(`#${tab}-grid`);
+        grid.empty().html(generateEnrollmentHTML(enrollments, startIndex, endIndex)).show();
+
+        if (total === 0) {
+            $(`#empty-${tab}`).show();
+            $(`#${tab}-pagination`).hide();
+            return;
         }
-        // Load content for a specific tab with pagination
-        function loadTabContent(tab, page = 1) {
-            const enrollments = filteredEnrollments[tab];
-            const total = enrollments.length;
-            const totalPages = Math.ceil(total / pageSize);
-            const startIndex = (page - 1) * pageSize + 1;
-            const endIndex = Math.min(startIndex + pageSize - 1, total);
-            // Hide loading and show content
-            $(`#loading-${tab}, #empty-${tab}`).hide();
-            const grid = $(`#${tab}-grid`);
-            grid.empty().html(generateEnrollmentHTML(enrollments, startIndex, endIndex)).show();
-            if (total === 0) {
-                $(`#empty-${tab}`).show();
-                $(`#${tab}-pagination`).hide();
-                return;
-            }
-            // Update pagination if more than 1 page
-            if (totalPages > 1) {
-                updatePagination(tab, page, totalPages);
-                $(`#${tab}-pagination`).show();
-            } else {
-                $(`#${tab}-pagination`).hide();
-            }
-            // Update pagination text
-            $(`#${tab}-pagination-text`).text(`Page ${page} of ${totalPages} (${startIndex}-${endIndex} of ${total})`);
-        }
-        function updatePagination(tab, curr, total) {
-            let pages = '';
-            for (let i = 1; i <= total; i++) {
-                pages += `<li class="page-item ${i === curr ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" data-page="${i}">${i}</a></li>`;
-            }
-            $(`#${tab}-pagination .pagination.lms-page`).html(`
-                <li class="page-item prev ${curr === 1 ? 'disabled' : ''}"><a class="page-link" id="${tab}-prev-page"><i class="fas fa-angle-left"></i> Previous</a></li>
-                ${pages}
-                <li class="page-item next ${curr === total ? 'disabled' : ''}"><a class="page-link" id="${tab}-next-page">Next <i class="fas fa-angle-right"></i></a></li>
-            `);
-        }
-        // Tab Switching
-        $('[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            const target = $(e.target).attr('data-bs-target');
-            currentTab = target.replace('#', '').replace('-courses', '');
-            currentPage[currentTab] = 1;
-            loadTabContent(currentTab, currentPage[currentTab]);
-        });
-        // Pagination Events (currentPage now defined above)
-        $(document).on('click', '[id$="-prev-page"]', function() {
-            const tab = this.id.replace('-prev-page', '');
-            if (currentPage[tab] > 1) {
-                currentPage[tab]--;
-                loadTabContent(tab, currentPage[tab]);
-            }
-        });
-        $(document).on('click', '[id$="-next-page"]', function() {
-            const tab = this.id.replace('-next-page', '');
-            const totalPages = Math.ceil(filteredEnrollments[tab].length / pageSize);
-            if (currentPage[tab] < totalPages) {
-                currentPage[tab]++;
-                loadTabContent(tab, currentPage[tab]);
-            }
-        });
-        $(document).on('click', '.page-link[data-page]', function() {
-            const paginationId = $(this).closest('[id$="-pagination"]').attr('id');
-            const tab = paginationId.replace('-pagination', '');
-            currentPage[tab] = parseInt($(this).data('page'));
-            loadTabContent(tab, currentPage[tab]);
-        });
-        $(document).on('click', '.fav-btn', function() {
-            const btn = $(this);
-            const id = btn.data('id');
-            const favored = btn.hasClass('favorited');
-            $.ajax({
-                url: `http://localhost:5000/api/courses/${id}/favorite`,
-                type: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token },
-                contentType: 'application/json',
-                data: JSON.stringify({ favorite: !favored }),
-                success: () => {
-                    btn.toggleClass('favorited');
-                    showToast(favored ? 'Removed from favorites' : 'Added to favorites', favored ? 'info' : 'success');
-                }
-            });
-        });
-        // New: Handle course item click for navigation (always allowed since enrolled)
-        $(document).on('click', '.course-item-two', function(e) {
-            // Ignore clicks on buttons or overlays
-            if ($(e.target).closest('.view-btn, .fav-btn, .play-overlay').length) {
-                return;
-            }
-            const $item = $(this);
-            const courseId = $item.data('course-id');
-            window.location.href = `course-details.html?id=${courseId}`;
-        });
-        // Logout Handler (same as student-dashboard)
-        $(document).on('click', '#logout-btn, #logout-sidebar, .profile-footer a', function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: 'http://localhost:5000/api/auth/logout',
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token },
-                success: function () {
-                    localStorage.removeItem('token');
-                    showToast('Logout successful.', 'success');
-                    setTimeout(() => window.location.href = 'login.html', 1500);
-                },
-                error: function () {
-                    localStorage.removeItem('token');
-                    showToast('Logout successful.', 'success');
-                    setTimeout(() => window.location.href = 'login.html', 1500);
-                }
-            });
-        });
-        // Handle profile link click with improved error handling (though not needed on this page)
-        $(".profile-link").on("click", function (e) {
-            e.preventDefault();
-            const href = $(this).data("href") || $(this).attr("href");
-            console.log('Profile link clicked, checking profile... Token ID:', decoded.id); // Debug: Log token ID
-            $.ajax({
-                url: 'http://localhost:5000/api/auth/profile',
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token },
-                success: function(profile) {
-                    console.log('Profile access OK, redirecting to:', href); // Debug: Confirm redirect
-                    window.location.href = href;
-                },
-                error: function(xhr) {
-                    console.error(
-                        "Profile access error:",
-                        xhr.status,
-                        xhr.responseText
-                    );
-                    if (xhr.status === 0) showToast("Server unavailable.", "error");
-                    else if (xhr.status === 401) {
-                        showToast("Session expired.", "error");
-                        localStorage.removeItem("token");
-                        window.location.href = "login.html";
-                    } else
-                        showToast(
-                            `Profile access error (Status: ${xhr.status}).`,
-                            "error"
-                        );
-                },
-            });
-        });
-        const toggleDarkMode = () => {
-            $('body').addClass('dark-mode').removeClass('light-mode');
-            $('#dark-mode-toggle').removeClass('activate');
-            $('#light-mode-toggle').addClass('activate');
-            localStorage.setItem('theme', 'dark');
-        };
-        const toggleLightMode = () => {
-            $('body').addClass('light-mode').removeClass('dark-mode');
-            $('#light-mode-toggle').removeClass('activate');
-            $('#dark-mode-toggle').addClass('activate');
-            localStorage.setItem('theme', 'light');
-        };
-        // Check saved theme on page load
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            toggleDarkMode();
+
+        if (totalPages > 1) {
+            updatePagination(tab, page, totalPages);
+            $(`#${tab}-pagination`).show();
         } else {
-            toggleLightMode();
+            $(`#${tab}-pagination`).hide();
         }
-        // Toggle button click handlers
-        $('#dark-mode-toggle').on('click', toggleDarkMode);
-        $('#light-mode-toggle').on('click', toggleLightMode);
-        // Listen for profile update (in case of external updates)
-        window.addEventListener('profileUpdated', loadProfile);
-        // NEW: Listen for cross-tab profile updates via localStorage (triggers reload in this tab if updated in another)
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'profileUpdated') {
-                console.log('Cross-tab profile update detected, reloading profile...');
-                loadProfile();
+
+        $(`#${tab}-pagination-text`).text(`Page ${page} of ${totalPages} (${startIndex}-${endIndex} of ${total})`);
+    }
+
+    function updatePagination(tab, curr, total) {
+        let pages = '';
+        for (let i = 1; i <= total; i++) {
+            pages += `<li class="page-item ${i === curr ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" data-page="${i}">${i}</a></li>`;
+        }
+        $(`#${tab}-pagination .pagination.lms-page`).html(`
+            <li class="page-item prev ${curr === 1 ? 'disabled' : ''}"><a class="page-link" id="${tab}-prev-page"><i class="fas fa-angle-left"></i> Previous</a></li>
+            ${pages}
+            <li class="page-item next ${curr === total ? 'disabled' : ''}"><a class="page-link" id="${tab}-next-page">Next <i class="fas fa-angle-right"></i></a></li>
+        `);
+    }
+
+    $('[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+        const target = $(e.target).attr('data-bs-target');
+        currentTab = target.replace('#', '').replace('-courses', '');
+        currentPage[currentTab] = 1;
+        loadTabContent(currentTab, currentPage[currentTab]);
+    });
+
+    $(document).on('click', '[id$="-prev-page"]', function() {
+        const tab = this.id.replace('-prev-page', '');
+        if (currentPage[tab] > 1) {
+            currentPage[tab]--;
+            loadTabContent(tab, currentPage[tab]);
+        }
+    });
+
+    $(document).on('click', '[id$="-next-page"]', function() {
+        const tab = this.id.replace('-next-page', '');
+        const totalPages = Math.ceil(filteredEnrollments[tab].length / pageSize);
+        if (currentPage[tab] < totalPages) {
+            currentPage[tab]++;
+            loadTabContent(tab, currentPage[tab]);
+        }
+    });
+
+    $(document).on('click', '.page-link[data-page]', function() {
+        const paginationId = $(this).closest('[id$="-pagination"]').attr('id');
+        const tab = paginationId.replace('-pagination', '');
+        currentPage[tab] = parseInt($(this).data('page'));
+        loadTabContent(tab, currentPage[tab]);
+    });
+
+    $(document).on('click', '.fav-btn', function() {
+        const btn = $(this);
+        const id = btn.data('id');
+        const favored = btn.hasClass('favorited');
+        $.ajax({
+            url: `http://localhost:5000/api/courses/${id}/favorite`,
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            contentType: 'application/json',
+            data: JSON.stringify({ favorite: !favored }),
+            success: () => {
+                btn.toggleClass('favorited');
+                showToast(favored ? 'Removed from favorites' : 'Added to favorites', favored ? 'info' : 'success');
             }
         });
-        // Real-time polling for updates (every 30 seconds)
-        setInterval(() => {
-            fetchAllEnrollments();
-        }, 30000);
-        // Refetch on window focus (for real-time after returning from detail page)
-        $(window).on('focus', fetchAllEnrollments);
-        // Init
-        loadProfile();
-        fetchAllEnrollments();
     });
+
+    $(document).on('click', '.course-item-two', function(e) {
+        if ($(e.target).closest('.view-btn, .fav-btn, .play-overlay').length) return;
+        const courseId = $(this).data('course-id');
+        window.location.href = `course-details.html?id=${courseId}`;
+    });
+
+    $(document).on('click', '#logout-btn, #logout-sidebar', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/logout',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: () => {
+                localStorage.removeItem('token');
+                showToast('Logout successful.', 'success');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+            },
+            error: () => {
+                localStorage.removeItem('token');
+                showToast('Logout successful.', 'success');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+            }
+        });
+    });
+
+    $(".profile-link").on("click", function (e) {
+        e.preventDefault();
+        const href = $(this).data("href") || $(this).attr("href");
+        $.ajax({
+            url: 'http://localhost:5000/api/auth/profile',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: () => window.location.href = href,
+            error: (xhr) => {
+                if (xhr.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                }
+            }
+        });
+    });
+
+    const toggleDarkMode = () => {
+        $('body').addClass('dark-mode').removeClass('light-mode');
+        $('#dark-mode-toggle').removeClass('activate');
+        $('#light-mode-toggle').addClass('activate');
+        localStorage.setItem('theme', 'dark');
+    };
+
+    const toggleLightMode = () => {
+        $('body').addClass('light-mode').removeClass('dark-mode');
+        $('#light-mode-toggle').removeClass('activate');
+        $('#dark-mode-toggle').addClass('activate');
+        localStorage.setItem('theme', 'light');
+    };
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') toggleDarkMode();
+    else toggleLightMode();
+
+    $('#dark-mode-toggle').on('click', toggleDarkMode);
+    $('#light-mode-toggle').on('click', toggleLightMode);
+
+    function loadProfile() {
+        $.ajax({
+            url: "http://localhost:5000/api/auth/profile",
+            type: "GET",
+            headers: { Authorization: "Bearer " + token },
+            success: function (profile) {
+                const displayName = profile.name || "Student";
+                $("#dropdown-profile-name, #profile-name a:first").text(displayName);
+                $("#profile-email a").text(profile.email || "No email").attr("href", `mailto:${profile.email || ""}`);
+                if (profile.profileImage) {
+                    const timestamp = new Date().getTime();
+                    const imgSrc = `${profile.profileImage}?t=${timestamp}`;
+                    $('#profile-img, .dropdown-profile-img').attr('src', imgSrc).parent().addClass("has-image");
+                } else {
+                    $('#profile-img, .dropdown-profile-img').attr('src', '').parent().removeClass('has-image');
+                }
+            }
+        });
+    }
+
+    loadProfile();
+    fetchAllEnrollments();
+
+    setInterval(fetchAllEnrollments, 30000);
+    $(window).on('focus', fetchAllEnrollments);
+});
 </script>
 </body>
 </html>

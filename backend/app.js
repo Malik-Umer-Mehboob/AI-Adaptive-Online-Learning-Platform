@@ -1,4 +1,6 @@
 // app.js - FIXED: Added submissionsRoutes import + uncomment mount for /api/submissions/my
+// NEW: Global unhandled rejection and uncaught exception handlers to prevent crashes
+
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -154,6 +156,8 @@ app.use('/api/topics', topicRoutes);
 app.use('/api/assignments', assignmentsRoutes);  // /api/assignments/:courseId GET
 app.use('/api/student', studentRoutes);
 app.use('/api/submissions', submissionsRoutes); // FIXED: Uncomment + import for /my route
+app.use("/api/enrollment", require("./routes/enrollment"));
+
 
 // Cache Control
 app.use((req, res, next) => {
@@ -188,6 +192,18 @@ app.use((err, req, res, next) => {
         message: req.app.get('env') === 'development' ? err.message : 'Internal server error',
         details: req.app.get('env') === 'development' ? err.stack : undefined
     });
+});
+
+// NEW: Global unhandled rejection handler (prevents crashes)
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason && reason.message ? reason.message : reason);
+    // Don't exit - let the app continue (or process.exit(1) in prod if needed)
+});
+
+// Also handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err && err.message ? err.message : err);
+    process.exit(1);  // Crash intentionally in prod for restart
 });
 
 module.exports = app;

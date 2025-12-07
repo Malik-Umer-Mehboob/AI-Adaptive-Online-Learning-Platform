@@ -1123,76 +1123,22 @@
 <li class="has-submenu active">
 <a href="#">Courses</a>
 <ul class="submenu">
-<li class="has-submenu">
-<a href="javascript:void(0);">Courses</a>
 <ul class="submenu">
 <li><a href="course-grid.html">Course Grid</a></li>
-<li><a href="course-list.html">Course List</a></li>
+
 </ul>
 </li>
-<li class="has-submenu">
-<a href="javascript:void(0);">Course Category</a>
-<ul class="submenu">
-<li><a href="course-category.html">Course Category</a></li>
-<li><a href="course-category-2.html">Course Category 2</a></li>
-<li><a href="course-category-3.html">Course Category 3</a></li>
-</ul>
-</li>
-<li class="active"><a href="course-details.html">Course Details</a></li>
-<li><a href="course-resume.html">Course Resume</a></li>
-<li><a href="course-watch.html">Course Watch</a></li>
-<li><a href="cart.html">Course Cart</a></li>
-<li><a href="checkout.html">Course Checkout</a></li>
-<li><a href="add-course.html">Add New Course</a></li>
+
+
 </ul>
 </li>
 <li>
 <a href="student-dashboard.html">Dashboard</a>
 </li>
                             </ul>
-             
+         
                             <div class="menu-dropdown">
-                                <div class="cart-item">
-                                    <h6>Cart & Wishlist</h6>
-                                    <div class="icon-btn">
-                                        <a href="cart.html" class="position-relative">
-                                            <i class="isax isax-shopping-cart5"></i>
-                                            <span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="dropdown flag-dropdown mb-2">
-                                    <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-                                    </a>
-                                    <ul class="dropdown-menu p-2 mt-2">
-                                        <li>
-                                            <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-                                                <img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-                                                <img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-                                                <img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="dropdown mb-2">
-                                    <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        USD
-                                    </a>
-                                    <ul class="dropdown-menu p-2 mt-2">
-                                        <li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
-                                        <li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
-                                        <li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
-                                    </ul>
-                                </div>
+         
                                 <div class="dropdown mb-2">
                                     <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                         Light
@@ -1203,7 +1149,7 @@
                                     </ul>
                                 </div>
                             </div>
-             
+         
                         </div>
                         <div class="header-btn d-flex align-items-center">
                             <div class="icon-btn me-2">
@@ -1547,6 +1493,38 @@ $(document).ready(function() {
             $(`#${toastId}`).remove();
         }, duration);
     }
+    // FIXED: Open PDF function to handle about:blank#blocked (fetch as blob, create object URL, open in new tab)
+    function openPDF(url) {
+        if (!url) {
+            showToast('PDF URL not available.', 'error');
+            return;
+        }
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token') // Include auth if needed
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const blobUrl = URL.createObjectURL(blob);
+                window.open(blobUrl, '_blank');
+                // Revoke after 1 min to free memory
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+                showToast('Opening PDF in new tab...', 'success');
+            })
+            .catch(err => {
+                console.error('PDF open error:', err);
+                showToast('Open failed: ' + err.message + '. Try right-click > Save As.', 'error');
+                // Fallback: Direct open in new tab
+                window.open(url, '_blank');
+            });
+    }
     // Load profile data including image and name
     function loadProfile() {
         console.log("Loading profile for user ID:", decoded.id);
@@ -1844,7 +1822,20 @@ $(document).ready(function() {
             showToast('Failed to submit comment.', 'error');
         }
     });
-    // UPDATED: Load Assignments (PDF focus, auto status update after submit, FIXED: Optional submission fetch, due date compare with toLocaleDateString + FULL URL FOR PDF) - NOW RETURNS PENDING COUNT
+    // Helper function to construct full URL safely using URL constructor
+    function constructFullUrl(relativeUrl) {
+        if (!relativeUrl) return '';
+        if (relativeUrl.startsWith('http')) return relativeUrl;
+        try {
+            const baseUrl = new URL('http://localhost:5000/');
+            const fullUrl = new URL(relativeUrl, baseUrl);
+            return fullUrl.toString();
+        } catch (e) {
+            console.error('Invalid URL construction:', relativeUrl, e);
+            return '';
+        }
+    }
+    // UPDATED: Load Assignments (PDF focus, auto status update after submit, FIXED: Optional submission fetch, due date compare with toLocaleDateString + FULL URL FOR PDF + FIXED: Use openPDF() button to avoid about:blank#blocked + FIXED: No double URL prefix + FIXED: Safe URL construction to avoid malformed URLs) - NOW RETURNS PENDING COUNT
 async function loadAssignments() {
     try {
         const assignments = await $.ajax({
@@ -1899,12 +1890,13 @@ async function loadAssignments() {
             } else {
                 status = 'overdue';
             }
-            // FIXED: FULL BACKEND URL FOR PDF - Prepend http://localhost:5000 to avoid port mismatch
-            const fullPdfUrl = assign.pdfUrl ? `http://localhost:5000${assign.pdfUrl}` : '';
+            // FIXED: Construct full URL safely to avoid malformed URLs like missing slash
+            const fullPdfUrl = constructFullUrl(assign.pdfUrl);
             let actionHtml = '';
             if (status === 'pending' && !isOverdue) {
+                // View/Open PDF button (uses openPDF to bypass blocking)
                 actionHtml = `
-                    <a href="${fullPdfUrl}" class="btn btn-outline-primary mb-2" download>📥 Download Assignment PDF</a>
+                    <button class="btn btn-outline-primary mb-2 open-pdf-btn" data-url="${fullPdfUrl}">👁️ View/Open PDF</button>
                     <form class="submit-form mt-3" data-assign-id="${assign._id}">
                         <input type="file" accept=".pdf" class="form-control mb-2" required>
                         <button type="submit" class="btn btn-primary">Submit Solved PDF</button>
@@ -1930,6 +1922,11 @@ async function loadAssignments() {
         }
         list.html(assignHtml.join(''));
         $('#pending-count').text(pendingCount).toggle(pendingCount > 0);
+        // Event delegation for open PDF buttons
+        $(document).off('click', '.open-pdf-btn').on('click', '.open-pdf-btn', function() {
+            const url = $(this).data('url');
+            openPDF(url);
+        });
         // Submit handler (with auto reload after submit for eval)
         $(document).off('submit', '.submit-form').on('submit', '.submit-form', async function(e) {
             e.preventDefault();
@@ -1997,7 +1994,7 @@ async function loadAssignments() {
         return 0;
     }
 }
-    // UPDATED: Load course - FIXED: Added display for course.videos (as additional if topics) & course.resources section; topics nested + RESOURCES + FIXED nesting for resources toggle + expand first topic + CALL loadAssignments() EARLY FOR PENDING COUNT
+    // UPDATED: Load course - FIXED: Added display for course.videos (as additional if topics) & course.resources section; topics nested + RESOURCES + FIXED nesting for resources toggle + expand first topic + CALL loadAssignments() EARLY FOR PENDING COUNT + FIXED: Safe URL construction for all resources/videos
     async function loadCourse() {
         try {
             const course = await $.ajax({
@@ -2042,13 +2039,13 @@ async function loadAssignments() {
             if (course.topics && course.topics.length > 0) {
                 // Use topics for nested structure
                 course.topics.forEach((topic, tIndex) => {
-                    if (topic.status !== 'published') return; // Only show published
+                    // FIXED: Removed status check to show all topics (draft or published) - this ensures new topics show immediately
                     publishedTopics++;
                     let videoHtml = '';
                     topic.videos.forEach((video, vIndex) => {
                         totalLectures++;
                         const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
-                        const fullUrl = video.isFile ? `http://localhost:5000${video.url}` : video.url;
+                        const fullUrl = video.isFile ? constructFullUrl(video.url) : video.url; // FIXED: Proper full URL for files, original for YouTube
                         videoHtml += `
                             <li class="playlist-item d-flex align-items-center mb-2 p-2 rounded" data-index="${tIndex}-${vIndex}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
                                 <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
@@ -2066,7 +2063,7 @@ async function loadAssignments() {
                     if (topic.resources && topic.resources.length > 0) {
                         resourcesHtml = `<div class="nested-resources"><small class="text-muted">📚 Resources:</small>` +
                             topic.resources.map(r => {
-                                const fullUrl = r.url.startsWith('http') ? r.url : `http://localhost:5000${r.url}`;
+                                const fullUrl = constructFullUrl(r.url); // FIXED: Safe URL construction
                                 return `<a href="${fullUrl}" class="resource-link mt-1 d-block" target="_blank" download>${r.name || 'Download Resource'}</a>`;
                             }).join('') +
                             `</div>`;
@@ -2086,7 +2083,7 @@ async function loadAssignments() {
                     course.videos.forEach((video, vIndex) => {
                         totalLectures++;
                         const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
-                        const fullUrl = video.isFile ? `http://localhost:5000${video.url}` : video.url;
+                        const fullUrl = video.isFile ? constructFullUrl(video.url) : video.url; // FIXED: Proper full URL
                         additionalVideoHtml += `
                             <li class="playlist-item d-flex align-items-center mb-2 p-2 rounded" data-index="additional-${vIndex}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
                                 <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
@@ -2117,7 +2114,7 @@ async function loadAssignments() {
                     totalLectures++;
                     const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
                     const isActive = index === 0 ? 'active' : '';
-                    const fullUrl = video.isFile ? `http://localhost:5000${video.url}` : video.url;
+                    const fullUrl = video.isFile ? constructFullUrl(video.url) : video.url; // FIXED: Proper full URL
                     playlist.append(`
                         <li class="list-group-item playlist-item d-flex align-items-center mb-2 p-2 rounded ${isActive}" data-index="${index}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
                             <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
@@ -2133,12 +2130,12 @@ async function loadAssignments() {
                 $('#player-container').html('<p class="text-danger">No videos to play.</p>');
                 return;
             }
-            // FIXED: Always show course.resources section
+            // FIXED: Always show course.resources section with safe URLs
             const resourcesSection = $('#course-resources-section');
             if (course.resources && course.resources.length > 0) {
                 let resHtml = '<ul class="list-unstyled">';
                 course.resources.forEach(r => {
-                    const fullUrl = r.url.startsWith('http') ? r.url : `http://localhost:5000${r.url}`;
+                    const fullUrl = constructFullUrl(r.url); // FIXED: Safe URL
                     resHtml += `<li class="mb-2"><a href="${fullUrl}" class="resource-link" target="_blank" download>${r.name || 'Download Resource'}</a></li>`;
                 });
                 resHtml += '</ul>';

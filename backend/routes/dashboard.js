@@ -1,22 +1,22 @@
-// backend/routes/dashboard.js - FIXED: Import with correct spelling, aggregate safe
+// backend/routes/dashboard.js
 const express = require('express');
 const router = express.Router();
-const { auth, checkRole, isStudent } = require('../middleware/auth'); // Updated with isStudent
+const { auth, checkRole, isStudent } = require('../middleware/auth');
 const Student = require('../models/Student');
 const Admin = require('../models/Admin');
 const Course = require('../models/Course');
-const Enrollment = require('../models/Enrollment'); // FIXED: Single 'l' - matches renamed file
+const Enrollment = require('../models/Enrollment');
 const Favorite = require('../models/Favorite');
-const Assignment = require('../models/Assignment'); // New
-const Submission = require('../models/Submission'); // New
+const Assignment = require('../models/Assignment');
+const Submission = require('../models/Submission');
 
-// Existing helper (unchanged)
+// Helper function
 function getYouTubeThumbnail(url) {
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
     return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : 'assets/img/placeholder.jpg';
 }
 
-// POST - Enroll in course (Fixed: Set progress: 0 and status: 'enrolled' explicitly)
+// POST - Enroll in course
 router.post('/student/enroll', auth, checkRole(['student']), async (req, res) => {
     try {
         const { courseId } = req.body;
@@ -31,8 +31,8 @@ router.post('/student/enroll', auth, checkRole(['student']), async (req, res) =>
         const enrollment = new Enrollment({ 
             studentId: req.user.id, 
             courseId,
-            progress: 0,  // Explicitly set to 0 for new enrollments
-            status: 'enrolled'  // Default status set to 'enrolled'
+            progress: 0,
+            status: 'enrolled'
         });
         await enrollment.save();
         res.json({ message: 'Enrolled successfully' });
@@ -53,8 +53,8 @@ router.post('/student/complete', auth, checkRole(['student']), async (req, res) 
         if (enrollment.status === 'completed') return res.status(400).json({ message: 'Already completed' });
 
         enrollment.status = 'completed';
-        enrollment.progress = 100;  // Set progress to 100% on complete
-        enrollment.completedAt = new Date(); // Add completed date
+        enrollment.progress = 100;
+        enrollment.completedAt = new Date();
         await enrollment.save();
         res.json({ message: 'Course completed' });
     } catch (error) {
@@ -63,13 +63,12 @@ router.post('/student/complete', auth, checkRole(['student']), async (req, res) 
     }
 });
 
-// GET - Student enrollments (Fixed: No populate, return plain objects with string courseId)
+// GET - Student enrollments
 router.get('/student/enrollments', auth, checkRole(['student']), async (req, res) => {
     try {
         const enrollments = await Enrollment.find({ studentId: req.user.id })
             .sort({ enrolledAt: -1 });
 
-        // Convert to plain JS objects to ensure courseId is string
         const plainEnrollments = enrollments.map(e => e.toObject({ getters: true, virtuals: false }));
         res.json(plainEnrollments);
     } catch (error) {
@@ -78,7 +77,30 @@ router.get('/student/enrollments', auth, checkRole(['student']), async (req, res
     }
 });
 
-// NEW ROUTE: GET /student/submissions - For frontend loadSubmissions() (last 10 submissions with details)
+// DELETE - Unenroll from course
+router.delete('/student/enrollments/:enrollmentId', auth, checkRole(['student']), async (req, res) => {
+    try {
+        const { enrollmentId } = req.params;
+
+        const enrollment = await Enrollment.findOne({ 
+            _id: enrollmentId, 
+            studentId: req.user.id 
+        });
+
+        if (!enrollment) {
+            return res.status(404).json({ message: 'Enrollment not found or access denied' });
+        }
+
+        await Enrollment.deleteOne({ _id: enrollmentId });
+
+        res.json({ message: 'Successfully unenrolled from the course' });
+    } catch (error) {
+        console.error('Unenroll Error:', error.stack);
+        res.status(500).json({ message: 'Server error during unenroll', error: error.message });
+    }
+});
+
+// GET - Student submissions (last 10)
 router.get('/student/submissions', auth, checkRole(['student']), async (req, res) => {
     try {
         const userId = req.user.id;
@@ -86,10 +108,7 @@ router.get('/student/submissions', auth, checkRole(['student']), async (req, res
             .populate({
                 path: 'assignmentId',
                 select: 'title dueDate',
-                populate: { 
-                    path: 'courseId', 
-                    select: 'name' 
-                }
+                populate: { path: 'courseId', select: 'name' }
             })
             .sort({ submittedAt: -1 })
             .limit(10)
@@ -112,26 +131,79 @@ router.get('/student/submissions', auth, checkRole(['student']), async (req, res
     }
 });
 
-// GET - Student dashboard (FIXED: Added auth before isStudent + better populate for submissions)
-router.get('/student/dashboard', auth, isStudent, async (req, res) => {  // Added auth here
+// GET - Student ke diye hue reviews (Yeh naya route add kiya gaya hai)
+router.get('/student/reviews', auth, checkRole(['student']), async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Courses jin mein is student ne comment/review diya ho
+        const courses = await Course.find({
+            'comments.studentId': userId
+        })
+        .select('name comments')
+        .lean();
+
+        const myReviews = [];
+
+        courses.forEach(course => {
+            course.comments.forEach(comment => {
+                if (comment.studentId && comment.studentId.toString() === userId.toString()) {
+                    myReviews.push({
+                        courseId: course._id,
+                        courseName: course.name || 'Unknown Course',
+                        rating: comment.rating || 0,
+                        review: comment.text || comment.comment || 'No review text',
+                        date: comment.createdAt 
+                            ? new Date(comment.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+                            : 'Unknown Date',
+                        rawDate: comment.createdAt || null
+                    });
+                }
+            });
+        });
+
+        // Latest reviews pehle dikhao
+        myReviews.sort((a, b) => {
+            if (!a.rawDate) return 1;
+            if (!b.rawDate) return -1;
+            return new Date(b.rawDate) - new Date(a.rawDate);
+        });
+
+        // rawDate field remove kar do final response mein
+        const cleanReviews = myReviews.map(({ rawDate, ...review }) => review);
+
+        res.json(cleanReviews);
+    } catch (error) {
+        console.error('Student Reviews Fetch Error:', error.stack);
+        res.status(500).json({ message: 'Error fetching your reviews', error: error.message });
+    }
+});
+
+// GET - Student dashboard
+// GET - Student dashboard (FULL UPDATED ROUTE)
+router.get('/student/dashboard', auth, isStudent, async (req, res) => {
     try {
         const userId = req.user.id;
 
         const userEnrollments = await Enrollment.find({ studentId: userId })
             .populate({
                 path: 'courseId',
-                populate: { path: 'category', select: 'name assignments' } // New: assignments in populate
+                populate: { path: 'category', select: 'name assignments' }
             })
             .sort({ enrolledAt: -1 })
             .lean();
 
         const validEnrollments = userEnrollments.filter(e => e.courseId);
 
+        // Total Enrolled (all time)
         const enrolledCourses = validEnrollments.length;
+
+        // Active Courses: non-completed (enrolled + in-progress)
         const activeCourses = validEnrollments.filter(e => e.status !== 'completed').length;
+
+        // Completed Courses
         const completedCourses = validEnrollments.filter(e => e.status === 'completed').length;
 
-        // New: Pending assignments count
         let pendingAssignments = 0;
         validEnrollments.forEach(e => {
             const now = new Date();
@@ -139,19 +211,16 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {  // Adde
             pendingAssignments += courseAssigns.filter(a => new Date(a.dueDate) > now).length;
         });
 
-        // New: My recent submissions (last 5) - Better populate
         const mySubmissions = await Submission.find({ studentId: userId })
             .populate({
                 path: 'assignmentId', 
                 select: 'title', 
-                populate: { 
-                    path: 'courseId', 
-                    select: 'name' 
-                }
+                populate: { path: 'courseId', select: 'name' } 
             })
             .sort({ submittedAt: -1 })
             .limit(5)
             .lean();
+
         const recentSubmissions = mySubmissions.map(s => ({
             title: s.assignmentId?.title || 'Unknown',
             course: s.assignmentId?.courseId?.name || 'Unknown',
@@ -160,7 +229,6 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {  // Adde
             submittedAt: s.submittedAt ? new Date(s.submittedAt).toISOString() : new Date().toISOString()
         }));
 
-        // Existing recent courses (updated with assignments info)
         const recentCourseIds = validEnrollments.slice(0, 3).map(e => e.courseId._id);
         const recentFavorites = await Favorite.find({
             userId,
@@ -191,7 +259,6 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {  // Adde
                 }
             }
 
-            // New: Active assignments count for this course
             const now = new Date();
             const activeAssigns = course.assignments ? course.assignments.filter(a => new Date(a.dueDate) > now) : 0;
 
@@ -210,7 +277,7 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {  // Adde
                 isFavorite: favoriteCourseIds.has(course._id.toString()),
                 averageRating,
                 numRatings,
-                activeAssignments: activeAssigns.length // New
+                activeAssignments: activeAssigns.length
             };
         });
 
@@ -218,9 +285,9 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {  // Adde
             enrolledCourses,
             activeCourses,
             completedCourses,
-            pendingAssignments, // New
+            pendingAssignments,
             recentCourses,
-            recentSubmissions, // New
+            recentSubmissions,
             latestQuizzes: [],
             quizTitle: 'No Quiz Attempted',
             quizAnswered: '0/0',
@@ -232,14 +299,13 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {  // Adde
     }
 });
 
-// POST - Cleanup invalid enrollments (NEW: for old stale data) - FIXED: Aggregate wrapped in try-catch
+// POST - Cleanup invalid enrollments
 router.post('/student/cleanup-enrollments', auth, checkRole(['student']), async (req, res) => {
     try {
         const userId = req.user.id;
 
         let invalid = [];
         try {
-            // FIXED: Aggregate with error handling
             invalid = await Enrollment.aggregate([
                 { $match: { studentId: userId } },
                 {
@@ -271,23 +337,20 @@ router.post('/student/cleanup-enrollments', auth, checkRole(['student']), async 
     }
 });
 
-// GET - Admin dashboard (unchanged, but added console for debug + FIXED: Aggregate safe)
+// GET - Admin dashboard
 router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
     try {
-        console.log('Admin dashboard accessed by user:', req.user.id); // Debug log
+        console.log('Admin dashboard accessed by user:', req.user.id);
         const totalUsers = await Student.countDocuments() + await Admin.countDocuments();
         const totalStudents = await Student.countDocuments();
         const totalAdmins = await Admin.countDocuments();
         const totalCourses = await Course.countDocuments();
         const totalCategories = (await Course.distinct('category')).length;
-        const totalAssignments = await Assignment.countDocuments(); // New
-
-        // New: Pending submissions (unevaluated)
+        const totalAssignments = await Assignment.countDocuments();
         const pendingSubmissions = await Submission.countDocuments({ evaluated: false });
 
         let totalEarnings = 0;
         try {
-            // FIXED: Aggregate with error handling
             const aggResult = await Enrollment.aggregate([
                 { $lookup: { from: 'courses', localField: 'courseId', foreignField: '_id', as: 'course' } },
                 { $unwind: { path: '$course', preserveNullAndEmptyArrays: true } },
@@ -297,21 +360,16 @@ router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
             totalEarnings = aggResult[0]?.total || 0;
         } catch (aggError) {
             console.error('Earnings aggregate error:', aggError);
-            totalEarnings = 0; // Fallback
+            totalEarnings = 0;
         }
 
-        // Updated: Recent activities (Added assignment submissions)
         const activities = await Enrollment.find()
-            .populate({
-                path: 'studentId',
-                select: 'name'
-            })
+            .populate({ path: 'studentId', select: 'name' })
             .populate('courseId', 'name')
             .sort({ enrolledAt: -1 })
             .limit(3)
             .lean();
 
-        // New: Recent submissions as activities
         const recentSubs = await Submission.find()
             .populate('studentId', 'name')
             .populate({ path: 'assignmentId', populate: { path: 'courseId', select: 'name' } })
@@ -340,8 +398,8 @@ router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
             totalAdmins,
             totalCourses,
             totalCategories,
-            totalAssignments, // New
-            pendingSubmissions, // New
+            totalAssignments,
+            pendingSubmissions,
             totalEarnings,
             recentActivities: allActivities
         });

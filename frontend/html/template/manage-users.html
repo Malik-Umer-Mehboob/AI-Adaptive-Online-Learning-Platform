@@ -660,12 +660,7 @@
                                         <li>
                                             <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="manage-courses.html"><i class="isax isax-book me-2"></i>Manage Courses</a>
                                         </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="reports.html"><i class="isax isax-chart me-2"></i>Reports</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="admin-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
-                                        </li>
+                                       
                                     </ul>
                                     <div class="profile-footer">
                                         <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"><i class="isax isax-logout me-2"></i>Logout</a>
@@ -751,19 +746,12 @@
                                     <li>
                                         <a href="manage-courses.html" class="d-inline-flex align-items-center"><i class="isax isax-book me-2"></i>Manage Courses</a>
                                     </li>
-                                    <li>
-                                        <a href="reports.html" class="d-inline-flex align-items-center"><i class="isax isax-chart me-2"></i>Reports & Analytics</a>
-                                    </li>
-                                    <li>
-                                        <a href="system-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting me-2"></i>System Settings</a>
-                                    </li>
+                                
                                 </ul>
                                 <hr />
-                                <h6 class="mb-3">Account Settings</h6>
+                                <h6 class="mb-3">Exit Account</h6>
                                 <ul>
-                                    <li>
-                                        <a href="admin-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a>
-                                    </li>
+                                    
                                     <li>
                                         <a href="index-3.html" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a>
                                     </li>
@@ -1052,7 +1040,7 @@
     $('#dark-mode-toggle').on('click', toggleDarkMode);
     $('#light-mode-toggle').on('click', toggleLightMode);
 
-    // Fetch users code (updated: added View Submissions button for students)
+    // Fetch users code (updated: removed View Submissions button for students)
     // Fetch and display users (excluding current admin)
     $.ajax({
         url: 'http://localhost:5000/api/admin/users',
@@ -1082,14 +1070,6 @@
                                         <i class="fas fa-trash"></i> Delete
                                     </button>
                                 `;
-                                if (user.role === 'student') {
-                                    actionsHtml = `
-                                        <button class="btn btn-info btn-action view-submissions me-2" data-id="${user._id}">
-                                            <i class="fas fa-file-alt"></i> View Submissions
-                                        </button>
-                                        ${actionsHtml}
-                                    `;
-                                }
                                 userListHTML += `
                                     <tr>
                                         <td class="user-name-col"><i class="fas fa-user me-1"></i>${user.name || 'Unknown'}</td>
@@ -1118,12 +1098,6 @@
             $('#user-list').html('<tr><td colspan="5" class="text-center">Error loading users. Please try again.</td></tr>');
             showToast(`Error loading users: ${xhr.responseText || 'Unknown error'}`, 'error');
         }
-    });
-
-    // NEW: View Submissions handler
-    $(document).on('click', '.view-submissions', function() {
-        const userId = $(this).data('id');
-        window.location.href = `admin-dashboard.html?viewSubmissions=${userId}`;
     });
 
     // Toggle Role (same as before)

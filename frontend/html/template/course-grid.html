@@ -9,38 +9,30 @@
     <meta name="keywords" content="LMS template, Learning Management System, e-learning software, online course platform">
     <meta name="author" content="Dreams Technologies">
     <meta name="robots" content="index, follow">
-    
+   
     <title>Adaptive LMS | All Courses</title>
-
     <!-- Favicon -->
-    <link rel="shortcut icon" href="assets/img/favicon.png"> 
+    <link rel="shortcut icon" href="assets/img/favicon.png">
     <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
-
     <!-- Theme Settings Js -->
     <script src="assets/js/theme-script.js" type="text/javascript"></script>
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    
+   
     <!-- Fontawesome CSS -->
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
-
     <!-- Select2 CSS -->
     <link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
-    
+   
     <!-- Feathericon CSS -->
     <link rel="stylesheet" href="assets/plugins/feather/feather.css">
-
     <!-- Tabler Icon CSS -->
     <link rel="stylesheet" href="assets/plugins/tabler-icons/tabler-icons.css">
-
     <!-- Iconsax CSS -->
     <link rel="stylesheet" href="assets/css/iconsax.css">
-
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
-
     <!-- Custom Professional CSS -->
     <style>
         :root {
@@ -56,20 +48,17 @@
             --card-bg: #ffffff;
             --border-color: #dee2e6;
         }
-
         body.dark-mode {
             --bg-color: #1a1a1a;
             --text-color: #e0e0e0;
             --card-bg: #2c2c2c;
             --border-color: #444;
         }
-
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: all 0.3s ease;
         }
-
         .course-item-two {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -82,30 +71,31 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             cursor: pointer; /* Add pointer cursor for clickable areas */
         }
-
+        .course-item-two:not(.enrolled) {
+            cursor: default; /* Disable pointer if not enrolled */
+        }
+        .course-item-two.enrolled {
+            cursor: pointer;
+        }
         .course-item-two:hover {
             transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             border-color: var(--primary);
         }
-
         .course-img {
             position: relative;
             overflow: hidden;
             height: 220px;
         }
-
         .course-img img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.4s ease;
         }
-
         .course-item-two:hover .course-img img {
             transform: scale(1.08);
         }
-
         .play-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -116,11 +106,9 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-
         .course-item-two:hover .play-overlay {
             opacity: 1;
         }
-
         .play-btn {
             width: 60px;
             height: 60px;
@@ -132,18 +120,15 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
         }
-
         .play-btn:hover {
             transform: scale(1.1);
             background: white;
         }
-
         .play-btn i {
             color: var(--primary);
             font-size: 1.5rem;
             margin-left: 3px;
         }
-
         .video-count-badge {
             position: absolute;
             top: 12px;
@@ -156,7 +141,6 @@
             font-weight: 600;
             backdrop-filter: blur(4px);
         }
-
         .fav-btn {
             position: absolute;
             top: 12px;
@@ -172,30 +156,24 @@
             transition: all 0.3s ease;
             z-index: 2;
         }
-
         .dark-mode .fav-btn {
             background: rgba(0,0,0,0.6);
         }
-
         .fav-btn:hover {
             background: white;
             transform: scale(1.1);
         }
-
         .dark-mode .fav-btn:hover {
             background: rgba(255,255,255,0.9);
         }
-
         .fav-btn i {
             font-size: 1.1rem;
             transition: color 0.3s ease;
             color: var(--text-color);
         }
-
         .fav-btn.favorited i {
             color: #e91e63 !important;
         }
-
         .course-content {
             padding: 1rem; /* Reduced padding to give more space for description */
             flex-grow: 1;
@@ -203,7 +181,6 @@
             flex-direction: column;
             overflow: hidden; /* Prevent content overflow */
         }
-
         .course-title {
             font-size: 1.1rem; /* Slightly smaller title to save space */
             font-weight: 600;
@@ -217,55 +194,44 @@
             cursor: pointer; /* Pointer for clickable */
             transition: color 0.3s ease;
         }
-
         .course-title:hover {
             color: var(--primary);
         }
-
         .rating {
             display: flex;
             align-items: center;
             margin-bottom: 0.5rem; /* Reduced margin */
         }
-
         .rating-stars {
             display: flex;
             margin-right: 0.5rem;
         }
-
         .rating-stars i {
             font-size: 1rem;
             margin-right: 2px;
         }
-
         .rating-stars .filled {
             color: #ffc107;
         }
-
         .rating-stars .empty {
             color: #e9ecef;
         }
-
         .dark-mode .rating-stars .empty {
             color: #444;
         }
-
         .rating-value {
             font-size: 0.875rem;
             color: #ffc107;
             font-weight: 600;
             margin-right: 0.5rem;
         }
-
         .rating-text {
             font-size: 0.875rem;
             color: var(--gray);
         }
-
         .dark-mode .rating-text {
             color: #adb5bd;
         }
-
         .category-badge {
             background: rgba(0,123,255,0.1);
             color: var(--primary);
@@ -276,12 +242,10 @@
             margin-bottom: 0.5rem; /* Reduced margin */
             align-self: flex-start;
         }
-
         .dark-mode .category-badge {
             background: rgba(13,110,253,0.2);
             color: #0d6efd;
         }
-
         .course-desc {
             font-size: 0.9rem; /* Increased font size for better readability */
             color: var(--gray);
@@ -295,19 +259,15 @@
             /* Removed min-height to avoid awkward spacing for short descriptions; now adapts naturally */
             transition: all 0.3s ease; /* Smooth transition on hover or changes */
         }
-
         .course-desc:hover {
             color: var(--text-color); /* Subtle color shift on hover for engagement */
         }
-
         .dark-mode .course-desc {
             color: #adb5bd;
         }
-
         .dark-mode .course-desc:hover {
             color: var(--text-color);
         }
-
         .course-footer {
             display: flex;
             align-items: center;
@@ -316,7 +276,6 @@
             padding-top: 1rem; /* Slightly reduced padding-top */
             border-top: 1px dashed var(--border-color);
         }
-
         /* Improved: Ensure buttons container wraps and has better spacing */
         .course-footer .d-flex {
             flex-wrap: wrap;
@@ -324,27 +283,22 @@
             align-items: center;
             justify-content: flex-end; /* Align buttons to the right */
         }
-
         .price {
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--primary);
         }
-
         .price.free {
             color: var(--success);
         }
-
         .course-meta {
             font-size: 0.75rem;
             color: var(--gray);
             margin-top: 2px;
         }
-
         .dark-mode .course-meta {
             color: #adb5bd;
         }
-
         .enroll-btn {
             padding: 0.6rem 1.5rem;
             border-radius: 50px;
@@ -354,22 +308,18 @@
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(0,123,255,0.2);
         }
-
         .enroll-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0,123,255,0.3);
         }
-
         .enroll-btn.enrolled {
             background: var(--success);
             border-color: var(--success);
             box-shadow: 0 4px 12px rgba(40,167,69,0.2);
         }
-
         .enroll-btn.enrolled:hover {
             box-shadow: 0 8px 20px rgba(40,167,69,0.3);
         }
-
         /* Improved: Assignments Button Style - Slightly smaller padding for better fit */
         .assignments-btn {
             padding: 0.5rem 1.2rem; /* Reduced padding for compact fit */
@@ -386,32 +336,26 @@
             display: inline-flex;
             align-items: center;
         }
-
         .assignments-btn:hover {
             background: #e0a800;
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(255,193,7,0.4);
             color: white;
         }
-
         .dark-mode .assignments-btn {
             background: #fd7e14;
         }
-
         .dark-mode .assignments-btn:hover {
             background: #e65c00;
         }
-
         .navbar-logo img.logo {
             width: 120px;
             height: auto;
         }
-
         .footer-logo img {
             width: 150px;
             height: auto;
         }
-
         @media (max-width: 768px) {
             .course-img {
                 height: 200px;
@@ -806,141 +750,144 @@
                 right: 10px;
             }
         }
+        /* Show All Button Styles */
+        .show-all-btn {
+            display: block;
+            margin: 2rem auto;
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .show-all-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .dark-mode .show-all-btn {
+            background: #0d6efd;
+        }
+        .show-all-btn.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body class="light-mode">
     <!-- Main Wrapper -->
     <div class="main-wrapper">
         <!-- Header -->
-        <header class="header-two">
-          <div class="container">
-            <div class="header-nav">
-              <div class="navbar-header">
-                <a id="mobile_btn" href="javascript:void(0);">
-                  <span class="bar-icon">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </span>
-                </a>
-                <div class="navbar-logo">
-                  <a class="logo-white header-logo" href="index-3.html">
-                    <img
-                      src="assets/img/logo.png"
-                      class="logo"
-                      alt="Logo"
-                      style="width: 220px"
-                    />
-                  </a>
-                  <a class="logo-dark header-logo" href="index-3.html">
-                    <img
-                      src="assets/img/logo.png"
-                      class="logo"
-                      alt="Logo"
-                      style="width: 220px"
-                    />
-                  </a>
-                </div>
-              </div>
-              <div class="main-menu-wrapper">
-                <div class="menu-header">
-                  <a href="index-3.html" class="menu-logo">
-                    <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 220px;" />
-                  </a>
-                  <a
-                    id="menu_close"
-                    class="menu-close"
-                    href="javascript:void(0);"
-                  >
-                    <i class="fas fa-times"></i>
-                  </a>
-                </div>
-                <div class="header-btn d-flex align-items-center">
-                  <div class="icon-btn me-2">
-                    <a
-                      href="javascript:void(0);"
-                      id="dark-mode-toggle"
-                      class="theme-toggle activate"
-                    >
-                      <i class="isax isax-sun-15"></i>
-                    </a>
-                    <a
-                      href="javascript:void(0);"
-                      id="light-mode-toggle"
-                      class="theme-toggle"
-                    >
-                      <i class="isax isax-moon"></i>
-                    </a>
-                  </div>
-                  <div class="dropdown profile-dropdown">
-                    <a
-                      href="javascript:void(0);"
-                      class="d-flex align-items-center"
-                      data-bs-toggle="dropdown"
-                    >
-                      <span class="avatar">
-                        <img
-                          src=""
-                          alt="Profile Image"
-                          class="img-fluid rounded-circle dropdown-profile-img"
-                        />
-                      </span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                      <div class="profile-header d-flex align-items-center">
-                        <div class="avatar">
-                          <img
-                            src=""
-                            alt="Profile Image"
-                            class="img-fluid rounded-circle dropdown-profile-img"
-                          />
+       <!-- Header -->
+<header class="header-two">
+<div class="container">
+<div class="header-nav">
+<div class="navbar-header">
+<a id="mobile_btn" href="javascript:void(0);">
+<span class="bar-icon">
+<span></span>
+<span></span>
+<span></span>
+</span>
+</a>
+<div class="navbar-logo">
+<a class="logo-white header-logo" href="index-3.html">
+<img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 200px;">
+</a>
+<a class="logo-dark header-logo" href="index-3.html">
+<img src="assets/img/logo.png" class="logo" alt="Logo" style="width: 200px;">
+</a>
+</div>
+</div>
+<div class="main-menu-wrapper">
+<div class="menu-header">
+<a href="index.html" class="menu-logo">
+<img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 150px;">
+</a>
+<a id="menu_close" class="menu-close" href="javascript:void(0);">
+<i class="fas fa-times"></i>
+</a>
+</div>
+<ul class="main-nav">
+<li>
+<a href="index-3.html">Home</a>
+</li>
+<li class="has-submenu active">
+<a href="#">Courses</a>
+<ul class="submenu">
+<ul class="submenu">
+<li><a href="student-courses.html">Enrolled Courses</a></li>
+</ul>
+</ul>
+</li>
+</li>
+<li>
+<a href="student-dashboard.html">Dashboard</a>
+</li>
+                            </ul>
+         
+                            <div class="menu-dropdown">
+         
+                                <div class="dropdown mb-2">
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Light
+                                    </a>
+                                    <ul class="dropdown-menu p-2 mt-2">
+                                        <li><a class="dropdown-item rounded" href="javascript:void(0);">Light</a></li>
+                                        <li><a class="dropdown-item rounded" href="javascript:void(0);">Dark</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+         
                         </div>
-                        <div>
-                          <h6 id="dropdown-profile-name">Student</h6>
-                          <p id="profile-email"><a href="mailto:"></a></p>
+                        <div class="header-btn d-flex align-items-center">
+                            <div class="icon-btn me-2">
+                                <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
+                                    <i class="isax isax-sun-15"></i>
+                                </a>
+                                <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
+                                    <i class="isax isax-moon"></i>
+                                </a>
+                            </div>
+                            <div class="dropdown profile-dropdown">
+                                <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
+                                    <span class="avatar">
+                                        <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <div class="profile-header d-flex align-items-center">
+                                        <div class="avatar">
+                                            <img src="" alt="Profile Image" class="img-fluid rounded-circle dropdown-profile-img">
+                                        </div>
+                                        <div>
+                                            <h6 id="dropdown-profile-name">Student</h6>
+                                            <p id="profile-email"><a href="mailto:"></a></p>
+                                        </div>
+                                    </div>
+                                    <ul class="profile-body">
+                                        <li>
+                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link" data-href="student-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-quiz.html"><i class="isax isax-award me-2"></i>Quiz Attempts</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
+                                        </li>
+                                    </ul>
+                                    <div class="profile-footer">
+                                        <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100" id="logout-btn"><i class="isax isax-logout me-2"></i>Logout</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                      <ul class="profile-body">
-                        <li>
-                          <a
-                            class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link"
-                            data-href="student-profile.html"
-                            ><i class="isax isax-security-user me-2"></i>My
-                            Profile</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item d-inline-flex align-items-center rounded fw-medium"
-                            href="student-quiz.html"
-                            ><i class="isax isax-award me-2"></i>Quiz Attempts</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item d-inline-flex align-items-center rounded fw-medium"
-                            href="student-settings.html"
-                            ><i class="isax isax-setting-2 me-2"></i>Settings</a
-                          >
-                        </li>
-                      </ul>
-                      <div class="profile-footer">
-                        <a
-                          href="index-3.html"
-                          class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"
-                          id="logout-btn"
-                          ><i class="isax isax-logout me-2"></i>Logout</a
-                        >
-                      </div>
                     </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          </div>
         </header>
         <!-- /Header -->
-
         <!-- Breadcrumb -->
         <div class="breadcrumb-bar text-center">
             <div class="container">
@@ -958,7 +905,7 @@
             </div>
         </div>
         <!-- /Breadcrumb -->
-        
+       
         <!-- Course -->
         <section class="course-content py-5">
             <div class="container">
@@ -999,7 +946,7 @@
                                         <small class="text-muted" id="filter-status">All courses</small>
                                     </div>
                                 </div>
-                                <div class="col-lg-8 col-md-6">    
+                                <div class="col-lg-8 col-md-6">
                                     <div class="show-filter add-course-info">
                                         <form class="d-flex align-items-center gap-3">
                                             <div class="view-icons mb-2 mb-sm-0">
@@ -1010,12 +957,12 @@
                                                 <input type="text" class="form-control ps-5" id="search-courses" placeholder="Search courses...">
                                             </div>
                                         </form>
-                                    </div>    
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <!-- /Filter -->
-                        
+                       
                         <!-- Loading State -->
                         <div id="loading-courses" class="text-center py-5">
                             <div class="spinner-border text-primary" role="status">
@@ -1023,11 +970,13 @@
                             </div>
                             <p class="mt-2 text-muted">Loading courses...</p>
                         </div>
-                        
+                       
                         <div class="row" id="course-grid">
                             <!-- Courses will be loaded here -->
                         </div>
-                        
+                        <!-- Show All Button -->
+                        <button class="show-all-btn hidden" id="show-all-btn">Show All Courses</button>
+                       
                         <div class="empty-state text-center py-5" id="empty-courses" style="display: none;">
                             <div class="mb-4">
                                 <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
@@ -1036,8 +985,8 @@
                             <p class="text-muted mb-4">Check back later for new courses!</p>
                             <a href="student-dashboard.html" class="btn btn-primary">Go to Dashboard</a>
                         </div>
-                        
-                        <!-- Pagination -->
+                       
+                        <!-- Pagination (Hidden now, as we're using Show All instead) -->
                         <div class="row align-items-center mt-4" id="pagination" style="display: none;">
                             <div class="col-md-6">
                                 <p class="pagination-text mb-0" id="pagination-text">Page 1 of 1</p>
@@ -1062,7 +1011,6 @@
                 </div>
             </div>
         </section>
-
         <!-- Footer -->
      <footer class="footer">
   <div class="footer-top">
@@ -1157,10 +1105,8 @@
   </div>
 </footer>
     </div>
-
     <!-- Toast Container -->
     <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
-
     <!-- Scripts -->
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
@@ -1170,7 +1116,6 @@
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
     <script src="assets/js/theme-script.js"></script>
     <script src="assets/js/script.js"></script>
-
     <!-- Professional Course Grid JS -->
 <script>
 $(document).ready(function() {
@@ -1180,7 +1125,6 @@ $(document).ready(function() {
         setTimeout(() => window.location.href = 'login.html', 2000);
         return;
     }
-
     let decoded;
     try {
         decoded = jwt_decode(token);
@@ -1191,15 +1135,14 @@ $(document).ready(function() {
         setTimeout(() => window.location.href = 'login.html', 2000);
         return;
     }
-
     if (decoded.role !== 'student') {
         showToast('Access denied: Students only.', 'error');
         setTimeout(() => window.location.href = 'login.html', 2000);
         return;
     }
-
-    let currentFilters = { page: 1, category: '', search: '' };
-
+    let currentFilters = { page: 1, category: '', search: '', limit: 9, showAll: false };
+    let allCourses = []; // Store all courses for show all functionality
+    let enrollmentsCache = new Map(); // Cache enrollment status
     // Function to show toast messages
     function showToast(message, type = 'success', duration = 3000) {
         const toastContainer = $('#toast-container');
@@ -1221,7 +1164,6 @@ $(document).ready(function() {
             $(`#${toastId}`).remove();
         }, duration);
     }
-
     // Load profile data including image and name
     function loadProfile() {
         console.log("Loading profile for user ID:", decoded.id);
@@ -1264,7 +1206,6 @@ $(document).ready(function() {
             },
         });
     }
-
     // Handle profile link click
     $(".profile-link").on("click", function (e) {
         e.preventDefault();
@@ -1298,7 +1239,6 @@ $(document).ready(function() {
             },
         });
     });
-
     // Listen for profile update (in case of external updates)
     window.addEventListener('profileUpdated', loadProfile);
     window.addEventListener('storage', (e) => {
@@ -1306,7 +1246,6 @@ $(document).ready(function() {
             loadProfile();
         }
     });
-
     // Logout Handler
     $(document).on('click', '#logout-btn', function (e) {
         e.preventDefault();
@@ -1332,11 +1271,9 @@ $(document).ready(function() {
             }
         });
     });
-
     function getInitials(name) {
         return (name || 'AD').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
-
     // Updated: Better thumbnail extraction (handles watch?v=, youtu.be, embed, and playlist fallback)
     function getYouTubeThumbnail(url) {
         if (!url) return 'assets/img/course/course-placeholder.jpg';
@@ -1359,7 +1296,6 @@ $(document).ready(function() {
         }
         return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
     }
-
     function generateStars(rating) {
         let stars = '';
         const fullStars = Math.floor(rating);
@@ -1375,15 +1311,24 @@ $(document).ready(function() {
         }
         return stars;
     }
-
-    function isEnrolled(courseId) {
-        return $.ajax({
-            url: `http://localhost:5000/api/dashboard/student/enrollments`,
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token }
-        }).then(data => data.some(e => e.courseId === courseId)).catch(() => false);
+    async function checkEnrolled(courseId) {
+        if (enrollmentsCache.has(courseId)) {
+            return enrollmentsCache.get(courseId);
+        }
+        try {
+            const res = await $.ajax({
+                url: `http://localhost:5000/api/dashboard/student/enrollments`,
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const enrolled = res.some(e => e.courseId === courseId);
+            enrollmentsCache.set(courseId, enrolled);
+            return enrolled;
+        } catch (err) {
+            console.error('Enrollment check failed:', err);
+            return false;
+        }
     }
-
     function loadCategories() {
         $.ajax({
             url: 'http://localhost:5000/api/categories',
@@ -1403,65 +1348,168 @@ $(document).ready(function() {
             error: () => $('#category-filter').html('<p class="text-danger text-center py-3">Error loading categories</p>')
         });
     }
-
-    // Updated: Added debug log for videos and playlist handling
+    // Updated: Load all courses if showAll is true, otherwise load 9
     async function loadCourses() {
         const params = new URLSearchParams({
             page: currentFilters.page,
-            limit: 9
+            limit: currentFilters.showAll ? 100 : 9 // Fetch all (up to 100) if showAll
         });
         if (currentFilters.category) params.append('category', currentFilters.category);
         if (currentFilters.search) params.append('search', currentFilters.search);
-
         $('#loading-courses').show();
-        $('#course-grid, #pagination').hide();
-
+        $('#course-grid, #pagination, #show-all-btn').hide();
         try {
             const res = await $.ajax({
                 url: `http://localhost:5000/api/courses?${params}`,
                 headers: { 'Authorization': 'Bearer ' + token }
             });
-
             $('#loading-courses').hide();
-            const courses = res.courses || [];
-
-            if (courses.length === 0) {
+            allCourses = res.courses || []; // Store all fetched courses
+            if (allCourses.length === 0) {
                 $('#empty-courses').show();
                 $('#course-count').text('No courses found');
                 return;
             }
-
             // Debug: Log first course's video URL and if it's playlist
-            if (courses[0] && courses[0].videos && courses[0].videos.length > 0) {
-                console.log('Sample video URL for thumbnail:', courses[0].videos[0].url);
-                console.log('Is playlist URL?', courses[0].videos[0].url.includes('playlist'));
+            if (allCourses[0] && allCourses[0].videos && allCourses[0].videos.length > 0) {
+                console.log('Sample video URL for thumbnail:', allCourses[0].videos[0].url);
+                console.log('Is playlist URL?', allCourses[0].videos[0].url.includes('playlist'));
             }
-
-            const coursePromises = courses.map(async course => {
-                const enrolled = await isEnrolled(course._id);
-                const videoCount = (course.videos || []).length;
-                const firstUrl = course.videos?.[0]?.url;
-                const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
-                const rating = course.averageRating || 0; // Use averageRating, default 0 for empty
-                const numRatings = course.numRatings || 0;
-                const duration = course.duration || '2h 30m';
-
-                let buttonsHtml = `
-                    <button class="btn btn-primary enroll-btn ${enrolled ? 'enrolled' : ''}" data-id="${course._id}" data-name="${course.name}">
-                        ${enrolled ? '<i class="fas fa-check"></i> Enrolled' : '<i class="fas fa-play"></i> Start Free'}
-                    </button>`;
-
-                // NEW: Add "View Assignments" button if enrolled
-                if (enrolled) {
-                    buttonsHtml += `
+            await renderCourses(allCourses);
+            $('#course-count').text(`Showing ${allCourses.length} of ${res.totalCourses} courses`);
+            updateFilterStatus();
+            // Show/Hide Show All button if more than 9 courses
+            if (res.totalCourses > 9 && !currentFilters.showAll) {
+                $('#show-all-btn').removeClass('hidden').text('Show All Courses');
+                $('#show-all-btn').show();
+            } else if (currentFilters.showAll && allCourses.length > 9) {
+                $('#show-all-btn').removeClass('hidden').text('Show Less Courses');
+                $('#show-all-btn').show();
+            } else {
+                $('#show-all-btn').addClass('hidden');
+            }
+        } catch (err) {
+            $('#loading-courses').hide();
+            $('#empty-courses').show().find('h5').text('Error loading courses');
+            showToast('Failed to load courses.', 'error');
+        }
+    }
+    // New: Separate function to render courses with enrollment checks
+    async function renderCourses(courses) {
+        const coursePromises = courses.map(async course => {
+            const enrolled = await checkEnrolled(course._id);
+            enrollmentsCache.set(course._id, enrolled); // Cache it
+            const videoCount = (course.videos || []).length;
+            const firstUrl = course.videos?.[0]?.url;
+            const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
+            const rating = course.averageRating || 0;
+            const numRatings = course.numRatings || 0;
+            const duration = course.duration || '2h 30m';
+            let buttonsHtml = `
+                <button class="btn btn-primary enroll-btn ${enrolled ? 'enrolled' : ''}" data-id="${course._id}" data-name="${course.name}">
+                    ${enrolled ? '<i class="fas fa-check"></i> Enrolled' : '<i class="fas fa-play"></i> Start Free'}
+                </button>`;
+            if (enrolled) {
+                buttonsHtml += `
+                    <a href="course-details.html?id=${course._id}&tab=assignments" class="assignments-btn ms-2 fw-bold">
+                        <i class="fas fa-tasks"></i> Assignments
+                    </a>`;
+            }
+            return `
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                    <div class="course-item-two course-item h-100 ${enrolled ? 'enrolled' : ''}" data-course-id="${course._id}">
+                        <div class="course-img">
+                            <img src="${thumbnail}" alt="${course.name}" onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                            <div class="play-overlay">
+                                <div class="play-btn"><i class="fas fa-play"></i></div>
+                            </div>
+                            ${videoCount > 1 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
+                            <button class="fav-btn ${course.isFavorite ? 'favorited' : ''}" data-id="${course._id}">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="course-content">
+                            <div class="category-badge">${course.category?.name || 'General'}</div>
+                            <h6 class="course-title">${course.name}</h6>
+                            <div class="rating">
+                                <div class="rating-stars">${generateStars(rating)}</div>
+                                ${rating > 0 ? `<span class="rating-value">${rating}</span>` : ''}
+                                <span class="rating-text">(${numRatings})</span>
+                            </div>
+                            <p class="course-desc">${course.description}</p>
+                            <div class="course-footer">
+                                <div>
+                                    <div class="price free">FREE</div>
+                                    <div class="course-meta">${videoCount} lessons • ${duration}</div>
+                                </div>
+                                <div class="d-flex gap-2">${buttonsHtml}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        });
+        const html = await Promise.all(coursePromises);
+        $('#course-grid').html(html.join('')).show();
+    }
+    function updateFilterStatus() {
+        let status = 'All courses';
+        if (currentFilters.search) status = `Search: "${currentFilters.search}"`;
+        else if (currentFilters.category) {
+            const catName = $(`input[value="${currentFilters.category}"]`).nextAll('span').last().text();
+            status = `Category: ${catName}`;
+        }
+        $('#filter-status').text(status);
+    }
+    // Updated: Show All / Show Less handler
+    $('#show-all-btn').on('click', function() {
+        currentFilters.showAll = !currentFilters.showAll;
+        if (currentFilters.showAll) {
+            $(this).text('Show Less Courses');
+        } else {
+            $(this).text('Show All Courses');
+        }
+        loadCourses();
+    });
+    // Improved: Event Handlers - Update only the specific card after enrollment
+    $(document).on('click', '.enroll-btn:not(.enrolled)', async function(e) {
+        e.stopPropagation(); // Prevent course item click
+        const btn = $(this);
+        const id = btn.data('id');
+        const name = btn.data('name');
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Enrolling...');
+        try {
+            const response = await $.ajax({
+                url: 'http://localhost:5000/api/enrollment/enroll',  // ← Fixed: Correct endpoint
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                contentType: 'application/json',
+                data: JSON.stringify({ courseId: id })
+            });
+           
+            // Update local cache
+            enrollmentsCache.set(id, true);
+           
+            // Re-render the specific course card
+            const $courseItem = $(`.course-item-two[data-course-id="${id}"]`);
+            const course = allCourses.find(c => c._id === id);
+            if (course) {
+                const html = await (async () => {
+                    const enrolled = true;
+                    const videoCount = (course.videos || []).length;
+                    const firstUrl = course.videos?.[0]?.url;
+                    const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
+                    const rating = course.averageRating || 0;
+                    const numRatings = course.numRatings || 0;
+                    const duration = course.duration || '2h 30m';
+                    let buttonsHtml = `
+                        <button class="btn btn-primary enroll-btn enrolled" data-id="${course._id}" data-name="${course.name}">
+                            <i class="fas fa-check"></i> Enrolled
+                        </button>
                         <a href="course-details.html?id=${course._id}&tab=assignments" class="assignments-btn ms-2 fw-bold">
                             <i class="fas fa-tasks"></i> Assignments
                         </a>`;
-                }
-
-                return `
-                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
-                        <div class="course-item-two course-item h-100" data-course-id="${course._id}">
+                    return `
+                        <div class="course-item-two course-item h-100 enrolled" data-course-id="${course._id}">
                             <div class="course-img">
                                 <img src="${thumbnail}" alt="${course.name}" onerror="this.src='assets/img/course/course-placeholder.jpg'">
                                 <div class="play-overlay">
@@ -1489,125 +1537,72 @@ $(document).ready(function() {
                                     <div class="d-flex gap-2">${buttonsHtml}</div>
                                 </div>
                             </div>
-                        </div>
-                    </div>`;
-            });
-
-            const html = await Promise.all(coursePromises);
-            $('#course-grid').html(html.join('')).show();
-            $('#course-count').text(`Showing ${courses.length} of ${res.totalCourses} courses`);
-            updateFilterStatus();
-
-            if (res.totalPages > 1) {
-                updatePagination(res.currentPage, res.totalPages);
-                $('#pagination').show();
+                        </div>`;
+                })();
+                $courseItem.replaceWith(html);
             }
+           
+            showToast(`You have successfully enrolled in"${name}!"`, 'success');  
         } catch (err) {
-            $('#loading-courses').hide();
-            $('#empty-courses').show().find('h5').text('Error loading courses');
-            showToast('Failed to load courses.', 'error');
-        }
-    }
-
-    function updateFilterStatus() {
-        let status = 'All courses';
-        if (currentFilters.search) status = `Search: "${currentFilters.search}"`;
-        else if (currentFilters.category) {
-            const catName = $(`input[value="${currentFilters.category}"]`).nextAll('span').last().text();
-            status = `Category: ${catName}`;
-        }
-        $('#filter-status').text(status);
-    }
-
-    function updatePagination(curr, total) {
-        $('#pagination-text').text(`Page ${curr} of ${total}`);
-        let pages = '';
-        for (let i = 1; i <= total; i++) {
-            pages += `<li class="page-item ${i === curr ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" data-page="${i}">${i}</a></li>`;
-        }
-        $('.pagination.lms-page').html(`
-            <li class="page-item prev ${curr === 1 ? 'disabled' : ''}"><a class="page-link" id="prev-page"><i class="fas fa-angle-left"></i> Previous</a></li>
-            ${pages}
-            <li class="page-item next ${curr === total ? 'disabled' : ''}"><a class="page-link" id="next-page">Next <i class="fas fa-angle-right"></i></a></li>
-        `);
-    }
-
-    // Improved: Event Handlers - Update only the specific card after enrollment for smoother UI
-    $(document).on('click', '.enroll-btn:not(.enrolled)', async function(e) {
-        e.stopPropagation(); // Prevent course item click
-        const btn = $(this);
-        const id = btn.data('id');
-        const name = btn.data('name');
-        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Enrolling...');
-
-        try {
-            await $.ajax({
-                url: 'http://localhost:5000/api/dashboard/student/enroll',
-                type: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token },
-                contentType: 'application/json',
-                data: JSON.stringify({ courseId: id })
-            });
-            
-            // Update enroll button
-            btn.removeClass('btn-primary').addClass('enrolled btn-success')
-                .html('<i class="fas fa-check"></i> Enrolled')
-                .prop('disabled', true);
-            
-            // Improved: Dynamically add the full Assignments button without reloading entire list
-            const assignmentsBtn = `
-                <a href="course-details.html?id=${id}&tab=assignments" class="assignments-btn ms-2 fw-bold">
-                    <i class="fas fa-tasks"></i> Assignments
-                </a>`;
-            btn.parent().append(assignmentsBtn); // Append to the d-flex container
-            
-            showToast(`Enrolled in "${name}"!`, 'success');
-        } catch (err) {
-            showToast('Enrollment failed.', 'error');
+            console.error('Enrollment error:', err);
+            // ← New: Handle specific backend errors
+            let errorMsg = 'Enrollment failed.';
+            if (err.status === 400 && err.responseJSON && err.responseJSON.message) {
+                errorMsg = err.responseJSON.message;  // Backend ka exact message, jaise max limit wala
+            } else if (err.status === 401) {
+                errorMsg = 'Session expired. Please login again.';
+                localStorage.removeItem('token');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+            } else if (err.status === 0) {
+                errorMsg = 'Server se connect nahi ho saka.';
+            }
+            showToast(errorMsg, 'error');
             btn.html('<i class="fas fa-play"></i> Start Free').prop('disabled', false);
         }
     });
-
-    // New: Handle course item click for navigation (always allowed since enrolled)
-    $(document).on('click', '.course-item-two', function(e) {
+    // Updated: Handle course item click - Only redirect if enrolled
+    $(document).on('click', '.course-item-two', async function(e) {
         // Ignore clicks on buttons or overlays
-        if ($(e.target).closest('.view-btn, .fav-btn, .play-overlay').length) {
+        if ($(e.target).closest('.enroll-btn, .assignments-btn, .fav-btn, .play-overlay').length) {
             return;
         }
         const $item = $(this);
         const courseId = $item.data('course-id');
+        const enrolled = await checkEnrolled(courseId);
+        if (!enrolled) {
+            showToast('Please enroll in the course first to access details.', 'error');
+            return;
+        }
         window.location.href = `course-details.html?id=${courseId}`;
     });
-
     $(document).on('change', 'input[name="category"]', function() {
         const checked = $('input[name="category"]:checked').map((_, el) => el.value).get();
         currentFilters.category = checked.join(',') || '';
         currentFilters.page = 1;
+        currentFilters.showAll = false; // Reset to show 9
         loadCourses();
     });
-
     $('#clear-filters').on('click', function() {
         $('input[name="category"]').prop('checked', false);
         $('#search-courses').val('');
-        currentFilters = { page: 1, category: '', search: '' };
+        currentFilters = { page: 1, category: '', search: '', limit: 9, showAll: false };
         loadCourses();
     });
-
     let searchTimer;
     $('#search-courses').on('input', function() {
         clearTimeout(searchTimer);
         currentFilters.search = this.value.trim();
         currentFilters.page = 1;
+        currentFilters.showAll = false; // Reset on search
         searchTimer = setTimeout(loadCourses, 500);
     });
-
-    $(document).on('click', '#prev-page', () => { if (currentFilters.page > 1) { currentFilters.page--; loadCourses(); } });
-    $(document).on('click', '#next-page', () => { currentFilters.page++; loadCourses(); });
-    $(document).on('click', '.page-link[data-page]', function() {
-        currentFilters.page = parseInt($(this).data('page'));
-        loadCourses();
-    });
-
+    // Remove pagination handlers as we're using Show All now
+    // $(document).on('click', '#prev-page', () => { if (currentFilters.page > 1) { currentFilters.page--; loadCourses(); } });
+    // $(document).on('click', '#next-page', () => { currentFilters.page++; loadCourses(); });
+    // $(document).on('click', '.page-link[data-page]', function() {
+    // currentFilters.page = parseInt($(this).data('page'));
+    // loadCourses();
+    // });
     $(document).on('click', '.fav-btn', function(e) {
         e.stopPropagation(); // Prevent course item click
         const btn = $(this);
@@ -1625,7 +1620,6 @@ $(document).ready(function() {
             }
         });
     });
-
     // Theme Toggle
     $('#dark-mode-toggle').on('click', () => {
         $('body').removeClass('light-mode').addClass('dark-mode');
@@ -1636,7 +1630,6 @@ $(document).ready(function() {
         localStorage.setItem('theme', 'light');
     });
     if (localStorage.getItem('theme') === 'dark') $('body').addClass('dark-mode');
-
     // Init
     loadCategories();
     loadCourses();

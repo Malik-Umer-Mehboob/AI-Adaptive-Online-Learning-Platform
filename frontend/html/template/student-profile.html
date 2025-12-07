@@ -195,6 +195,50 @@
       .dark-mode .role-admin { background: #0d6efd; }
       .dark-mode .role-student { background: #20c997; }
       .dark-mode .role-instructor { background: #fd7e14; color: white; }
+
+      /* Sidebar Menu Styling - EXACT SAME SPACING & HEIGHT AS DASHBOARD */
+.settings-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.settings-sidebar ul li {
+  margin-bottom: 12px; /* Yeh exact dashboard jaisa gap hai li ke darmiyan */
+}
+
+.settings-sidebar ul li:last-child {
+  margin-bottom: 0; /* Last item ke baad extra space na aaye */
+}
+
+.settings-sidebar ul li a {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 15px;           /* Dashboard jaisa padding */
+  border-radius: 8px;           /* Rounded corners */
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.settings-sidebar ul li a:hover,
+.settings-sidebar ul li a.active {
+  background-color: rgba(0, 123, 255, 0.1); /* Light mode hover/active */
+  color: #007bff;
+}
+
+.dark-mode .settings-sidebar ul li a:hover,
+.dark-mode .settings-sidebar ul li a.active {
+  background-color: rgba(13, 110, 253, 0.2); /* Dark mode hover/active */
+  color: #0d6efd;
+}
+
+.settings-sidebar ul li a i {
+  font-size: 1.1rem;
+  width: 28px;                  /* Icon alignment ke liye fixed width */
+  text-align: center;
+}
       /* Footer Styles */
       .footer {
         background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
@@ -516,6 +560,13 @@
           padding: 1.5rem;
         }
       }
+      /* Add gap between sidebar menu items */
+      .settings-sidebar ul li {
+        margin-bottom: 10px;
+      }
+      .settings-sidebar ul li:last-child {
+        margin-bottom: 0;
+      }
     </style>
 </head>
 <body>
@@ -593,15 +644,6 @@
                                         <li>
                                             <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-wishlist.html"><i class="isax isax-heart me-2"></i>Wishlist</a>
                                         </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-reviews.html"><i class="isax isax-star me-2"></i>Reviews</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-messages.html"><i class="isax isax-messages-3 me-2"></i>Messages</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
-                                        </li>
                                     </ul>
                                     <div class="profile-footer">
                                         <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100" id="logout-btn"><i class="isax isax-logout me-2"></i>Logout</a>
@@ -660,7 +702,7 @@
                         href="course-grid.html"
                         class="d-inline-flex align-items-center"
                         ><i class="isax isax-note-215 me-2"></i>Course-Grid</a
-                      > <a href="student-certificates.html" class="btn btn-secondary rounded-pill">My Certificates</a>
+                      > 
                             </div>
                         </div>
                     </div>
@@ -668,53 +710,52 @@
                 <!-- /Profile Box -->
                 <div class="row">
                     <!-- Sidebar -->
-                    <div class="col-lg-3 theiaStickySidebar">
-                        <div class="settings-sidebar">
-                            <div>
-                                <h6 class="mb-3">Main Menu</h6>
-                                <ul class="mb-3 pb-1">
-                                    <li>
-                                        <a href="student-dashboard.html" class="d-inline-flex align-items-center"><i class="isax isax-grid-35 me-2"></i>Dashboard</a>
-                                    </li>
-                                    <li>
-                                        <a class="profile-link d-inline-flex align-items-center active" data-href="student-profile.html"><i class="fa-solid fa-user me-2"></i>My Profile</a>
-                                    </li>
-                                    <li>
-                                        <a href="student-courses.html" class="d-inline-flex align-items-center"><i class="isax isax-book me-2"></i>Enrolled Courses</a>
-                                    </li>
-                                    <li>
-                                         <a
-                        href="course-grid.html"
-                        class="d-inline-flex align-items-center"
-                        ><i class="isax isax-note-215 me-2"></i>Course-Grid</a
-                      >
-                                    </li>
-                                    <li>
-                                        <a href="student-wishlist.html" class="d-inline-flex align-items-center"><i class="isax isax-heart me-2"></i>Wishlist</a>
-                                    </li>
-                                    <li>
-                                        <a href="student-reviews.html" class="d-inline-flex align-items-center"><i class="isax isax-star me-2"></i>Reviews</a>
-                                    </li>
-                                    <li>
-                                        <a href="student-messages.html" class="d-inline-flex align-items-center"><i class="isax isax-messages-3 me-2"></i>Messages</a>
-                                    </li>
-                                    <li>
-                                        <a href="student-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-2 me-2"></i>Settings</a>
-                                    </li>
-                                </ul>
-                                <hr />
-                                <h6 class="mb-3">Account Settings</h6>
-                                <ul>
-                                    <li>
-                                        <a href="student-settings.html" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a>
-                                    </li>
-                                    <li>
-                                        <a href="index-3.html" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                   <!-- Sidebar -->
+<div class="col-lg-3 theiaStickySidebar">
+  <div class="settings-sidebar">
+    <div>
+      <h6 class="mb-3">Main Menu</h6>
+      <ul class="mb-3 pb-1">
+        <li>
+          <a href="student-dashboard.html" class="d-inline-flex align-items-center">
+            <i class="isax isax-grid-35 me-2"></i>Dashboard
+          </a>
+        </li>
+        <li>
+          <a class="profile-link d-inline-flex align-items-center active" data-href="student-profile.html">
+            <i class="fa-solid fa-user me-2"></i>My Profile
+          </a>
+        </li>
+        <li>
+          <a href="student-courses.html" class="d-inline-flex align-items-center">
+            <i class="isax isax-teacher5 me-2"></i>Enrolled Courses
+          </a>
+        </li>
+        <li>
+          <a href="course-grid.html" class="d-inline-flex align-items-center">
+            <i class="isax isax-note-215 me-2"></i>Course-Grid
+          </a>
+        </li>
+        <li>
+          <a href="student-wishlist.html" class="d-inline-flex align-items-center">
+            <i class="isax isax-heart5 me-2"></i>Wishlist
+          </a>
+        </li>
+        
+      </ul>
+      <hr />
+      <h6 class="mb-3">Exit Account</h6>
+      <ul>
+        <li>
+          <a href="index-3.html" class="d-inline-flex align-items-center" id="logout-sidebar">
+            <i class="isax isax-logout5 me-2"></i>Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- /Sidebar -->
                     <!-- /Sidebar -->
                     <div class="col-lg-9">
                         <div class="card profile-details-card">
@@ -1048,7 +1089,7 @@
         // Listen for profile update (in case of external updates)
         window.addEventListener('profileUpdated', loadProfile);
         // Logout Handler
-        $(document).on('click', '#logout-btn', function (e) {
+        $(document).on('click', '#logout-btn, #logout-sidebar', function (e) {
             e.preventDefault();
             $.ajax({
                 url: 'http://localhost:5000/api/auth/logout',

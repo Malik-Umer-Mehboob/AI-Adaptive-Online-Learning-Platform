@@ -121,5 +121,24 @@
     <script src="assets/js/validation.js"></script>
     <script src="assets/js/script.js"></script>
     <script src="assets/js/auth.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Password toggle functionality
+            $('.toggle-password').on('click', function() {
+                var $input = $(this).prev('.pass-input'); // Find the input field before the icon
+                var $icon = $(this); // The icon itself
+
+                if ($input.attr('type') === 'password') {
+                    // Show password: change type to text and icon to open eye
+                    $input.attr('type', 'text');
+                    $icon.removeClass('isax-eye-slash').addClass('isax-eye');
+                } else {
+                    // Hide password: change type to password and icon to slashed eye
+                    $input.attr('type', 'password');
+                    $icon.removeClass('isax-eye').addClass('isax-eye-slash');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
