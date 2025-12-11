@@ -105,6 +105,7 @@
           right: 10px;
         }
       }
+      
       /* Light Mode Cards - Lighter gradients */
       .card-users {
         background: linear-gradient(135deg, #e6f7ff, #f0f8ff);
@@ -1145,6 +1146,45 @@
         .dark-mode .show-all-btn:hover {
           background: linear-gradient(135deg, #0b5ed7, #0a58ca);
         }
+        /* Center-aligned Show All Button */
+#show-all-courses {
+    display: block;
+    margin: 2.5rem auto 1.5rem;
+    padding: 0.75rem 2.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 240px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.25);
+}
+
+#show-all-courses:hover {
+    background: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,123,255,0.35);
+}
+
+.dark-mode #show-all-courses {
+    background: #0d6efd;
+}
+
+.dark-mode #show-all-courses:hover {
+    background: #0b5ed7;
+}
+
+@media (max-width: 768px) {
+    #show-all-courses {
+        width: 80%;
+        max-width: 300px;
+        margin: 2rem auto;
+    }
+}
     </style>
   </head>
   <body>
@@ -1248,20 +1288,7 @@
                           Profile</a
                         >
                       </li>
-                      <li>
-                        <a
-                          class="dropdown-item d-inline-flex align-items-center rounded fw-medium"
-                          href="student-quiz.html"
-                          ><i class="isax isax-award me-2"></i>Quiz Attempts</a
-                        >
-                      </li>
-                      <li>
-                        <a
-                          class="dropdown-item d-inline-flex align-items-center rounded fw-medium"
-                          href="student-settings.html"
-                          ><i class="isax isax-setting-2 me-2"></i>Settings</a
-                        >
-                      </li>
+                      
                     </ul>
                     <div class="profile-footer">
                       <a
@@ -1425,23 +1452,11 @@
             </div>
             <!-- /Sidebar -->
             <div class="col-lg-9">
-              <div class="card bg-light quiz-ans-card">
+              <div class=" quiz-ans-card">
                 <img src="assets/img/shapes/withdraw-bg1.svg" class="quiz-ans-bg1" alt="img">
                 <img src="assets/img/shapes/withdraw-bg2.svg" class="quiz-ans-bg2" alt="img">
                 <div class="card-body">
-                  <div class="row align-items-center">
-                    <div class="col-md-8">
-                      <div>
-                        <h6 class="mb-1" id="quiz-title">Quiz : No Quiz Attempted</h6>
-                        <p>Answered : <span id="quiz-answered">0/0</span></p>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="text-end">
-                        <a href="student-quiz.html" class="btn btn-primary rounded-pill">Continue Quiz</a>
-                      </div>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
               <div class="row">
@@ -1654,6 +1669,7 @@
     <!-- Custom JS -->
     <script src="assets/js/script.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <script src="assets/js/common-thumbnail.js"></script>
     <script>
       $(document).ready(function () {
         const token = localStorage.getItem("token");
@@ -1700,22 +1716,14 @@
             $(`#${toastId}`).remove();
           }, duration);
         }
-        function getYouTubeThumbnail(url) {
-            if (!url) return 'assets/img/course/course-placeholder.jpg';
-            let videoId = null;
-            const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-            const embedMatch = url.match(/youtube\.com\/embed\/([^&\n?#]+)/);
-            if (watchMatch) videoId = watchMatch[1];
-            else if (embedMatch) videoId = embedMatch[1];
-            else if (url.includes('playlist?list=')) {
-                const playlistMatch = url.match(/list=([a-zA-Z0-9_-]+)/);
-                if (playlistMatch) {
-                    return `https://i.ytimg.com/vi/${playlistMatch[1].substring(0,11)}/mqdefault.jpg`;
-                }
-                return 'assets/img/course/playlist-placeholder.jpg';
-            }
-            return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
-        }
+       // Use common thumbnail function from common-thumbnail.js
+function getYouTubeThumbnail(url) {
+    if (!url) return 'assets/img/course/course-placeholder.jpg';
+    
+    // Create a video object that common function expects
+    const video = { url: url };
+    return getVideoThumbnail(video);
+}
         let showAllCourses = false;
         let showAllSubmissions = false;
         let allEnrollments = [];
@@ -1777,19 +1785,29 @@
             }).join('');
         }
         function renderRecentCourses(enrollments) {
-          allEnrollments = enrollments;
-          const limit = showAllCourses ? enrollments.length : 3;
-          const recentHTML = generateEnrollmentHTML(enrollments, 1, limit + 1);
-          $('#recent-courses-grid').html(recentHTML).show();
-          $('#empty-recent-courses').hide();
-          const showAllBtn = $('#show-all-courses');
-          if (enrollments.length > 3) {
-            showAllBtn.show();
-            showAllBtn.text(showAllCourses ? 'Show Less Courses' : 'Show All Courses');
-          } else {
-            showAllBtn.hide();
-          }
-        }
+    allEnrollments = enrollments;
+    
+    if (enrollments.length === 0) {
+        $('#recent-courses-grid').hide();
+        $('#empty-recent-courses').show();
+        $('#show-all-courses').hide();
+        return;
+    }
+
+    const limit = showAllCourses ? enrollments.length : 3;
+    const recentHTML = generateEnrollmentHTML(enrollments, 1, limit);
+
+    $('#recent-courses-grid').html(recentHTML).show();
+    $('#empty-recent-courses').hide();
+
+    const showAllBtn = $('#show-all-courses');
+    if (enrollments.length > 3) {
+        showAllBtn.show();
+        showAllBtn.text(showAllCourses ? 'Show Less Courses' : 'Show All Courses');
+    } else {
+        showAllBtn.hide();
+    }
+}
         async function loadSubmissions() {
             $.ajax({
                 url: 'http://localhost:5000/api/submissions/my',
@@ -2090,22 +2108,62 @@
             const courseId = $item.data('course-id');
             window.location.href = `course-details.html?id=${courseId}`;
         });
-        $(document).on('click', '.fav-btn', function() {
-            const btn = $(this);
-            const id = btn.data('id');
-            const favored = btn.hasClass('favorited');
-            $.ajax({
-                url: `http://localhost:5000/api/courses/${id}/favorite`,
-                type: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token },
-                contentType: 'application/json',
-                data: JSON.stringify({ favorite: !favored }),
-                success: () => {
-                    btn.toggleClass('favorited');
-                    showToast(favored ? 'Removed from favorites' : 'Added to favorites', favored ? 'info' : 'success');
-                }
-            });
+        // Dashboard.html mein line ~480 ke baad yeh favorite handler update karo:
+
+$(document).on('click', '.fav-btn', async function() {
+    const btn = $(this);
+    const id = btn.data('id');
+    const favored = btn.hasClass('favorited');
+    
+    // Immediate UI update
+    if (favored) {
+        btn.removeClass("favorited");
+        btn.find("i").removeClass("fas").addClass("far");
+    } else {
+        btn.addClass("favorited");
+        btn.find("i").removeClass("far").addClass("fas");
+    }
+    
+    try {
+        const response = await fetch(`http://localhost:5000/api/courses/${id}/favorite`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ favorite: !favored })
         });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast(favored ? 'Removed from favorites' : 'Added to favorites', favored ? 'info' : 'success');
+            // Trigger wishlist refresh
+            localStorage.setItem("wishlistUpdated", Date.now().toString());
+        } else {
+            // Revert UI if API failed
+            if (favored) {
+                btn.addClass("favorited");
+                btn.find("i").removeClass("far").addClass("fas");
+            } else {
+                btn.removeClass("favorited");
+                btn.find("i").removeClass("fas").addClass("far");
+            }
+            showToast('Failed to update favorite.', 'error');
+        }
+    } catch (error) {
+        console.error('Favorite error:', error);
+        // Revert UI
+        if (favored) {
+            btn.addClass("favorited");
+            btn.find("i").removeClass("far").addClass("fas");
+        } else {
+            btn.removeClass("favorited");
+            btn.find("i").removeClass("fas").addClass("far");
+        }
+        showToast('Network error. Please try again.', 'error');
+    }
+});
         // Logout Handler
         $(document).on('click', '#logout-btn, #logout-sidebar', function (e) {
           e.preventDefault();

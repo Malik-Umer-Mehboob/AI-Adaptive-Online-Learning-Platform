@@ -86,7 +86,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // FIXED: Explicit /uploads for PDFs/submissions (covers /uploads/assignments too)
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Direct uploads folder
+
 
 // Ensure folders exist
 const submissionsDir = path.join(__dirname, 'public', 'uploads', 'submissions');

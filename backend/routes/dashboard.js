@@ -29,10 +29,10 @@ router.post('/student/enroll', auth, checkRole(['student']), async (req, res) =>
         if (existing) return res.status(400).json({ message: 'Already enrolled' });
 
         const enrollment = new Enrollment({ 
-            studentId: req.user.id, 
-            courseId,
-            progress: 0,
-            status: 'enrolled'
+        studentId: req.user.id, 
+        courseId,
+        progress: 0,
+        status: 'active'
         });
         await enrollment.save();
         res.json({ message: 'Enrolled successfully' });
@@ -42,26 +42,26 @@ router.post('/student/enroll', auth, checkRole(['student']), async (req, res) =>
     }
 });
 
-// POST - Complete course
-router.post('/student/complete', auth, checkRole(['student']), async (req, res) => {
-    try {
-        const { courseId } = req.body;
-        if (!courseId) return res.status(400).json({ message: 'Course ID required' });
+// // POST - Complete course
+// router.post('/student/complete', auth, checkRole(['student']), async (req, res) => {
+//     try {
+//         const { courseId } = req.body;
+//         if (!courseId) return res.status(400).json({ message: 'Course ID required' });
 
-        const enrollment = await Enrollment.findOne({ studentId: req.user.id, courseId });
-        if (!enrollment) return res.status(404).json({ message: 'Not enrolled' });
-        if (enrollment.status === 'completed') return res.status(400).json({ message: 'Already completed' });
+//         const enrollment = await Enrollment.findOne({ studentId: req.user.id, courseId });
+//         if (!enrollment) return res.status(404).json({ message: 'Not enrolled' });
+//         if (enrollment.status === 'completed') return res.status(400).json({ message: 'Already completed' });
 
-        enrollment.status = 'completed';
-        enrollment.progress = 100;
-        enrollment.completedAt = new Date();
-        await enrollment.save();
-        res.json({ message: 'Course completed' });
-    } catch (error) {
-        console.error('Complete Course Error:', error.stack);
-        res.status(500).json({ message: 'Server error', error: error.message });
-    }
-});
+//         enrollment.status = 'completed';
+//         enrollment.progress = 100;
+//         enrollment.completedAt = new Date();
+//         await enrollment.save();
+//         res.json({ message: 'Course completed' });
+//     } catch (error) {
+//         console.error('Complete Course Error:', error.stack);
+//         res.status(500).json({ message: 'Server error', error: error.message });
+//     }
+// });
 
 // GET - Student enrollments
 router.get('/student/enrollments', auth, checkRole(['student']), async (req, res) => {
@@ -99,6 +99,68 @@ router.delete('/student/enrollments/:enrollmentId', auth, checkRole(['student'])
         res.status(500).json({ message: 'Server error during unenroll', error: error.message });
     }
 });
+// POST - Update Video Watch Progress
+router.post("/student/video-watched", auth, checkRole(["student"]), async (req, res) => {
+    try {
+        const { courseId, videoIndex } = req.body;
+
+        if (!courseId) {
+            return res.status(400).json({ message: "Course ID is required" });
+        }
+
+        const enrollment = await Enrollment.findOne({
+            studentId: req.user.id,
+            courseId
+        });
+
+        if (!enrollment) {
+            return res.status(404).json({ message: "Enrollment not found" });
+        }
+
+        const course = await Course.findById(courseId).lean();
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
+
+        const totalVideos = course.videos?.length || 0;
+        if (totalVideos === 0) {
+            return res.status(400).json({ message: "Course has no videos" });
+        }
+
+        // Mark video completed only once
+        if (!enrollment.videosWatched) enrollment.videosWatched = [];
+if (!enrollment.videosWatched.includes(videoIndex)) {
+    enrollment.videosWatched.push(videoIndex);
+}
+
+const watchedCount = enrollment.videosWatched.length;
+        const progress = Math.round((watchedCount / totalVideos) * 100);
+
+        enrollment.progress = progress;
+
+        // Auto complete course if all videos watched
+        if (progress >= 100) {
+            enrollment.status = "completed";
+            enrollment.completedAt = new Date();
+        } else {
+            enrollment.status = "in-progress";
+        }
+
+        await enrollment.save();
+
+        res.json({
+            message: "Video progress updated",
+            progress,
+            completedVideos: watchedCount,
+            totalVideos,
+            status: enrollment.status
+        });
+    } catch (error) {
+        console.error("Video Watch Error:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
 
 // GET - Student submissions (last 10)
 router.get('/student/submissions', auth, checkRole(['student']), async (req, res) => {
@@ -181,6 +243,7 @@ router.get('/student/reviews', auth, checkRole(['student']), async (req, res) =>
 
 // GET - Student dashboard
 // GET - Student dashboard (FULL UPDATED ROUTE)
+// GET - Student dashboard (FULL UPDATED - Sends ALL enrolled courses)
 router.get('/student/dashboard', auth, isStudent, async (req, res) => {
     try {
         const userId = req.user.id;
@@ -199,8 +262,8 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {
         const enrolledCourses = validEnrollments.length;
 
         // Active Courses: non-completed (enrolled + in-progress)
-        const activeCourses = validEnrollments.filter(e => e.status !== 'completed').length;
-
+      // Active Courses: non-completed (enrolled + in-progress)
+       const activeCourses = validEnrollments.filter(e => e.status !== 'completed').length;
         // Completed Courses
         const completedCourses = validEnrollments.filter(e => e.status === 'completed').length;
 
@@ -229,17 +292,18 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {
             submittedAt: s.submittedAt ? new Date(s.submittedAt).toISOString() : new Date().toISOString()
         }));
 
-        const recentCourseIds = validEnrollments.slice(0, 3).map(e => e.courseId._id);
+        // IMPORTANT CHANGE: Send ALL enrolled courses (not just first 3)
+        const recentCourseIds = validEnrollments.map(e => e.courseId._id);
         const recentFavorites = await Favorite.find({
             userId,
             courseId: { $in: recentCourseIds }
         }).lean();
         const favoriteCourseIds = new Set(recentFavorites.map(f => f.courseId.toString()));
 
-        const recentCourses = validEnrollments.slice(0, 3).map(e => {
+        const recentCourses = validEnrollments.map(e => {
             const course = e.courseId;
             const firstVideo = course.videos?.[0];
-            let image = 'assets/img/placeholder.jpg';
+            let image = 'assets/img/course/course-placeholder.jpg';
 
             if (firstVideo) {
                 if (firstVideo.isFile) {
@@ -259,9 +323,6 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {
                 }
             }
 
-            const now = new Date();
-            const activeAssigns = course.assignments ? course.assignments.filter(a => new Date(a.dueDate) > now) : 0;
-
             return {
                 id: course._id,
                 title: course.name || 'Untitled',
@@ -269,15 +330,12 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {
                 description: course.description || '',
                 image,
                 videos: course.videos || [],
-                duration: course.duration || '2h 30m',
+                duration: course.duration || 'N/A',
                 category: course.category?.name || 'General',
-                instructorName: course.instructor?.name || 'Unknown Instructor',
-                instructorImage: course.instructor?.profileImage || 'assets/img/default-profile.png',
                 progress: e.progress || 0,
                 isFavorite: favoriteCourseIds.has(course._id.toString()),
                 averageRating,
-                numRatings,
-                activeAssignments: activeAssigns.length
+                numRatings
             };
         });
 
@@ -286,7 +344,7 @@ router.get('/student/dashboard', auth, isStudent, async (req, res) => {
             activeCourses,
             completedCourses,
             pendingAssignments,
-            recentCourses,
+            recentCourses,  // ← Ab yahan SAB enrolled courses hain
             recentSubmissions,
             latestQuizzes: [],
             quizTitle: 'No Quiz Attempted',

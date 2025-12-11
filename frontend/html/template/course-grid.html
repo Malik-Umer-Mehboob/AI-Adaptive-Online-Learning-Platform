@@ -59,18 +59,28 @@
             color: var(--text-color);
             transition: all 0.3s ease;
         }
-        .course-item-two {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            cursor: pointer; /* Add pointer cursor for clickable areas */
-        }
+        /* FORCE PREMIUM BACKGROUND — YE SABSE UPAR PASTE KARO */
+.course-item-two {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%) !important;
+    border: 1px solid #dbeafe !important;
+    border-radius: 20px !important;
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.4s ease !important;
+}
+
+body.dark-mode .course-item-two {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+    border-color: #334155 !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+}
+
+.course-item-two:hover {
+    transform: translateY(-12px) !important;
+    box-shadow: 0 25px 50px rgba(59, 130, 246, 0.2) !important;
+    border-color: #60a5fa !important;
+}
         .course-item-two:not(.enrolled) {
             cursor: default; /* Disable pointer if not enrolled */
         }
@@ -750,29 +760,50 @@
                 right: 10px;
             }
         }
-        /* Show All Button Styles */
-        .show-all-btn {
-            display: block;
-            margin: 2rem auto;
-            padding: 0.75rem 2rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .show-all-btn:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-        }
-        .dark-mode .show-all-btn {
-            background: #0d6efd;
-        }
-        .show-all-btn.hidden {
-            display: none;
-        }
+       /* Center the Show All button */
+#show-all-btn {
+    display: block;
+    margin: 3rem auto 2rem; /* Top and bottom margin for spacing, auto for horizontal centering */
+    padding: 0.8rem 2.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 220px; /* Optional: Gives it a nice width */
+    text-align: center;
+}
+
+#show-all-btn:hover {
+    background: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,123,255,0.3);
+}
+
+.dark-mode #show-all-btn {
+    background: #0d6efd;
+}
+
+.dark-mode #show-all-btn:hover {
+    background: #0b5ed7;
+}
+
+/* Hide when not needed */
+#show-all-btn.hidden {
+    display: none;
+}
+
+/* Extra: On mobile, make it full width but still centered */
+@media (max-width: 768px) {
+    #show-all-btn {
+        width: 80%;
+        max-width: 300px;
+        margin: 2.5rem auto;
+    }
+}
     </style>
 </head>
 <body class="light-mode">
@@ -818,6 +849,7 @@
 <ul class="submenu">
 <ul class="submenu">
 <li><a href="student-courses.html">Enrolled Courses</a></li>
+<li><a href="student-wishlist.html">Wishlist</a></li>
 </ul>
 </ul>
 </li>
@@ -870,12 +902,7 @@
                                         <li>
                                             <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium profile-link" data-href="student-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
                                         </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-quiz.html"><i class="isax isax-award me-2"></i>Quiz Attempts</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
-                                        </li>
+                                        
                                     </ul>
                                     <div class="profile-footer">
                                         <a href="index-3.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100" id="logout-btn"><i class="isax isax-logout me-2"></i>Logout</a>
@@ -1140,10 +1167,12 @@ $(document).ready(function() {
         setTimeout(() => window.location.href = 'login.html', 2000);
         return;
     }
-    let currentFilters = { page: 1, category: '', search: '', limit: 9, showAll: false };
-    let allCourses = []; // Store all courses for show all functionality
-    let enrollmentsCache = new Map(); // Cache enrollment status
-    // Function to show toast messages
+
+    let currentFilters = { page: 1, category: '', search: '', showAll: false };
+    let allCourses = [];
+    let enrollmentsCache = new Map();
+    let favoritesCache = new Map(); // NEW: Favorites cache
+
     function showToast(message, type = 'success', duration = 3000) {
         const toastContainer = $('#toast-container');
         const toastId = `toast-${Date.now()}`;
@@ -1156,179 +1185,101 @@ $(document).ready(function() {
             </div>
         `;
         toastContainer.append(toastHtml);
-        const toastElement = document.getElementById(toastId);
-        const toast = new bootstrap.Toast(toastElement);
+        const toast = new bootstrap.Toast(document.getElementById(toastId));
         toast.show();
-        setTimeout(() => {
-            toast.hide();
-            $(`#${toastId}`).remove();
-        }, duration);
     }
-    // Load profile data including image and name
+
     function loadProfile() {
-        console.log("Loading profile for user ID:", decoded.id);
         $.ajax({
             url: 'http://localhost:5000/api/auth/profile',
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
-            cache: false,
             success: function(profile) {
-                console.log('Profile loaded:', profile);
                 const displayName = profile.name || 'Student';
                 $("#dropdown-profile-name").text(displayName);
-                $("#profile-email a")
-                  .text(profile.email || "No email")
-                  .attr("href", `mailto:${profile.email || ""}`);
-                const timestamp = new Date().getTime();
+                $("#profile-email a").text(profile.email || "No email").attr("href", `mailto:${profile.email || ""}`);
                 if (profile.profileImage) {
-                    const imageSrc = profile.profileImage + '?t=' + timestamp;
-                    $(".dropdown-profile-img")
-                      .attr("src", imageSrc)
-                      .parent()
-                      .addClass("has-image");
+                    const timestamp = new Date().getTime();
+                    const imgSrc = `${profile.profileImage}?t=${timestamp}`;
+                    $('.dropdown-profile-img').attr('src', imgSrc).parent().addClass("has-image");
                 } else {
-                    $(".dropdown-profile-img").attr('src', '').parent().removeClass('has-image');
+                    $('.dropdown-profile-img').attr('src', '').parent().removeClass('has-image');
                 }
-            },
-            error: function(xhr) {
-                console.error('Profile load error:', {
-                    status: xhr.status,
-                    response: xhr.responseText,
-                });
-                if (xhr.status === 0)
-                    showToast("Unable to connect to server.", "error");
-                else if (xhr.status === 401) {
-                    showToast("Session expired.", "error");
-                    localStorage.removeItem("token");
-                    window.location.href = "login.html";
-                } else
-                    showToast(`Profile error (Status: ${xhr.status}).`, "error");
-            },
-        });
-    }
-    // Handle profile link click
-    $(".profile-link").on("click", function (e) {
-        e.preventDefault();
-        const href = $(this).data("href") || $(this).attr("href");
-        console.log('Profile link clicked, checking profile... Token ID:', decoded.id);
-        $.ajax({
-            url: 'http://localhost:5000/api/auth/profile',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token },
-            cache: false,
-            success: function(profile) {
-                console.log('Profile access OK, redirecting to:', href);
-                window.location.href = href;
-            },
-            error: function(xhr) {
-                console.error(
-                    "Profile access error:",
-                    xhr.status,
-                    xhr.responseText
-                );
-                if (xhr.status === 0) showToast("Server unavailable.", "error");
-                else if (xhr.status === 401) {
-                    showToast("Session expired.", "error");
-                    localStorage.removeItem("token");
-                    window.location.href = "login.html";
-                } else
-                    showToast(
-                        `Profile access error (Status: ${xhr.status}).`,
-                        "error"
-                    );
-            },
-        });
-    });
-    // Listen for profile update (in case of external updates)
-    window.addEventListener('profileUpdated', loadProfile);
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'profileUpdated') {
-            loadProfile();
-        }
-    });
-    // Logout Handler
-    $(document).on('click', '#logout-btn', function (e) {
-        e.preventDefault();
-        $.ajax({
-            url: 'http://localhost:5000/api/auth/logout',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
-            success: function (response) {
-                console.log('Logout success:', response);
-                localStorage.removeItem('token');
-                showToast('Logout successful.', 'success');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 1500);
-            },
-            error: function (xhr) {
-                console.error('Logout error:', xhr.responseText);
-                localStorage.removeItem('token');
-                showToast('Logout successful.', 'success');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 1500);
             }
         });
-    });
-    function getInitials(name) {
-        return (name || 'AD').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
-    // Updated: Better thumbnail extraction (handles watch?v=, youtu.be, embed, and playlist fallback)
-    function getYouTubeThumbnail(url) {
-        if (!url) return 'assets/img/course/course-placeholder.jpg';
-        let videoId = null;
-        // Regex for watch?v= or youtu.be
-        const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-        // Regex for embed URL
-        const embedMatch = url.match(/youtube\.com\/embed\/([^&\n?#]+)/);
-        if (watchMatch) videoId = watchMatch[1];
-        else if (embedMatch) videoId = embedMatch[1];
-        // If playlist URL (fallback or error case), use generic playlist thumbnail
-        else if (url.includes('playlist?list=')) {
-            // Extract playlist ID and use a default playlist thumbnail (YouTube style)
-            const playlistMatch = url.match(/list=([a-zA-Z0-9_-]+)/);
-            if (playlistMatch) {
-                // Use first video style thumbnail; backend can provide better
-                return `https://i.ytimg.com/vi/${playlistMatch[1].substring(0,11)}/mqdefault.jpg`; // Fallback
+
+    function getVideoThumbnail(video) {
+        console.log('🔍 getVideoThumbnail called:', video);
+        
+        if (video && video.thumbnail) {
+            console.log('✅ Using backend thumbnail:', video.thumbnail);
+            
+            if (video.thumbnail.startsWith('/uploads/thumbnails/')) {
+                return 'http://localhost:5000' + video.thumbnail;
             }
-            return 'assets/img/course/playlist-placeholder.jpg'; // Add custom image
+            
+            if (video.thumbnail.startsWith('http')) {
+                return video.thumbnail;
+            }
+            
+            return 'http://localhost:5000/uploads/thumbnails/' + video.thumbnail;
         }
-        return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
+        
+        const url = video?.url || '';
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+            if (videoId && videoId[1]) {
+                return `https://img.youtube.com/vi/${videoId[1]}/hqdefault.jpg`;
+            }
+        }
+        
+        return 'https://cdn.prod.website-files.com/6424a84a1a908839d5724077/674db4b94f6966c47d740174_video-thumbnails-1.webp';
     }
+
     function generateStars(rating) {
         let stars = '';
         const fullStars = Math.floor(rating);
         const hasHalf = rating % 1 >= 0.5;
         for (let i = 1; i <= 5; i++) {
-            if (i <= fullStars) {
-                stars += '<i class="fas fa-star filled"></i>';
-            } else if (i === fullStars + 1 && hasHalf) {
-                stars += '<i class="fas fa-star-half-alt filled"></i>';
-            } else {
-                stars += '<i class="far fa-star empty"></i>';
-            }
+            if (i <= fullStars) stars += '<i class="fas fa-star filled"></i>';
+            else if (i === fullStars + 1 && hasHalf) stars += '<i class="fas fa-star-half-alt filled"></i>';
+            else stars += '<i class="far fa-star empty"></i>';
         }
         return stars;
     }
+
     async function checkEnrolled(courseId) {
-        if (enrollmentsCache.has(courseId)) {
-            return enrollmentsCache.get(courseId);
-        }
+        if (enrollmentsCache.has(courseId)) return enrollmentsCache.get(courseId);
         try {
             const res = await $.ajax({
                 url: `http://localhost:5000/api/dashboard/student/enrollments`,
-                type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             const enrolled = res.some(e => e.courseId === courseId);
             enrollmentsCache.set(courseId, enrolled);
             return enrolled;
         } catch (err) {
-            console.error('Enrollment check failed:', err);
             return false;
         }
     }
+
+    async function checkFavorite(courseId) {
+        if (favoritesCache.has(courseId)) return favoritesCache.get(courseId);
+        try {
+            const res = await $.ajax({
+                url: `http://localhost:5000/api/courses/${courseId}/is-favorite`,
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const isFav = res.isFavorite || false;
+            favoritesCache.set(courseId, isFav);
+            return isFav;
+        } catch (err) {
+            console.error('Check favorite error:', err);
+            return false;
+        }
+    }
+
     function loadCategories() {
         $.ajax({
             url: 'http://localhost:5000/api/categories',
@@ -1348,73 +1299,74 @@ $(document).ready(function() {
             error: () => $('#category-filter').html('<p class="text-danger text-center py-3">Error loading categories</p>')
         });
     }
-    // Updated: Load all courses if showAll is true, otherwise load 9
+
     async function loadCourses() {
-        const params = new URLSearchParams({
-            page: currentFilters.page,
-            limit: currentFilters.showAll ? 100 : 9 // Fetch all (up to 100) if showAll
-        });
+        const params = new URLSearchParams();
         if (currentFilters.category) params.append('category', currentFilters.category);
         if (currentFilters.search) params.append('search', currentFilters.search);
+        params.append('limit', currentFilters.showAll ? 100 : 6);
+
         $('#loading-courses').show();
-        $('#course-grid, #pagination, #show-all-btn').hide();
+        $('#course-grid, #show-all-btn').hide();
+
         try {
             const res = await $.ajax({
                 url: `http://localhost:5000/api/courses?${params}`,
                 headers: { 'Authorization': 'Bearer ' + token }
             });
+
             $('#loading-courses').hide();
-            allCourses = res.courses || []; // Store all fetched courses
+            allCourses = res.courses || [];
+
             if (allCourses.length === 0) {
                 $('#empty-courses').show();
                 $('#course-count').text('No courses found');
+                $('#show-all-btn').hide();
                 return;
             }
-            // Debug: Log first course's video URL and if it's playlist
-            if (allCourses[0] && allCourses[0].videos && allCourses[0].videos.length > 0) {
-                console.log('Sample video URL for thumbnail:', allCourses[0].videos[0].url);
-                console.log('Is playlist URL?', allCourses[0].videos[0].url.includes('playlist'));
-            }
-            await renderCourses(allCourses);
-            $('#course-count').text(`Showing ${allCourses.length} of ${res.totalCourses} courses`);
+
+            await renderCourses(allCourses.slice(0, currentFilters.showAll ? allCourses.length : 6));
+
+            const total = res.totalCourses || allCourses.length;
+            $('#course-count').text(`Showing ${currentFilters.showAll ? total : Math.min(6, allCourses.length)} of ${total} courses`);
             updateFilterStatus();
-            // Show/Hide Show All button if more than 9 courses
-            if (res.totalCourses > 9 && !currentFilters.showAll) {
-                $('#show-all-btn').removeClass('hidden').text('Show All Courses');
-                $('#show-all-btn').show();
-            } else if (currentFilters.showAll && allCourses.length > 9) {
-                $('#show-all-btn').removeClass('hidden').text('Show Less Courses');
-                $('#show-all-btn').show();
+
+            if (total > 6) {
+                $('#show-all-btn').show().text(currentFilters.showAll ? 'Show Less' : 'Show All Courses');
             } else {
-                $('#show-all-btn').addClass('hidden');
+                $('#show-all-btn').hide();
             }
+
         } catch (err) {
             $('#loading-courses').hide();
             $('#empty-courses').show().find('h5').text('Error loading courses');
             showToast('Failed to load courses.', 'error');
         }
     }
-    // New: Separate function to render courses with enrollment checks
-    async function renderCourses(courses) {
-        const coursePromises = courses.map(async course => {
+
+    async function renderCourses(coursesToShow) {
+        const coursePromises = coursesToShow.map(async course => {
             const enrolled = await checkEnrolled(course._id);
-            enrollmentsCache.set(course._id, enrolled); // Cache it
+            const isFavorite = course.isFavorite || await checkFavorite(course._id);
             const videoCount = (course.videos || []).length;
-            const firstUrl = course.videos?.[0]?.url;
-            const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
+            const firstVideo = course.videos?.[0] || null;
+            const thumbnail = getVideoThumbnail(firstVideo);
             const rating = course.averageRating || 0;
             const numRatings = course.numRatings || 0;
-            const duration = course.duration || '2h 30m';
-            let buttonsHtml = `
-                <button class="btn btn-primary enroll-btn ${enrolled ? 'enrolled' : ''}" data-id="${course._id}" data-name="${course.name}">
-                    ${enrolled ? '<i class="fas fa-check"></i> Enrolled' : '<i class="fas fa-play"></i> Start Free'}
-                </button>`;
-            if (enrolled) {
-                buttonsHtml += `
-                    <a href="course-details.html?id=${course._id}&tab=assignments" class="assignments-btn ms-2 fw-bold">
+            const duration = course.duration || 'N/A';
+            const categoryName = course.category?.name || 'General';
+
+            let buttonsHtml = enrolled
+                ? `<button class="btn btn-success enroll-btn enrolled" data-id="${course._id}">
+                        <i class="fas fa-check"></i> Enrolled
+                   </button>
+                   <a href="course-details.html?id=${course._id}&tab=assignments" class="assignments-btn ms-2">
                         <i class="fas fa-tasks"></i> Assignments
-                    </a>`;
-            }
+                   </a>`
+                : `<button class="btn btn-primary enroll-btn" data-id="${course._id}" data-name="${course.name}">
+                        <i class="fas fa-play"></i> Start Free
+                   </button>`;
+
             return `
                 <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                     <div class="course-item-two course-item h-100 ${enrolled ? 'enrolled' : ''}" data-course-id="${course._id}">
@@ -1424,19 +1376,19 @@ $(document).ready(function() {
                                 <div class="play-btn"><i class="fas fa-play"></i></div>
                             </div>
                             ${videoCount > 1 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
-                            <button class="fav-btn ${course.isFavorite ? 'favorited' : ''}" data-id="${course._id}">
-                                <i class="fas fa-heart"></i>
+                            <button class="fav-btn ${isFavorite ? 'favorited' : ''}" data-id="${course._id}">
+                                <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
                             </button>
                         </div>
                         <div class="course-content">
-                            <div class="category-badge">${course.category?.name || 'General'}</div>
+                            <div class="category-badge">${categoryName}</div>
                             <h6 class="course-title">${course.name}</h6>
                             <div class="rating">
                                 <div class="rating-stars">${generateStars(rating)}</div>
-                                ${rating > 0 ? `<span class="rating-value">${rating}</span>` : ''}
+                                ${rating > 0 ? `<span class="rating-value">${rating.toFixed(1)}</span>` : ''}
                                 <span class="rating-text">(${numRatings})</span>
                             </div>
-                            <p class="course-desc">${course.description}</p>
+                            <p class="course-desc">${course.description || ''}</p>
                             <div class="course-footer">
                                 <div>
                                     <div class="price free">FREE</div>
@@ -1448,179 +1400,149 @@ $(document).ready(function() {
                     </div>
                 </div>`;
         });
+
         const html = await Promise.all(coursePromises);
         $('#course-grid').html(html.join('')).show();
     }
+
     function updateFilterStatus() {
         let status = 'All courses';
         if (currentFilters.search) status = `Search: "${currentFilters.search}"`;
         else if (currentFilters.category) {
-            const catName = $(`input[value="${currentFilters.category}"]`).nextAll('span').last().text();
-            status = `Category: ${catName}`;
+            const checked = $('input[name="category"]:checked');
+            if (checked.length === 1) {
+                status = `Category: ${checked.nextAll('span').text()}`;
+            } else if (checked.length > 1) {
+                status = `${checked.length} categories selected`;
+            }
         }
         $('#filter-status').text(status);
     }
-    // Updated: Show All / Show Less handler
+
     $('#show-all-btn').on('click', function() {
         currentFilters.showAll = !currentFilters.showAll;
-        if (currentFilters.showAll) {
-            $(this).text('Show Less Courses');
-        } else {
-            $(this).text('Show All Courses');
-        }
+        $(this).text(currentFilters.showAll ? 'Show Less' : 'Show All Courses');
         loadCourses();
     });
-    // Improved: Event Handlers - Update only the specific card after enrollment
+
     $(document).on('click', '.enroll-btn:not(.enrolled)', async function(e) {
-        e.stopPropagation(); // Prevent course item click
+        e.stopPropagation();
         const btn = $(this);
         const id = btn.data('id');
         const name = btn.data('name');
         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Enrolling...');
+
         try {
-            const response = await $.ajax({
-                url: 'http://localhost:5000/api/enrollment/enroll',  // ← Fixed: Correct endpoint
+            await $.ajax({
+                url: 'http://localhost:5000/api/enrollment/enroll',
                 type: 'POST',
                 headers: { 'Authorization': 'Bearer ' + token },
                 contentType: 'application/json',
                 data: JSON.stringify({ courseId: id })
             });
-           
-            // Update local cache
             enrollmentsCache.set(id, true);
-           
-            // Re-render the specific course card
-            const $courseItem = $(`.course-item-two[data-course-id="${id}"]`);
-            const course = allCourses.find(c => c._id === id);
-            if (course) {
-                const html = await (async () => {
-                    const enrolled = true;
-                    const videoCount = (course.videos || []).length;
-                    const firstUrl = course.videos?.[0]?.url;
-                    const thumbnail = firstUrl ? getYouTubeThumbnail(firstUrl) : 'assets/img/course/course-placeholder.jpg';
-                    const rating = course.averageRating || 0;
-                    const numRatings = course.numRatings || 0;
-                    const duration = course.duration || '2h 30m';
-                    let buttonsHtml = `
-                        <button class="btn btn-primary enroll-btn enrolled" data-id="${course._id}" data-name="${course.name}">
-                            <i class="fas fa-check"></i> Enrolled
-                        </button>
-                        <a href="course-details.html?id=${course._id}&tab=assignments" class="assignments-btn ms-2 fw-bold">
-                            <i class="fas fa-tasks"></i> Assignments
-                        </a>`;
-                    return `
-                        <div class="course-item-two course-item h-100 enrolled" data-course-id="${course._id}">
-                            <div class="course-img">
-                                <img src="${thumbnail}" alt="${course.name}" onerror="this.src='assets/img/course/course-placeholder.jpg'">
-                                <div class="play-overlay">
-                                    <div class="play-btn"><i class="fas fa-play"></i></div>
-                                </div>
-                                ${videoCount > 1 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
-                                <button class="fav-btn ${course.isFavorite ? 'favorited' : ''}" data-id="${course._id}">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                            <div class="course-content">
-                                <div class="category-badge">${course.category?.name || 'General'}</div>
-                                <h6 class="course-title">${course.name}</h6>
-                                <div class="rating">
-                                    <div class="rating-stars">${generateStars(rating)}</div>
-                                    ${rating > 0 ? `<span class="rating-value">${rating}</span>` : ''}
-                                    <span class="rating-text">(${numRatings})</span>
-                                </div>
-                                <p class="course-desc">${course.description}</p>
-                                <div class="course-footer">
-                                    <div>
-                                        <div class="price free">FREE</div>
-                                        <div class="course-meta">${videoCount} lessons • ${duration}</div>
-                                    </div>
-                                    <div class="d-flex gap-2">${buttonsHtml}</div>
-                                </div>
-                            </div>
-                        </div>`;
-                })();
-                $courseItem.replaceWith(html);
-            }
-           
-            showToast(`You have successfully enrolled in"${name}!"`, 'success');  
+            showToast(`Successfully enrolled in "${name}"!`, 'success');
+            loadCourses();
         } catch (err) {
-            console.error('Enrollment error:', err);
-            // ← New: Handle specific backend errors
-            let errorMsg = 'Enrollment failed.';
-            if (err.status === 400 && err.responseJSON && err.responseJSON.message) {
-                errorMsg = err.responseJSON.message;  // Backend ka exact message, jaise max limit wala
-            } else if (err.status === 401) {
-                errorMsg = 'Session expired. Please login again.';
-                localStorage.removeItem('token');
-                setTimeout(() => window.location.href = 'login.html', 1500);
-            } else if (err.status === 0) {
-                errorMsg = 'Server se connect nahi ho saka.';
-            }
-            showToast(errorMsg, 'error');
+            let msg = 'Enrollment failed.';
+            if (err.responseJSON?.message) msg = err.responseJSON.message;
+            showToast(msg, 'error');
             btn.html('<i class="fas fa-play"></i> Start Free').prop('disabled', false);
         }
     });
-    // Updated: Handle course item click - Only redirect if enrolled
+
     $(document).on('click', '.course-item-two', async function(e) {
-        // Ignore clicks on buttons or overlays
-        if ($(e.target).closest('.enroll-btn, .assignments-btn, .fav-btn, .play-overlay').length) {
-            return;
-        }
-        const $item = $(this);
-        const courseId = $item.data('course-id');
+        if ($(e.target).closest('.enroll-btn, .assignments-btn, .fav-btn, .play-overlay').length) return;
+        const courseId = $(this).data('course-id');
         const enrolled = await checkEnrolled(courseId);
         if (!enrolled) {
-            showToast('Please enroll in the course first to access details.', 'error');
+            showToast('Please enroll first to view course details.', 'error');
             return;
         }
         window.location.href = `course-details.html?id=${courseId}`;
     });
+
     $(document).on('change', 'input[name="category"]', function() {
         const checked = $('input[name="category"]:checked').map((_, el) => el.value).get();
         currentFilters.category = checked.join(',') || '';
-        currentFilters.page = 1;
-        currentFilters.showAll = false; // Reset to show 9
+        currentFilters.showAll = false;
         loadCourses();
     });
+
     $('#clear-filters').on('click', function() {
         $('input[name="category"]').prop('checked', false);
         $('#search-courses').val('');
-        currentFilters = { page: 1, category: '', search: '', limit: 9, showAll: false };
+        currentFilters = { page: 1, category: '', search: '', showAll: false };
         loadCourses();
     });
+
     let searchTimer;
     $('#search-courses').on('input', function() {
         clearTimeout(searchTimer);
         currentFilters.search = this.value.trim();
-        currentFilters.page = 1;
-        currentFilters.showAll = false; // Reset on search
+        currentFilters.showAll = false;
         searchTimer = setTimeout(loadCourses, 500);
     });
-    // Remove pagination handlers as we're using Show All now
-    // $(document).on('click', '#prev-page', () => { if (currentFilters.page > 1) { currentFilters.page--; loadCourses(); } });
-    // $(document).on('click', '#next-page', () => { currentFilters.page++; loadCourses(); });
-    // $(document).on('click', '.page-link[data-page]', function() {
-    // currentFilters.page = parseInt($(this).data('page'));
-    // loadCourses();
-    // });
-    $(document).on('click', '.fav-btn', function(e) {
-        e.stopPropagation(); // Prevent course item click
+
+    // UPDATED: Favorite button handler
+    $(document).on("click", ".fav-btn", async function (e) {
+        e.stopPropagation();
         const btn = $(this);
-        const id = btn.data('id');
-        const favored = btn.hasClass('favorited');
-        $.ajax({
-            url: `http://localhost:5000/api/courses/${id}/favorite`,
-            type: 'POST',
-            headers: { 'Authorization': 'Bearer ' + token },
-            contentType: 'application/json',
-            data: JSON.stringify({ favorite: !favored }),
-            success: () => {
-                btn.toggleClass('favorited');
-                showToast(favored ? 'Removed from favorites' : 'Added to favorites', favored ? 'info' : 'success');
+        const courseId = btn.data("id");
+        const isFav = btn.hasClass("favorited");
+        
+        // Immediate UI update
+        if (isFav) {
+            btn.removeClass("favorited");
+            btn.find("i").removeClass("fas").addClass("far");
+        } else {
+            btn.addClass("favorited");
+            btn.find("i").removeClass("far").addClass("fas");
+        }
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/courses/${courseId}/favorite`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ favorite: !isFav })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                favoritesCache.set(courseId, !isFav);
+                showToast(isFav ? "Removed from wishlist" : "Added to wishlist", isFav ? "info" : "success");
+                
+                // Trigger wishlist refresh
+                localStorage.setItem("wishlistUpdated", Date.now().toString());
+            } else {
+                // Revert UI if API failed
+                if (isFav) {
+                    btn.addClass("favorited");
+                    btn.find("i").removeClass("far").addClass("fas");
+                } else {
+                    btn.removeClass("favorited");
+                    btn.find("i").removeClass("fas").addClass("far");
+                }
+                showToast("Failed to update wishlist", "error");
             }
-        });
+        } catch (err) {
+            console.error("Favorite toggle failed:", err);
+            // Revert UI
+            if (isFav) {
+                btn.addClass("favorited");
+                btn.find("i").removeClass("far").addClass("fas");
+            } else {
+                btn.removeClass("favorited");
+                btn.find("i").removeClass("fas").addClass("far");
+            }
+            showToast("Network error. Please try again.", "error");
+        }
     });
-    // Theme Toggle
+
     $('#dark-mode-toggle').on('click', () => {
         $('body').removeClass('light-mode').addClass('dark-mode');
         localStorage.setItem('theme', 'dark');
@@ -1630,10 +1552,19 @@ $(document).ready(function() {
         localStorage.setItem('theme', 'light');
     });
     if (localStorage.getItem('theme') === 'dark') $('body').addClass('dark-mode');
-    // Init
+
     loadCategories();
     loadCourses();
-    loadProfile(); // Load profile on page load
+    loadProfile();
+    
+    // Listen for wishlist updates from other pages
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'wishlistUpdated') {
+            console.log('🔄 Wishlist updated, refreshing courses...');
+            favoritesCache.clear(); // Clear favorites cache
+            loadCourses();
+        }
+    });
 });
 </script>
 </body>

@@ -13,6 +13,11 @@ const studentSchema = new mongoose.Schema({
     resetOtp: { type: String },
     otpExpires: { type: Date }
 });
+// YE LINE ADD KARO
+    wishlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course'
+    }]
 
 // Password hashing middleware
 studentSchema.pre('save', async function (next) {

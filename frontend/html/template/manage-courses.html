@@ -1360,6 +1360,28 @@
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
     <!-- Updated Script - REMOVED combined handler, changed btn text to Topic -->
 <script>
+  // Ye function local video ka thumbnail dikhayega
+function getVideoThumbnail(video) {
+    if (!video) return 'assets/img/course/course-placeholder.jpg';
+
+    // Agar humne backend se thumbnail bheja ho
+    if (video.thumbnail) {
+        if (video.thumbnail.startsWith('http')) {
+            return video.thumbnail;
+        }
+        return 'http://localhost:5000' + video.thumbnail;
+    }
+
+    // YouTube video
+    const url = video.url || '';
+    const match = url.match(/(youtube\.com|youtu\.be)\/(watch\?v=|embed\/)?([\w-]{11})/);
+    if (match && match[3]) {
+        return `https://img.youtube.com/vi/${match[3]}/hqdefault.jpg`;
+    }
+
+    // Default image
+    return 'assets/img/course/course-placeholder.jpg';
+}
 $(document).ready(function() {
     const token = localStorage.getItem('token');
     if (!token) {
