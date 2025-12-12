@@ -908,6 +908,58 @@
         align-self:flex-start;
       }
     }
+    /* ---------- LIGHT MODE ---------- */
+.custom-header {
+  background: linear-gradient(135deg, #dbeafe, #f3e8ff);
+  color: #333;
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.custom-header .header-title {
+  font-size: 36px;
+  letter-spacing: 0.5px;
+}
+
+.custom-header .header-subtext {
+  font-size: 16px;
+  opacity: 0.85;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.custom-header .header-breadcrumb {
+  background: transparent;
+}
+
+.custom-header .header-breadcrumb a {
+  color: #4f46e5;
+}
+
+/* ---------- DARK MODE ---------- */
+.dark-mode .custom-header {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #f8fafc;
+  box-shadow: 0 4px 18px rgba(255,255,255,0.05);
+}
+
+.dark-mode .header-title {
+  color: #fff;
+}
+
+.dark-mode .header-subtext {
+  color: #e2e8f0;
+}
+
+.dark-mode .header-breadcrumb a {
+  color: #93c5fd;
+}
+
+.dark-mode .header-breadcrumb .active {
+  color: #cbd5e1 !important;
+}
+
   </style>
 </head>
 <body class="light-mode">
@@ -974,21 +1026,24 @@
   </header>
 
   <!-- Breadcrumb -->
-  <div class="breadcrumb-bar text-center">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <h2 class="breadcrumb-title mb-2">My Wishlist</h2>
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb justify-content-center mb-0">
-              <li class="breadcrumb-item"><a href="student-dashboard.html">Home</a></li>
-              <li class="breadcrumb-item active">Wishlist</li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-    </div>
+<div class="page-header custom-header py-5">
+  <div class="container text-center">
+    <h1 class="fw-bold mb-2 header-title">My Wishlist</h1>
+
+    <p class="header-subtext">
+      All your saved courses in one place — explore, compare, and enroll anytime.
+    </p>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center mt-3 header-breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="student-dashboard.html">Home</a>
+        </li>
+        <li class="breadcrumb-item active">Wishlist</li>
+      </ol>
+    </nav>
   </div>
+</div>
 
   <div class="content py-5">
     <div class="container">
@@ -1498,7 +1553,7 @@ function renderWishlistCourses(courses) {
         }
         
         // Get course stats
-        const duration = course.duration || '10h 30m';
+        const duration = course.duration || '';
         const lectures = course.lecturesCount || course.videos?.length || 12;
         
         // Create course card - Clean & Minimal

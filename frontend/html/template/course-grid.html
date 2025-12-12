@@ -330,6 +330,7 @@ body.dark-mode .course-item-two {
         .enroll-btn.enrolled:hover {
             box-shadow: 0 8px 20px rgba(40,167,69,0.3);
         }
+        
         /* Improved: Assignments Button Style - Slightly smaller padding for better fit */
         .assignments-btn {
             padding: 0.5rem 1.2rem; /* Reduced padding for compact fit */
@@ -804,6 +805,58 @@ body.dark-mode .course-item-two {
         margin: 2.5rem auto;
     }
 }
+/* ---------- LIGHT MODE ---------- */
+.courses-header {
+  background: linear-gradient(135deg, #DBEAFE, #F3E8FF);
+  color: #333;
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.courses-header .header-title {
+  font-size: 34px;
+  letter-spacing: 0.4px;
+}
+
+.courses-header .header-subtext {
+  font-size: 15px;
+  opacity: 0.85;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.courses-header .header-breadcrumb {
+  background: transparent;
+}
+
+.courses-header .header-breadcrumb a {
+  color: #4F46E5;
+}
+
+/* ---------- DARK MODE ---------- */
+.dark-mode .courses-header {
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  color: #F8FAFC;
+  box-shadow: 0 4px 18px rgba(255,255,255,0.05);
+}
+
+.dark-mode .courses-header .header-title {
+  color: #fff;
+}
+
+.dark-mode .courses-header .header-subtext {
+  color: #E2E8F0;
+}
+
+.dark-mode .courses-header .header-breadcrumb a {
+  color: #93C5FD;
+}
+
+.dark-mode .courses-header .header-breadcrumb .active {
+  color: #CBD5E1 !important;
+}
+
     </style>
 </head>
 <body class="light-mode">
@@ -916,21 +969,26 @@ body.dark-mode .course-item-two {
         </header>
         <!-- /Header -->
         <!-- Breadcrumb -->
-        <div class="breadcrumb-bar text-center">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 col-12">
-                        <h2 class="breadcrumb-title mb-2">All Courses</h2>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb justify-content-center mb-0">
-                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">All Courses</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
+       <!-- Modern Gradient All Courses Header -->
+<div class="courses-header py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-2 header-title">All Courses</h2>
+
+    <p class="header-subtext">
+      Browse through our complete collection of courses and start learning today.
+    </p>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center mt-3 header-breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="index.html">Home</a>
+        </li>
+        <li class="breadcrumb-item active">All Courses</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
         <!-- /Breadcrumb -->
        
         <!-- Course -->

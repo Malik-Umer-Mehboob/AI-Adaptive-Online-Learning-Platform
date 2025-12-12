@@ -1185,6 +1185,58 @@
         margin: 2rem auto;
     }
 }
+/* ---------- LIGHT MODE ---------- */
+.dashboard-header {
+  background: linear-gradient(135deg, #DBEAFE, #F3E8FF);
+  color: #333;
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.dashboard-header .header-title {
+  font-size: 34px;
+  letter-spacing: 0.4px;
+}
+
+.dashboard-header .header-subtext {
+  font-size: 15px;
+  opacity: 0.85;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.dashboard-header .header-breadcrumb {
+  background: transparent;
+}
+
+.dashboard-header .header-breadcrumb a {
+  color: #4F46E5;
+}
+
+/* ---------- DARK MODE ---------- */
+.dark-mode .dashboard-header {
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  color: #F8FAFC;
+  box-shadow: 0 4px 18px rgba(255,255,255,0.05);
+}
+
+.dark-mode .dashboard-header .header-title {
+  color: #fff;
+}
+
+.dark-mode .dashboard-header .header-subtext {
+  color: #E2E8F0;
+}
+
+.dark-mode .dashboard-header .header-breadcrumb a {
+  color: #93C5FD;
+}
+
+.dark-mode .dashboard-header .header-breadcrumb .active {
+  color: #CBD5E1 !important;
+}
+
     </style>
   </head>
   <body>
@@ -1307,23 +1359,26 @@
       </header>
       <!-- /Header -->
       <!-- Breadcrumb -->
-      <div class="breadcrumb-bar text-center">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-12 col-12">
-              <h2 class="breadcrumb-title mb-2">Student Dashboard</h2>
-              <nav aria-label="breadcrumb">
-                <ol class="breadcrumb justify-content-center mb-0">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">
-                    Student Dashboard
-                  </li>
-                </ol>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
+     <!-- Modern Gradient Dashboard Header -->
+<div class="dashboard-header py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-2 header-title">Student Dashboard</h2>
+
+    <p class="header-subtext">
+      Welcome back! Manage your learning progress and explore your courses.
+    </p>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center mt-3 header-breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="student-dashboard.html">Home</a>
+        </li>
+        <li class="breadcrumb-item active">Student Dashboard</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
       <!-- /Breadcrumb -->
       <div class="content">
         <div class="container">

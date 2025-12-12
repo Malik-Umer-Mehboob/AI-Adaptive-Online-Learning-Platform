@@ -673,6 +673,58 @@
           padding: 1.5rem;
         }
       }
+      /* ---------- LIGHT MODE ---------- */
+.manage-categories-header {
+  background: linear-gradient(135deg, #DBEAFE, #F3E8FF);
+  color: #333;
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.manage-categories-header .header-title {
+  font-size: 34px;
+  letter-spacing: 0.4px;
+}
+
+.manage-categories-header .header-subtext {
+  font-size: 15px;
+  opacity: 0.85;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.manage-categories-header .header-breadcrumb {
+  background: transparent;
+}
+
+.manage-categories-header .header-breadcrumb a {
+  color: #4F46E5;
+}
+
+/* ---------- DARK MODE ---------- */
+.dark-mode .manage-categories-header {
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  color: #F8FAFC;
+  box-shadow: 0 4px 18px rgba(255,255,255,0.05);
+}
+
+.dark-mode .manage-categories-header .header-title {
+  color: #fff;
+}
+
+.dark-mode .manage-categories-header .header-subtext {
+  color: #E2E8F0;
+}
+
+.dark-mode .manage-categories-header .header-breadcrumb a {
+  color: #93C5FD;
+}
+
+.dark-mode .manage-categories-header .header-breadcrumb .active {
+  color: #CBD5E1 !important;
+}
+
     </style>
 </head>
 <body>
@@ -758,21 +810,26 @@
         <!-- /Header -->
        
         <!-- Breadcrumb -->
-        <div class="breadcrumb-bar text-center">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 col-12">
-                        <h2 class="breadcrumb-title mb-2">Manage Categories</h2>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb justify-content-center mb-0">
-                                <li class="breadcrumb-item"><a href="admin-dashboard.html">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Manage Categories</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Modern Gradient Manage Categories Header -->
+<div class="manage-categories-header py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-2 header-title">Manage Categories</h2>
+
+    <p class="header-subtext">
+      Create, update, and organize course categories to keep your LMS structured and easy to navigate.
+    </p>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center mt-3 header-breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="admin-dashboard.html">Home</a>
+        </li>
+        <li class="breadcrumb-item active">Manage Categories</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
         <!-- /Breadcrumb -->
         <div class="content">
             <div class="container">
