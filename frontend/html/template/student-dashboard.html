@@ -1564,19 +1564,29 @@
                   </div>
                 </div>
               </div>
-              <h5 class="mb-3 fs-18">Recently Enrolled Courses</h5>
-              <div class="row" id="recent-courses-grid">
-                <!-- Courses will be loaded here -->
-              </div>
-              <div class="empty-state text-center py-5" id="empty-recent-courses" style="display: none;">
-                <div class="mb-4">
-                  <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
-                </div>
-                <h5 class="text-muted mb-3">No courses enrolled yet</h5>
-                <p class="text-muted mb-4">Enroll in some courses from the Courses page!</p>
-                <a href="course-grid.html" class="btn btn-primary">Browse Courses</a>
-              </div>
-              <button class="show-all-btn" id="show-all-courses" style="display: none;">Show All Courses</button>
+              <h5 class="mb-4 fs-18 fw-bold text-primary d-flex align-items-center">
+  <i class="isax isax-book-1 me-2 fs-4"></i> Recently Enrolled Courses
+</h5>
+
+<div class="row" id="recent-courses-grid">
+  <!-- Courses will be loaded here -->
+</div>
+
+<div class="empty-state text-center py-5 my-5 rounded-4 bg-light-subtle" id="empty-recent-courses" style="display: none;">
+  <div class="mb-4">
+    <i class="isax isax-book-saved fs-1 text-primary opacity-75"></i>
+  </div>
+  <h5 class="fw-semibold text-dark mb-3">No courses enrolled yet</h5>
+  <p class="text-muted mb-4">Start your learning journey by exploring available courses!</p>
+  <a href="course-grid.html" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
+    <i class="isax isax-search-normal me-2"></i> Browse Courses
+  </a>
+</div>
+
+<button class="show-all-btn btn btn-outline-primary rounded-pill px-5 py-3 mt-4 shadow-sm" id="show-all-courses" style="display: none;">
+  <i class="isax isax-arrow-down me-2"></i>
+  <span>Show All Courses</span>
+</button>
               <h5 class="mb-3 fs-18">My Submissions</h5>
               <div id="my-submissions">
                 <!-- Submissions will be loaded here -->

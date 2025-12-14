@@ -515,72 +515,107 @@
           padding: 1.5rem;
         }
       }
-      /* Courses Table Styling */
-      .courses-table {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border: none;
-      }
-      .courses-table thead th {
-        background: linear-gradient(135deg, #a8f0ff, #b8f0ff);
-        color: #333;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.875rem;
-        letter-spacing: 0.5px;
-        border: none;
-        padding: 16px 12px;
-      }
-      .courses-table tbody tr {
-        transition: all 0.3s ease;
-        border-bottom: 1px solid #e9ecef;
-      }
-      .courses-table tbody tr:hover {
-        background: rgba(168, 240, 255, 0.1);
-        transform: translateY(-1px);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      }
-      .courses-table tbody td {
-        padding: 16px 12px;
-        vertical-align: middle;
-        border: none;
-        position: relative;
-      }
-      .courses-table tbody td::after {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 1px;
-        height: 20px;
-        background: #dee2e6;
-      }
-      .courses-table tbody td:last-child::after {
-        display: none;
-      }
-      .dark-mode .courses-table thead th {
-        background: linear-gradient(135deg, #117a8b, #0c5460);
-        color: #ffffff;
-      }
-      .dark-mode .courses-table tbody tr {
-        border-bottom: 1px solid #495057;
-      }
-      .dark-mode .courses-table tbody tr:hover {
-        background: rgba(168, 240, 255, 0.2);
-      }
-      .dark-mode .courses-table tbody td::after {
-        background: #495057;
-      }
-      .dark-mode .courses-table {
-        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.05);
-      }
-      .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-        border-radius: 4px;
-      }
+    /* Enhanced Courses Table Styling */
+/* MAIN WRAPPER */
+.courses-table {
+    border-radius: 16px;
+    overflow: hidden;
+    font-weight: 600;
+    border: 2px solid #007bff;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    border-collapse: collapse;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Updated font */
+}
+
+/* HEADER DESIGN */
+.courses-table thead {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.courses-table thead th {
+    color: #fff;
+    padding: 12px 14px;   /* Reduced padding */
+    font-size: 14px;      /* Slightly smaller */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(255,255,255,0.35);
+}
+
+/* BODY CELLS */
+.courses-table tbody td {
+    padding: 8px 12px;    /* Reduced padding for smaller height */
+    font-size: 13px;      /* Smaller font for compact rows */
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+    background: #ffffff;
+    transition: all 0.3s ease;
+}
+
+/* FIRST COLUMN STRONG */
+.courses-table tbody td:first-child {
+    font-weight: 600;
+    color: #0a3d91;
+}
+
+/* ZEBRA STYLE */
+.courses-table tbody tr:nth-child(even) td {
+    background: #f7f9fc;
+}
+
+/* HOVER EFFECT */
+.courses-table tbody tr:hover td {
+    background: rgba(200, 230, 255, 0.35);
+    transform: translateY(-1px);
+    box-shadow: inset 0 0 6px rgba(0, 123, 255, 0.1),
+                0 4px 10px rgba(0, 123, 255, 0.12);
+    color: #003b80;
+}
+
+/* BADGE STYLING */
+.courses-table .badge {
+    font-weight: 500;
+    font-size: 11px;
+    padding: 4px 8px;  /* Reduced for smaller rows */
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* BUTTON GROUP STYLING */
+.courses-table .btn-group-sm .btn {
+    padding: 4px 10px;  /* Compact buttons */
+    font-size: 12px;
+}
+
+/* DARK MODE */
+.dark-mode .courses-table tbody td { color: #e9ecef; }
+.dark-mode .courses-table tbody td:first-child { color: #f8f9fa; }
+
+/* EMPTY STATE */
+.courses-table tbody tr td.text-center {
+    padding: 40px 10px;  /* Reduced height for empty rows */
+    font-size: 15px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+    .courses-table thead th { padding: 10px 12px; font-size: 13px; }
+    .courses-table tbody td { padding: 6px 10px; font-size: 12.5px; }
+    .courses-table .btn-group-sm .btn { padding: 3px 8px; font-size: 11px; }
+}
+
+@media (max-width: 768px) {
+    .courses-table tbody td:nth-child(2) { max-width: 120px; }
+}
+
+/* ROW ANIMATION */
+@keyframes fadeInRow {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.courses-table tbody tr { animation: fadeInRow 0.35s ease forwards; }
+
       /* UI Fix: Topic Delete Button Highlight */
       .delete-topic {
         background-color: #dc3545 !important;
@@ -764,7 +799,141 @@
 .dark-mode .manage-courses-header .header-breadcrumb .active {
   color: #CBD5E1 !important;
 }
+/* Enhanced Pagination Styles */
+.card-body {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 8px !important;
+}
+.dark-mode .card-body {
+    background: linear-gradient(135deg, #343a40, #495057);
+}
 
+.pagination {
+    margin: 0;
+}
+
+.pagination .page-item .page-link {
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px 14px;
+    margin: 0 4px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-color: #ffffff;
+    color: #007bff;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-color: #007bff;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: #f8f9fa;
+    color: #adb5bd;
+    border-color: #e9ecef;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Dark mode styles */
+.dark-mode .pagination .page-item .page-link {
+    background-color: #495057;
+    color: #e9ecef;
+    border: 2px solid #6c757d;
+}
+
+.dark-mode .pagination .page-item .page-link:hover {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+.dark-mode .pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+    border-color: #0d6efd;
+}
+
+.dark-mode .pagination .page-item.disabled .page-link {
+    background-color: #343a40;
+    color: #6c757d;
+    border-color: #495057;
+}
+
+.pagination-info .fw-bold {
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.dark-mode .pagination-info .fw-bold {
+    background-color: rgba(13, 110, 253, 0.2);
+    color: #ffffff !important;
+}
+
+/* Previous/Next button specific styles */
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link {
+    font-weight: 700;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+}
+
+.dark-mode .pagination .page-item:first-child .page-link,
+.dark-mode .pagination .page-item:last-child .page-link {
+    background-color: #495057;
+    border: 2px solid #6c757d;
+}
+
+.pagination .page-item:first-child .page-link:hover,
+.pagination .page-item:last-child .page-link:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.dark-mode .pagination .page-item:first-child .page-link:hover,
+.dark-mode .pagination .page-item:last-child .page-link:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 15px !important;
+    }
+    
+    .pagination .page-item .page-link {
+        padding: 6px 10px;
+        font-size: 13px;
+        margin: 0 2px;
+    }
+    
+    .pagination-info {
+        font-size: 13px;
+    }
+    
+    .pagination-info .fw-bold {
+        font-size: 14px;
+        padding: 1px 4px;
+    }
+}
     </style>
 </head>
 <body>
@@ -954,6 +1123,23 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
+                             <!-- Add this after the courses table -->
+<div class="card mt-3 border-0 shadow-sm">
+    <div class="card-body py-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="pagination-info">
+                <span class="text-muted fw-semibold">
+                    Showing <span id="start-index" class="fw-bold text-dark">1</span>-<span id="end-index" class="fw-bold text-dark">10</span> of <span id="total-courses" class="fw-bold text-dark">0</span> courses
+                </span>
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination mb-0" id="pagination-controls">
+                    <!-- Pagination buttons will be inserted here -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
                                 <tbody id="courses-list">
                                     <!-- Dynamically populated -->
                                 </tbody>
@@ -1462,6 +1648,12 @@ $(document).ready(function() {
         window.location.href = 'login.html';
         return;
     }
+    
+    // Pagination variables
+    let currentPage = 1;
+    const coursesPerPage = 10;
+    let allCourses = [];
+    
     // Function to show toast messages
     function showToast(message, type = 'success', duration = 3000) {
         const toastContainer = $('#toast-container');
@@ -1695,45 +1887,17 @@ $(document).ready(function() {
             return null;
         }
     }
-    function loadCourses() {
+    
+    // UPDATED: Paginated loadCourses function
+    function loadCourses(page = 1) {
+        currentPage = page;
         $.ajax({
             url: 'http://localhost:5000/api/courses',
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
             success: function(courses) {
-                const $tbody = $('#courses-list').empty();
-                if (!courses || courses.length === 0) {
-                    $tbody.html('<tr><td colspan="6" class="text-center text-muted py-4">No courses found.</td></tr>');
-                    return;
-                }
-                let html = '';
-                courses.forEach(c => {
-                    const count = Array.isArray(c.videos) ? c.videos.length : 0;
-                    const topicCount = Array.isArray(c.topics) ? c.topics.length : 0;
-                    const resCount = Array.isArray(c.resources) ? c.resources.length : 0;
-                    const cat = c.category?.name || 'Uncategorized';
-                    const first = count > 0 ? c.videos[0].topic : '';
-                    const escape = s => String(s || '').replace(/"/g, '&quot;');
-                    const videosData = JSON.stringify((c.videos || []).map(v => ({ topic: v.topic, url: v.url, isFile: !!v.isFile })));
-                    const resourcesData = JSON.stringify((c.resources || []).map(r => ({ name: r.name, url: r.url, isFile: !!r.isFile })));
-                    html += `
-                        <tr>
-                            <td>${escape(c.name)}</td>
-                            <td>${escape(c.description).substring(0,50)}${c.description.length > 50 ? '...' : ''}</td>
-                            <td>${escape(cat)}</td>
-                            <td><span class="badge bg-primary">${count} video${count !== 1 ? 's' : ''}</span> | <span class="badge bg-info">${topicCount} topic${topicCount !== 1 ? 's' : ''}</span>${count > 0 ? `<br><small class="text-muted">${escape(first)}</small>` : ''}</td>
-                            <td>${new Date(c.createdAt).toLocaleDateString()}</td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-sm btn-primary edit-course" data-id="${c._id}" data-name="${escape(c.name)}" data-description="${escape(c.description)}" data-category="${c.category?._id || ''}" data-videos="${escape(videosData)}" data-resources="${escape(resourcesData)}">Edit</button>
-                                    <button class="btn btn-sm btn-info manage-topics-btn" data-id="${c._id}" data-name="${escape(c.name)}">Topic</button> <!-- CHANGED: Content to Topic -->
-                                    <!-- UI Fix: Clear label for course delete -->
-                                    <button class="btn btn-sm btn-danger delete-course" data-id="${c._id}" title="Delete entire course">Delete Course</button>
-                                </div>
-                            </td>
-                        </tr>`;
-                });
-                $tbody.html(html);
+                allCourses = courses;
+                renderCoursesPage(page);
             },
             error: function(xhr) {
                 console.error('Load courses error:', xhr.responseText);
@@ -1741,6 +1905,114 @@ $(document).ready(function() {
             }
         });
     }
+    
+    // Function to render courses for current page
+    function renderCoursesPage(page) {
+        const $tbody = $('#courses-list').empty();
+        const totalCourses = allCourses.length;
+        const totalPages = Math.ceil(totalCourses / coursesPerPage);
+        
+        // Calculate start and end indices
+        const startIndex = (page - 1) * coursesPerPage;
+        const endIndex = Math.min(startIndex + coursesPerPage, totalCourses);
+        
+        // Update pagination info
+        $('#start-index').text(totalCourses > 0 ? startIndex + 1 : 0);
+        $('#end-index').text(endIndex);
+        $('#total-courses').text(totalCourses);
+        
+        // Show courses for current page
+        if (totalCourses === 0) {
+            $tbody.html('<tr><td colspan="6" class="text-center text-muted py-4">No courses found.</td></tr>');
+            renderPaginationControls(page, 0);
+            return;
+        }
+        
+        const pageCourses = allCourses.slice(startIndex, endIndex);
+        let html = '';
+        pageCourses.forEach(c => {
+            const count = Array.isArray(c.videos) ? c.videos.length : 0;
+            const topicCount = Array.isArray(c.topics) ? c.topics.length : 0;
+            const resCount = Array.isArray(c.resources) ? c.resources.length : 0;
+            const cat = c.category?.name || 'Uncategorized';
+            const first = count > 0 ? c.videos[0].topic : '';
+            const escape = s => String(s || '').replace(/"/g, '&quot;');
+            const videosData = JSON.stringify((c.videos || []).map(v => ({ topic: v.topic, url: v.url, isFile: !!v.isFile })));
+            const resourcesData = JSON.stringify((c.resources || []).map(r => ({ name: r.name, url: r.url, isFile: !!r.isFile })));
+            html += `
+                <tr>
+                    <td>${escape(c.name)}</td>
+                    <td>${escape(c.description).substring(0,50)}${c.description.length > 50 ? '...' : ''}</td>
+                    <td>${escape(cat)}</td>
+                    <td><span class="badge bg-primary">${count} video${count !== 1 ? 's' : ''}</span> | <span class="badge bg-info">${topicCount} topic${topicCount !== 1 ? 's' : ''}</span>${count > 0 ? `<br><small class="text-muted">${escape(first)}</small>` : ''}</td>
+                    <td>${new Date(c.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-sm btn-primary edit-course" data-id="${c._id}" data-name="${escape(c.name)}" data-description="${escape(c.description)}" data-category="${c.category?._id || ''}" data-videos="${escape(videosData)}" data-resources="${escape(resourcesData)}">Edit</button>
+                            <button class="btn btn-sm btn-info manage-topics-btn" data-id="${c._id}" data-name="${escape(c.name)}">Topic</button>
+                            <button class="btn btn-sm btn-danger delete-course" data-id="${c._id}" title="Delete entire course">Delete Course</button>
+                        </div>
+                    </td>
+                </tr>`;
+        });
+        $tbody.html(html);
+        renderPaginationControls(page, totalPages);
+    }
+    
+    // Function to render pagination controls
+    function renderPaginationControls(currentPage, totalPages) {
+        const $pagination = $('#pagination-controls').empty();
+        
+        if (totalPages <= 1) return;
+        
+        // Previous button
+        const prevDisabled = currentPage === 1 ? 'disabled' : '';
+        const prevButton = $(`
+            <li class="page-item ${prevDisabled}">
+                <a class="page-link" href="javascript:void(0);" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        `);
+        if (!prevDisabled) {
+            prevButton.find('a').on('click', () => loadCourses(currentPage - 1));
+        }
+        $pagination.append(prevButton);
+        
+        // Page buttons (show max 5 pages)
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
+        
+        if (endPage - startPage < 4) {
+            startPage = Math.max(1, endPage - 4);
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            const active = i === currentPage ? 'active' : '';
+            const pageButton = $(`
+                <li class="page-item ${active}">
+                    <a class="page-link" href="javascript:void(0);">${i}</a>
+                </li>
+            `);
+            pageButton.find('a').on('click', () => loadCourses(i));
+            $pagination.append(pageButton);
+        }
+        
+        // Next button
+        const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+        const nextButton = $(`
+            <li class="page-item ${nextDisabled}">
+                <a class="page-link" href="javascript:void(0);" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        `);
+        if (!nextDisabled) {
+            nextButton.find('a').on('click', () => loadCourses(currentPage + 1));
+        }
+        $pagination.append(nextButton);
+    }
+    
     // Add Video Button for Add Course (allows playlist)
     $('#add-video-btn').on('click', () => {
         const topic = $('#video-topic').val().trim();
@@ -2236,9 +2508,12 @@ $(document).ready(function() {
         $('#selected-course-id').val(courseId);
         $('#manageTopicsModal').modal('show');
     });
+    
+    // Initial load
     loadCourses();
     populateCategorySelect('course-category');
     populateCategorySelect('edit-course-category');
+    
     // Theme toggle
     const toggleDarkMode = () => {
         $('body').addClass('dark-mode').removeClass('light-mode');
