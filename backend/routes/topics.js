@@ -1,13 +1,60 @@
-// routes/topics.js
+// routes/topics.js - FIXED with correct multer usage
 const express = require('express');
 const router = express.Router();
 const { auth, checkRole } = require('../middleware/auth');
 const topicController = require('../controllers/topicController');
+const { uploadPDF, uploadVideo } = require('../middleware/multer'); // Only uploadPDF, not uploadPDFs
 
-// Define multer for topics (fields for videos and resources)
+// Videos routes - FIXED: use .array() on uploadVideo
+router.post('/:id/videos', 
+    auth, 
+    checkRole(['admin']), 
+    uploadVideo.array('videoFiles', 10), 
+    topicController.addVideosToTopic
+);
+
+router.delete('/:id/videos/:videoId', 
+    auth, 
+    checkRole(['admin']), 
+    topicController.deleteVideoFromTopic
+);
+
+// Resources routes - FIXED: use .array() on uploadPDF (not uploadPDFs)
+router.post('/:id/resources', 
+    auth, 
+    checkRole(['admin']), 
+    uploadPDF.array('resourceFiles', 10), 
+    topicController.addResourcesToTopic
+);
+
+router.delete('/:id/resources/:resourceId', 
+    auth, 
+    checkRole(['admin']), 
+    topicController.deleteResourceFromTopic
+);
+
+// CRUD routes
 const multer = require('multer');
 const path = require('path');
-const storage = multer.diskStorage({
+const fs = require('fs');
+
+// Ensure directories exist
+const createDirectories = () => {
+    const dirs = [
+        path.join(__dirname, '../public/uploads/videos'),
+        path.join(__dirname, '../public/uploads/resources'),
+        path.join(__dirname, '../public/uploads/images')
+    ];
+    
+    dirs.forEach(dir => {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+    });
+};
+createDirectories();
+
+const videoStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === 'videoFiles') {
             cb(null, path.join(__dirname, '../public/uploads/videos'));
@@ -22,65 +69,73 @@ const storage = multer.diskStorage({
         cb(null, filename);
     },
 });
+
 const fileFilter = (req, file, cb) => {
     if (file.fieldname === 'videoFiles') {
         const filetypes = /mp4|mov|avi|mkv|webm/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
+        const mimetype = file.mimetype.startsWith('video/');
         if (extname && mimetype) return cb(null, true);
         return cb(new Error('Only video files are allowed!'));
     } else if (file.fieldname === 'resourceFiles') {
-        const filetypes = /pdf/;
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
-        if (extname && mimetype) return cb(null, true);
+        if (file.mimetype === 'application/pdf') return cb(null, true);
         return cb(new Error('Only PDF files are allowed!'));
     } else {
         cb(new Error('Invalid file field'));
     }
 };
+
 const uploadTopics = multer({
-    storage: storage,
-    limits: { fileSize: 100 * 1024 * 1024 }, // 100MB max
+    storage: videoStorage,
+    limits: { fileSize: 100 * 1024 * 1024 },
     fileFilter: fileFilter
 }).fields([
     { name: 'videoFiles', maxCount: 20 },
     { name: 'resourceFiles', maxCount: 10 }
 ]);
 
-// Destructure other multer from controller
-const { uploadVideos, uploadPDFs } = topicController;
+// Basic CRUD
+router.post('/', 
+    auth, 
+    checkRole(['admin']), 
+    uploadTopics, 
+    topicController.createTopic
+);
 
-// Videos routes
-router.post('/:id/videos', auth, checkRole(['admin']), uploadVideos.array('videoFiles'), topicController.addVideosToTopic);
-router.delete('/:id/videos/:videoId', auth, checkRole(['admin']), topicController.deleteVideoFromTopic);
+router.get('/course/:courseId', 
+    auth, 
+    topicController.getTopicsByCourse
+);
 
-// Resources routes
-router.post('/:id/resources', auth, checkRole(['admin']), uploadPDFs.array('resourceFiles'), topicController.addResourcesToTopic);
-router.delete('/:id/resources/:resourceId', auth, checkRole(['admin']), async (req, res) => {
-    try {
-        const Topic = require('../models/Topic');
-        const topic = await Topic.findById(req.params.id);
-        if (!topic) return res.status(404).json({ message: 'Topic not found' });
-        const resource = topic.resources.id(req.params.resourceId);
-        if (!resource) return res.status(404).json({ message: 'Resource not found' });
-        resource.remove();
-        await topic.save();
-        res.json({ message: 'Resource deleted successfully' });
-    } catch (err) {
-        console.error('Delete resource error:', err);
-        res.status(500).json({ message: err.message });
-    }
-});
+router.get('/:id', 
+    auth, 
+    topicController.getTopic
+);
 
-// CRUD - ADDED: Multer for POST and PUT
-router.post('/', auth, checkRole(['admin']), uploadTopics, topicController.createTopic);
-router.get('/course/:courseId', auth, topicController.getTopicsByCourse);
-router.get('/:id', auth, topicController.getTopic);
-router.put('/:id', auth, checkRole(['admin']), uploadTopics, topicController.updateTopic);
-router.delete('/:id', auth, checkRole(['admin']), topicController.deleteTopic);
+router.put('/:id', 
+    auth, 
+    checkRole(['admin']), 
+    uploadTopics, 
+    topicController.updateTopic
+);
+
+router.delete('/:id', 
+    auth, 
+    checkRole(['admin']), 
+    topicController.deleteTopic
+);
+
+// AI summary
+router.get('/:id/summary', 
+    auth, 
+    topicController.getTopicSummary
+);
 
 // Auto from playlist
-router.post('/auto-from-playlist', auth, checkRole(['admin']), topicController.autoCreateTopicsFromPlaylist);
+router.post('/auto-from-playlist', 
+    auth, 
+    checkRole(['admin']), 
+    topicController.autoCreateTopicsFromPlaylist
+);
 
 module.exports = router;

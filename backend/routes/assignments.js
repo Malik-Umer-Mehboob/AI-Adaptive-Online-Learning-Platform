@@ -1,49 +1,42 @@
-// routes/assignments.js - FIXED: Reordered routes - /:courseId first to avoid conflict, students allowed
+// routes/assignments.js - COMPLETE UPDATED VERSION
 const express = require('express');
 const router = express.Router();
-const { auth, checkRole, isAdmin, isStudent } = require('../middleware/auth');
-const { 
-    createAssignment, 
-    generateQuestions, 
-    getAssignmentsByCourse, 
-    getAllAssignments, 
-    getAssignmentById,
-    getSubmissionsByAssignment, 
-    submitAssignment, 
-    evaluateSubmission,
-    updateAssignment, 
-    deleteAssignment 
-} = require('../controllers/assignmentController');
-const { uploadPDF } = require('../middleware/multer');
+const { auth, isAdmin, isStudent } = require('../middleware/auth');
+const assignmentController = require('../controllers/assignmentController');
+const { uploadPDF, addBufferToFile } = require('../middleware/multer');
 
-// FIXED: Student/Admin: Get by course - AUTH ONLY (no role check) - MOVED FIRST to match before /:id
-router.get('/:courseId', auth, getAssignmentsByCourse);
+// Test AI endpoint
+router.post('/test-ai', auth, assignmentController.testAI);
 
-// Admin: Manual create
-router.post('/', auth, isAdmin, createAssignment);
+// Get assignments by course (for both admin and students)
+router.get('/course/:courseId', auth, assignmentController.getAssignmentsByCourse);
 
-// Admin: AI generate
-router.post('/generate', auth, isAdmin, generateQuestions);
+// Admin only routes
+router.post('/', auth, isAdmin, assignmentController.createAssignment);
+router.post('/generate', auth, isAdmin, assignmentController.generateQuestions);
+router.get('/', auth, isAdmin, assignmentController.getAllAssignments);
+router.get('/:id', auth, assignmentController.getAssignmentById);
+router.put('/:id', auth, isAdmin, assignmentController.updateAssignment);
+router.delete('/:id', auth, isAdmin, assignmentController.deleteAssignment);
 
-// Admin: Get all
-router.get('/', auth, isAdmin, getAllAssignments);
+// Submission routes
+router.get('/:assignmentId/submissions', auth, isAdmin, assignmentController.getSubmissionsByAssignment);
+router.get('/submissions/:submissionId', auth, isAdmin, assignmentController.getSubmissionById);
 
-// Admin: Get single by ID (for edit) - SECOND to avoid conflict with courseId
-router.get('/:id', auth, isAdmin, getAssignmentById);
+// Student submission route
+router.post('/:assignmentId/submit', 
+    auth, 
+    isStudent, 
+    uploadPDF.single('pdf'), // This saves to disk
+    addBufferToFile, // This adds buffer to req.file
+    assignmentController.submitAssignment
+);
 
-// Admin: Update (Edit)
-router.put('/:id', auth, isAdmin, updateAssignment);
+// Evaluate submission routes
+router.post('/submissions/:submissionId/evaluate', auth, isAdmin, assignmentController.evaluateSubmission);
+router.post('/:assignmentId/bulk-evaluate', auth, isAdmin, assignmentController.bulkEvaluate);
 
-// Admin: Delete
-router.delete('/:id', auth, isAdmin, deleteAssignment);
-
-// Admin: Get submissions for assignment
-router.get('/:assignmentId/submissions', auth, isAdmin, getSubmissionsByAssignment);
-
-// Student: Submit (PDF upload)
-router.post('/:assignmentId/submit', auth, isStudent, uploadPDF.single('pdf'), submitAssignment);
-
-// Admin: Evaluate by submission ID
-router.post('/submissions/:submissionId/evaluate', auth, isAdmin, evaluateSubmission);
+// Debug route to check submission
+router.get('/check-submission/:submissionId', auth, isAdmin, assignmentController.checkSubmission);
 
 module.exports = router;

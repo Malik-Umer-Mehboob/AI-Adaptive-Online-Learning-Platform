@@ -1,11 +1,13 @@
-// controller/topiccontroller.js - Updated: Auto-generate contentSummary from videos/resources on save. Aligned multer with global. No direct assignment changes (course-level).
+// controllers/topicController.js - COMPLETE VERSION
+// Fixed: Removed multer configs, using global multer
+// Added: All required functions with proper error handling
+
 const mongoose = require('mongoose');
 const Topic = require('../models/Topic');
 const Course = require('../models/Course');
-const { uploadPDF } = require('../middleware/multer'); // Updated: Use global multer for PDFs
 const { google } = require('googleapis');
-const multer = require('multer'); // Added: Import multer for local video storage
-const path = require('path'); // Added: Import path for file handling
+const path = require('path');
+const fs = require('fs');
 
 // YouTube API setup
 const youtube = google.youtube({
@@ -13,46 +15,44 @@ const youtube = google.youtube({
     auth: process.env.YOUTUBE_API_KEY
 });
 
-// Multer for videos (keep local for now, but can use global uploadVideo)
-const videoStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../public/uploads/videos'));
-    },
-    filename: (req, file, cb) => {
-        const filename = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
-        cb(null, filename);
-    },
-});
-const uploadVideos = multer({
-    storage: videoStorage,
-    limits: { fileSize: 100 * 1024 * 1024 },
-    fileFilter: (req, file, cb) => {
-        const filetypes = /mp4|mov|avi|mkv|webm/;
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
-        if (extname && mimetype) return cb(null, true);
-        cb(new Error('Only video files are allowed!'));
-    }
-});
+// ========== HELPER FUNCTIONS ==========
 
-// Helper: Auto-generate contentSummary (New: For AI prompts)
+// Generate content summary for AI prompts
 function generateContentSummary(topic) {
-    let summary = topic.description || '';
-    if (topic.videos && topic.videos.length > 0) {
-        summary += ` Videos cover: ${topic.videos.map(v => v.topic).join(', ')}.`;
+    try {
+        let summary = topic.description || '';
+        
+        if (topic.videos && topic.videos.length > 0) {
+            const videoTopics = topic.videos.map(v => v.topic).filter(t => t && t.trim()).join(', ');
+            if (videoTopics) {
+                summary += ` Videos cover: ${videoTopics}.`;
+            }
+        }
+        
+        if (topic.resources && topic.resources.length > 0) {
+            const resourceNames = topic.resources.map(r => r.name || r.type || 'Resource').filter(n => n).join(', ');
+            if (resourceNames) {
+                summary += ` Resources: ${resourceNames}.`;
+            }
+        }
+        
+        return summary.substring(0, 500); // Limit length
+    } catch (error) {
+        console.error('Error generating content summary:', error);
+        return topic.description || '';
     }
-    if (topic.resources && topic.resources.length > 0) {
-        summary += ` Notes/Resources: ${topic.resources.map(r => r.name || r.type).join(', ')}.`;
-    }
-    return summary.substring(0, 500); // Limit length for DB
 }
 
-// Updated: Pre-save hook in controller (or can move to model)
+// Auto-update content summary
 const autoSummary = async (topic) => {
-    topic.contentSummary = generateContentSummary(topic);
+    try {
+        topic.contentSummary = generateContentSummary(topic);
+    } catch (error) {
+        console.error('Error in autoSummary:', error);
+    }
 };
 
-// Helper functions (unchanged)
+// Check if URL is a playlist
 function isPlaylistUrl(url) {
     try {
         const urlObj = new URL(url);
@@ -62,6 +62,7 @@ function isPlaylistUrl(url) {
     }
 }
 
+// Extract playlist ID from URL
 function extractPlaylistId(url) {
     try {
         const urlObj = new URL(url);
@@ -71,423 +72,840 @@ function extractPlaylistId(url) {
     }
 }
 
+// Fetch videos from YouTube playlist
 async function fetchPlaylistVideos(playlistId) {
     try {
         if (!process.env.YOUTUBE_API_KEY) {
-            throw new Error('YOUTUBE_API_KEY missing');
+            throw new Error('YOUTUBE_API_KEY missing in environment variables');
         }
+        
         console.log(`Fetching playlist videos for ID: ${playlistId}`);
+        
         const response = await youtube.playlistItems.list({
             part: 'snippet',
             playlistId: playlistId,
             maxResults: 50
         });
+        
         const items = response.data.items || [];
         console.log(`Fetched ${items.length} videos from playlist`);
+        
         return items.map((item, idx) => ({
-            topic: item.snippet.title,
+            topic: item.snippet.title || `Video ${idx + 1}`,
             url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
             isFile: false,
-            order: idx
+            order: idx,
+            duration: 'N/A'
         }));
     } catch (error) {
-        console.error('Playlist fetch error:', error.response?.data || error.message);
-        throw new Error(`Playlist fetch failed: ${error.message}. Check API key/quota.`);
+        console.error('YouTube API Error:', error.response?.data || error.message);
+        throw new Error(`Failed to fetch playlist: ${error.message}`);
     }
 }
 
-// Improved topic identification (unchanged)
+// Group videos into topics
 async function identifyTopicsFromVideos(videos) {
-    const groups = {};
-    videos.forEach(video => {
-        const titleWords = video.topic.toLowerCase().split(/\s+/).slice(0, 5).join(' ');
-        let groupKey = titleWords;
-        if (titleWords.length < 10) groupKey = video.topic.toLowerCase();
-        if (!groups[groupKey]) {
-            groups[groupKey] = {
-                name: video.topic.split(/[-:–]|part\s+\d+|episode\s+\d+|ch\d+|lec\d+/i)[0].trim() || video.topic,
-                videos: []
-            };
-        }
-        groups[groupKey].videos.push({ ...video });
-    });
-    return Object.values(groups).map((group, idx) => ({
-        name: group.name.charAt(0).toUpperCase() + group.name.slice(1),
-        description: `Auto-generated topic from playlist videos`,
-        order: idx,
-        status: 'draft',
-        videos: group.videos.map((v, vidx) => ({ ...v, order: vidx }))
-    }));
+    try {
+        const groups = {};
+        
+        videos.forEach((video, index) => {
+            const title = video.topic.toLowerCase();
+            
+            // Extract main topic from title (remove episode/part numbers)
+            let mainTopic = title
+                .replace(/(episode|part|lecture|lec|ch|chapter)\s*\d+/gi, '')
+                .replace(/[^a-z0-9\s]/g, ' ')
+                .trim()
+                .split(/\s+/)
+                .slice(0, 3)
+                .join(' ');
+            
+            if (!mainTopic || mainTopic.length < 3) {
+                mainTopic = `Topic ${index + 1}`;
+            }
+            
+            if (!groups[mainTopic]) {
+                groups[mainTopic] = {
+                    name: mainTopic.charAt(0).toUpperCase() + mainTopic.slice(1),
+                    videos: []
+                };
+            }
+            
+            groups[mainTopic].videos.push({
+                ...video,
+                order: groups[mainTopic].videos.length
+            });
+        });
+        
+        return Object.values(groups).map((group, idx) => ({
+            name: group.name,
+            description: `Auto-generated topic containing ${group.videos.length} video(s)`,
+            order: idx,
+            status: 'draft',
+            videos: group.videos,
+            contentSummary: `Covers ${group.name} with ${group.videos.length} video lessons`
+        }));
+    } catch (error) {
+        console.error('Error identifying topics:', error);
+        throw error;
+    }
 }
 
-// UPDATED: Create Topic - Auto-generate contentSummary
+// Process uploaded files
+function processUploadedFiles(req) {
+    const result = {
+        videos: [],
+        resources: []
+    };
+    
+    try {
+        // Process video files
+        if (req.files && req.files.videoFiles) {
+            result.videos = req.files.videoFiles.map((file, index) => ({
+                topic: file.originalname.replace(/\.[^/.]+$/, "") || `Video ${index + 1}`,
+                url: `/uploads/videos/${file.filename}`,
+                isFile: true,
+                order: index,
+                duration: 'N/A'
+            }));
+        }
+        
+        // Process resource files
+        if (req.files && req.files.resourceFiles) {
+            result.resources = req.files.resourceFiles.map((file, index) => ({
+                type: 'pdf',
+                url: `/uploads/resources/${file.filename}`,
+                name: file.originalname.replace(/\.[^/.]+$/, "") || `Resource ${index + 1}`,
+                uploadedAt: new Date()
+            }));
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('Error processing uploaded files:', error);
+        return result;
+    }
+}
+
+// ========== CONTROLLER FUNCTIONS ==========
+
+// Create topic
 exports.createTopic = async (req, res) => {
     try {
         const { name, courseId, description = '', status = 'draft', videos: videosJson, resources: resourcesJson } = req.body;
-        if (!name || !courseId) return res.status(400).json({ message: 'Name and courseId required' });
-
-        let videos = [];
-        if (videosJson) {
-            try { videos = JSON.parse(videosJson); } catch (e) { return res.status(400).json({ message: 'Invalid videos JSON' }); }
+        
+        if (!name || !name.trim()) {
+            return res.status(400).json({ message: 'Topic name is required' });
         }
-
-        const videoFiles = req.files?.videoFiles || [];
-        let fileIndex = 0;
-        const finalVideos = [];
-
-        for (const v of videos) {
-            if (v.isFile && fileIndex < videoFiles.length) {
-                const file = videoFiles[fileIndex++];
-                finalVideos.push({
-                    topic: v.topic || `Video ${finalVideos.length + 1}`,
-                    url: `/uploads/videos/${file.filename}`,
-                    isFile: true,
-                    order: finalVideos.length
-                });
-            } else if (!v.isFile && v.url) {
-                if (isPlaylistUrl(v.url)) {
-                    return res.status(400).json({ message: 'Playlists not supported for topics. Use single video URLs.' });
-                }
-                finalVideos.push({
-                    topic: v.topic || 'YouTube Video',
-                    url: v.url,
-                    isFile: false,
-                    order: finalVideos.length
-                });
-            }
+        
+        if (!courseId || !mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({ message: 'Valid course ID is required' });
         }
-
-        let finalResources = [];
-        if (resourcesJson) {
-            let resources = [];
-            try { resources = JSON.parse(resourcesJson); } catch (e) { return res.status(400).json({ message: 'Invalid resources JSON' }); }
-
-            const resourceFiles = req.files?.resourceFiles || [];
-            let resIndex = 0;
-
-            for (const r of resources) {
-                if (r.isFile && resIndex < resourceFiles.length) {
-                    const file = resourceFiles[resIndex++];
-                    finalResources.push({
-                        name: r.name || `Resource ${resIndex}`,
-                        url: `/uploads/resources/${file.filename}`,
-                        type: 'pdf'
-                    });
-                } else if (!r.isFile && r.url) {
-                    finalResources.push({
-                        name: r.name || 'External Resource',
-                        url: r.url,
-                        type: 'url'
-                    });
-                }
-            }
-        }
-
-        const topic = new Topic({ name, courseId, description, status, videos: finalVideos, resources: finalResources });
-        await autoSummary(topic); // New: Generate summary
-        await topic.save();
+        
+        // Check if course exists
         const course = await Course.findById(courseId);
-        if (course && !course.topics.includes(topic._id)) {
-            course.topics.push(topic._id);
-            await course.save();
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
         }
-        res.status(201).json(topic);
-    } catch (err) {
-        console.error('Create topic error:', err);
-        res.status(400).json({ message: err.message });
+        
+        // Process uploaded files
+        const uploadedFiles = processUploadedFiles(req);
+        
+        // Parse JSON arrays if provided
+        let parsedVideos = [];
+        let parsedResources = [];
+        
+        if (videosJson) {
+            try {
+                parsedVideos = JSON.parse(videosJson);
+            } catch (parseError) {
+                return res.status(400).json({ message: 'Invalid videos JSON format' });
+            }
+        }
+        
+        if (resourcesJson) {
+            try {
+                parsedResources = JSON.parse(resourcesJson);
+            } catch (parseError) {
+                return res.status(400).json({ message: 'Invalid resources JSON format' });
+            }
+        }
+        
+        // Combine uploaded videos with parsed videos
+        const allVideos = [
+            ...uploadedFiles.videos,
+            ...parsedVideos.filter(v => v.url && !v.isFile) // Only external URLs from JSON
+        ];
+        
+        // Combine uploaded resources with parsed resources
+        const allResources = [
+            ...uploadedFiles.resources,
+            ...parsedResources.filter(r => r.url && r.type !== 'file') // Only external URLs from JSON
+        ];
+        
+        // Create topic
+        const topic = new Topic({
+            name: name.trim(),
+            courseId,
+            description: description.trim(),
+            status,
+            videos: allVideos,
+            resources: allResources,
+            order: course.topics ? course.topics.length : 0
+        });
+        
+        // Generate content summary
+        await autoSummary(topic);
+        
+        // Save topic
+        await topic.save();
+        
+        // Update course topics
+        course.topics = course.topics || [];
+        course.topics.push(topic._id);
+        await course.save();
+        
+        res.status(201).json({
+            message: 'Topic created successfully',
+            topic: {
+                _id: topic._id,
+                name: topic.name,
+                courseId: topic.courseId,
+                description: topic.description,
+                contentSummary: topic.contentSummary,
+                videos: topic.videos,
+                resources: topic.resources,
+                order: topic.order,
+                status: topic.status
+            }
+        });
+        
+    } catch (error) {
+        console.error('Create topic error:', error);
+        res.status(500).json({ 
+            message: 'Failed to create topic', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
     }
 };
 
-// UPDATED: Update Topic - Auto-generate contentSummary
+// Update topic
 exports.updateTopic = async (req, res) => {
     try {
+        const { id } = req.params;
         const updates = req.body;
-        const id = req.params.id;
+        
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid topic ID' });
+        }
+        
         const topic = await Topic.findById(id);
-        if (!topic) return res.status(404).json({ message: 'Topic not found' });
-
-        if (updates.name) topic.name = updates.name;
-        if (updates.description !== undefined) topic.description = updates.description;
-        if (updates.status) topic.status = updates.status;
-
-        if (updates.videos || (req.files && req.files.videoFiles && req.files.videoFiles.length > 0)) {
-            let videos = [];
+        if (!topic) {
+            return res.status(404).json({ message: 'Topic not found' });
+        }
+        
+        // Process uploaded files
+        const uploadedFiles = processUploadedFiles(req);
+        
+        // Update basic fields
+        if (updates.name && updates.name.trim()) {
+            topic.name = updates.name.trim();
+        }
+        
+        if (updates.description !== undefined) {
+            topic.description = updates.description.trim();
+        }
+        
+        if (updates.status && ['draft', 'published'].includes(updates.status)) {
+            topic.status = updates.status;
+        }
+        
+        if (updates.order !== undefined) {
+            topic.order = parseInt(updates.order) || 0;
+        }
+        
+        // Update videos if provided
+        if (updates.videos || uploadedFiles.videos.length > 0) {
+            let parsedVideos = [];
+            
             if (updates.videos) {
-                try { videos = JSON.parse(updates.videos); } catch (e) { return res.status(400).json({ message: 'Invalid videos JSON' }); }
-            }
-
-            const videoFiles = req.files?.videoFiles || [];
-            let fileIndex = 0;
-            const finalVideos = [];
-
-            for (const v of videos) {
-                if (v.isFile && fileIndex < videoFiles.length) {
-                    const file = videoFiles[fileIndex++];
-                    finalVideos.push({
-                        topic: v.topic,
-                        url: `/uploads/videos/${file.filename}`,
-                        isFile: true,
-                        order: finalVideos.length
-                    });
-                } else if (!v.isFile && v.url) {
-                    if (isPlaylistUrl(v.url)) {
-                        return res.status(400).json({ message: 'Playlists not supported for topics.' });
-                    }
-                    finalVideos.push({
-                        topic: v.topic,
-                        url: v.url,
-                        isFile: false,
-                        order: finalVideos.length
-                    });
+                try {
+                    parsedVideos = JSON.parse(updates.videos);
+                } catch (parseError) {
+                    return res.status(400).json({ message: 'Invalid videos JSON format' });
                 }
             }
-            topic.videos = finalVideos;
+            
+            // Combine existing videos (excluding replaced ones) with new ones
+            const existingVideos = topic.videos.filter(v => v.isFile === false); // Keep external videos
+            topic.videos = [
+                ...existingVideos,
+                ...uploadedFiles.videos,
+                ...parsedVideos.filter(v => v.url && !v.isFile)
+            ];
         }
-
-        if (updates.resources || (req.files && req.files.resourceFiles && req.files.resourceFiles.length > 0)) {
-            let resources = [];
+        
+        // Update resources if provided
+        if (updates.resources || uploadedFiles.resources.length > 0) {
+            let parsedResources = [];
+            
             if (updates.resources) {
-                try { resources = JSON.parse(updates.resources); } catch (e) { return res.status(400).json({ message: 'Invalid resources JSON' }); }
-            }
-
-            const resourceFiles = req.files?.resourceFiles || [];
-            let resIndex = 0;
-            const finalResources = [];
-
-            for (const r of resources) {
-                if (r.isFile && resIndex < resourceFiles.length) {
-                    const file = resourceFiles[resIndex++];
-                    finalResources.push({
-                        name: r.name || `Resource ${resIndex}`,
-                        url: `/uploads/resources/${file.filename}`,
-                        type: 'pdf'
-                    });
-                } else if (!r.isFile && r.url) {
-                    finalResources.push({
-                        name: r.name || 'External Resource',
-                        url: r.url,
-                        type: 'url'
-                    });
+                try {
+                    parsedResources = JSON.parse(updates.resources);
+                } catch (parseError) {
+                    return res.status(400).json({ message: 'Invalid resources JSON format' });
                 }
             }
-            topic.resources = finalResources;
+            
+            // Combine existing resources (excluding file resources) with new ones
+            const existingResources = topic.resources.filter(r => r.type !== 'pdf'); // Keep non-PDF resources
+            topic.resources = [
+                ...existingResources,
+                ...uploadedFiles.resources,
+                ...parsedResources.filter(r => r.url && r.type !== 'file')
+            ];
         }
-
-        await autoSummary(topic); // New: Regenerate summary
+        
+        // Update content summary
+        await autoSummary(topic);
+        
         await topic.save();
+        
+        // Sort videos by order
         topic.videos.sort((a, b) => (a.order || 0) - (b.order || 0));
-        res.json(topic);
-    } catch (err) {
-        console.error('Update topic error:', err);
-        res.status(400).json({ message: err.message });
+        
+        res.json({
+            message: 'Topic updated successfully',
+            topic: {
+                _id: topic._id,
+                name: topic.name,
+                description: topic.description,
+                contentSummary: topic.contentSummary,
+                videos: topic.videos,
+                resources: topic.resources,
+                order: topic.order,
+                status: topic.status
+            }
+        });
+        
+    } catch (error) {
+        console.error('Update topic error:', error);
+        res.status(500).json({ 
+            message: 'Failed to update topic', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
     }
 };
 
-// Other exports (unchanged, but use uploadPDF for resources if needed)
+// Get topics by course
 exports.getTopicsByCourse = async (req, res) => {
     try {
-        let topics = await Topic.find({ courseId: req.params.courseId }).sort({ order: 1 });
-        topics = topics.map(topic => {
-            topic.videos.sort((a, b) => (a.order || 0) - (b.order || 0));
-            return topic;
+        const { courseId } = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({ message: 'Invalid course ID' });
+        }
+        
+        const topics = await Topic.find({ courseId })
+            .sort({ order: 1, createdAt: 1 })
+            .select('-__v');
+        
+        // Add full URLs to files
+        const topicsWithUrls = topics.map(topic => {
+            const topicObj = topic.toObject();
+            
+            // Add base URL to video and resource files
+            if (topicObj.videos) {
+                topicObj.videos = topicObj.videos.map(video => ({
+                    ...video,
+                    fullUrl: video.isFile ? `${req.protocol}://${req.get('host')}${video.url}` : video.url
+                }));
+                topicObj.videos.sort((a, b) => (a.order || 0) - (b.order || 0));
+            }
+            
+            if (topicObj.resources) {
+                topicObj.resources = topicObj.resources.map(resource => ({
+                    ...resource,
+                    fullUrl: resource.type === 'pdf' ? `${req.protocol}://${req.get('host')}${resource.url}` : resource.url
+                }));
+            }
+            
+            return topicObj;
         });
-        res.json(topics);
-    } catch (err) {
-        console.error('Get topics error:', err);
-        res.status(500).json({ message: err.message });
+        
+        res.json(topicsWithUrls);
+        
+    } catch (error) {
+        console.error('Get topics by course error:', error);
+        res.status(500).json({ 
+            message: 'Failed to fetch topics', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
     }
 };
 
+// Get single topic
 exports.getTopic = async (req, res) => {
     try {
-        const topic = await Topic.findById(req.params.id);
-        if (!topic) return res.status(404).json({ message: 'Topic not found' });
-        topic.videos.sort((a, b) => (a.order || 0) - (b.order || 0));
-        res.json(topic);
-    } catch (err) {
-        console.error('Get topic error:', err);
-        res.status(500).json({ message: err.message });
+        const { id } = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid topic ID' });
+        }
+        
+        const topic = await Topic.findById(id)
+            .populate('courseId', 'name')
+            .select('-__v');
+        
+        if (!topic) {
+            return res.status(404).json({ message: 'Topic not found' });
+        }
+        
+        const topicObj = topic.toObject();
+        
+        // Add full URLs to files
+        if (topicObj.videos) {
+            topicObj.videos = topicObj.videos.map(video => ({
+                ...video,
+                fullUrl: video.isFile ? `${req.protocol}://${req.get('host')}${video.url}` : video.url
+            }));
+            topicObj.videos.sort((a, b) => (a.order || 0) - (b.order || 0));
+        }
+        
+        if (topicObj.resources) {
+            topicObj.resources = topicObj.resources.map(resource => ({
+                ...resource,
+                fullUrl: resource.type === 'pdf' ? `${req.protocol}://${req.get('host')}${resource.url}` : resource.url
+            }));
+        }
+        
+        res.json(topicObj);
+        
+    } catch (error) {
+        console.error('Get topic error:', error);
+        res.status(500).json({ 
+            message: 'Failed to fetch topic', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
     }
 };
 
+// Delete topic
 exports.deleteTopic = async (req, res) => {
     try {
-        const topic = await Topic.findById(req.params.id);
-        if (!topic) return res.status(404).json({ message: 'Topic not found' });
-
+        const { id } = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid topic ID' });
+        }
+        
+        const topic = await Topic.findById(id);
+        if (!topic) {
+            return res.status(404).json({ message: 'Topic not found' });
+        }
+        
+        // Delete associated files
+        if (topic.videos) {
+            topic.videos.forEach(video => {
+                if (video.isFile && video.url) {
+                    const filePath = path.join(__dirname, '..', 'public', video.url);
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                }
+            });
+        }
+        
+        if (topic.resources) {
+            topic.resources.forEach(resource => {
+                if (resource.type === 'pdf' && resource.url) {
+                    const filePath = path.join(__dirname, '..', 'public', resource.url);
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                }
+            });
+        }
+        
+        // Remove topic from course
         const course = await Course.findById(topic.courseId);
         if (course) {
-            course.topics = course.topics.filter(t => t.toString() !== topic._id.toString());
+            course.topics = course.topics.filter(t => t.toString() !== id);
             await course.save();
         }
-
-        await topic.remove();
-        res.json({ message: 'Topic deleted successfully' });
-    } catch (err) {
-        console.error('Delete topic error:', err);
-        res.status(500).json({ message: err.message });
+        
+        // Delete topic
+        await Topic.findByIdAndDelete(id);
+        
+        res.json({ 
+            message: 'Topic deleted successfully',
+            deletedId: id
+        });
+        
+    } catch (error) {
+        console.error('Delete topic error:', error);
+        res.status(500).json({ 
+            message: 'Failed to delete topic', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
     }
 };
 
+// Add videos to topic
 exports.addVideosToTopic = async (req, res) => {
     try {
-        const topic = await Topic.findById(req.params.id);
-        if (!topic) return res.status(404).json({ message: 'Topic not found' });
-
+        const { id } = req.params;
         const { videos: videosJson } = req.body;
-        let videos = [];
+        
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid topic ID' });
+        }
+        
+        const topic = await Topic.findById(id);
+        if (!topic) {
+            return res.status(404).json({ message: 'Topic not found' });
+        }
+        
+        // Process uploaded video files
+        const uploadedVideos = [];
+        if (req.files && req.files.length > 0) {
+            uploadedVideos.push(...req.files.map((file, index) => ({
+                topic: file.originalname.replace(/\.[^/.]+$/, "") || `Video ${topic.videos.length + index + 1}`,
+                url: `/uploads/videos/${file.filename}`,
+                isFile: true,
+                order: topic.videos.length + index,
+                duration: 'N/A'
+            })));
+        }
+        
+        // Parse JSON videos
+        let parsedVideos = [];
         if (videosJson) {
             try {
-                videos = JSON.parse(videosJson);
-            } catch {
-                return res.status(400).json({ message: 'Invalid videos JSON' });
+                parsedVideos = JSON.parse(videosJson);
+            } catch (parseError) {
+                return res.status(400).json({ message: 'Invalid videos JSON format' });
             }
         }
-
-        const files = req.files || [];
-        let fileIndex = 0;
-        const newVideos = [];
-
-        for (const v of videos) {
-            if (v.isFile && fileIndex < files.length) {
-                const file = files[fileIndex++];
-                newVideos.push({
-                    topic: v.topic || `Video ${newVideos.length + 1}`,
-                    url: `/uploads/videos/${file.filename}`,
-                    isFile: true,
-                    order: topic.videos.length + newVideos.length
-                });
-            } else if (!v.isFile && v.url) {
-                if (isPlaylistUrl(v.url)) {
-                    return res.status(400).json({ message: 'Playlists not supported for topics. Use single video URLs.' });
-                }
-                newVideos.push({
-                    topic: v.topic || 'YouTube Video',
-                    url: v.url,
-                    isFile: false,
-                    order: topic.videos.length + newVideos.length
-                });
-            }
+        
+        // Filter only external URLs from JSON
+        const externalVideos = parsedVideos.filter(v => v.url && !v.isFile);
+        
+        // Combine all videos
+        const newVideos = [...uploadedVideos, ...externalVideos];
+        
+        if (newVideos.length === 0) {
+            return res.status(400).json({ message: 'No valid videos provided' });
         }
-
-        if (newVideos.length === 0) return res.status(400).json({ message: 'No valid videos provided' });
-
-        topic.videos.push(...newVideos);
-        await autoSummary(topic); // New: Update summary
+        
+        // Add videos to topic
+        topic.videos = [...topic.videos, ...newVideos];
+        
+        // Update content summary
+        await autoSummary(topic);
         await topic.save();
-
-        res.json({ message: `${newVideos.length} videos added successfully`, videos: newVideos });
-    } catch (err) {
-        console.error('Add videos to topic error:', err);
-        res.status(500).json({ message: err.message });
+        
+        // Sort videos
+        topic.videos.sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        res.json({
+            message: `${newVideos.length} video(s) added successfully`,
+            addedCount: newVideos.length,
+            videos: newVideos.map(v => ({
+                topic: v.topic,
+                url: v.isFile ? `${req.protocol}://${req.get('host')}${v.url}` : v.url,
+                isFile: v.isFile,
+                order: v.order
+            }))
+        });
+        
+    } catch (error) {
+        console.error('Add videos to topic error:', error);
+        res.status(500).json({ 
+            message: 'Failed to add videos', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
     }
 };
 
-// UPDATED: Add resources to topic - Use global uploadPDF
+// Add resources to topic
+// controllers/topicController.js - example addResourcesToTopic function
 exports.addResourcesToTopic = async (req, res) => {
     try {
-        const topic = await Topic.findById(req.params.id);
-        if (!topic) return res.status(404).json({ message: 'Topic not found' });
-
-        const { resources: resourcesJson, type = 'pdf', name } = req.body;
-
-        let resources = [];
-
-        if (resourcesJson) {
-            try {
-                resources = JSON.parse(resourcesJson);
-            } catch {
-                return res.status(400).json({ message: 'Invalid resources JSON' });
-            }
+        const { id } = req.params;
+        
+        // Check if files were uploaded
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ message: 'No PDF files uploaded' });
         }
-
-        const files = req.files || []; // From uploadPDF or resourceFiles
-        let fileIndex = 0;
-        const newResources = [];
-
-        for (const r of resources) {
-            if (r.isFile && fileIndex < files.length) {
-                const file = files[fileIndex++];
-                newResources.push({
-                    type: type || 'pdf',
-                    url: `/uploads/resources/${file.filename}`,
-                    name: r.name || file.originalname
-                });
-            } else if (!r.isFile && r.url) {
-                newResources.push({
-                    type: type || 'url',
-                    url: r.url,
-                    name: r.name || 'External Resource'
-                });
-            }
+        
+        const topic = await Topic.findById(id);
+        if (!topic) {
+            return res.status(404).json({ message: 'Topic not found' });
         }
-
-        if (newResources.length === 0) return res.status(400).json({ message: 'No valid resources provided' });
-
-        topic.resources.push(...newResources);
-        await autoSummary(topic); // New: Update summary
+        
+        // Process each PDF file
+        const resources = req.files.map(file => {
+            return {
+                name: file.originalname,
+                path: `/uploads/resources/${file.filename}`,
+                type: 'pdf',
+                uploadedAt: new Date()
+            };
+        });
+        
+        // Add to topic resources
+        topic.resources = topic.resources || [];
+        topic.resources.push(...resources);
+        
         await topic.save();
-
-        res.json({ message: `${newResources.length} resources added successfully`, resources: newResources });
-    } catch (err) {
-        console.error('Add resources to topic error:', err);
-        res.status(500).json({ message: err.message });
+        
+        res.status(200).json({
+            message: `${resources.length} PDF resource(s) added successfully`,
+            resources: resources.map(r => ({
+                name: r.name,
+                url: `${process.env.BASE_URL || 'http://localhost:5000'}${r.path}`,
+                type: r.type
+            }))
+        });
+        
+    } catch (error) {
+        console.error('Add resources error:', error);
+        res.status(500).json({ message: 'Failed to add resources', error: error.message });
     }
 };
 
+// Delete video from topic
 exports.deleteVideoFromTopic = async (req, res) => {
     try {
-        const topic = await Topic.findById(req.params.id);
-        if (!topic) return res.status(404).json({ message: 'Topic not found' });
-
-        const video = topic.videos.id(req.params.videoId);
-        if (!video) return res.status(404).json({ message: 'Video not found' });
-
-        video.remove();
-        await autoSummary(topic); // New: Update summary after delete
+        const { id, videoId } = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid topic ID' });
+        }
+        
+        const topic = await Topic.findById(id);
+        if (!topic) {
+            return res.status(404).json({ message: 'Topic not found' });
+        }
+        
+        // Find video
+        const videoIndex = topic.videos.findIndex(v => v._id.toString() === videoId);
+        if (videoIndex === -1) {
+            return res.status(404).json({ message: 'Video not found in topic' });
+        }
+        
+        const video = topic.videos[videoIndex];
+        
+        // Delete file if it's an uploaded file
+        if (video.isFile && video.url) {
+            const filePath = path.join(__dirname, '..', 'public', video.url);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+        
+        // Remove video from array
+        topic.videos.splice(videoIndex, 1);
+        
+        // Reorder remaining videos
+        topic.videos.forEach((v, index) => {
+            v.order = index;
+        });
+        
+        // Update content summary
+        await autoSummary(topic);
         await topic.save();
-
-        res.json({ message: 'Video deleted successfully' });
-    } catch (err) {
-        console.error('Delete video from topic error:', err);
-        res.status(500).json({ message: err.message });
+        
+        res.json({ 
+            message: 'Video deleted successfully',
+            deletedVideoId: videoId
+        });
+        
+    } catch (error) {
+        console.error('Delete video from topic error:', error);
+        res.status(500).json({ 
+            message: 'Failed to delete video', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
     }
 };
 
+// Delete resource from topic
+exports.deleteResourceFromTopic = async (req, res) => {
+    try {
+        const { id, resourceId } = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid topic ID' });
+        }
+        
+        const topic = await Topic.findById(id);
+        if (!topic) {
+            return res.status(404).json({ message: 'Topic not found' });
+        }
+        
+        // Find resource
+        const resourceIndex = topic.resources.findIndex(r => r._id.toString() === resourceId);
+        if (resourceIndex === -1) {
+            return res.status(404).json({ message: 'Resource not found in topic' });
+        }
+        
+        const resource = topic.resources[resourceIndex];
+        
+        // Delete file if it's a PDF
+        if (resource.type === 'pdf' && resource.url) {
+            const filePath = path.join(__dirname, '..', 'public', resource.url);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+        
+        // Remove resource from array
+        topic.resources.splice(resourceIndex, 1);
+        
+        // Update content summary
+        await autoSummary(topic);
+        await topic.save();
+        
+        res.json({ 
+            message: 'Resource deleted successfully',
+            deletedResourceId: resourceId
+        });
+        
+    } catch (error) {
+        console.error('Delete resource from topic error:', error);
+        res.status(500).json({ 
+            message: 'Failed to delete resource', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
+    }
+};
+
+// Auto-create topics from YouTube playlist
 exports.autoCreateTopicsFromPlaylist = async (req, res) => {
     try {
         const { playlistUrl, courseId } = req.body;
-        if (!playlistUrl || !courseId) return res.status(400).json({ message: 'playlistUrl and courseId required' });
-
-        const playlistId = extractPlaylistId(playlistUrl);
-        if (!playlistId) return res.status(400).json({ message: 'Invalid playlist URL' });
-
-        const videos = await fetchPlaylistVideos(playlistId);
-        if (videos.length === 0) return res.status(400).json({ message: 'No videos in playlist' });
-
-        const topics = await identifyTopicsFromVideos(videos);
-
-        const course = await Course.findById(courseId);
-        if (!course) return res.status(404).json({ message: 'Course not found' });
-
-        const savedTopics = await Topic.insertMany(topics.map(t => ({ ...t, courseId })));
-
-        // New: Auto-summary for each
-        for (const topic of savedTopics) {
-            await autoSummary(topic);
-            await topic.save();
+        
+        if (!playlistUrl || !playlistUrl.trim()) {
+            return res.status(400).json({ message: 'Playlist URL is required' });
         }
-
-        course.topics.push(...savedTopics.map(t => t._id));
+        
+        if (!courseId || !mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({ message: 'Valid course ID is required' });
+        }
+        
+        // Check if course exists
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+        
+        // Extract playlist ID
+        const playlistId = extractPlaylistId(playlistUrl);
+        if (!playlistId) {
+            return res.status(400).json({ message: 'Invalid YouTube playlist URL' });
+        }
+        
+        // Fetch videos from playlist
+        const videos = await fetchPlaylistVideos(playlistId);
+        if (videos.length === 0) {
+            return res.status(400).json({ message: 'No videos found in playlist' });
+        }
+        
+        // Group videos into topics
+        const topicsData = await identifyTopicsFromVideos(videos);
+        
+        // Create topics
+        const createdTopics = [];
+        for (const topicData of topicsData) {
+            const topic = new Topic({
+                name: topicData.name,
+                courseId,
+                description: topicData.description,
+                contentSummary: topicData.contentSummary,
+                videos: topicData.videos,
+                order: course.topics.length + createdTopics.length,
+                status: 'draft'
+            });
+            
+            await topic.save();
+            createdTopics.push(topic);
+            
+            // Add to course
+            course.topics.push(topic._id);
+        }
+        
         await course.save();
-
-        res.json({ message: `${savedTopics.length} topics created`, topics: savedTopics });
-    } catch (err) {
-        console.error('Auto create topics error:', err);
-        res.status(500).json({ message: err.message });
+        
+        res.json({
+            message: `${createdTopics.length} topic(s) created from playlist`,
+            createdCount: createdTopics.length,
+            topics: createdTopics.map(t => ({
+                _id: t._id,
+                name: t.name,
+                description: t.description,
+                videoCount: t.videos.length
+            }))
+        });
+        
+    } catch (error) {
+        console.error('Auto-create topics error:', error);
+        
+        let errorMessage = 'Failed to create topics from playlist';
+        if (error.message.includes('API key')) {
+            errorMessage = 'YouTube API key is missing or invalid';
+        } else if (error.message.includes('quota')) {
+            errorMessage = 'YouTube API quota exceeded';
+        }
+        
+        res.status(500).json({ 
+            message: errorMessage,
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 };
 
-// FIXED: Export multer instances
-exports.uploadVideos = uploadVideos;
-exports.uploadPDFs = uploadPDF; // Updated: Use global
+// Get topic content summary for AI
+exports.getTopicSummary = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid topic ID' });
+        }
+        
+        const topic = await Topic.findById(id)
+            .select('name description contentSummary videos resources')
+            .lean();
+        
+        if (!topic) {
+            return res.status(404).json({ message: 'Topic not found' });
+        }
+        
+        // Generate summary if not exists
+        if (!topic.contentSummary) {
+            topic.contentSummary = generateContentSummary(topic);
+        }
+        
+        // Prepare AI-friendly summary
+        const aiSummary = {
+            topicName: topic.name,
+            description: topic.description || '',
+            contentSummary: topic.contentSummary,
+            videoCount: topic.videos ? topic.videos.length : 0,
+            resourceCount: topic.resources ? topic.resources.length : 0,
+            videoTopics: topic.videos ? topic.videos.map(v => v.topic).filter(t => t) : [],
+            resourceTypes: topic.resources ? [...new Set(topic.resources.map(r => r.type))] : []
+        };
+        
+        res.json(aiSummary);
+        
+    } catch (error) {
+        console.error('Get topic summary error:', error);
+        res.status(500).json({ 
+            message: 'Failed to get topic summary', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
+    }
+};

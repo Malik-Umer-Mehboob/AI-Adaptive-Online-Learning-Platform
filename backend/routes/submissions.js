@@ -1,49 +1,11 @@
-// routes/submissions.js - COMPLETE: Minor fix for pdfUrl (use buildFullUrl for consistency with controller).
-// No direct model changes needed (handled in assignmentController which prefers qwen2.5:7b).
-// Added buildFullUrl helper here for full URLs in responses.
-
+// routes/submissions.js - Student submission routes
 const express = require('express');
 const router = express.Router();
-const Submission = require('../models/Submission');
 const { auth, isStudent, isAdmin } = require('../middleware/auth');
-const assignmentController = require('../controllers/assignmentController');
-const { uploadPDF } = require('../middleware/multer');
+const Submission = require('../models/Submission');
 
-// BASE URL (env override) - Copied from controller for consistency
-const BASE_URL = (process.env.BASE_URL || 'http://localhost:5000').replace(/\/+$/, ''); // strip trailing slash
-
-// Build full URL safely (handles already-absolute paths too) - Copied from controller
-const buildFullUrl = (relativeOrAbsolutePath) => {
-    if (!relativeOrAbsolutePath) return null;
-    // If path already looks like a full URL, return as-is
-    if (/^https?:\/\//i.test(relativeOrAbsolutePath)) return relativeOrAbsolutePath;
-    // Ensure leading slash
-    const cleanPath = relativeOrAbsolutePath.startsWith('/') ? relativeOrAbsolutePath : `/${relativeOrAbsolutePath}`;
-    return `${BASE_URL}${cleanPath}`;
-};
-
-router.post('/:assignmentId/submit', auth, isStudent, uploadPDF.single('pdfFile'), async (req, res) => {
-    try {
-        console.log('Submit route matched, file:', req.file ? req.file.filename : 'none');
-        req.user = res.locals.user;
-        await assignmentController.submitAssignment(req, res);
-    } catch (error) {
-        console.error('Route submit error:', error);
-        res.status(500).json({ message: 'Submit failed', error: error.message });
-    }
-});
-
-router.post('/:submissionId/evaluate', auth, isAdmin, async (req, res) => {
-    try {
-        req.user = res.locals.user;
-        await assignmentController.evaluateSubmission(req, res);
-    } catch (error) {
-        console.error('Route eval error:', error);
-        res.status(500).json({ message: 'Eval failed', error: error.message });
-    }
-});
-
-// routes/submissions.js
+// Student: Get my submissions
+// In your routes/submissions.js - Update the /my endpoint
 router.get('/my', auth, isStudent, async (req, res) => {
     try {
         const submissions = await Submission.find({ studentId: req.user.id })
@@ -53,41 +15,74 @@ router.get('/my', auth, isStudent, async (req, res) => {
                     path: 'courseId',
                     select: 'name'
                 },
-                select: 'title dueDate'
+                select: 'title dueDate courseId'
             })
-            .sort({ submittedAt: -1 })
-            .lean();
-
+            .sort({ submittedAt: -1 });
+        
+        // Create base URL
+        const baseUrl = (process.env.BASE_URL || 'http://localhost:5000').replace(/\/+$/, '');
+        
         const formatted = submissions.map(sub => {
-            const isEvaluated = sub.evaluated && sub.evaluation && sub.evaluation.score !== undefined;
+            // Fix PDF URL
+            let pdfUrl = null;
+            if (sub.pdfPath) {
+                // Ensure path starts with /
+                const cleanPath = sub.pdfPath.startsWith('/') ? sub.pdfPath : `/${sub.pdfPath}`;
+                pdfUrl = `${baseUrl}${cleanPath}`;
+            }
             
             return {
-                ...sub,
-                pdfUrl: sub.pdfPath ? buildFullUrl(sub.pdfPath) : null,
-                score: isEvaluated ? sub.evaluation.score : null,
-                feedback: isEvaluated 
-                    ? (sub.evaluation.feedback || "No feedback provided.")
-                    : "Evaluation in progress...",
-                remarks: isEvaluated 
-                    ? (sub.evaluation.remarks || "") 
-                    : "",
-                evaluationStatus: isEvaluated ? 'completed' : 'pending',
-                courseName: sub.assignmentId?.courseId?.name || 'Unknown'
+                _id: sub._id,
+                assignmentId: sub.assignmentId?._id,
+                assignmentTitle: sub.assignmentId?.title || 'Unknown Assignment',
+                courseId: sub.assignmentId?.courseId?._id,
+                courseName: sub.assignmentId?.courseId?.name || 'Unknown Course',
+                submittedAt: sub.submittedAt,
+                pdfUrl: pdfUrl,
+                evaluated: sub.evaluated,
+                score: sub.evaluated ? sub.evaluation?.score : null,
+                feedback: sub.evaluated ? (sub.evaluation?.feedback || 'No feedback yet') : 'Evaluation in progress...',
+                remarks: sub.evaluated ? (sub.evaluation?.remarks || '') : '',
+                status: sub.evaluated ? 'Evaluated' : 'Pending'
             };
         });
-
-        res.json(formatted);
+        
+        console.log(`Returning ${formatted.length} submissions for student ${req.user.id}`);
+        
+        res.json({
+            success: true,
+            count: formatted.length,
+            submissions: formatted
+        });
+        
     } catch (error) {
-        console.error('GET /my error:', error);
-        res.status(500).json({ message: 'Failed to load submissions' });
+        console.error('Get my submissions error:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Failed to load submissions',
+            error: error.message 
+        });
     }
 });
-router.get('/:assignmentId', auth, isAdmin, async (req, res) => {
+
+// Admin: Get all submissions for a student
+router.get('/student/:studentId', auth, isAdmin, async (req, res) => {
     try {
-        req.user = res.locals.user;
-        await assignmentController.getSubmissionsByAssignment(req, res);
+        const { studentId } = req.params;
+        const submissions = await Submission.find({ studentId })
+            .populate({
+                path: 'assignmentId',
+                populate: {
+                    path: 'courseId',
+                    select: 'name'
+                },
+                select: 'title'
+            })
+            .sort({ submittedAt: -1 });
+        
+        res.json(submissions);
     } catch (error) {
-        console.error('GET submissions error:', error);
+        console.error('Get student submissions error:', error);
         res.status(500).json({ message: 'Failed to load submissions' });
     }
 });

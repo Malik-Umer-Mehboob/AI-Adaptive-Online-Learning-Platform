@@ -1833,12 +1833,13 @@ $(document).ready(function() {
     // UPDATED: Load Assignments (PDF focus, auto status update after submit, FIXED: Optional submission fetch, due date compare with toLocaleDateString + FULL URL FOR PDF + FIXED: Use openPDF() button to avoid about:blank#blocked + FIXED: No double URL prefix + FIXED: Safe URL construction to avoid malformed URLs) - NOW RETURNS PENDING COUNT
 async function loadAssignments() {
     try {
-        const assignments = await $.ajax({
-            url: `http://localhost:5000/api/assignments/${courseId}`,
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token },
-            cache: false // FIXED: No cache, fresh fetch
-        });
+        // NEW: Student endpoint - Use /assignments/course/:courseId
+const assignments = await $.ajax({
+    url: `http://localhost:5000/api/assignments/course/${courseId}`,
+    type: 'GET',
+    headers: { 'Authorization': 'Bearer ' + token },
+    cache: false
+});
         const list = $('#assignments-list');
         let pendingCount = 0;
         if (assignments.length === 0) {
