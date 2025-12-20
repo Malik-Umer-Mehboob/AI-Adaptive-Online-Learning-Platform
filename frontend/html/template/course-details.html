@@ -1445,6 +1445,7 @@ $(document).ready(function() {
         window.location.href = 'login.html';
         return;
     }
+    
     let decoded;
     try {
         decoded = jwt_decode(token);
@@ -1455,19 +1456,23 @@ $(document).ready(function() {
         setTimeout(() => window.location.href = 'login.html', 2000);
         return;
     }
+    
     if (decoded.role !== 'student') {
         showToast('Access denied: Students only.', 'error');
         setTimeout(() => window.location.href = 'login.html', 2000);
         return;
     }
+    
     const urlParams = new URLSearchParams(window.location.search);
     const courseId = urlParams.get('id');
     if (!courseId) {
         showToast('Course ID not provided.', 'error');
         return;
     }
+    
     let currentVideoIndex = 0;
     let currentVideoData = null;
+    
     function showToast(message, type = 'success', duration = 4000) {
         const toastContainer = $('#toast-container');
         const toastId = `toast-${Date.now()}`;
@@ -1488,16 +1493,24 @@ $(document).ready(function() {
             $(`#${toastId}`).remove();
         }, duration);
     }
-    // FIXED: Open PDF function to handle about:blank#blocked (fetch as blob, create object URL, open in new tab)
+    
+    // FIXED: Open PDF function
     function openPDF(url) {
         if (!url) {
             showToast('PDF URL not available.', 'error');
             return;
         }
-        fetch(url, {
+        
+        // Ensure full URL
+        let fullUrl = url;
+        if (!url.startsWith('http')) {
+            fullUrl = `http://localhost:5000${url.startsWith('/') ? url : '/' + url}`;
+        }
+        
+        fetch(fullUrl, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token') // Include auth if needed
+                'Authorization': 'Bearer ' + token
             }
         })
             .then(response => {
@@ -1509,99 +1522,67 @@ $(document).ready(function() {
             .then(blob => {
                 const blobUrl = URL.createObjectURL(blob);
                 window.open(blobUrl, '_blank');
-                // Revoke after 1 min to free memory
                 setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-                showToast('Opening PDF in new tab...', 'success');
             })
             .catch(err => {
                 console.error('PDF open error:', err);
-                showToast('Open failed: ' + err.message + '. Try right-click > Save As.', 'error');
-                // Fallback: Direct open in new tab
-                window.open(url, '_blank');
+                // Fallback: Direct open
+                window.open(fullUrl, '_blank');
             });
     }
-    // Load profile data including image and name
+    
+    // Load profile data
     function loadProfile() {
-        console.log("Loading profile for user ID:", decoded.id);
         $.ajax({
             url: 'http://localhost:5000/api/auth/profile',
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
-            cache: false,
             success: function(profile) {
-                console.log('Profile loaded:', profile);
                 const displayName = profile.name || 'Student';
                 $("#dropdown-profile-name").text(displayName);
                 $("#profile-email a")
-                  .text(profile.email || "No email")
-                  .attr("href", `mailto:${profile.email || ""}`);
-                const timestamp = new Date().getTime();
+                    .text(profile.email || "No email")
+                    .attr("href", `mailto:${profile.email || ""}`);
+                
                 if (profile.profileImage) {
-                    const imageSrc = profile.profileImage + '?t=' + timestamp;
                     $(".dropdown-profile-img")
-                      .attr("src", imageSrc)
-                      .parent()
-                      .addClass("has-image");
+                        .attr("src", profile.profileImage)
+                        .parent()
+                        .addClass("has-image");
                 } else {
                     $(".dropdown-profile-img").attr('src', '').parent().removeClass('has-image');
                 }
             },
             error: function(xhr) {
-                console.error('Profile load error:', {
-                    status: xhr.status,
-                    response: xhr.responseText,
-                });
-                if (xhr.status === 0)
-                    showToast("Unable to connect to server.", "error");
-                else if (xhr.status === 401) {
-                    showToast("Session expired.", "error");
+                console.error('Profile load error:', xhr);
+                if (xhr.status === 401) {
                     localStorage.removeItem("token");
                     window.location.href = "login.html";
-                } else
-                    showToast(`Profile error (Status: ${xhr.status}).`, "error");
-            },
+                }
+            }
         });
     }
+    
     // Handle profile link click
     $(".profile-link").on("click", function (e) {
         e.preventDefault();
         const href = $(this).data("href") || $(this).attr("href");
-        console.log('Profile link clicked, checking profile... Token ID:', decoded.id);
         $.ajax({
             url: 'http://localhost:5000/api/auth/profile',
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
-            cache: false,
             success: function(profile) {
-                console.log('Profile access OK, redirecting to:', href);
                 window.location.href = href;
             },
             error: function(xhr) {
-                console.error(
-                    "Profile access error:",
-                    xhr.status,
-                    xhr.responseText
-                );
-                if (xhr.status === 0) showToast("Server unavailable.", "error");
-                else if (xhr.status === 401) {
-                    showToast("Session expired.", "error");
+                if (xhr.status === 401) {
                     localStorage.removeItem("token");
                     window.location.href = "login.html";
-                } else
-                    showToast(
-                        `Profile access error (Status: ${xhr.status}).`,
-                        "error"
-                    );
-            },
+                }
+            }
         });
     });
-    // Listen for profile update (in case of external updates)
-    window.addEventListener('profileUpdated', loadProfile);
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'profileUpdated') {
-            loadProfile();
-        }
-    });
+    
     // Logout Handler
     $(document).on('click', '#logout-btn', function (e) {
         e.preventDefault();
@@ -1621,7 +1602,8 @@ $(document).ready(function() {
             }
         });
     });
-    // Fixed: Generate star display with colored full/empty stars
+    
+    // Generate star display
     function generateStars(rating) {
         const fullStars = Math.floor(rating);
         let starsHtml = '';
@@ -1634,7 +1616,8 @@ $(document).ready(function() {
         }
         return starsHtml;
     }
-    // Updated: Embed URL with params for error fix
+    
+    // Get YouTube embed URL
     function getYouTubeEmbedUrl(url) {
         if (!url) return '';
         try {
@@ -1651,7 +1634,8 @@ $(document).ready(function() {
         }
         return '';
     }
-    // Updated: Better thumbnail (same as grid, with playlist handling)
+    
+    // Get YouTube thumbnail
     function getYouTubeThumbnail(url) {
         if (!url) return 'assets/img/course/course-placeholder.jpg';
         let videoId = null;
@@ -1659,27 +1643,25 @@ $(document).ready(function() {
         const embedMatch = url.match(/youtube\.com\/embed\/([^&\n?#]+)/);
         if (watchMatch) videoId = watchMatch[1];
         else if (embedMatch) videoId = embedMatch[1];
-        // Playlist fallback
         else if (url.includes('playlist?list=')) {
-            const playlistMatch = url.match(/list=([a-zA-Z0-9_-]+)/);
-            if (playlistMatch) {
-                return `https://i.ytimg.com/vi/${playlistMatch[1].substring(0,11)}/mqdefault.jpg`;
-            }
             return 'assets/img/course/playlist-placeholder.jpg';
         }
         return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
     }
-    // Helper: Convert description to bullet points
+    
+    // Convert description to bullet points
     function descriptionToBullets(description) {
         if (!description) return '<li class="list-item">No description available.</li>';
         const bullets = description.split('.').map(sent => sent.trim()).filter(sent => sent.length > 0);
         return bullets.map(bullet => `<li class="list-item">${bullet}</li>`).join('');
     }
-    // Updated: Player with loading + error handling + YouTube API for end detection (feedback removed, so no end trigger)
+    
+    // Load video player
     function loadPlayer(url, isFile, videoData) {
         const container = $('#player-container');
         container.empty();
         currentVideoData = videoData;
+        
         if (isFile) {
             const video = $(`
                 <video controls class="w-100 h-100" id="video-player">
@@ -1689,17 +1671,12 @@ $(document).ready(function() {
             `);
             container.html(video);
         } else {
-            if (!url) {
-                container.html('<p class="text-danger">Invalid video URL.</p>');
-                return;
-            }
-            // Loading state
-            container.html('<div class="text-center p-5"><i class="fas fa-spinner fa-spin fa-3x text-primary"></i><p>Loading video...</p></div>');
             const embedUrl = getYouTubeEmbedUrl(url);
             if (!embedUrl) {
-                container.html('<p class="text-danger p-3">Invalid YouTube URL. Ensure video is public.</p>');
+                container.html('<p class="text-danger p-3">Invalid YouTube URL.</p>');
                 return;
             }
+            
             const iframe = $(`
                 <iframe id="youtube-player"
                         src="${embedUrl}"
@@ -1711,43 +1688,41 @@ $(document).ready(function() {
                 </iframe>
             `);
             container.html(iframe);
-            // Load YouTube API script if not loaded (no events needed now)
-            if (!window.YT) {
-                const tag = document.createElement('script');
-                tag.src = "https://www.youtube.com/iframe_api";
-                const firstScriptTag = document.getElementsByTagName('script')[0];
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            }
-            iframe.on('load', function() {
-                console.log('Video loaded successfully:', url);
-            }).on('error', function() {
-                console.error('Embed error - Video may be private/restricted or playlist URL invalid');
-                container.html('<p class="text-danger p-3">Video unavailable. Check if public or try another video.</p>');
-            });
         }
     }
+    
+    // Check if enrolled
     function isEnrolled(courseId) {
         return $.ajax({
             url: `http://localhost:5000/api/dashboard/student/enrollments`,
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token }
-        }).then(data => data.some(e => e.courseId === courseId)).catch(() => false);
+        }).then(data => {
+            if (data.success && data.enrollments) {
+                return data.enrollments.some(e => e.courseId === courseId || e.courseId._id === courseId);
+            }
+            return data.some(e => e.courseId === courseId || e.courseId._id === courseId);
+        }).catch(() => false);
     }
-    // Load and display comments (now includes rating display)
+    
+    // Load comments
     async function loadComments() {
         try {
-            const comments = await $.ajax({
+            const response = await $.ajax({
                 url: `http://localhost:5000/api/courses/${courseId}/comments`,
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token }
             });
+            
+            const comments = response.comments || response;
             const list = $('#comments-list');
-            if (comments.length === 0) {
+            
+            if (!comments || comments.length === 0) {
                 list.html('<p class="text-muted">No comments yet. Be the first to comment!</p>');
                 return;
             }
+            
             list.html(comments.map(c => {
-                // Generate stars for display
                 const stars = generateStars(c.rating || 0);
                 return `
                 <div class="comment-item">
@@ -1763,7 +1738,8 @@ $(document).ready(function() {
             $('#comments-list').html('<p class="text-danger">Error loading comments.</p>');
         }
     }
-    // Fixed: Star rating JS for proper selection and highlighting
+    
+    // Star rating interaction
     $('.comment-rating').on('change', 'input[name="rating"]', function() {
         const rating = parseInt(this.value);
         $('.comment-rating label').css('color', '#ddd');
@@ -1782,7 +1758,8 @@ $(document).ready(function() {
             $('.comment-rating label').css('color', '#ddd');
         }
     });
-    // Submit comment (now includes rating)
+    
+    // Submit comment
     $('#comment-form').on('submit', async function(e) {
         e.preventDefault();
         const name = $('#comment-name').val();
@@ -1790,6 +1767,7 @@ $(document).ready(function() {
         const subject = $('#comment-subject').val();
         const text = $('#comment-text').val();
         const rating = $('input[name="rating"]:checked').val();
+        
         if (!name || !email || !subject || !text) {
             showToast('Please fill all fields.', 'error');
             return;
@@ -1798,6 +1776,7 @@ $(document).ready(function() {
             showToast('Please select a rating.', 'error');
             return;
         }
+        
         try {
             await $.ajax({
                 url: `http://localhost:5000/api/courses/${courseId}/comments`,
@@ -1806,18 +1785,18 @@ $(document).ready(function() {
                 contentType: 'application/json',
                 data: JSON.stringify({ name, email, subject, comment: text, rating: parseInt(rating) })
             });
+            
             showToast('Comment submitted successfully!', 'success');
             $(this).trigger('reset');
-            // Reset stars highlight
             $('.comment-rating label').css('color', '#ddd');
-            loadComments(); // Reload comments
-            // Reload course to update average rating
+            loadComments();
             loadCourse();
         } catch (err) {
             showToast('Failed to submit comment.', 'error');
         }
     });
-    // Helper function to construct full URL safely using URL constructor
+    
+    // Construct full URL
     function constructFullUrl(relativeUrl) {
         if (!relativeUrl) return '';
         if (relativeUrl.startsWith('http')) return relativeUrl;
@@ -1830,117 +1809,269 @@ $(document).ready(function() {
             return '';
         }
     }
-    // UPDATED: Load Assignments (PDF focus, auto status update after submit, FIXED: Optional submission fetch, due date compare with toLocaleDateString + FULL URL FOR PDF + FIXED: Use openPDF() button to avoid about:blank#blocked + FIXED: No double URL prefix + FIXED: Safe URL construction to avoid malformed URLs) - NOW RETURNS PENDING COUNT
-async function loadAssignments() {
+    
+    // ✅ **FIXED: Load Assignments Function**
+  async function loadAssignments() {
     try {
-        // NEW: Student endpoint - Use /assignments/course/:courseId
-const assignments = await $.ajax({
-    url: `http://localhost:5000/api/assignments/course/${courseId}`,
-    type: 'GET',
-    headers: { 'Authorization': 'Bearer ' + token },
-    cache: false
-});
+        console.log(`Loading assignments for course: ${courseId}`);
+        
+        // FIX: Use the correct endpoint from routes/assignment.js
+        const response = await $.ajax({
+            url: `http://localhost:5000/api/assignments/course/${courseId}`,
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            cache: false
+        });
+        
+        console.log('Assignments response:', response);
+        
+        // Handle different response formats
+        let assignments = [];
+        if (response.success && response.assignments) {
+            assignments = response.assignments;
+        } else if (Array.isArray(response)) {
+            assignments = response;
+        } else if (response.assignments) {
+            assignments = response.assignments;
+        }
+        
+        console.log(`Found ${assignments.length} assignments`);
+        
         const list = $('#assignments-list');
         let pendingCount = 0;
+        
         if (assignments.length === 0) {
-            list.html('<p class="text-muted">No assignments available.</p>');
+            list.html('<div class="text-center p-4"><i class="fas fa-file-alt fa-3x text-muted mb-3"></i><p class="text-muted">No assignments available for this course.</p></div>');
             $('#pending-count').text(0).hide();
             return 0;
         }
-        // Fetch submissions (optional - if error, default to pending)
-        let allSubs = [];
+        
+        // Fetch student's submissions
+        let mySubmissions = [];
         try {
-            allSubs = await $.ajax({
-                url: `http://localhost:5000/api/submissions/my`, // FIXED: Use /api/submissions/my if dashboard not available
+            const subsResponse = await $.ajax({
+                url: `http://localhost:5000/api/assignments/submissions/my`,
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token },
                 cache: false
             });
+            
+            // Handle different response formats
+            if (subsResponse.success && subsResponse.submissions) {
+                mySubmissions = subsResponse.submissions;
+            } else if (Array.isArray(subsResponse)) {
+                mySubmissions = subsResponse;
+            } else if (subsResponse.submissions) {
+                mySubmissions = subsResponse.submissions;
+            }
+            
+            console.log(`Found ${mySubmissions.length} submissions`);
         } catch (subErr) {
-            console.warn('Submissions fetch error (non-critical):', subErr);
-            // Continue without submissions data - show as pending
+            console.warn('Submissions fetch error:', subErr.message);
         }
+        
         const assignHtml = [];
+        
         for (const assign of assignments) {
             const now = new Date();
             const due = new Date(assign.dueDate);
             const isOverdue = due < now;
+            
             let status = 'pending';
             let score = null;
             let feedback = '';
             let submissionId = null;
-            const subsForAssign = allSubs.filter(s => s.assignmentId && s.assignmentId._id === assign._id.toString()); // FIXED: String compare
-            if (subsForAssign.length > 0) {
-                const sub = subsForAssign[0];
-                if (sub.evaluated) {
+            
+            // Find if student has submitted this assignment
+            const mySubmission = mySubmissions.find(s => {
+                const subAssignId = s.assignmentId?._id || s.assignmentId;
+                return subAssignId?.toString() === assign._id.toString();
+            });
+            
+            if (mySubmission) {
+                if (mySubmission.evaluated) {
                     status = 'evaluated';
-                    score = sub.evaluation?.score;
-                    feedback = sub.evaluation?.feedback || sub.evaluation?.remarks || '';
+                    score = mySubmission.evaluation?.score;
+                    feedback = mySubmission.evaluation?.feedback || mySubmission.evaluation?.remarks || '';
                 } else {
-                    status = 'submitted'; // Or 'evaluating' if just submitted
+                    status = 'submitted';
                 }
-                submissionId = sub._id;
+                submissionId = mySubmission._id;
             } else if (!isOverdue) {
                 status = 'pending';
                 pendingCount++;
             } else {
                 status = 'overdue';
             }
-            // FIXED: Construct full URL safely to avoid malformed URLs like missing slash
-            const fullPdfUrl = constructFullUrl(assign.pdfUrl);
-            let actionHtml = '';
-            if (status === 'pending' && !isOverdue) {
-                // View/Open PDF button (uses openPDF to bypass blocking)
-                actionHtml = `
-                    <button class="btn btn-outline-primary mb-2 open-pdf-btn" data-url="${fullPdfUrl}">👁️ View/Open PDF</button>
-                    <form class="submit-form mt-3" data-assign-id="${assign._id}">
-                        <input type="file" accept=".pdf" class="form-control mb-2" required>
-                        <button type="submit" class="btn btn-primary">Submit Solved PDF</button>
-                    </form>`;
-            } else if (status === 'submitted') {
-                actionHtml = `<span class="status-badge status-submitted">Assignment Submitted</span><p class="text-muted small mt-1">AI checking your work (may take 1-2 min)</p>`;
-            } else if (status === 'evaluated') {
-                actionHtml = `
-                    <span class="status-badge status-evaluated">Evaluated</span>
-                    ${score ? `<div class="score mt-2"><strong>Score: ${score}/100</strong></div>` : ''}
-                    <div class="feedback-text mt-1">${feedback}</div>`;
-            } else {
-                actionHtml = `<span class="status-badge status-overdue">OVERDUE</span>`;
+            
+            // Construct PDF URL
+            let pdfUrl = '';
+            if (assign.pdfUrl) {
+                pdfUrl = assign.pdfUrl;
+                if (!pdfUrl.startsWith('http')) {
+                    pdfUrl = `http://localhost:5000${pdfUrl.startsWith('/') ? pdfUrl : '/' + pdfUrl}`;
+                }
+            } else if (assign.assignmentPdfPath) {
+                pdfUrl = `http://localhost:5000${assign.assignmentPdfPath.startsWith('/') ? assign.assignmentPdfPath : '/' + assign.assignmentPdfPath}`;
             }
+            
+            // Format due date
+            const dueDateStr = due.toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Get course name
+            let courseName = '';
+            if (typeof assign.courseId === 'object' && assign.courseId.name) {
+                courseName = assign.courseId.name;
+            }
+            
+            // Create action HTML based on status
+            let actionHtml = '';
+            let statusBadge = '';
+            
+            switch (status) {
+                case 'pending':
+                    statusBadge = '<span class="badge bg-warning">Pending</span>';
+                    actionHtml = `
+                        ${pdfUrl ? `<button class="btn btn-outline-primary mb-2 open-pdf-btn" data-url="${pdfUrl}"><i class="fas fa-eye me-1"></i> View Assignment</button>` : ''}
+                        <form class="submit-form mt-3" data-assign-id="${assign._id}">
+                            <div class="input-group">
+                                <input type="file" accept=".pdf" class="form-control" required>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-1"></i> Submit</button>
+                            </div>
+                            <small class="text-muted d-block mt-1">Upload PDF (Max 5MB)</small>
+                        </form>`;
+                    break;
+                case 'submitted':
+                    statusBadge = '<span class="badge bg-info">Submitted</span>';
+                    actionHtml = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-clock me-1"></i> <strong>Submitted</strong>
+                            <p class="mb-0 mt-1 small">AI evaluation in progress.</p>
+                        </div>
+                        <form class="submit-form mt-3" data-assign-id="${assign._id}" style="opacity: 0.6;">
+                            <div class="input-group">
+                                <input type="file" accept=".pdf" class="form-control" disabled>
+                                <button type="button" class="btn btn-secondary" disabled><i class="fas fa-check me-1"></i> Submitted</button>
+                            </div>
+                            <small class="text-muted d-block mt-1">Already submitted - evaluation in progress</small>
+                        </form>
+                        <div class="text-end mt-2">
+                            <button class="btn btn-outline-warning btn-sm resubmit-assignment" data-assign-id="${assign._id}">
+                                <i class="fas fa-redo me-1"></i> Resubmit
+                            </button>
+                        </div>`;
+                    break;
+                case 'evaluated':
+                    statusBadge = `<span class="badge bg-success">Evaluated (${score}/100)</span>`;
+                    actionHtml = `
+                        <div class="alert ${score >= 50 ? 'alert-success' : 'alert-warning'}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-check-circle me-1"></i> <strong>Evaluated</strong>
+                                </div>
+                                <div class="badge bg-primary fs-6">Score: ${score}/100</div>
+                            </div>
+                            ${feedback ? `<div class="mt-2 feedback-text">${feedback}</div>` : ''}
+                        </div>
+                        <form class="submit-form mt-3" data-assign-id="${assign._id}" style="opacity: 0.6;">
+                            <div class="input-group">
+                                <input type="file" accept=".pdf" class="form-control" disabled>
+                                <button type="button" class="btn btn-secondary" disabled><i class="fas fa-check me-1"></i> Evaluated</button>
+                            </div>
+                            <small class="text-muted d-block mt-1">Assignment evaluated</small>
+                        </form>
+                        <div class="text-end mt-2">
+                            <button class="btn btn-outline-warning btn-sm resubmit-assignment" data-assign-id="${assign._id}">
+                                <i class="fas fa-redo me-1"></i> Resubmit
+                            </button>
+                        </div>`;
+                    break;
+                case 'overdue':
+                    statusBadge = '<span class="badge bg-danger">Overdue</span>';
+                    actionHtml = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-1"></i> <strong>Overdue</strong>
+                            <p class="mb-0 mt-1 small">Submission deadline has passed.</p>
+                        </div>
+                        <form class="submit-form mt-3" data-assign-id="${assign._id}" style="opacity: 0.6;">
+                            <div class="input-group">
+                                <input type="file" accept=".pdf" class="form-control" disabled>
+                                <button type="button" class="btn btn-danger" disabled><i class="fas fa-times me-1"></i> Overdue</button>
+                            </div>
+                            <small class="text-muted d-block mt-1">Submission closed</small>
+                        </form>`;
+                    break;
+            }
+            
             assignHtml.push(`
                 <div class="assignment-item">
-                    <h6 class="assignment-title">${assign.title}</h6>
-                    <p class="assignment-due">Due: ${due.toLocaleDateString()} ${isOverdue ? '(Overdue)' : ''}</p>
-                    <p class="text-muted small">Solve questions from PDF and upload your answers.</p>
-                    ${actionHtml}
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="assignment-title mb-1">${assign.title || 'Untitled Assignment'}</h6>
+                            <div class="d-flex align-items-center gap-2">
+                                ${statusBadge}
+                                <span class="text-muted small"><i class="fas fa-calendar me-1"></i> Due: ${dueDateStr}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${courseName ? `<p class="text-muted small mb-2 mt-2"><i class="fas fa-book me-1"></i> ${courseName}</p>` : ''}
+                    ${assign.questions ? `<p class="assignment-questions"><i class="fas fa-question-circle me-1"></i> ${assign.questions.length} questions</p>` : ''}
+                    
+                    <div class="mt-3">
+                        ${actionHtml}
+                    </div>
                 </div>
             `);
         }
+        
         list.html(assignHtml.join(''));
-        $('#pending-count').text(pendingCount).toggle(pendingCount > 0);
-        // Event delegation for open PDF buttons
+        
+        // Update pending count
+        if (pendingCount > 0) {
+            $('#pending-count').text(pendingCount).show();
+        } else {
+            $('#pending-count').hide();
+        }
+        
+        // Event handler for PDF viewing
         $(document).off('click', '.open-pdf-btn').on('click', '.open-pdf-btn', function() {
             const url = $(this).data('url');
             openPDF(url);
         });
-        // Submit handler (with auto reload after submit for eval)
+        
+        // Event handler for form submission (NEW - FORM HATAYEGA NAHI)
         $(document).off('submit', '.submit-form').on('submit', '.submit-form', async function(e) {
             e.preventDefault();
             const form = $(this);
             const fileInput = form.find('input[type="file"]');
             const file = fileInput[0].files[0];
+            const assignId = form.data('assign-id');
+            
             if (!file || !file.type.startsWith('application/pdf')) {
                 showToast('Please select a PDF file.', 'error');
                 return;
             }
+            
             if (file.size > 5 * 1024 * 1024) {
                 showToast('File too large (max 5MB).', 'error');
                 return;
             }
-            const assignId = form.data('assign-id');
+            
             const formData = new FormData();
             formData.append('pdf', file);
+            
             try {
+                const submitBtn = form.find('button[type="submit"]');
+                submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Submitting...');
+                
                 await $.ajax({
                     url: `http://localhost:5000/api/assignments/${assignId}/submit`,
                     type: 'POST',
@@ -1949,48 +2080,110 @@ const assignments = await $.ajax({
                     processData: false,
                     contentType: false
                 });
+                
                 showToast('Assignment submitted successfully!', 'success');
-                // Prevent resubmission: Replace form with submitted message
-                form.replaceWith(`<span class="status-badge status-submitted">Assignment Submitted</span><p class="text-muted small mt-1">AI checking your work (may take 1-2 min)</p>`);
-                // Immediate pending count update
+                
+                // **FORM KO DISABLE KARO BUT HATAYO MAT - SUCCESS MESSAGE ADD KARO**
+                form.find('input[type="file"]').prop('disabled', true);
+                submitBtn.prop('disabled', true).html('<i class="fas fa-check me-1"></i> Submitted');
+                
+                // Success message upar show karo
+                form.before(`
+                    <div class="alert alert-success alert-dismissible fade show mb-3">
+                        <i class="fas fa-check-circle me-1"></i> 
+                        <strong>Submitted Successfully!</strong>
+                        <p class="mb-0 mt-1 small">Your assignment has been submitted. AI evaluation in progress.</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `);
+                
+                // **NEW: Resubmit button add karo**
+                form.after(`
+                    <div class="text-end mt-2">
+                        <button class="btn btn-outline-warning btn-sm resubmit-assignment" data-assign-id="${assignId}">
+                            <i class="fas fa-redo me-1"></i> Resubmit
+                        </button>
+                    </div>
+                `);
+                
+                // Update pending count
                 let currentPending = parseInt($('#pending-count').text()) || 0;
                 currentPending = Math.max(0, currentPending - 1);
-                $('#pending-count').text(currentPending).toggle(currentPending > 0);
-                // Update header pending display
-                const headerPendingEl = $('#course-header p:contains("pending")');
-                if (headerPendingEl.length) {
-                    let num = parseInt(headerPendingEl.text().match(/(\d+)/)?.[1] || 0) - 1;
-                    num = Math.max(0, num);
-                    if (num > 0) {
-                        headerPendingEl.text(`📝 ${num} pending assignment${num !== 1 ? 's' : ''}`);
-                    } else {
-                        headerPendingEl.remove();
-                    }
+                if (currentPending > 0) {
+                    $('#pending-count').text(currentPending).show();
+                } else {
+                    $('#pending-count').hide();
                 }
-                // Auto reload after 10s to show feedback
-                setTimeout(() => loadAssignments(), 10000);
+                
+                // Auto refresh assignments after 5 seconds
+                setTimeout(() => {
+                    loadAssignments();
+                }, 5000);
+                
             } catch (err) {
-                // FIXED: Better submit error log
-                console.error('Submit error details:', err.status, err.responseJSON?.message || err.message);
-                showToast('Submission failed: ' + (err.responseJSON?.message || 'Try again'), 'error');
+                console.error('Submit error:', err);
+                const errorMsg = err.responseJSON?.message || 'Submission failed. Please try again.';
+                showToast(errorMsg, 'error');
+                submitBtn.prop('disabled', false).html('<i class="fas fa-upload me-1"></i> Submit');
             }
         });
-        return pendingCount;
-    } catch (err) {
-        // FIXED: Better error logging - status + message
-        console.error('Load assignments error details:', {
-            status: err.status,
-            message: err.responseJSON?.message || err.message || 'Unknown error',
-            courseId: courseId, // Debug courseId
-            fullError: err // Full object for expand
+        
+        // **NEW: Resubmit button handler**
+        $(document).off('click', '.resubmit-assignment').on('click', '.resubmit-assignment', function() {
+            const assignId = $(this).data('assign-id');
+            const assignmentItem = $(this).closest('.assignment-item');
+            
+            // Enable the form
+            assignmentItem.find('.submit-form input[type="file"]').prop('disabled', false).val('');
+            assignmentItem.find('.submit-form button[type="submit"]')
+                .prop('disabled', false)
+                .html('<i class="fas fa-upload me-1"></i> Submit');
+            
+            // Remove alert messages
+            assignmentItem.find('.alert').remove();
+            
+            // Remove resubmit button
+            $(this).remove();
+            
+            showToast('You can now upload a new submission', 'info');
         });
-        showToast(`Error loading assignments (Status: ${err.status || 'N/A'}): ${err.responseJSON?.message || 'Try refresh'}`, 'error');
-        $('#assignments-list').html('<p class="text-danger">Error loading assignments. <button class="btn btn-sm btn-primary" onclick="loadAssignments()">Retry</button></p>');
+        
+        return pendingCount;
+        
+    } catch (err) {
+        console.error('Load assignments error:', {
+            status: err.status,
+            message: err.responseJSON?.message || err.message
+        });
+        
+        let errorHtml = '';
+        if (err.status === 404) {
+            errorHtml = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>No Assignments Found</strong>
+                    <p class="mb-0 mt-1">This course currently has no assignments.</p>
+                </div>
+            `;
+        } else {
+            errorHtml = `
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Unable to load assignments</strong>
+                    <p class="mb-0 mt-1">Please check your connection or try again later.</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="location.reload()">
+                        <i class="fas fa-redo me-1"></i> Refresh
+                    </button>
+                </div>
+            `;
+        }
+        
+        $('#assignments-list').html(errorHtml);
         $('#pending-count').hide();
         return 0;
     }
 }
-    // UPDATED: Load course - FIXED: Added display for course.videos (as additional if topics) & course.resources section; topics nested + RESOURCES + FIXED nesting for resources toggle + expand first topic + CALL loadAssignments() EARLY FOR PENDING COUNT + FIXED: Safe URL construction for all resources/videos
+    // Load course
     async function loadCourse() {
         try {
             const course = await $.ajax({
@@ -1998,18 +2191,23 @@ const assignments = await $.ajax({
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token }
             });
-            console.log('Course data loaded:', course);
+            
             const enrolled = await isEnrolled(courseId);
-            // Compute average rating if not provided by backend
+            
+            // Calculate average rating
             let averageRating = course.averageRating || 0;
             if (!course.averageRating && course.comments) {
                 const ratedComments = course.comments.filter(c => c.rating);
-                averageRating = ratedComments.length > 0 ? (ratedComments.reduce((sum, c) => sum + c.rating, 0) / ratedComments.length).toFixed(1) : 0;
+                averageRating = ratedComments.length > 0 ? 
+                    (ratedComments.reduce((sum, c) => sum + c.rating, 0) / ratedComments.length).toFixed(1) : 0;
             }
+            
             const stars = generateStars(averageRating);
-            // First, load assignments to get accurate pending count
+            
+            // Load assignments first to get pending count
             const pendingAssigns = await loadAssignments();
-            // Header: Name, meta, enroll btn, average rating + UPDATED: Accurate pending assignments count below rating
+            
+            // Update course header
             $('#course-header').html(`
                 <div class="row align-items-center">
                     <div class="col-lg-8">
@@ -2021,209 +2219,207 @@ const assignments = await $.ajax({
                         ${pendingAssigns > 0 ? `<p class="text-white-50 mb-0">📝 ${pendingAssigns} pending assignment${pendingAssigns !== 1 ? 's' : ''}</p>` : ''}
                     </div>
                     <div class="col-lg-4 text-lg-end enroll-section">
-                        <button id="enroll-btn" class="btn-enroll ${enrolled ? 'disabled' : ''}">${enrolled ? 'Enrolled' : 'Enroll Now'}</button>
+                        <button id="enroll-btn" class="btn-enroll ${enrolled ? 'disabled' : ''}">
+                            ${enrolled ? 'Enrolled' : 'Enroll Now'}
+                        </button>
                     </div>
                 </div>
             `);
-            // Description as bullets in overview
+            
+            // Update description
             $('#course-desc-bullets').html(descriptionToBullets(course.description));
-            // Render playlist items with topics nesting + RESOURCES + FIXED: course.videos as additional section
-            const playlist = $('#playlist-items');
-            playlist.empty();
-            let totalLectures = 0;
-            let publishedTopics = 0;
-            if (course.topics && course.topics.length > 0) {
-                // Use topics for nested structure
-                course.topics.forEach((topic, tIndex) => {
-                    // FIXED: Removed status check to show all topics (draft or published) - this ensures new topics show immediately
-                    publishedTopics++;
-                    let videoHtml = '';
-                    topic.videos.forEach((video, vIndex) => {
-                        totalLectures++;
-                        const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
-                        const fullUrl = video.isFile ? constructFullUrl(video.url) : video.url; // FIXED: Proper full URL for files, original for YouTube
-                        videoHtml += `
-                            <li class="playlist-item d-flex align-items-center mb-2 p-2 rounded" data-index="${tIndex}-${vIndex}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
-                                <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
-                                <div>
-                                    <h6 class="mb-0">${video.topic}</h6>
-                                    <small class="text-muted">Duration: N/A</small>
-                                </div>
-                            </li>
-                        `;
+            
+            // Load videos and resources
+            loadCourseContent(course);
+            
+            // Enroll button handler
+            $('#enroll-btn').off('click').on('click', async () => {
+                if (enrolled) return;
+                
+                try {
+                    await $.ajax({
+                        url: 'http://localhost:5000/api/dashboard/student/enroll',
+                        type: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        contentType: 'application/json',
+                        data: JSON.stringify({ courseId })
                     });
-                    let nestedHtml = `
-                        <ul class="nested-videos list-unstyled mt-2 ps-3">${videoHtml}</ul>
-                    `;
-                    let resourcesHtml = '';
-                    if (topic.resources && topic.resources.length > 0) {
-                        resourcesHtml = `<div class="nested-resources"><small class="text-muted">📚 Resources:</small>` +
-                            topic.resources.map(r => {
-                                const fullUrl = constructFullUrl(r.url); // FIXED: Safe URL construction
-                                return `<a href="${fullUrl}" class="resource-link mt-1 d-block" target="_blank" download>${r.name || 'Download Resource'}</a>`;
-                            }).join('') +
-                            `</div>`;
-                        nestedHtml += resourcesHtml;
-                    }
-                    playlist.append(`
-                        <li class="list-group-item topic-header d-flex justify-content-between align-items-center">
-                            <span>📁 ${topic.name} (${topic.videos.length} videos${topic.resources?.length ? `, ${topic.resources.length} resources` : ''})</span>
-                            <i class="fas fa-chevron-down"></i>
-                            <div class="nested-content" style="display: none;">${nestedHtml}</div>
-                        </li>
-                    `);
-                });
-                // FIXED: Add course.videos as additional section if topics exist
-                if (course.videos && course.videos.length > 0) {
-                    let additionalVideoHtml = '';
-                    course.videos.forEach((video, vIndex) => {
-                        totalLectures++;
-                        const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
-                        const fullUrl = video.isFile ? constructFullUrl(video.url) : video.url; // FIXED: Proper full URL
-                        additionalVideoHtml += `
-                            <li class="playlist-item d-flex align-items-center mb-2 p-2 rounded" data-index="additional-${vIndex}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
-                                <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
-                                <div>
-                                    <h6 class="mb-0">${video.topic}</h6>
-                                    <small class="text-muted">Duration: N/A</small>
-                                </div>
-                            </li>
-                        `;
-                    });
-                    let additionalNestedHtml = `
-                        <ul class="nested-videos list-unstyled mt-2 ps-3">${additionalVideoHtml}</ul>
-                    `;
-                    playlist.append(`
-                        <li class="list-group-item topic-header d-flex justify-content-between align-items-center">
-                            <span>📁 Additional Course Videos (${course.videos.length} videos)</span>
-                            <i class="fas fa-chevron-down"></i>
-                            <div class="nested-content" style="display: none;">${additionalNestedHtml}</div>
-                        </li>
-                    `);
+                    
+                    showToast('Enrolled successfully!', 'success');
+                    $('#enroll-btn').text('Enrolled').prop('disabled', true).addClass('disabled');
+                    loadCourse(); // Reload course
+                } catch (err) {
+                    showToast('Enrollment failed: ' + (err.responseJSON?.message || 'Try again'), 'error');
                 }
-                if (publishedTopics === 0) {
-                    playlist.html('<li class="list-group-item text-warning">No published topics available.</li>');
-                }
-            } else if (course.videos && course.videos.length > 0) {
-                // Fallback to flat videos if no topics
-                course.videos.forEach((video, index) => {
-                    totalLectures++;
-                    const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
-                    const isActive = index === 0 ? 'active' : '';
-                    const fullUrl = video.isFile ? constructFullUrl(video.url) : video.url; // FIXED: Proper full URL
-                    playlist.append(`
-                        <li class="list-group-item playlist-item d-flex align-items-center mb-2 p-2 rounded ${isActive}" data-index="${index}" data-url="${fullUrl}" data-isfile="${video.isFile}" data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
-                            <img src="${thumbnail}" alt="${video.topic}" class="playlist-thumbnail me-3" style="width: 80px; height: 45px; object-fit: cover;" onerror="this.src='assets/img/course/course-placeholder.jpg'">
-                            <div>
-                                <h6 class="mb-0">${video.topic}</h6>
-                                <small class="text-muted">Duration: N/A</small>
-                            </div>
-                        </li>
-                    `);
-                });
-            } else {
-                playlist.html('<li class="list-group-item text-danger">No videos available.</li>');
-                $('#player-container').html('<p class="text-danger">No videos to play.</p>');
-                return;
-            }
-            // FIXED: Always show course.resources section with safe URLs
-            const resourcesSection = $('#course-resources-section');
-            if (course.resources && course.resources.length > 0) {
-                let resHtml = '<ul class="list-unstyled">';
-                course.resources.forEach(r => {
-                    const fullUrl = constructFullUrl(r.url); // FIXED: Safe URL
-                    resHtml += `<li class="mb-2"><a href="${fullUrl}" class="resource-link" target="_blank" download>${r.name || 'Download Resource'}</a></li>`;
-                });
-                resHtml += '</ul>';
-                $('#course-resources').html(resHtml);
-                resourcesSection.show();
-            } else {
-                $('#course-resources').html('<p class="text-muted">No course resources available.</p>');
-                resourcesSection.show(); // Show section even if empty
-            }
-            // Update lecture count with topics info
-            $('#lecture-count').text(`${totalLectures} Lectures in ${publishedTopics || course.videos?.length || 0} Sections`);
-            // Toggle nested content (videos + resources) on topic header click - FIXED to include resources
-            $(document).off('click', '.topic-header').on('click', '.topic-header', function(e) {
-                e.preventDefault();
-                const $content = $(this).find('.nested-content');
-                $content.slideToggle();
-                $(this).find('i').toggleClass('fa-chevron-down fa-chevron-up');
             });
-            // FIXED: Expand first topic by default if exists
-            if (publishedTopics > 0 || (course.videos && course.videos.length > 0)) {
-                const firstHeader = $('.topic-header').first();
-                if (firstHeader.length) {
-                    firstHeader.find('.nested-content').show();
-                    firstHeader.find('i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
-                }
-            }
-            // Video click handler
-            $(document).off('click', '.playlist-item').on('click', '.playlist-item', function() {
-                $('.playlist-item').removeClass('active');
-                $(this).addClass('active');
-                const url = $(this).data('url');
-                const isFile = $(this).data('isfile');
-                const videoData = JSON.parse($(this).attr('data-videodata').replace(/&apos;/g, "'"));
-                currentVideoIndex = $(this).data('index');
-                loadPlayer(url, isFile, videoData);
-            });
-            // Load first video if available
-            if (totalLectures > 0) {
-                const firstItem = $('.playlist-item').first();
-                if (firstItem.length) {
-                    firstItem.trigger('click');
-                }
-            }
-            // Enroll button
-            // FIXED: Enroll button handler (remove newline in body)
-$('#enroll-btn').off('click').on('click', async () => {
-    if (enrolled) return;
-    try {
-        const enrollBody = { courseId }; // FIXED: Clean body, no newline
-        await $.ajax({
-            url: 'http://localhost:5000/api/dashboard/student/enroll',
-            type: 'POST',
-            headers: { 'Authorization': 'Bearer ' + token },
-            contentType: 'application/json',
-            data: JSON.stringify(enrollBody) // FIXED: Stringify clean object
-        });
-        showToast('Enrolled successfully!', 'success');
-        $('#enroll-btn').text('Enrolled').prop('disabled', true).removeClass('btn-enroll').addClass('btn btn-success');
-        loadCourse(); // Reload to update header and load assignments
-    } catch (err) {
-        console.error('Enroll error details:', err.status, err.responseJSON?.message || err.message);
-        showToast('Enrollment failed: ' + (err.responseJSON?.message || 'Try again'), 'error');
-    }
-});
+            
             // Load comments
             loadComments();
+            
         } catch (err) {
             console.error('Load course error:', err);
             showToast('Error loading course.', 'error');
         }
     }
+    
+    // Load course content (videos and resources)
+    function loadCourseContent(course) {
+        const playlist = $('#playlist-items');
+        playlist.empty();
+        
+        let totalLectures = 0;
+        
+        if (course.topics && course.topics.length > 0) {
+            course.topics.forEach((topic, tIndex) => {
+                let videoHtml = '';
+                topic.videos.forEach((video, vIndex) => {
+                    totalLectures++;
+                    const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
+                    const fullUrl = video.isFile ? constructFullUrl(video.url) : video.url;
+                    
+                    videoHtml += `
+                        <li class="playlist-item d-flex align-items-center mb-2 p-2 rounded" 
+                            data-index="${tIndex}-${vIndex}" 
+                            data-url="${fullUrl}" 
+                            data-isfile="${video.isFile}"
+                            data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
+                            <img src="${thumbnail}" alt="${video.topic}" 
+                                class="playlist-thumbnail me-3" 
+                                style="width: 80px; height: 45px; object-fit: cover;"
+                                onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                            <div>
+                                <h6 class="mb-0">${video.topic}</h6>
+                                <small class="text-muted">${video.duration || 'Duration: N/A'}</small>
+                            </div>
+                        </li>
+                    `;
+                });
+                
+                let resourcesHtml = '';
+                if (topic.resources && topic.resources.length > 0) {
+                    resourcesHtml = `<div class="nested-resources mt-2">
+                        <small class="text-muted">📚 Resources:</small>
+                        ${topic.resources.map(r => {
+                            const fullUrl = constructFullUrl(r.url);
+                            return `<a href="${fullUrl}" class="resource-link mt-1 d-block" target="_blank">${r.name || 'Resource'}</a>`;
+                        }).join('')}
+                    </div>`;
+                }
+                
+                playlist.append(`
+                    <li class="list-group-item topic-header d-flex justify-content-between align-items-center">
+                        <span>📁 ${topic.name} (${topic.videos.length} videos${topic.resources?.length ? `, ${topic.resources.length} resources` : ''})</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="nested-content" style="display: none;">
+                            <ul class="nested-videos list-unstyled mt-2 ps-3">
+                                ${videoHtml}
+                            </ul>
+                            ${resourcesHtml}
+                        </div>
+                    </li>
+                `);
+            });
+        } else if (course.videos && course.videos.length > 0) {
+            course.videos.forEach((video, index) => {
+                totalLectures++;
+                const thumbnail = getYouTubeThumbnail(video.url) || 'assets/img/course/course-placeholder.jpg';
+                const fullUrl = video.isFile ? constructFullUrl(video.url) : video.url;
+                
+                playlist.append(`
+                    <li class="list-group-item playlist-item d-flex align-items-center mb-2 p-2 rounded ${index === 0 ? 'active' : ''}"
+                        data-index="${index}" 
+                        data-url="${fullUrl}" 
+                        data-isfile="${video.isFile}"
+                        data-videodata='${JSON.stringify(video).replace(/'/g, "&apos;")}'>
+                        <img src="${thumbnail}" alt="${video.topic}" 
+                            class="playlist-thumbnail me-3" 
+                            style="width: 80px; height: 45px; object-fit: cover;"
+                            onerror="this.src='assets/img/course/course-placeholder.jpg'">
+                        <div>
+                            <h6 class="mb-0">${video.topic}</h6>
+                            <small class="text-muted">${video.duration || 'Duration: N/A'}</small>
+                        </div>
+                    </li>
+                `);
+            });
+        } else {
+            playlist.html('<li class="list-group-item text-danger">No videos available.</li>');
+        }
+        
+        // Update lecture count
+        $('#lecture-count').text(`${totalLectures} Lectures`);
+        
+        // Toggle nested content
+        $(document).off('click', '.topic-header').on('click', '.topic-header', function(e) {
+            e.preventDefault();
+            const $content = $(this).find('.nested-content');
+            $content.slideToggle();
+            $(this).find('i').toggleClass('fa-chevron-down fa-chevron-up');
+        });
+        
+        // Expand first topic by default
+        if (course.topics && course.topics.length > 0) {
+            $('.topic-header').first().find('.nested-content').show();
+            $('.topic-header').first().find('i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+        }
+        
+        // Video click handler
+        $(document).off('click', '.playlist-item').on('click', '.playlist-item', function() {
+            $('.playlist-item').removeClass('active');
+            $(this).addClass('active');
+            const url = $(this).data('url');
+            const isFile = $(this).data('isfile');
+            const videoData = JSON.parse($(this).attr('data-videodata').replace(/&apos;/g, "'"));
+            currentVideoIndex = $(this).data('index');
+            loadPlayer(url, isFile, videoData);
+        });
+        
+        // Load first video
+        if (totalLectures > 0) {
+            $('.playlist-item').first().trigger('click');
+        }
+        
+        // Load course resources
+        if (course.resources && course.resources.length > 0) {
+            $('#course-resources-section').show();
+            let resHtml = '<ul class="list-unstyled">';
+            course.resources.forEach(r => {
+                const fullUrl = constructFullUrl(r.url);
+                resHtml += `<li class="mb-2"><a href="${fullUrl}" class="resource-link" target="_blank">${r.name || 'Resource'}</a></li>`;
+            });
+            resHtml += '</ul>';
+            $('#course-resources').html(resHtml);
+        } else {
+            $('#course-resources-section').hide();
+        }
+    }
+    
+    // Initialize
     loadCourse();
-    loadProfile(); // Load profile on page load
-    // Theme toggle (aligned with manage-courses)
+    loadProfile();
+    
+    // Theme toggle
     const toggleDarkMode = () => {
         $('body').addClass('dark-mode').removeClass('light-mode');
         $('#dark-mode-toggle').removeClass('activate');
         $('#light-mode-toggle').addClass('activate');
         localStorage.setItem('theme', 'dark');
     };
+    
     const toggleLightMode = () => {
         $('body').addClass('light-mode').removeClass('dark-mode');
         $('#light-mode-toggle').removeClass('activate');
         $('#dark-mode-toggle').addClass('activate');
         localStorage.setItem('theme', 'light');
     };
+    
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         toggleDarkMode();
     } else {
         toggleLightMode();
     }
+    
     $('#dark-mode-toggle').on('click', toggleDarkMode);
     $('#light-mode-toggle').on('click', toggleLightMode);
 });

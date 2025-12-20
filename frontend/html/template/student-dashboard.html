@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <!-- Meta Tags -->
@@ -1874,96 +1874,210 @@ function getYouTubeThumbnail(url) {
     }
 }
         async function loadSubmissions() {
-            $.ajax({
-                url: 'http://localhost:5000/api/submissions/my',
-                type: 'GET',
-                headers: { Authorization: 'Bearer ' + token },
-                success: async function(submissions) {
-                    console.log('Frontend Submissions Received:', submissions);
-                    allSubmissions = submissions;
-                    // FIXED: Await rendering to handle async course name fetches
-                    await renderSubmissions(submissions);
-                },
-                error: function(xhr) {
-                    console.error('Frontend Error:', xhr.responseText);
-                    showToast('Load error: ' + xhr.status, 'error');
-                    $('#empty-submissions').show();
-                }
-            });
-        }
-        // UPDATED: Make renderSubmissions async and fetch course names if missing
-        async function renderSubmissions(submissions) {
-            let html = '';
-            const limit = showAllSubmissions ? submissions.length : 3;
-            if (submissions && submissions.length > 0) {
-                // FIXED: Process submissions async to fetch missing course names
-                const processedSubs = await Promise.all(submissions.slice(0, limit).map(async sub => {
-                    let courseName = sub.assignmentId?.courseId?.name || null;
-                    // FIXED: If courseName is missing and we have a course ID (from assignment.course._id or similar), fetch it
-                    if (!courseName && sub.assignmentId?.courseId?._id) {
-                        courseName = await fetchCourseName(sub.assignmentId.courseId._id);
-                    }
-                    if (!courseName) courseName = 'Course Not Available'; // Final fallback
-                    // FIXED: Use course name as display title
-                    const displayTitle = courseName;
-                    // Improved score logic: Avoid default 75, show actual or pending
-                    let status = 'Pending Evaluation';
-                    let scoreClass = 'pending';
-                    if (sub.score !== undefined && sub.score !== null) {
-                        status = `${sub.score}/100`;
-                        scoreClass = sub.score >= 50 ? 'good' : 'poor';
-                    } else if (sub.evaluated) {
-                        status = 'Graded (Score Pending)';
-                        scoreClass = 'warning';
-                    }
-                    const feedbackText = sub.feedback || 'No feedback provided.';
-                    const remarksText = sub.remarks || 'No remarks provided.';
-                    // FIXED: Full backend URL for PDF download (port 5000)
-                    const fullPdfUrl = sub.pdfPath ? `http://localhost:5000${sub.pdfPath}` : '';
-                    return `
-                        <div class="submissions-section">
-                            <div class="submission-header">
-                                <div class="submission-header-content">
-                                    <h6 class="mb-1">${displayTitle}</h6>
-                                </div>
-                                <small class="submission-date"><i class="fas fa-calendar-alt me-1"></i>${new Date(sub.submittedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</small>
-                            </div>
-                            <div class="submission-body">
-                                <div class="submission-score ${scoreClass}">
-                                    <i class="fas ${scoreClass === 'good' ? 'fa-check-circle' : scoreClass === 'poor' ? 'fa-exclamation-triangle' : scoreClass === 'warning' ? 'fa-exclamation-circle' : 'fa-clock'}"></i>
-                                    ${status}
-                                </div>
-                                ${feedbackText !== 'No feedback provided.' ? `<div class="submission-feedback"><i class="fas fa-comment me-1"></i>${feedbackText}</div>` : ''}
-                                <div class="submission-remarks">
-                                    <strong><i class="fas fa-sticky-note me-1"></i>Remarks:</strong>
-                                    <p>${remarksText}</p>
-                                </div>
-                                ${sub.pdfPath ? `
-                                    <div class="download-link">
-                                        <a href="${fullPdfUrl}" target="_blank">
-                                            <i class="fas fa-download"></i> Download PDF
-                                        </a>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        </div>`;
-                }));
-                html = processedSubs.join('');
-                $('#my-submissions').html(html).show();
-                $('#empty-submissions').hide();
-                const showAllBtn = $('#show-all-submissions');
-                if (submissions.length > 3) {
-                    showAllBtn.show();
-                    showAllBtn.text(showAllSubmissions ? 'Show Less Submissions' : 'Show All Submissions');
-                } else {
-                    showAllBtn.hide();
-                }
+    console.log('🔄 Loading submissions from correct endpoint...');
+    
+    $.ajax({
+        url: 'http://localhost:5000/api/submissions/my', // ✅ CORRECT
+        type: 'GET',
+        headers: { 
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/json'
+        },
+        success: async function(response) {
+            console.log('✅ Submissions API Response:', response);
+            
+            // Handle different response formats
+            let submissions = [];
+            if (response.success && response.submissions) {
+                submissions = response.submissions;
+                showToast(`Found ${submissions.length} submissions`, 'success');
+            } else if (Array.isArray(response)) {
+                submissions = response;
             } else {
-                $('#my-submissions').hide();
-                $('#empty-submissions').show();
-                $('#show-all-submissions').hide();
+                console.warn('Unexpected response format:', response);
+                submissions = [];
             }
+            
+            console.log(`📊 Processed ${submissions.length} submissions`);
+            allSubmissions = submissions;
+            
+            // Await rendering
+            await renderSubmissions(submissions);
+        },
+        error: function(xhr, status, error) {
+            console.error('❌ Submissions Error:', {
+                status: xhr.status,
+                response: xhr.responseText,
+                error: error
+            });
+            
+            let errorMsg = 'Failed to load submissions';
+            if (xhr.status === 404) {
+                errorMsg = 'Submissions endpoint not found. Check backend route.';
+            } else if (xhr.status === 403) {
+                errorMsg = 'Access denied. Please make sure you are logged in as a student.';
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMsg = xhr.responseJSON.message;
+            }
+            
+            showToast(errorMsg, 'error');
+            $('#empty-submissions').show();
+            $('#my-submissions').hide();
         }
+    });
+}
+        // UPDATED: Make renderSubmissions async and fetch course names if missing
+       // ✅ UPDATED: renderSubmissions function with better error handling
+async function renderSubmissions(submissions) {
+    console.log(`🖨️ Rendering ${submissions.length} submissions...`);
+    
+    let html = '';
+    const limit = showAllSubmissions ? submissions.length : 3;
+    
+    if (submissions && submissions.length > 0) {
+        try {
+            // Process submissions
+            const processedSubs = await Promise.all(submissions.slice(0, limit).map(async (sub, index) => {
+                console.log(`Processing submission ${index + 1}:`, sub);
+                
+                // Get course name
+                let courseName = 'Unknown Course';
+                if (sub.courseName) {
+                    courseName = sub.courseName;
+                } else if (sub.assignmentId?.courseId?.name) {
+                    courseName = sub.assignmentId.courseId.name;
+                } else if (sub.assignmentId && sub.assignmentId.courseId) {
+                    // Try to fetch course name
+                    try {
+                        courseName = await fetchCourseName(sub.assignmentId.courseId);
+                    } catch (err) {
+                        console.warn('Could not fetch course name:', err);
+                    }
+                }
+                
+                // Get assignment title
+                const assignmentTitle = sub.assignmentTitle || sub.assignmentId?.title || 'Untitled Assignment';
+                
+                // Status and score
+                const isEvaluated = sub.evaluated || false;
+                const score = sub.score || sub.evaluation?.score || null;
+                const feedback = sub.feedback || sub.evaluation?.feedback || 'No feedback provided.';
+                const remarks = sub.remarks || sub.evaluation?.remarks || 'No remarks provided.';
+                
+                // Determine status
+                let status = 'Pending Evaluation';
+                let scoreClass = 'pending';
+                let scoreIcon = 'fa-clock';
+                
+                if (isEvaluated && score !== null) {
+                    status = `${score}/100`;
+                    if (score >= 80) {
+                        scoreClass = 'good';
+                        scoreIcon = 'fa-check-circle';
+                    } else if (score >= 50) {
+                        scoreClass = 'warning';
+                        scoreIcon = 'fa-exclamation-circle';
+                    } else {
+                        scoreClass = 'poor';
+                        scoreIcon = 'fa-exclamation-triangle';
+                    }
+                } else if (isEvaluated) {
+                    status = 'Graded (Score Pending)';
+                    scoreClass = 'warning';
+                    scoreIcon = 'fa-exclamation-circle';
+                }
+                
+                // Format dates
+                const submittedDate = sub.submittedAt ? 
+                    new Date(sub.submittedAt).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    }) : 'Unknown Date';
+                
+                // PDF URL
+                let pdfUrl = '';
+                if (sub.pdfUrl) {
+                    pdfUrl = sub.pdfUrl;
+                } else if (sub.pdfPath) {
+                    pdfUrl = `http://localhost:5000${sub.pdfPath.startsWith('/') ? sub.pdfPath : '/' + sub.pdfPath}`;
+                }
+                
+                // Create submission card
+                return `
+                    <div class="submissions-section">
+                        <div class="submission-header">
+                            <div class="submission-header-content">
+                                <h6 class="mb-1">${assignmentTitle}</h6>
+                                <small class="text-muted">${courseName}</small>
+                            </div>
+                            <small class="submission-date">
+                                <i class="fas fa-calendar-alt me-1"></i>${submittedDate}
+                            </small>
+                        </div>
+                        <div class="submission-body">
+                            <div class="submission-score ${scoreClass}">
+                                <i class="fas ${scoreIcon}"></i>
+                                ${status}
+                                ${sub.evaluationTime ? 
+                                    `<small class="d-block mt-1">
+                                        <i class="fas fa-clock"></i> Evaluated in ${sub.evaluationTime}ms
+                                    </small>` : ''}
+                            </div>
+                            
+                            ${feedback && feedback !== 'No feedback provided.' ? 
+                                `<div class="submission-feedback">
+                                    <i class="fas fa-comment me-1"></i>${feedback}
+                                </div>` : ''}
+                            
+                            ${remarks && remarks !== 'No remarks provided.' ? 
+                                `<div class="submission-remarks">
+                                    <strong><i class="fas fa-sticky-note me-1"></i>Remarks:</strong>
+                                    <p>${remarks}</p>
+                                </div>` : ''}
+                            
+                            ${pdfUrl ? `
+                                <div class="download-link">
+                                    <a href="${pdfUrl}" target="_blank" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye me-1"></i> View Submission
+                                    </a>
+                                    <a href="${pdfUrl}" download class="btn btn-sm btn-outline-primary ms-2">
+                                        <i class="fas fa-download me-1"></i> Download PDF
+                                    </a>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>`;
+            }));
+            
+            html = processedSubs.join('');
+            $('#my-submissions').html(html).show();
+            $('#empty-submissions').hide();
+            
+            // Show/Hide "Show All" button
+            const showAllBtn = $('#show-all-submissions');
+            if (submissions.length > 3) {
+                showAllBtn.show();
+                showAllBtn.text(showAllSubmissions ? 'Show Less Submissions' : 'Show All Submissions');
+            } else {
+                showAllBtn.hide();
+            }
+            
+            console.log('✅ Successfully rendered submissions');
+            
+        } catch (error) {
+            console.error('❌ Error rendering submissions:', error);
+            showToast('Error displaying submissions', 'error');
+            $('#empty-submissions').show();
+        }
+        
+    } else {
+        // No submissions
+        $('#my-submissions').hide();
+        $('#empty-submissions').show();
+        $('#show-all-submissions').hide();
+    }
+}
         $('#show-all-courses').on('click', function() {
             showAllCourses = !showAllCourses;
             renderRecentCourses(allEnrollments);
