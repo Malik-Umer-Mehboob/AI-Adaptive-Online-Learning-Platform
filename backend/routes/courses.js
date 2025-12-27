@@ -1,4 +1,4 @@
-// routes/courses.js - COMPLETE UPDATED VERSION
+// routes/courses.js - FIXED VERSION (NO TOP-LEVEL AWAIT)
 const express = require('express');
 const router = express.Router();
 const { auth, checkRole, isStudent } = require('../middleware/auth');
@@ -9,6 +9,7 @@ const Enrollment = require('../models/Enrollment');
 const Favorite = require('../models/Favorite');
 const Assignment = require('../models/Assignment');
 const Submission = require('../models/Submission');
+const assignmentController = require('../controllers/assignmentController').assignmentController;
 const { google } = require("googleapis");
 const multer = require("multer");
 const ffmpeg = require('fluent-ffmpeg');
@@ -187,6 +188,10 @@ async function fetchPlaylistVideos(playlistId) {
             throw new Error('YOUTUBE_API_KEY missing');
         }
         console.log(`Fetching playlist videos for ID: ${playlistId}`);
+        const youtube = google.youtube({
+            version: 'v3',
+            auth: process.env.YOUTUBE_API_KEY
+        });
         const response = await youtube.playlistItems.list({
             part: 'snippet',
             playlistId: playlistId,
@@ -241,11 +246,6 @@ function getVideoThumbnail(video) {
 }
 
 // ========== YOUTUBE ROUTES ==========
-const youtube = google.youtube({
-    version: 'v3',
-    auth: process.env.YOUTUBE_API_KEY
-});
-
 router.post('/youtube/fetch-playlist', auth, checkRole(['admin']), async (req, res) => {
     try {
         const { playlistUrl } = req.body;
@@ -584,137 +584,132 @@ router.post('/', auth, checkRole(['admin']), upload, async (req, res) => {
     try {
         const { name, description, category, videos: videosJson, resources: resourcesJson } = req.body;
         
-        console.log('📝 Creating course:', name);
-        
         if (!name || !description || !category) {
-            return res.status(400).json({ message: 'Name, description, and category are required.' });
+            return res.status(400).json({ message: 'Name, description, and category are required' });
         }
 
         const cat = await Category.findById(category);
         if (!cat) return res.status(404).json({ message: 'Category not found' });
 
+        const WEB_THUMBNAIL = getWebThumbnail();
+
         let videos = [];
         if (videosJson) {
-            try { videos = JSON.parse(videosJson); }
-            catch (e) { return res.status(400).json({ message: 'Invalid videos JSON' }); }
+            try {
+                videos = JSON.parse(videosJson);
+            } catch (e) {
+                return res.status(400).json({ message: 'Invalid videos JSON' });
+            }
         }
 
-        const videoFiles = req.files['videoFiles'] || [];
+        const videoFiles = req.files && req.files['videoFiles'] ? req.files['videoFiles'] : [];
+        const resourceFiles = req.files && req.files['resourceFiles'] ? req.files['resourceFiles'] : [];
+
         let fileIndex = 0;
         const finalVideos = [];
-
-        console.log(`📦 Processing ${videos.length} video entries...`);
-
-        const WEB_THUMBNAIL = getWebThumbnail();
 
         for (const v of videos) {
             if (v.isFile && fileIndex < videoFiles.length) {
                 const file = videoFiles[fileIndex++];
                 const videoUrl = `/uploads/videos/${file.filename}`;
                 
-                console.log(`🎬 Processing: ${file.originalname}`);
-
                 const finalThumb = WEB_THUMBNAIL;
-                console.log(`✅ Using web thumbnail: ${finalThumb}`);
-
+                
+                console.log(`✅ Video uploaded with web thumbnail: ${file.originalname}`);
+                
                 finalVideos.push({
                     topic: v.topic || `Video ${fileIndex}`,
                     url: videoUrl,
                     thumbnail: finalThumb,
                     type: 'single',
-                    isFile: true,
-                    createdAt: new Date()
+                    isFile: true
                 });
                 
             } else if (!v.isFile && v.url) {
-                try {
-                    if (isPlaylistUrl(v.url)) {
-                        const playlistId = extractPlaylistId(v.url);
-                        if (!playlistId) {
-                            throw new Error('Invalid playlist URL');
-                        }
-                        const playlistVideos = await fetchPlaylistVideos(playlistId);
-                        finalVideos.push(...playlistVideos);
-                    } else {
-                        let youtubeThumb = WEB_THUMBNAIL;
-                        
-                        if (v.url.includes('youtube.com') || v.url.includes('youtu.be')) {
-                            const videoId = v.url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-                            if (videoId && videoId[1]) {
-                                youtubeThumb = `https://img.youtube.com/vi/${videoId[1]}/hqdefault.jpg`;
-                            }
-                        }
-                        
-                        finalVideos.push({
-                            topic: v.topic || 'YouTube Video',
-                            url: v.url,
-                            thumbnail: youtubeThumb,
-                            type: 'single',
-                            isFile: false,
-                            createdAt: new Date()
+                let youtubeThumb = WEB_THUMBNAIL;
+                
+                if (v.url.includes('youtube.com') || v.url.includes('youtu.be')) {
+                    const videoId = v.url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+                    if (videoId && videoId[1]) {
+                        youtubeThumb = `https://img.youtube.com/vi/${videoId[1]}/hqdefault.jpg`;
+                    }
+                }
+                
+                finalVideos.push({
+                    topic: v.topic || 'YouTube Video',
+                    url: v.url,
+                    thumbnail: youtubeThumb,
+                    type: 'single',
+                    isFile: false
+                });
+            }
+        }
+
+        // Resources handle karo
+        let finalResources = [];
+        let resIndex = 0;
+        
+        if (resourcesJson) {
+            try {
+                const resources = JSON.parse(resourcesJson);
+                for (const r of resources) {
+                    if (r.isFile && resIndex < resourceFiles.length) {
+                        const file = resourceFiles[resIndex++];
+                        finalResources.push({
+                            name: r.name || `Resource ${resIndex}`,
+                            url: `/uploads/resources/${file.filename}`,
+                            type: 'pdf'
+                        });
+                    } else if (!r.isFile && r.url) {
+                        finalResources.push({
+                            name: r.name || 'External Resource',
+                            url: r.url,
+                            type: 'url'
                         });
                     }
-                } catch (playlistError) {
-                    console.error('Playlist error:', playlistError.message);
-                    finalVideos.push({
-                        topic: v.topic || 'YouTube Playlist',
-                        url: v.url,
-                        thumbnail: WEB_THUMBNAIL,
-                        type: 'playlist',
-                        isFile: false,
-                        createdAt: new Date()
-                    });
                 }
+            } catch (e) {
+                console.log('⚠️ Resources parsing error:', e.message);
             }
         }
 
-        if (finalVideos.length === 0) {
-            return res.status(400).json({ message: 'At least one video is required.' });
-        }
-
-        // Handle resources
-        let finalResources = [];
-        if (resourcesJson) {
-            let resources = [];
-            try { resources = JSON.parse(resourcesJson); }
-            catch (e) { return res.status(400).json({ message: 'Invalid resources JSON' }); }
-
-            const resourceFiles = req.files['resourceFiles'] || [];
-            let resIndex = 0;
-
-            for (const r of resources) {
-                if (r.isFile && resIndex < resourceFiles.length) {
-                    const file = resourceFiles[resIndex++];
-                    finalResources.push({
-                        name: r.name || `Resource ${resIndex}`,
-                        url: `/uploads/resources/${file.filename}`,
-                        type: 'pdf'
-                    });
-                } else if (!r.isFile && r.url) {
-                    finalResources.push({
-                        name: r.name || 'External Resource',
-                        url: r.url,
-                        type: 'url'
-                    });
-                }
-            }
-        }
-
-        // Create course
-        const course = new Course({ 
-            name, 
-            description, 
-            category, 
-            videos: finalVideos, 
-            resources: finalResources 
+        const newCourse = new Course({
+            name,
+            description,
+            category,
+            videos: finalVideos,
+            resources: finalResources,
+            duration: finalVideos.length * 30,
+            thumbnail: finalVideos.length > 0 ? getVideoThumbnail(finalVideos[0]) : WEB_THUMBNAIL,
+            createdBy: req.user.id
         });
+
+        await newCourse.save();
+
+        console.log(`✅ Course created: ${newCourse._id}`);
         
-        await course.save();
+        // ✅ NEW: Automatically generate assignment for new course
+        try {
+            console.log('🤖 Attempting to auto-generate assignment for new course...');
+            
+            // Import the function properly
+            const { generateAssignmentForNewCourse } = require('../controllers/assignmentController');
+            
+            await generateAssignmentForNewCourse(newCourse._id, finalResources, {
+                title: `Assignment - ${newCourse.name}`,
+                type: 'descriptive',
+                numQuestions: 5,
+                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            }, req);
+            
+            console.log('✅ Auto-assignment generation completed');
+        } catch (assignError) {
+            console.log('⚠️ Auto-assignment generation failed:', assignError.message);
+            // Assignment generation fail hua to bhi course create ho jaye
+        }
         
-        console.log(`✅ Course created: ${course._id} with ${finalVideos.length} videos`);
-        
-        const plainCourse = course.toObject();
-        const { average, numRatings } = computeAverageRating(course);
+        const plainCourse = newCourse.toObject();
+        const { average, numRatings } = computeAverageRating(newCourse);
         plainCourse.averageRating = average;
         plainCourse.numRatings = numRatings;
         
@@ -725,8 +720,8 @@ router.post('/', auth, checkRole(['admin']), upload, async (req, res) => {
     } catch (error) {
         console.error('❌ Create course error:', error);
         res.status(500).json({ 
-            message: 'Server error', 
-            error: error.message 
+            message: 'Server error',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
@@ -985,6 +980,310 @@ router.delete('/:id', auth, checkRole(['admin']), async (req, res) => {
     }
 });
 
+// ========== ASSIGNMENT SAVE ROUTES ==========
+
+// ✅ Save Assignment (Manual Save)
+router.post('/:id/assignments/save', auth, checkRole(['admin']), async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'Course not found' 
+            });
+        }
+
+        const { 
+            title, 
+            questions, 
+            dueDate, 
+            type = 'mixed',
+            numQuestions = 5
+        } = req.body;
+
+        // Validate input
+        if (!title || !title.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Assignment title is required'
+            });
+        }
+
+        if (!questions || !Array.isArray(questions) || questions.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'At least one question is required'
+            });
+        }
+
+        if (!dueDate) {
+            return res.status(400).json({
+                success: false,
+                message: 'Due date is required'
+            });
+        }
+
+        // Create assignment manually
+        const assignment = new Assignment({
+            courseId: course._id,
+            title: title.trim(),
+            questions: questions.map(q => q.trim()),
+            dueDate: new Date(dueDate),
+            generatedByAI: false,
+            type,
+            numQuestions,
+            autoGenerated: false,
+            createdBy: req.user.id,
+            createdAt: new Date()
+        });
+
+        await assignment.save();
+
+        // Update course assignments
+        course.assignments = course.assignments || [];
+        course.assignments.push(assignment._id);
+        await course.save();
+
+        console.log(`✅ Assignment saved manually: ${assignment._id}`);
+
+        res.status(201).json({
+            success: true,
+            message: 'Assignment saved successfully',
+            assignment: {
+                _id: assignment._id,
+                title: assignment.title,
+                courseId: assignment.courseId,
+                type: assignment.type,
+                numQuestions: assignment.numQuestions,
+                dueDate: assignment.dueDate,
+                questions: assignment.questions,
+                generatedByAI: assignment.generatedByAI
+            }
+        });
+
+    } catch (error) {
+        console.error('Save assignment error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to save assignment',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// ✅ Update Assignment
+router.put('/:id/assignments/:assignmentId', auth, checkRole(['admin']), async (req, res) => {
+    try {
+        const assignment = await Assignment.findById(req.params.assignmentId);
+        if (!assignment || assignment.courseId.toString() !== req.params.id) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'Assignment not found' 
+            });
+        }
+
+        const { title, questions, dueDate, type, numQuestions } = req.body;
+
+        // Update fields
+        if (title && title.trim()) assignment.title = title.trim();
+        if (questions && Array.isArray(questions) && questions.length > 0) {
+            assignment.questions = questions.map(q => q.trim());
+        }
+        if (dueDate) assignment.dueDate = new Date(dueDate);
+        if (type) assignment.type = type;
+        if (numQuestions) assignment.numQuestions = numQuestions;
+        
+        assignment.updatedAt = new Date();
+
+        await assignment.save();
+
+        res.json({
+            success: true,
+            message: 'Assignment updated successfully',
+            assignment: {
+                _id: assignment._id,
+                title: assignment.title,
+                questions: assignment.questions,
+                dueDate: assignment.dueDate,
+                type: assignment.type,
+                numQuestions: assignment.numQuestions
+            }
+        });
+
+    } catch (error) {
+        console.error('Update assignment error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to update assignment'
+        });
+    }
+});
+
+// ✅ Create Manual Assignment (Simple Form)
+router.post('/:id/create-assignment', auth, checkRole(['admin']), async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'Course not found' 
+            });
+        }
+
+        const { 
+            assignmentTitle,
+            assignmentDescription,
+            assignmentDueDate,
+            assignmentType = 'mixed',
+            numberOfQuestions = 5
+        } = req.body;
+
+        // Simple validation
+        if (!assignmentTitle || !assignmentTitle.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Assignment title is required'
+            });
+        }
+
+        // Create simple questions based on description
+        const questions = [];
+        for (let i = 1; i <= numberOfQuestions; i++) {
+            if (assignmentType === 'mcq') {
+                questions.push(`Q${i}. Multiple choice question about the course.`);
+            } else if (assignmentType === 'descriptive') {
+                questions.push(`Q${i}. Describe the key concepts learned in this course.`);
+            } else {
+                questions.push(`Q${i}. Question ${i} - ${assignmentDescription || 'Please answer based on course material.'}`);
+            }
+        }
+
+        // Create assignment
+        const assignment = new Assignment({
+            courseId: course._id,
+            title: assignmentTitle.trim(),
+            questions: questions,
+            dueDate: assignmentDueDate ? new Date(assignmentDueDate) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            generatedByAI: false,
+            type: assignmentType,
+            numQuestions: numberOfQuestions,
+            autoGenerated: false,
+            createdBy: req.user.id
+        });
+
+        await assignment.save();
+
+        // Update course
+        course.assignments = course.assignments || [];
+        course.assignments.push(assignment._id);
+        await course.save();
+
+        console.log(`✅ Manual assignment created: ${assignment._id}`);
+
+        res.status(201).json({
+            success: true,
+            message: 'Assignment created successfully',
+            assignment: assignment
+        });
+
+    } catch (error) {
+        console.error('Create assignment error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to create assignment'
+        });
+    }
+});
+
+
+// ✅ Get assignments for a course WITH PDF URLs - FIXED
+router.get('/:id/assignments', auth, async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id)
+            .populate({
+                path: 'assignments',
+                options: { sort: { dueDate: 1 } }
+            });
+
+        if (!course) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'Course not found' 
+            });
+        }
+
+        let assignments = course.assignments || [];
+        
+        // ✅ ADD PDF URL to each assignment - FIXED
+        assignments = assignments.map(assignment => {
+            const plainAssignment = assignment.toObject();
+            
+            // 1. If assignmentPdfPath exists, use it
+            if (plainAssignment.assignmentPdfPath) {
+                plainAssignment.pdfUrl = `http://localhost:5000${plainAssignment.assignmentPdfPath}`;
+                plainAssignment.viewPdfUrl = `http://localhost:5000/api/assignments/${assignment._id}/pdf`;
+            } 
+            // 2. If pdfUrl exists
+            else if (plainAssignment.pdfUrl) {
+                // Already has pdfUrl
+            }
+            // 3. Use the API endpoint to view PDF
+            else {
+                plainAssignment.viewPdfUrl = `http://localhost:5000/api/assignments/${assignment._id}/pdf`;
+                plainAssignment.pdfUrl = plainAssignment.viewPdfUrl;
+            }
+            
+            // Add download URL
+            plainAssignment.downloadPdfUrl = `http://localhost:5000/api/assignments/${assignment._id}/pdf?download=true`;
+            
+            return plainAssignment;
+        });
+
+        // For students, add submission status
+        if (req.user.role === 'student') {
+            const submissions = await Submission.find({
+                assignmentId: { $in: assignments.map(a => a._id) },
+                studentId: req.user.id
+            });
+
+            assignments = assignments.map(assignment => {
+                const submission = submissions.find(s => 
+                    s.assignmentId.toString() === assignment._id.toString()
+                );
+                
+                // Merge submission info
+                assignment.submitted = !!submission;
+                assignment.submissionId = submission?._id;
+                assignment.evaluated = submission?.evaluated;
+                assignment.score = submission?.evaluation?.score;
+                assignment.feedback = submission?.evaluation?.feedback;
+                
+                // Status calculation
+                const now = new Date();
+                assignment.status = assignment.submitted ? 
+                    'submitted' : 
+                    (new Date(assignment.dueDate) < now ? 'overdue' : 'pending');
+                
+                return assignment;
+            });
+        }
+
+        res.json({
+            success: true,
+            assignments,
+            count: assignments.length
+        });
+        
+    } catch (error) {
+        console.error('Get course assignments error:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Failed to get assignments',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
 // ========== COMMENTS/FEEDBACK ROUTES ==========
 router.get('/:id/comments', auth, async (req, res) => {
     try {
@@ -1075,5 +1374,64 @@ router.post('/logout', auth, async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+// courses.js mein add karo (development ke liye)
+router.post('/test-generate', auth, checkRole(['admin']), async (req, res) => {
+    try {
+        const { courseName, numQuestions, type, customPrompt, testMode } = req.body;
+        
+        console.log('Test assignment generation:', {
+            courseName,
+            numQuestions,
+            type,
+            customPrompt,
+            testMode
+        });
+        
+        // Demo response
+        const demoContent = `ASSIGNMENT TITLE: Test Assignment for ${courseName}
 
+INSTRUCTIONS:
+1. Read all questions carefully.
+2. Answer all ${numQuestions} questions.
+3. Submit before the due date.
+
+QUESTIONS:
+${Array.from({length: numQuestions}, (_, i) => {
+    if (type === 'mcq') {
+        return `Q${i+1}. Sample MCQ question from ${courseName}?
+   A) Option A
+   B) Option B
+   C) Option C
+   D) Option D
+   Correct Answer: A`;
+    } else if (type === 'descriptive') {
+        return `Q${i+1}. Explain a key concept from ${courseName} in your own words.`;
+    } else {
+        return `Q${i+1}. Mixed question: What is ${courseName} about?`;
+    }
+}).join('\n\n')}
+
+${customPrompt ? `\nNote: Generated using custom prompt: "${customPrompt.substring(0, 50)}..."` : ''}`;
+
+        res.json({
+            success: true,
+            message: 'Assignment generated (test mode)',
+            content: demoContent,
+            metadata: {
+                courseName,
+                numQuestions,
+                type,
+                customPrompt: customPrompt ? 'Yes' : 'No'
+            }
+        });
+        
+    } catch (error) {
+        console.error('Test generation error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Test generation failed',
+            error: error.message
+        });
+    }
+});
 module.exports = router;

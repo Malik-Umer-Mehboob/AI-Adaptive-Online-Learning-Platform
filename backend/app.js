@@ -1,4 +1,4 @@
-// app.js - UPDATED FOR qwen2.5:7b-instruct-q4_K_M MODEL
+// app.js - COMPLETE FIXED VERSION WITH CORRECT PATHS
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -9,6 +9,8 @@ const rateLimit = require('express-rate-limit');
 const createError = require('http-errors');
 const fs = require('fs');
 const mongoose = require('mongoose');
+
+
 
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -179,13 +181,17 @@ const requiredDirs = [
     path.join(__dirname, 'public', 'uploads', 'submissions'),
     path.join(__dirname, 'public', 'uploads', 'assignments'),
     path.join(__dirname, 'public', 'uploads', 'videos'),
+    path.join(__dirname, 'public', 'uploads', 'resources'),
+    path.join(__dirname, 'public', 'uploads', 'images'),
+    path.join(__dirname, 'public', 'uploads', 'documents'),
+    path.join(__dirname, 'public', 'uploads', 'temp'),
     path.join(__dirname, 'logs')
 ];
 
 requiredDirs.forEach(dir => {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
-        console.log(`Created directory: ${dir}`);
+        console.log(`✅ Created directory: ${dir}`);
     }
 });
 
@@ -200,7 +206,8 @@ const corsOptions = {
             'http://localhost:5000',
             'http://localhost:3000',
             'http://localhost:8080',
-            'http://localhost:3001'
+            'http://localhost:3001',
+            'http://localhost:5501'
         ];
         
         // Allow requests with no origin (like mobile apps or curl requests)
@@ -253,17 +260,78 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
 
-// Static file serving
-app.use(express.static(path.join(__dirname, 'public')));
+// ========== ✅ CRITICAL FIX: STATIC FILE SERVING ==========
+// Serve public directory
+// In app.js, add these static file serving routes BEFORE your routes:
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/public/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+// ========== ✅ CRITICAL FIX: STATIC FILE SERVING ==========
+// Serve public directory
+const publicDir = path.join(__dirname, 'public');
+app.use(express.static(publicDir));
+
+// Serve uploads directory
+const uploadsDir = path.join(__dirname, 'public', 'uploads');
+app.use('/uploads', express.static(uploadsDir, {
+    setHeaders: (res, filePath) => {
+        // Set proper headers for PDF files
+        if (filePath.endsWith('.pdf')) {
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Cache-Control', 'public, max-age=3600');
+            res.setHeader('Content-Disposition', 'inline');
+        }
+    }
+}));
+
+// Serve assignments directory specifically
+const assignmentsDir = path.join(__dirname, 'public', 'uploads', 'assignments');
+app.use('/uploads/assignments', express.static(assignmentsDir, {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.pdf')) {
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Cache-Control', 'public, max-age=3600');
+        }
+    }
+}));
+
+// Log all file requests for debugging
+app.use('/uploads/assignments', (req, res, next) => {
+    const filePath = path.join(assignmentsDir, req.path);
+    const exists = fs.existsSync(filePath);
+    
+    if (!exists && req.path.includes('.pdf')) {
+        console.log(`❌ PDF not found: ${req.path}`);
+        console.log(`📁 Looking in: ${filePath}`);
+    }
+    next();
+});
+
+// Serve other upload directories
+app.use('/uploads/submissions', express.static(path.join(__dirname, 'public', 'uploads', 'submissions')));
+app.use('/uploads/videos', express.static(path.join(__dirname, 'public', 'uploads', 'videos')));
+app.use('/uploads/resources', express.static(path.join(__dirname, 'public', 'uploads', 'resources')));
 
 // Health Check with AI status
 app.get('/api/health', async (req, res) => {
     const aiStatus = await checkAIModel();
     const aiTest = await testAIModel();
+    
+    // Check directories
+    const dirStatus = {
+        assignments: fs.existsSync(assignmentsDir) ? '✅' : '❌',
+        submissions: fs.existsSync(path.join(__dirname, 'public', 'uploads', 'submissions')) ? '✅' : '❌',
+        videos: fs.existsSync(path.join(__dirname, 'public', 'uploads', 'videos')) ? '✅' : '❌'
+    };
+    
+    // Count PDF files
+    let pdfCount = 0;
+    if (fs.existsSync(assignmentsDir)) {
+        try {
+            const files = fs.readdirSync(assignmentsDir);
+            pdfCount = files.filter(f => f.endsWith('.pdf')).length;
+        } catch (err) {
+            console.error('Error reading assignments dir:', err);
+        }
+    }
     
     res.status(200).json({ 
         status: 'OK',
@@ -276,8 +344,9 @@ app.get('/api/health', async (req, res) => {
             host: process.env.OLLAMA_HOST || 'http://localhost:11434',
             performance: 'Fast (Q4_K_M quantized)'
         },
+        directories: dirStatus,
+        pdfCount: pdfCount,
         mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
-        memory: process.memoryUsage(),
         environment: process.env.NODE_ENV || 'development'
     });
 });
@@ -405,6 +474,13 @@ app.get('/api/ai/quick-test', async (req, res) => {
 
 // Test Route
 app.get('/api/test', (req, res) => {
+    // Check directories
+    const dirs = {
+        assignments: assignmentsDir,
+        exists: fs.existsSync(assignmentsDir),
+        files: fs.existsSync(assignmentsDir) ? fs.readdirSync(assignmentsDir).filter(f => f.endsWith('.pdf')) : []
+    };
+    
     res.json({ 
         message: 'Assignment Grading System Server is running',
         version: '2.0.0',
@@ -415,8 +491,12 @@ app.get('/api/test', (req, res) => {
             'Course & Assignment Management',
             'Student Progress Tracking'
         ],
-        performance: 'Optimized for 2-5 second grading times',
-        model: 'qwen2.5:7b-instruct-q4_K_M (Q4_K_M quantized)',
+        directories: dirs,
+        paths: {
+            uploads: uploadsDir,
+            assignments: assignmentsDir,
+            public: publicDir
+        },
         endpoints: {
             assignments: '/api/assignments',
             submissions: '/api/submissions',
@@ -622,9 +702,8 @@ process.on('uncaughtException', (err) => {
 console.log('\n========================================');
 console.log('🚀 Assignment Grading System Starting...');
 console.log('========================================');
-console.log(`Model: qwen2.5:7b-instruct-q4_K_M`);
 console.log(`Port: ${process.env.PORT || 5000}`);
 console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 console.log('========================================\n');
 
-module.exports = app;       
+module.exports = app;

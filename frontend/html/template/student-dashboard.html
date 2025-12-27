@@ -1090,36 +1090,84 @@
         .submission-remarks > * {
           margin-left: 24px; /* Reduced from 32px */
         }
-        .download-link {
-          text-align: center;
-          margin-top: 8px; /* Reduced from 12px */
-        }
-        .download-link a {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px; /* Reduced from 8px */
-          padding: 8px 16px; /* Reduced from 10px 20px */
-          background: linear-gradient(135deg, var(--primary), #0056b3);
-          color: white !important;
-          text-decoration: none;
-          border-radius: 20px; /* Reduced from 25px */
-          font-size: 0.85rem; /* Reduced from 0.9rem */
-          font-weight: 500;
-          transition: all 0.3s ease;
-          box-shadow: 0 1px 6px rgba(0, 123, 255, 0.15); /* Reduced shadow */
-        }
-        .download-link a:hover {
-          background: linear-gradient(135deg, #0056b3, #004085);
-          transform: translateY(-1px); /* Reduced from -2px */
-          box-shadow: 0 3px 8px rgba(0, 123, 255, 0.25); /* Reduced shadow */
-          color: white !important;
-        }
-        .dark-mode .download-link a {
-          background: linear-gradient(135deg, #0d6efd, #0b5ed7);
-        }
-        .dark-mode .download-link a:hover {
-          background: linear-gradient(135deg, #0b5ed7, #0a58ca);
-        }
+        /* یہ section پورے کا پورا remove کریں */
+/* Download Links - Modern Button Group */
+.download-link {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.download-link .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.download-link .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+/* Specific button styles */
+.download-link .btn-primary {
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+    border: none;
+    color: white;
+}
+
+.download-link .btn-outline-primary {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+}
+
+.download-link .btn-outline-success {
+    border: 1px solid var(--success);
+    color: var(--success);
+    background: transparent;
+}
+
+.download-link .btn-outline-primary:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.download-link .btn-outline-success:hover {
+    background: var(--success);
+    color: white;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .download-link {
+        flex-direction: column;
+    }
+    
+    .download-link .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .download-link .btn-sm {
+        padding: 10px 16px;
+    }
+}
+
+/* Button icon spacing */
+.download-link .btn i {
+    font-size: 0.9rem;
+    width: 16px;
+    text-align: center;
+}
         .show-all-btn {
           display: block;
           margin: 16px auto 0; /* Reduced from 24px */
@@ -1237,6 +1285,609 @@
   color: #CBD5E1 !important;
 }
 
+/* NEW: Improved My Submissions Section Styling */
+/* Replace the existing submissions-section styles with these */
+
+/* Modern Compact My Submissions Card Styling */
+.submissions-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    margin-bottom: 16px;
+    position: relative;
+    height: auto; /* Remove fixed height */
+    min-height: auto; /* Allow natural height */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.submissions-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    z-index: 1;
+}
+
+.submissions-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary);
+}
+
+.dark-mode .submissions-section {
+    background: #2c2c2c;
+    border-color: #444;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.dark-mode .submissions-section:hover {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+/* Header - Compact and Clean */
+.submission-header {
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.05), rgba(40, 167, 69, 0.03));
+    border-bottom: 1px solid rgba(0, 123, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.dark-mode .submission-header {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(32, 201, 151, 0.05));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.submission-header-content {
+    flex: 1;
+    min-width: 200px;
+}
+
+.submission-header h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.submission-header .text-muted {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-top: 4px;
+    display: block;
+}
+
+.submission-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.submission-date {
+    font-size: 0.8rem;
+    color: var(--gray);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+.submission-date i {
+    margin-right: 4px;
+    font-size: 0.9rem;
+}
+
+/* Status Badges - Modern Design */
+.submission-status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+}
+
+.status-pending {
+    background: linear-gradient(135deg, #FFC107, #FF9800);
+    color: #212529;
+    border-color: #FF9800;
+}
+
+.status-submitted {
+    background: linear-gradient(135deg, #17A2B8, #138496);
+    color: white;
+    border-color: #138496;
+}
+
+.status-evaluated {
+    background: linear-gradient(135deg, #28A745, #20C997);
+    color: white;
+    border-color: #20C997;
+}
+
+.submission-ai-badge {
+    background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Body Content - No Scroll, Clean Layout */
+.submission-body {
+    padding: 16px;
+    background: transparent;
+}
+
+/* Score Display - Centered and Prominent */
+.evaluation-score {
+    text-align: center;
+    padding: 16px;
+    margin: 16px 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+    border: 2px solid var(--success);
+    position: relative;
+    overflow: hidden;
+}
+
+.evaluation-score::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.score-excellent {
+    color: var(--success);
+    border-color: var(--success);
+}
+
+.score-good {
+    color: #28a745;
+    border-color: #28a745;
+}
+
+.score-average {
+    color: var(--warning);
+    border-color: var(--warning);
+}
+
+.score-poor {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.evaluation-score i {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.evaluation-score > div {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 8px 0;
+}
+
+.evaluation-score small {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* Submission Details - Compact Grid */
+.submission-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 12px;
+    background: rgba(0, 123, 255, 0.03);
+    border-radius: 8px;
+    margin: 12px 0;
+    border-left: 3px solid var(--primary);
+}
+
+.dark-mode .submission-details {
+    background: rgba(13, 110, 253, 0.08);
+}
+
+.submission-details-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.submission-details-label {
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.submission-details-value {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* AI Feedback Section - Elegant Design */
+.ai-feedback-section {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.07), rgba(255, 193, 7, 0.03));
+    border-radius: 10px;
+    padding: 14px;
+    margin: 14px 0;
+    border-left: 4px solid #FFC107;
+    position: relative;
+}
+
+.dark-mode .ai-feedback-section {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.12), rgba(255, 193, 7, 0.06));
+}
+
+.ai-feedback-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    color: #FFC107;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.ai-feedback-header i {
+    font-size: 1.1rem;
+}
+
+.ai-feedback-content {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.dark-mode .ai-feedback-content {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+/* Remarks Sections - Clean Cards */
+.submission-remarks {
+    background: rgba(40, 167, 69, 0.05);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+    border-left: 3px solid var(--success);
+    transition: all 0.3s ease;
+}
+
+.submission-remarks:hover {
+    transform: translateX(2px);
+    background: rgba(40, 167, 69, 0.08);
+}
+
+.dark-mode .submission-remarks {
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.submission-remarks strong {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+    color: var(--text-color);
+}
+
+.submission-remarks p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--gray);
+    line-height: 1.5;
+}
+
+/* Download Links - Modern Button Group */
+.download-link {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.download-link .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.download-link .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+/* Empty State Styling */
+.submissions-empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 16px;
+    border: 2px dashed #dee2e6;
+    margin: 2rem 0;
+}
+
+.dark-mode .submissions-empty-state {
+    background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+    border-color: #495057;
+}
+
+.submissions-empty-state i {
+    font-size: 3.5rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+}
+
+.submissions-empty-state h5 {
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.submissions-empty-state p {
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.submissions-empty-state .btn {
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-weight: 500;
+}
+
+/* Show All Button - Modern Design */
+#show-all-submissions {
+    display: block;
+    margin: 2rem auto 1rem;
+    padding: 10px 28px;
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+#show-all-submissions:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 123, 255, 0.3);
+}
+
+#show-all-submissions i {
+    transition: transform 0.3s ease;
+}
+
+#show-all-submissions:hover i {
+    transform: translateY(2px);
+}
+
+.dark-mode #show-all-submissions {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+}
+
+.dark-mode #show-all-submissions:hover {
+    background: linear-gradient(135deg, #0b5ed7, #0a58ca);
+}
+
+/* Grid Layout for Submissions */
+#my-submissions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    #my-submissions {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .submission-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .submission-header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .download-link {
+        flex-direction: column;
+    }
+    
+    .download-link .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Add subtle animation for card appearance */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.submissions-section {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* YEH NAYA CSS ADD KARNA HAI - My Submissions ke buttons ki height kam aur spacing barhane ke liye */
+/* My Submissions - Button Improvements */
+.download-link {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.download-link .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px; /* Reduced height */
+    line-height: 1.2;
+}
+
+.download-link .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+/* Specific button styles */
+.download-link .btn-primary {
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+    border: none;
+    color: white;
+}
+
+.download-link .btn-outline-primary {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+}
+
+.download-link .btn-outline-success {
+    border: 1px solid var(--success);
+    color: var(--success);
+    background: transparent;
+}
+
+.download-link .btn-outline-primary:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.download-link .btn-outline-success:hover {
+    background: var(--success);
+    color: white;
+}
+
+/* Reduce overall submission card height */
+.submissions-section {
+    min-height: auto;
+    height: auto;
+}
+
+.submission-body {
+    padding: 16px;
+    max-height: none;
+    overflow: visible;
+}
+
+/* Reduce spacing in evaluation score section */
+.evaluation-score {
+    padding: 12px 16px; /* Reduced padding */
+    margin: 12px 0; /* Reduced margin */
+}
+
+.evaluation-score > div {
+    font-size: 2rem; /* Slightly reduced */
+    margin: 6px 0; /* Reduced margin */
+}
+
+/* Reduce spacing in feedback sections */
+.ai-feedback-section,
+.submission-remarks {
+    padding: 12px; /* Reduced from 14px */
+    margin: 10px 0; /* Reduced margin */
+}
+
+/* Make buttons more compact on mobile */
+@media (max-width: 768px) {
+    .download-link {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .download-link .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .download-link .btn-sm {
+        padding: 10px 16px; /* Slightly larger for mobile touch */
+    }
+}
+
+/* Button icon spacing */
+.download-link .btn i {
+    font-size: 0.9rem;
+    width: 16px;
+    text-align: center;
+}
     </style>
   </head>
   <body>
@@ -1587,19 +2238,30 @@
   <i class="isax isax-arrow-down me-2"></i>
   <span>Show All Courses</span>
 </button>
-              <h5 class="mb-3 fs-18">My Submissions</h5>
+
+              <!-- My Submissions Section -->
+              <div class="my-submissions-header">
+                <h5><i class="fas fa-file-upload me-2"></i> My Submissions</h5>
+                <span class="submissions-count" id="submissions-count">0</span>
+              </div>
+              
               <div id="my-submissions">
                 <!-- Submissions will be loaded here -->
               </div>
-              <div class="empty-state text-center py-5" id="empty-submissions" style="display: none;">
-                <div class="mb-4">
-                  <i class="fas fa-file-upload fa-3x text-muted mb-3"></i>
-                </div>
-                <h5 class="text-muted mb-3">No submissions yet</h5>
-                <p class="text-muted mb-4">Submit your first assignment to see it here!</p>
-                <a href="student-courses.html" class="btn btn-primary">View Assignments</a>
+              
+              <div class="submissions-empty-state" id="empty-submissions" style="display: none;">
+                <i class="fas fa-file-upload"></i>
+                <h5>No Submissions Yet</h5>
+                <p>You haven't submitted any assignments. Upload your first assignment to get AI-powered feedback and scores.</p>
+                <a href="course-grid.html" class="btn btn-primary">
+                  <i class="fas fa-book me-2"></i>Browse Courses
+                </a>
               </div>
-              <button class="show-all-btn" id="show-all-submissions" style="display: none;">Show All Submissions</button>
+              
+              <button class="show-all-btn" id="show-all-submissions" style="display: none;">
+                <i class="fas fa-arrow-down me-2"></i>Show All Submissions
+              </button>
+
               <div>
                 <div class="row">
                   <div class="col-xl-7"></div>
@@ -1891,11 +2553,14 @@ function getYouTubeThumbnail(url) {
             if (response.success && response.submissions) {
                 submissions = response.submissions;
                 showToast(`Found ${submissions.length} submissions`, 'success');
+                $('#submissions-count').text(submissions.length);
             } else if (Array.isArray(response)) {
                 submissions = response;
+                $('#submissions-count').text(submissions.length);
             } else {
                 console.warn('Unexpected response format:', response);
                 submissions = [];
+                $('#submissions-count').text('0');
             }
             
             console.log(`📊 Processed ${submissions.length} submissions`);
@@ -1923,12 +2588,12 @@ function getYouTubeThumbnail(url) {
             showToast(errorMsg, 'error');
             $('#empty-submissions').show();
             $('#my-submissions').hide();
+            $('#submissions-count').text('0');
         }
     });
 }
-        // UPDATED: Make renderSubmissions async and fetch course names if missing
-       // ✅ UPDATED: renderSubmissions function with better error handling
-async function renderSubmissions(submissions) {
+        // UPDATED: Enhanced renderSubmissions function with better UI for AI evaluation feedback
+       async function renderSubmissions(submissions) {
     console.log(`🖨️ Rendering ${submissions.length} submissions...`);
     
     let html = '';
@@ -1961,30 +2626,61 @@ async function renderSubmissions(submissions) {
                 // Status and score
                 const isEvaluated = sub.evaluated || false;
                 const score = sub.score || sub.evaluation?.score || null;
-                const feedback = sub.feedback || sub.evaluation?.feedback || 'No feedback provided.';
-                const remarks = sub.remarks || sub.evaluation?.remarks || 'No remarks provided.';
+                const feedback = sub.feedback || sub.evaluation?.feedback || sub.evaluation?.detailedFeedback || 'No feedback provided yet.';
+                const remarks = sub.remarks || sub.evaluation?.remarks || sub.evaluation?.summary || 'No remarks provided.';
+                const strengths = sub.evaluation?.strengths || '';
+                const weaknesses = sub.evaluation?.weaknesses || '';
+                const improvements = sub.evaluation?.improvements || '';
                 
                 // Determine status
                 let status = 'Pending Evaluation';
+                let statusClass = 'pending';
+                let statusBadge = '<span class="submission-status-badge status-pending">Pending</span>';
                 let scoreClass = 'pending';
                 let scoreIcon = 'fa-clock';
+                let scoreColorClass = '';
                 
                 if (isEvaluated && score !== null) {
-                    status = `${score}/100`;
-                    if (score >= 80) {
+                    status = `Evaluated: ${score}/100`;
+                    statusBadge = `<span class="submission-status-badge status-evaluated">Evaluated</span>`;
+                    statusClass = 'evaluated';
+                    
+                    // Determine score category
+                    if (score >= 90) {
+                        scoreClass = 'excellent';
+                        scoreColorClass = 'score-excellent';
+                        scoreIcon = 'fa-trophy';
+                    } else if (score >= 80) {
                         scoreClass = 'good';
+                        scoreColorClass = 'score-good';
                         scoreIcon = 'fa-check-circle';
-                    } else if (score >= 50) {
-                        scoreClass = 'warning';
-                        scoreIcon = 'fa-exclamation-circle';
+                    } else if (score >= 60) {
+                        scoreClass = 'average';
+                        scoreColorClass = 'score-average';
+                        scoreIcon = 'fa-chart-line';
                     } else {
                         scoreClass = 'poor';
+                        scoreColorClass = 'score-poor';
                         scoreIcon = 'fa-exclamation-triangle';
                     }
                 } else if (isEvaluated) {
                     status = 'Graded (Score Pending)';
+                    statusBadge = '<span class="submission-status-badge status-submitted">Graded</span>';
+                    statusClass = 'submitted';
                     scoreClass = 'warning';
                     scoreIcon = 'fa-exclamation-circle';
+                } else if (sub.submittedAt) {
+                    status = 'Submitted';
+                    statusBadge = '<span class="submission-status-badge status-submitted">Submitted</span>';
+                    statusClass = 'submitted';
+                    scoreClass = 'pending';
+                    scoreIcon = 'fa-clock';
+                }
+                
+                // Add AI badge if evaluated by AI
+                const isAIEvaluated = sub.evaluatedByAI || (sub.evaluation && sub.evaluation.evaluatedByAI);
+                if (isAIEvaluated) {
+                    statusBadge += '<span class="submission-ai-badge"><i class="fas fa-robot me-1"></i>AI Evaluated</span>';
                 }
                 
                 // Format dates
@@ -1992,18 +2688,21 @@ async function renderSubmissions(submissions) {
                     new Date(sub.submittedAt).toLocaleDateString('en-US', { 
                         year: 'numeric', 
                         month: 'short', 
-                        day: 'numeric' 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
                     }) : 'Unknown Date';
                 
-                // PDF URL
-                let pdfUrl = '';
-                if (sub.pdfUrl) {
-                    pdfUrl = sub.pdfUrl;
-                } else if (sub.pdfPath) {
-                    pdfUrl = `http://localhost:5000${sub.pdfPath.startsWith('/') ? sub.pdfPath : '/' + sub.pdfPath}`;
-                }
+                const evaluatedDate = sub.evaluatedAt ? 
+                    new Date(sub.evaluatedAt).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : 'Not evaluated yet';
                 
-                // Create submission card
+                // Create submission card WITHOUT DOWNLOAD LINKS
                 return `
                     <div class="submissions-section">
                         <div class="submission-header">
@@ -2011,41 +2710,97 @@ async function renderSubmissions(submissions) {
                                 <h6 class="mb-1">${assignmentTitle}</h6>
                                 <small class="text-muted">${courseName}</small>
                             </div>
-                            <small class="submission-date">
-                                <i class="fas fa-calendar-alt me-1"></i>${submittedDate}
-                            </small>
+                            <div>
+                                ${statusBadge}
+                                <small class="submission-date">
+                                    <i class="fas fa-calendar-alt me-1"></i>${submittedDate}
+                                </small>
+                            </div>
                         </div>
                         <div class="submission-body">
-                            <div class="submission-score ${scoreClass}">
-                                <i class="fas ${scoreIcon}"></i>
-                                ${status}
-                                ${sub.evaluationTime ? 
-                                    `<small class="d-block mt-1">
-                                        <i class="fas fa-clock"></i> Evaluated in ${sub.evaluationTime}ms
-                                    </small>` : ''}
+                            <!-- Submission Details -->
+                            <div class="submission-details">
+                                <div class="submission-details-row">
+                                    <span class="submission-details-label">Status:</span>
+                                    <span class="submission-details-value">${status}</span>
+                                </div>
+                                ${isEvaluated ? `
+                                <div class="submission-details-row">
+                                    <span class="submission-details-label">Evaluated On:</span>
+                                    <span class="submission-details-value">${evaluatedDate}</span>
+                                </div>
+                                ` : ''}
+                                ${sub.evaluationTime ? `
+                                <div class="submission-details-row">
+                                    <span class="submission-details-label">Evaluation Time:</span>
+                                    <span class="submission-details-value">${sub.evaluationTime}ms</span>
+                                </div>
+                                ` : ''}
                             </div>
                             
-                            ${feedback && feedback !== 'No feedback provided.' ? 
-                                `<div class="submission-feedback">
-                                    <i class="fas fa-comment me-1"></i>${feedback}
-                                </div>` : ''}
+                            <!-- Score Display -->
+                            ${score !== null ? `
+                                <div class="evaluation-score ${scoreColorClass}">
+                                    <i class="fas ${scoreIcon} mb-2 d-block"></i>
+                                    <div>${score}/100</div>
+                                    <small>${score >= 90 ? 'Excellent!' : score >= 80 ? 'Good Job!' : score >= 60 ? 'Average' : 'Needs Improvement'}</small>
+                                </div>
+                            ` : isEvaluated ? `
+                                <div class="submission-score ${scoreClass}">
+                                    <i class="fas ${scoreIcon}"></i>
+                                    ${status}
+                                </div>
+                            ` : `
+                                <div class="submission-score ${scoreClass}">
+                                    <i class="fas ${scoreIcon}"></i>
+                                    ${status}
+                                </div>
+                            `}
                             
-                            ${remarks && remarks !== 'No remarks provided.' ? 
-                                `<div class="submission-remarks">
-                                    <strong><i class="fas fa-sticky-note me-1"></i>Remarks:</strong>
-                                    <p>${remarks}</p>
-                                </div>` : ''}
-                            
-                            ${pdfUrl ? `
-                                <div class="download-link">
-                                    <a href="${pdfUrl}" target="_blank" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-eye me-1"></i> View Submission
-                                    </a>
-                                    <a href="${pdfUrl}" download class="btn btn-sm btn-outline-primary ms-2">
-                                        <i class="fas fa-download me-1"></i> Download PDF
-                                    </a>
+                            <!-- AI Feedback Section -->
+                            ${(feedback && feedback !== 'No feedback provided yet.') ? `
+                                <div class="ai-feedback-section">
+                                    <div class="ai-feedback-header">
+                                        <i class="fas fa-comment-dots"></i>
+                                        AI Feedback
+                                    </div>
+                                    <div class="ai-feedback-content">
+                                        ${feedback}
+                                    </div>
                                 </div>
                             ` : ''}
+                            
+                            <!-- Remarks/Summary -->
+                            ${(remarks && remarks !== 'No remarks provided.') ? `
+                                <div class="submission-remarks">
+                                    <strong><i class="fas fa-sticky-note me-1"></i>Summary:</strong>
+                                    <p>${remarks}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <!-- Strengths and Weaknesses -->
+                            ${strengths ? `
+                                <div class="submission-remarks" style="border-left-color: #28a745;">
+                                    <strong><i class="fas fa-thumbs-up me-1"></i>Strengths:</strong>
+                                    <p>${strengths}</p>
+                                </div>
+                            ` : ''}
+                            
+                            ${weaknesses ? `
+                                <div class="submission-remarks" style="border-left-color: #dc3545;">
+                                    <strong><i class="fas fa-thumbs-down me-1"></i>Areas for Improvement:</strong>
+                                    <p>${weaknesses}</p>
+                                </div>
+                            ` : ''}
+                            
+                            ${improvements ? `
+                                <div class="submission-remarks" style="border-left-color: #17a2b8;">
+                                    <strong><i class="fas fa-lightbulb me-1"></i>Suggestions:</strong>
+                                    <p>${improvements}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <!-- NO DOWNLOAD LINKS SECTION (REMOVED) -->
                         </div>
                     </div>`;
             }));
@@ -2058,7 +2813,9 @@ async function renderSubmissions(submissions) {
             const showAllBtn = $('#show-all-submissions');
             if (submissions.length > 3) {
                 showAllBtn.show();
-                showAllBtn.text(showAllSubmissions ? 'Show Less Submissions' : 'Show All Submissions');
+                showAllBtn.html(showAllSubmissions ? 
+                    '<i class="fas fa-arrow-up me-2"></i>Show Less Submissions' : 
+                    '<i class="fas fa-arrow-down me-2"></i>Show All Submissions');
             } else {
                 showAllBtn.hide();
             }
@@ -2078,14 +2835,6 @@ async function renderSubmissions(submissions) {
         $('#show-all-submissions').hide();
     }
 }
-        $('#show-all-courses').on('click', function() {
-            showAllCourses = !showAllCourses;
-            renderRecentCourses(allEnrollments);
-        });
-        $('#show-all-submissions').on('click', async function() {
-            showAllSubmissions = !showAllSubmissions;
-            await renderSubmissions(allSubmissions);
-        });
         function loadProfile() {
           console.log("Loading profile for user ID:", decoded.id);
           $.ajax({

@@ -275,150 +275,6 @@
         color: #ccc;
       }
       
-      /* ========== IMPROVED: Assignment Cards Layout ========== */
-      .slide-item.assignment-card {
-        height: 230px; /* Fixed height for consistency */
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 1.25rem;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .assignment-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #007bff;
-        margin-bottom: 0.5rem;
-        line-height: 1.3;
-        height: 2.6rem; /* Fixed height for title */
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-      }
-
-      .assignment-meta {
-        font-size: 0.85rem;
-        color: #6c757d;
-        margin-bottom: 0.25rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .assignment-meta i {
-        width: 16px;
-        text-align: center;
-      }
-
-      .badge-count {
-        font-size: 0.7rem;
-        padding: 0.15rem 0.4rem;
-        border-radius: 10px;
-      }
-
-      /* Assignment Actions - Better Layout */
-      .assignment-actions {
-        margin-top: auto;
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding-top: 0.75rem;
-        border-top: 1px solid rgba(0,0,0,0.1);
-      }
-
-      .dark-mode .assignment-actions {
-        border-top: 1px solid rgba(255,255,255,0.1);
-      }
-
-      .assignment-actions .btn-group {
-        display: flex;
-        gap: 0.5rem;
-      }
-
-      .btn-sm-unique {
-        padding: 0.35rem 0.75rem;
-        font-size: 0.75rem;
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        white-space: nowrap;
-      }
-
-      /* Better responsive design for assignment cards */
-      @media (max-width: 768px) {
-        .slide-item.assignment-card {
-          height: auto;
-          min-height: 220px;
-        }
-        
-        .assignment-actions {
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-        
-        .assignment-actions .btn-group {
-          width: 100%;
-          justify-content: space-between;
-        }
-        
-        .btn-sm-unique {
-          flex: 1;
-          justify-content: center;
-        }
-      }
-
-      /* Status indicators */
-      .status-indicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        font-size: 0.75rem;
-        padding: 0.2rem 0.5rem;
-        border-radius: 12px;
-        background: #f8f9fa;
-      }
-
-      .dark-mode .status-indicator {
-        background: #495057;
-      }
-
-      .status-submissions {
-        background: #e7f5ff;
-        color: #0066cc;
-      }
-
-      .status-pending {
-        background: #fff3cd;
-        color: #856404;
-      }
-
-      .status-evaluated {
-        background: #d4edda;
-        color: #155724;
-      }
-
-      /* Card hover effects */
-      .slide-item.assignment-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      }
-
-      .dark-mode .slide-item.assignment-card:hover {
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      }
-
-      /* Improved slider for assignments */
-      @media (min-width: 992px) {
-        .slide-group .d-flex {
-          gap: 15px;
-        }
-      }
-      
       /* Footer Styles */
       .footer {
         background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
@@ -1157,23 +1013,7 @@
                 </div>
                 <div class="slider-dots" id="activities-dots"></div>
               </div>
-              <!-- New: Manage Assignments Section with Unique Slider - UPDATED: Now with blue border via glass-section, REMOVED PDF link -->
-              <div class="glass-section">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h5 class="fs-18 mb-0">Manage Assignments</h5>
-                  <button class="btn create-assignment-btn" data-bs-toggle="modal" data-bs-target="#createAssignmentModal">
-                    <i class="fas fa-plus me-1"></i> Generate AI Assignment
-                  </button>
-                </div>
-                <div class="slider-container" id="assignments-slider-container">
-                  <div class="slider-wrapper" id="assignments-slider">
-                    <!-- Dynamically populated -->
-                  </div>
-                  <button class="slider-nav prev" id="prev-assignments-nav"><i class="fas fa-chevron-left"></i></button>
-                  <button class="slider-nav next" id="next-assignments-nav"><i class="fas fa-chevron-right"></i></button>
-                </div>
-                <div class="slider-dots" id="assignments-dots"></div>
-              </div>
+              <!-- Recent Assignments Section REMOVED -->
             </div>
           </div>
         </div>
@@ -1192,55 +1032,6 @@
               <div id="all-activities-list">
                 <!-- Dynamically populated -->
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Updated: Modal for AI Generate Assignment -->
-      <div class="modal fade" id="createAssignmentModal" tabindex="-1" aria-labelledby="createAssignmentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="createAssignmentModalLabel">Generate AI Assignment</h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form id="createAssignmentForm">
-                <div class="mb-3">
-                  <label for="courseSelect" class="form-label">Select Course</label>
-                  <select id="courseSelect" class="form-select course-select" required>
-                    <option value="">Choose a course...</option>
-                    <!-- Dynamically populated -->
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="prompt" class="form-label">Assignment Topic (e.g., "JavaScript functions" or "Database normalization")</label>
-                  <textarea class="form-control" id="prompt" rows="2" placeholder="Describe the topic clearly" required></textarea>
-                  <div class="form-text">Avoid phrases like "You are an instructor" - just describe the topic</div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label for="numQuestions" class="form-label">Number of Questions</label>
-                    <input type="number" class="form-control" id="numQuestions" value="5" min="1" max="20" required>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="aiType" class="form-label">Question Type</label>
-                    <select id="aiType" class="form-select" required>
-                      <option value="mcq">Multiple Choice (MCQs)</option>
-                      <option value="descriptive">Descriptive Questions</option>
-                      <option value="mixed" selected>Mixed (MCQs + Descriptive)</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label for="dueDate" class="form-label">Due Date</label>
-                  <input type="datetime-local" class="form-control" id="dueDate" required>
-                </div>
-                <div class="d-flex justify-content-end gap-2">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-primary">Create Assignment</button>
-                </div>
-              </form>
             </div>
           </div>
         </div>
@@ -1412,165 +1203,165 @@
     <!-- Custom JS -->
     <script src="assets/js/script.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-    <script>
-      $(document).ready(function () {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          showToast("Please login first.", "error");
-          window.location.href = "login.html";
-          return;
-        }
-        let decoded;
-        try {
-          decoded = jwt_decode(token);
-          console.log("Decoded Token:", decoded);
-        } catch (error) {
-          console.error("Token decode error:", error);
-          showToast("Invalid token. Please login again.", "error");
-          localStorage.removeItem("token");
-          window.location.href = "login.html";
-          return;
-        }
-        if (decoded.role !== "admin") {
-          showToast("Access denied: Admins only.", "error");
-          window.location.href = "login.html";
-          return;
-        }
-        function showToast(message, type = "success", duration = 3000) {
-          const toastContainer = $("#toast-container");
-          const toastId = `toast-${Date.now()}`;
-          const toastHtml = `
+   <script>
+    $(document).ready(function () {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        showToast("Please login first.", "error");
+        window.location.href = "login.html";
+        return;
+      }
+      let decoded;
+      try {
+        decoded = jwt_decode(token);
+        console.log("Decoded Token:", decoded);
+      } catch (error) {
+        console.error("Token decode error:", error);
+        showToast("Invalid token. Please login again.", "error");
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+        return;
+      }
+      if (decoded.role !== "admin") {
+        showToast("Access denied: Admins only.", "error");
+        window.location.href = "login.html";
+        return;
+      }
+      function showToast(message, type = "success", duration = 3000) {
+        const toastContainer = $("#toast-container");
+        const toastId = `toast-${Date.now()}`;
+        const toastHtml = `
                 <div id="${toastId}" class="toast align-items-center ${
-            type === "success" ? "toast-success" : "toast-error"
-          } fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
+          type === "success" ? "toast-success" : "toast-error"
+        } fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
                     <div class="d-flex">
                         <div class="toast-body">${message}</div>
                         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                 </div>
             `;
-          toastContainer.append(toastHtml);
-          const toastElement = document.getElementById(toastId);
-          const toast = new bootstrap.Toast(toastElement);
-          toast.show();
-          setTimeout(() => {
-            toast.hide();
-            $(`#${toastId}`).remove();
-          }, duration);
-        }
-        function loadProfile() {
-          console.log("Loading profile for user ID:", decoded.id);
-          $.ajax({
-            url: "http://localhost:5000/api/auth/profile",
-            type: "GET",
-            headers: { Authorization: "Bearer " + token },
-            success: function (profile) {
-              console.log("Profile loaded:", profile);
-              $("#profile-name").text(profile.name || "Admin");
-              $("#profile-email a")
-                .text(profile.email || "No email")
-                .attr("href", `mailto:${profile.email || ""}`);
-              if (profile.profileImage) {
-                $(".dropdown-profile-img")
-                  .attr("src", profile.profileImage)
-                  .parent()
-                  .addClass("has-image");
-                $("#profile-img")
-                  .attr("src", profile.profileImage)
-                  .parent()
-                  .addClass("has-image");
-              }
-            },
-            error: function (xhr) {
-              console.error("Profile load error:", {
-                status: xhr.status,
-                response: xhr.responseText,
-              });
-              if (xhr.status === 0)
-                showToast("Unable to connect to server.", "error");
-              else if (xhr.status === 401) {
-                showToast("Session expired.", "error");
-                localStorage.removeItem("token");
-                window.location.href = "login.html";
-              } else
-                showToast(`Profile error (Status: ${xhr.status}).`, "error");
-            },
-          });
-        }
-        $(".profile-link").on("click", function (e) {
-          e.preventDefault();
-          const href = $(this).data("href") || $(this).attr("href");
-          $.ajax({
-            url: "http://localhost:5000/api/auth/profile",
-            type: "GET",
-            headers: { Authorization: "Bearer " + token },
-            success: function () {
-              window.location.href = href;
-            },
-            error: function (xhr) {
-              console.error(
-                "Profile access error:",
-                xhr.status,
-                xhr.responseText
-              );
-              if (xhr.status === 0) showToast("Server unavailable.", "error");
-              else if (xhr.status === 401) {
-                showToast("Session expired.", "error");
-                localStorage.removeItem("token");
-                window.location.href = "login.html";
-              } else
-                showToast(
-                  `Profile access error (Status: ${xhr.status}).`,
-                  "error"
-                );
-            },
-          });
-        });
-        // FIXED: Logout handler for sidebar button
-        $(document).on('click', '#logout-btn', function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: 'http://localhost:5000/api/auth/logout',
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token },
-                success: function () {
-                    localStorage.removeItem('token');
-                    showToast('Logout successful.', 'success');
-                    setTimeout(() => window.location.href = 'login.html', 1500);
-                },
-                error: function () {
-                    localStorage.removeItem('token');
-                    showToast('Logout successful.', 'success');
-                    setTimeout(() => window.location.href = 'login.html', 1500);
-                }
+        toastContainer.append(toastHtml);
+        const toastElement = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+        setTimeout(() => {
+          toast.hide();
+          $(`#${toastId}`).remove();
+        }, duration);
+      }
+      function loadProfile() {
+        console.log("Loading profile for user ID:", decoded.id);
+        $.ajax({
+          url: "http://localhost:5000/api/auth/profile",
+          type: "GET",
+          headers: { Authorization: "Bearer " + token },
+          success: function (profile) {
+            console.log("Profile loaded:", profile);
+            $("#profile-name").text(profile.name || "Admin");
+            $("#profile-email a")
+              .text(profile.email || "No email")
+              .attr("href", `mailto:${profile.email || ""}`);
+            if (profile.profileImage) {
+              $(".dropdown-profile-img")
+                .attr("src", profile.profileImage)
+                .parent()
+                .addClass("has-image");
+              $("#profile-img")
+                .attr("src", profile.profileImage)
+                .parent()
+                .addClass("has-image");
+            }
+          },
+          error: function (xhr) {
+            console.error("Profile load error:", {
+              status: xhr.status,
+              response: xhr.responseText,
             });
+            if (xhr.status === 0)
+              showToast("Unable to connect to server.", "error");
+            else if (xhr.status === 401) {
+              showToast("Session expired.", "error");
+              localStorage.removeItem("token");
+              window.location.href = "login.html";
+            } else
+              showToast(`Profile error (Status: ${xhr.status}).`, "error");
+          },
         });
-        loadProfile();
-        const toggleDarkMode = () => {
-          $('body').addClass('dark-mode').removeClass('light-mode');
-          $('#dark-mode-toggle').removeClass('activate');
-          $('#light-mode-toggle').addClass('activate');
-          localStorage.setItem('theme', 'dark');
-        };
-        const toggleLightMode = () => {
-          $('body').addClass('light-mode').removeClass('dark-mode');
-          $('#light-mode-toggle').removeClass('activate');
-          $('#dark-mode-toggle').addClass('activate');
-          localStorage.setItem('theme', 'light');
-        };
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') toggleDarkMode();
-        else toggleLightMode();
-        $('#dark-mode-toggle').on('click', toggleDarkMode);
-        $('#light-mode-toggle').on('click', toggleLightMode);
-        // Slider variables for Activities
-        let activities = [];
-        let currentActivityIndex = 0;
-        let itemsPerSlide = window.innerWidth < 768 ? 1 : 3; // FIXED: Responsive items per slide
-        // Slider variables for Assignments
-        let assignments = [];
-        let currentAssignmentIndex = 0;
-        // Load Dashboard Data
+      }
+      $(".profile-link").on("click", function (e) {
+        e.preventDefault();
+        const href = $(this).data("href") || $(this).attr("href");
+        $.ajax({
+          url: "http://localhost:5000/api/auth/profile",
+          type: "GET",
+          headers: { Authorization: "Bearer " + token },
+          success: function () {
+            window.location.href = href;
+          },
+          error: function (xhr) {
+            console.error(
+              "Profile access error:",
+              xhr.status,
+              xhr.responseText
+            );
+            if (xhr.status === 0) showToast("Server unavailable.", "error");
+            else if (xhr.status === 401) {
+              showToast("Session expired.", "error");
+              localStorage.removeItem("token");
+              window.location.href = "login.html";
+            } else
+              showToast(
+                `Profile access error (Status: ${xhr.status}).`,
+                "error"
+              );
+          },
+        });
+      });
+      // FIXED: Logout handler for sidebar button
+      $(document).on('click', '#logout-btn', function (e) {
+          e.preventDefault();
+          $.ajax({
+              url: 'http://localhost:5000/api/auth/logout',
+              type: 'GET',
+              headers: { 'Authorization': 'Bearer ' + token },
+              success: function () {
+                  localStorage.removeItem('token');
+                  showToast('Logout successful.', 'success');
+                  setTimeout(() => window.location.href = 'login.html', 1500);
+              },
+              error: function () {
+                  localStorage.removeItem('token');
+                  showToast('Logout successful.', 'success');
+                  setTimeout(() => window.location.href = 'login.html', 1500);
+              }
+          });
+      });
+      loadProfile();
+      const toggleDarkMode = () => {
+        $('body').addClass('dark-mode').removeClass('light-mode');
+        $('#dark-mode-toggle').removeClass('activate');
+        $('#light-mode-toggle').addClass('activate');
+        localStorage.setItem('theme', 'dark');
+      };
+      const toggleLightMode = () => {
+        $('body').addClass('light-mode').removeClass('dark-mode');
+        $('#light-mode-toggle').removeClass('activate');
+        $('#dark-mode-toggle').addClass('activate');
+        localStorage.setItem('theme', 'light');
+      };
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') toggleDarkMode();
+      else toggleLightMode();
+      $('#dark-mode-toggle').on('click', toggleDarkMode);
+      $('#light-mode-toggle').on('click', toggleLightMode);
+      
+      // Slider variables for Activities
+      let activities = [];
+      let currentActivityIndex = 0;
+      let itemsPerSlide = window.innerWidth < 768 ? 1 : 3; // FIXED: Responsive items per slide
+      
+      // Load Dashboard Data
+      function loadDashboardData() {
         $.ajax({
           url: 'http://localhost:5000/api/dashboard/admin/dashboard',
           type: 'GET',
@@ -1592,615 +1383,115 @@
             showToast('Dashboard error.', 'error');
           },
         });
-        // Function to update Activities Slider
-        function updateActivitiesSlider() {
-          const $slider = $('#activities-slider');
-          const $dots = $('#activities-dots');
-          const totalSlides = Math.ceil(activities.length / itemsPerSlide);
-          $slider.empty();
-          $dots.empty();
-          for (let i = 0; i < totalSlides; i++) {
-            const start = i * itemsPerSlide;
-            const end = start + itemsPerSlide;
-            const slideActivities = activities.slice(start, end);
-            let slideHTML = '<div class="slide-group"><div class="d-flex">';
-            slideActivities.forEach((activity, idx) => {
-              let roleClass = '';
-              if (activity.role === 'admin') roleClass = 'role-admin';
-              else if (activity.role === 'student') roleClass = 'role-student';
-              else if (activity.role === 'instructor') roleClass = 'role-instructor';
-              slideHTML += `
+      }
+      
+      // Function to update Activities Slider
+      function updateActivitiesSlider() {
+        const $slider = $('#activities-slider');
+        const $dots = $('#activities-dots');
+        const totalSlides = Math.ceil(activities.length / itemsPerSlide);
+        $slider.empty();
+        $dots.empty();
+        for (let i = 0; i < totalSlides; i++) {
+          const start = i * itemsPerSlide;
+          const end = start + itemsPerSlide;
+          const slideActivities = activities.slice(start, end);
+          let slideHTML = '<div class="slide-group"><div class="d-flex">';
+          slideActivities.forEach((activity, idx) => {
+            let roleClass = '';
+            if (activity.role === 'admin') roleClass = 'role-admin';
+            else if (activity.role === 'student') roleClass = 'role-student';
+            else if (activity.role === 'instructor') roleClass = 'role-instructor';
+            slideHTML += `
                 <div class="slide-item">
                   <div class="activity-title">${activity.user || 'Unknown'} <span class="activity-icon ${roleClass}">${activity.role ? activity.role.charAt(0).toUpperCase() : '?'}</span></div>
                   <div class="activity-details">${activity.action || 'No Action'}</div>
                   <div class="activity-details">${new Date(activity.date).toLocaleString() || 'No Date'}</div>
                 </div>
               `;
-            });
-            slideHTML += '</div></div>';
-            $slider.append(slideHTML);
-            const dot = `<span class="dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></span>`;
-            $dots.append(dot);
-          }
-          updateSliderTransform($slider, currentActivityIndex, itemsPerSlide, 'activities');
-          updateSliderNav(currentActivityIndex, totalSlides, 'activities');
+          });
+          slideHTML += '</div></div>';
+          $slider.append(slideHTML);
+          const dot = `<span class="dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></span>`;
+          $dots.append(dot);
         }
-        // Function to update All Activities List for Modal
-        function updateAllActivitiesList() {
-          let listHTML = '';
-          activities.forEach((activity) => {
-            let roleClass = '';
-            if (activity.role === 'admin') roleClass = 'role-admin';
-            else if (activity.role === 'student') roleClass = 'role-student';
-            else if (activity.role === 'instructor') roleClass = 'role-instructor';
-            listHTML += `
+        updateSliderTransform($slider, currentActivityIndex, itemsPerSlide, 'activities');
+        updateSliderNav(currentActivityIndex, totalSlides, 'activities');
+      }
+      
+      // Function to update All Activities List for Modal
+      function updateAllActivitiesList() {
+        let listHTML = '';
+        activities.forEach((activity) => {
+          let roleClass = '';
+          if (activity.role === 'admin') roleClass = 'role-admin';
+          else if (activity.role === 'student') roleClass = 'role-student';
+          else if (activity.role === 'instructor') roleClass = 'role-instructor';
+          listHTML += `
               <div class="slide-item mb-3">
                 <div class="activity-title">${activity.user || 'Unknown'} <span class="activity-icon ${roleClass}">${activity.role ? activity.role.charAt(0).toUpperCase() : '?'}</span></div>
                 <div class="activity-details">${activity.action || 'No Action'}</div>
                 <div class="activity-details">${new Date(activity.date).toLocaleString() || 'No Date'}</div>
               </div>
             `;
-          });
-          $('#all-activities-list').html(listHTML || '<p>No activities available.</p>');
-        }
-        // Generic function to update slider transform - FIXED: Correct transform for full page slides
-        function updateSliderTransform($slider, index, itemsPerSlide, type) {
-          const transform = `translateX(-${index * 100}%)`;
-          $slider.css('transform', transform);
-        }
-        // Generic function to update nav and dots
-        function updateSliderNav(index, totalSlides, type) {
-          const $prev = $(`#prev-${type}-nav`);
-          const $next = $(`#next-${type}-nav`);
-          const $dots = $(`#${type}-dots .dot`);
-          $prev.prop('disabled', index === 0);
-          $next.prop('disabled', index >= totalSlides - 1);
-          $dots.removeClass('active').eq(index).addClass('active');
-        }
-        // FIXED: Responsive resize listener for sliders
-        $(window).on('resize', function() {
-            itemsPerSlide = window.innerWidth < 768 ? 1 : (window.innerWidth < 992 ? 2 : 3);
-            updateActivitiesSlider();
-            updateAssignmentsSlider();
         });
-        // Activities Slider Navigation
-        $('#next-activities-nav').on('click', function() {
-          const totalSlides = Math.ceil(activities.length / itemsPerSlide);
-          if (currentActivityIndex < totalSlides - 1) {
-            currentActivityIndex++;
-            updateActivitiesSlider();
-          }
-        });
-        $('#prev-activities-nav').on('click', function() {
-          if (currentActivityIndex > 0) {
-            currentActivityIndex--;
-            updateActivitiesSlider();
-          }
-        });
-        $('#activities-dots').on('click', '.dot', function() {
-          currentActivityIndex = $(this).data('slide');
+        $('#all-activities-list').html(listHTML || '<p>No activities available.</p>');
+      }
+      
+      // Generic function to update slider transform - FIXED: Correct transform for full page slides
+      function updateSliderTransform($slider, index, itemsPerSlide, type) {
+        const transform = `translateX(-${index * 100}%)`;
+        $slider.css('transform', transform);
+      }
+      
+      // Generic function to update nav and dots
+      function updateSliderNav(index, totalSlides, type) {
+        const $prev = $(`#prev-${type}-nav`);
+        const $next = $(`#next-${type}-nav`);
+        const $dots = $(`#${type}-dots .dot`);
+        $prev.prop('disabled', index === 0);
+        $next.prop('disabled', index >= totalSlides - 1);
+        $dots.removeClass('active').eq(index).addClass('active');
+      }
+      
+      // FIXED: Responsive resize listener for sliders
+      $(window).on('resize', function() {
+          itemsPerSlide = window.innerWidth < 768 ? 1 : (window.innerWidth < 992 ? 2 : 3);
           updateActivitiesSlider();
-        });
-        // Load Courses for Select in Modal
-        $.ajax({
-          url: 'http://localhost:5000/api/courses',
-          type: 'GET',
-          headers: { Authorization: 'Bearer ' + token },
-          success: function (response) {
-            const courses = response.courses || response;
-            let options = '<option value="">Choose a course...</option>';
-            courses.forEach(course => {
-              options += `<option value="${course._id}">${course.name}</option>`;
-            });
-            $('#courseSelect, #editCourseSelect').html(options);
-          },
-          error: function (xhr) {
-            console.error('Courses load error:', xhr);
-            showToast('Failed to load courses.', 'error');
-          }
-        });
-        
-        // ========== FIXED: Clean Prompt Function ==========
-        function cleanPrompt(prompt) {
-          if (!prompt) return '';
-          
-          // Remove instructional phrases
-          const clean = prompt
-            .replace(/You are an?/gi, '')
-            .replace(/instructor|teacher|professor|educator/gi, '')
-            .replace(/experienced|expert|skilled|professional/gi, '')
-            .replace(/create|generate|write|make|develop/gi, '')
-            .replace(/assignment|questions|task/gi, '')
-            .replace(/\s+/g, ' ')
-            .trim();
-          
-          // Extract first meaningful sentence
-          const sentences = clean.split(/[.!?]/);
-          const firstSentence = sentences[0] || clean;
-          
-          // Limit length
-          return firstSentence.substring(0, 50).trim();
-        }
-        
-        // ========== FIXED: Create Assignment Form Submit ==========
-        $('#createAssignmentForm').on('submit', function (e) {
-          e.preventDefault();
-          
-          const courseId = $('#courseSelect').val();
-          const prompt = $('#prompt').val();
-          const numQuestions = parseInt($('#numQuestions').val());
-          const aiType = $('#aiType').val();
-          const dueDate = $('#dueDate').val();
-          
-          console.log("📝 Creating assignment with:", {
-            courseId, prompt, numQuestions, aiType, dueDate
-          });
-          
-          if (!courseId || !prompt || !dueDate) {
-            showToast('Please fill all required fields.', 'error');
-            return;
-          }
-          
-          // Clean the prompt before sending
-          const cleanPromptText = cleanPrompt(prompt);
-          
-          const data = { 
-            courseId, 
-            prompt: cleanPromptText || prompt.substring(0, 30), // Use cleaned prompt
-            numQuestions, 
-            type: aiType, 
-            dueDate 
-          };
-          
-          console.log("📤 Sending cleaned data:", data);
-          
-          $.ajax({
-            url: 'http://localhost:5000/api/assignments/generate',
-            type: 'POST',
-            headers: { 
-              'Authorization': 'Bearer ' + token,
-              'Content-Type': 'application/json'
-            },
-            data: JSON.stringify(data),
-            success: function (response) {
-              console.log("✅ Create assignment success:", response);
-              
-              if (response.success) {
-                showToast('Assignment created successfully!', 'success');
-                
-                // Close modal
-                $('#createAssignmentModal').modal('hide');
-                
-                // Reset form
-                $('#createAssignmentForm')[0].reset();
-                
-                // RELOAD ASSIGNMENTS IMMEDIATELY
-                console.log("🔄 Reloading assignments after creation...");
-                
-                // Small delay to ensure server has saved
-                setTimeout(() => {
-                  loadAssignments();
-                  loadDashboardData();
-                }, 500);
-              } else {
-                showToast(response.message || 'Failed to create assignment', 'error');
-              }
-            },
-            error: function (xhr, status, error) {
-              console.error("❌ Create assignment error:", {
-                status: xhr.status,
-                statusText: xhr.statusText,
-                error: error,
-                response: xhr.responseText
-              });
-              
-              let errorMsg = 'Failed to create assignment.';
-              if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMsg = xhr.responseJSON.message;
-              }
-              
-              showToast(errorMsg, 'error');
-            }
-          });
-        });
-        
-        // ========== FIXED: Load Assignments Function ==========
-        function loadAssignments() {
-          console.log("📚 Loading assignments from API...");
-          
-          $.ajax({
-            url: 'http://localhost:5000/api/assignments',
-            type: 'GET',
-            headers: { 
-              'Authorization': 'Bearer ' + token,
-              'Content-Type': 'application/json'
-            },
-            success: function (response) {
-              console.log("📚 Assignments API Success Response:", response);
-              
-              // FIX 1: Check if response has assignments array
-              if (response.success && response.assignments) {
-                assignments = response.assignments;
-                console.log(`✅ Loaded ${assignments.length} assignments`);
-                
-                // FIX 2: Update UI immediately
-                updateAssignmentsSlider();
-                
-                // FIX 3: Update dashboard count
-                $('#total-assignments').text(assignments.length);
-                
-                // Log first assignment for debugging
-                if (assignments.length > 0) {
-                  console.log("First assignment:", assignments[0]);
-                }
-              } else {
-                console.warn("⚠️ No assignments array in response:", response);
-                assignments = [];
-                updateAssignmentsSlider();
-                
-                // Show message if no assignments
-                if (response.message) {
-                  console.log("Message:", response.message);
-                }
-              }
-            },
-            error: function (xhr, status, error) {
-              console.error("❌ Load assignments error:", {
-                status: xhr.status,
-                statusText: xhr.statusText,
-                error: error,
-                response: xhr.responseText
-              });
-              
-              assignments = [];
-              updateAssignmentsSlider();
-              showToast('Failed to load assignments.', 'error');
-            }
-          });
-        }
-        
-        // ========== FIXED: Update Dashboard Counts ==========
-        function updateDashboardCounts() {
-          $.ajax({
-            url: 'http://localhost:5000/api/dashboard/admin/dashboard',
-            type: 'GET',
-            headers: { Authorization: 'Bearer ' + token },
-            success: function (response) {
-              console.log('Dashboard data updated:', response);
-              $('#total-users').text(response.totalUsers || 0);
-              $('#total-students').text(response.totalStudents || 0);
-              $('#total-courses').text(response.totalCourses || 0);
-              $('#total-categories').text(response.totalCategories || 0);
-              $('#total-assignments').text(response.totalAssignments || 0);
-              $('#pending-submissions').text(response.pendingSubmissions || 0);
-            },
-            error: function (xhr) {
-              console.error('Dashboard data error:', xhr);
-            }
-          });
-        }
-        
-        // ========== FIXED: Function to update Assignments Slider ==========
-        function updateAssignmentsSlider() {
-          console.log(`🔄 Updating slider with ${assignments.length} assignments`);
-          
-          const $slider = $('#assignments-slider');
-          const $dots = $('#assignments-dots');
-          const itemsPerSlide = window.innerWidth < 768 ? 1 : (window.innerWidth < 992 ? 2 : 3);
-          const totalSlides = Math.ceil(assignments.length / itemsPerSlide);
-          
-          $slider.empty();
-          $dots.empty();
-          
-          if (assignments.length === 0) {
-            $slider.html(`
-              <div class="slide-group">
-                <div class="d-flex justify-content-center">
-                  <div class="slide-item assignment-card text-center p-5">
-                    <i class="fas fa-file-alt fa-4x text-muted mb-3"></i>
-                    <h6 class="text-muted mb-2">No Assignments Yet</h6>
-                    <p class="small text-muted">Create your first assignment using the button above.</p>
-                  </div>
-                </div>
-              </div>
-            `);
-            return;
-          }
-          
-          // Create slides
-          for (let i = 0; i < totalSlides; i++) {
-            const start = i * itemsPerSlide;
-            const end = start + itemsPerSlide;
-            const slideAssignments = assignments.slice(start, end);
-            
-            let slideHTML = '<div class="slide-group"><div class="d-flex gap-3">';
-            
-            slideAssignments.forEach((assignment) => {
-              const dueDate = new Date(assignment.dueDate);
-              const now = new Date();
-              const isOverdue = dueDate < now;
-              
-              // Format dates
-              const formattedDate = dueDate.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-              });
-              
-              const formattedTime = dueDate.toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit'
-              });
-              
-              // Get counts
-              const submissionCount = assignment.submissionCount || 0;
-              const evaluatedCount = assignment.evaluatedCount || 0;
-              const pendingCount = assignment.pendingCount || (submissionCount - evaluatedCount);
-              
-              // Status indicators
-              const statusIndicators = `
-                <div class="d-flex flex-wrap gap-1 mt-2">
-                  <span class="status-indicator status-submissions">
-                    <i class="fas fa-paper-plane"></i> ${submissionCount}
-                  </span>
-                  ${pendingCount > 0 ? `
-                    <span class="status-indicator status-pending">
-                      <i class="fas fa-clock"></i> ${pendingCount}
-                    </span>
-                  ` : ''}
-                  ${evaluatedCount > 0 ? `
-                    <span class="status-indicator status-evaluated">
-                      <i class="fas fa-check"></i> ${evaluatedCount}
-                    </span>
-                  ` : ''}
-                </div>
-              `;
-              
-              slideHTML += `
-                <div class="slide-item assignment-card">
-                  <div>
-                    <div class="assignment-title" title="${assignment.title}">
-                      ${assignment.title}
-                    </div>
-                    
-                    <div class="assignment-meta">
-                      <i class="fas fa-book"></i>
-                      <span class="text-truncate" title="${assignment.courseId?.name || 'No Course'}">
-                        ${assignment.courseId?.name || 'No Course'}
-                      </span>
-                    </div>
-                    
-                    <div class="assignment-meta">
-                      <i class="fas fa-clock ${isOverdue ? 'text-danger' : 'text-warning'}"></i>
-                      <span>${formattedDate} ${formattedTime}</span>
-                      ${isOverdue ? '<span class="badge bg-danger ms-1">Overdue</span>' : ''}
-                    </div>
-                    
-                    ${statusIndicators}
-                  </div>
-                  
-                  <div class="assignment-actions">
-                    <div class="btn-group">
-                      <button class="btn btn-primary btn-sm-unique" onclick="editAssignment('${assignment._id}')" title="Edit">
-                        <i class="fas fa-edit"></i> Edit
-                      </button>
-                      <button class="btn btn-danger btn-sm-unique" onclick="deleteAssignment('${assignment._id}')" title="Delete">
-                        <i class="fas fa-trash"></i> Delete
-                      </button>
-                    </div>
-                    
-                    <button class="btn btn-info btn-sm-unique" onclick="openEvaluateModal('${assignment._id}')" title="Evaluate Submissions">
-                      <i class="fas fa-graduation-cap"></i> Evaluate
-                    </button>
-                  </div>
-                </div>
-              `;
-            });
-            
-            // If fewer items than itemsPerSlide, add empty space
-            if (slideAssignments.length < itemsPerSlide) {
-              const emptySpaces = itemsPerSlide - slideAssignments.length;
-              for (let j = 0; j < emptySpaces; j++) {
-                slideHTML += `<div class="slide-item" style="flex: 1; visibility: hidden;"></div>`;
-              }
-            }
-            
-            slideHTML += '</div></div>';
-            $slider.append(slideHTML);
-            
-            const dot = `<span class="dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></span>`;
-            $dots.append(dot);
-          }
-          
-          // Update slider position
-          updateSliderTransform($('#assignments-slider'), currentAssignmentIndex, itemsPerSlide, 'assignments');
-          updateSliderNav(currentAssignmentIndex, totalSlides, 'assignments');
-        }
-        
-        // ========== FIXED: Edit Assignment ==========
-        let currentEditId = null;
-        window.editAssignment = function (id) {
-          currentEditId = id;
-          $.ajax({
-            url: `http://localhost:5000/api/assignments/${id}`,
-            type: 'GET',
-            headers: { Authorization: 'Bearer ' + token },
-            success: function (assignment) {
-              $('#editTitle').val(assignment.title || '');
-              $('#editCourseSelect').val(assignment.courseId?._id || '');
-              $('#editDueDate').val(new Date(assignment.dueDate).toISOString().slice(0, 16));
-              $('#editAssignmentModal').modal('show');
-            },
-            error: function () {
-              showToast('Failed to load assignment.', 'error');
-            }
-          });
-        };
-        
-        $('#editAssignmentForm').on('submit', function (e) {
-          e.preventDefault();
-          if (!currentEditId) return;
-          
-          const title = $('#editTitle').val();
-          const courseId = $('#editCourseSelect').val();
-          const dueDate = $('#editDueDate').val();
-          
-          if (!title || !courseId || !dueDate) {
-            showToast('Please fill all fields.', 'error');
-            return;
-          }
-          
-          const data = { title, courseId, dueDate };
-          
-          $.ajax({
-            url: `http://localhost:5000/api/assignments/${currentEditId}`,
-            type: 'PUT',
-            headers: { Authorization: 'Bearer ' + token },
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function () {
-              showToast('Assignment updated successfully!', 'success');
-              $('#editAssignmentModal').modal('hide');
-              $('#editAssignmentForm')[0].reset();
-              
-              // Reload assignments
-              setTimeout(() => {
-                loadAssignments();
-              }, 500);
-            },
-            error: function (xhr) {
-              showToast('Error: ' + (xhr.responseJSON?.message || 'Unknown'), 'error');
-            }
-          });
-        });
-        
-        // ========== FIXED: Delete Assignment ==========
-        window.deleteAssignment = function (id) {
-          if (confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) {
-            $.ajax({
-              url: `http://localhost:5000/api/assignments/${id}`,
-              type: 'DELETE',
-              headers: { Authorization: 'Bearer ' + token },
-              success: function () {
-                showToast('Assignment deleted successfully!', 'success');
-                
-                // Reload assignments
-                setTimeout(() => {
-                  loadAssignments();
-                  loadDashboardData();
-                }, 500);
-              },
-              error: function (xhr) {
-                showToast('Error: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
-              }
-            });
-          }
-        };
-        
-        // Assignments Slider Navigation
-        $('#next-assignments-nav').on('click', function() {
-          const totalSlides = Math.ceil(assignments.length / itemsPerSlide);
-          if (currentAssignmentIndex < totalSlides - 1) {
-            currentAssignmentIndex++;
-            updateAssignmentsSlider();
-          }
-        });
-        
-        $('#prev-assignments-nav').on('click', function() {
-          if (currentAssignmentIndex > 0) {
-            currentAssignmentIndex--;
-            updateAssignmentsSlider();
-          }
-        });
-        
-        $('#assignments-dots').on('click', '.dot', function() {
-          currentAssignmentIndex = $(this).data('slide');
-          updateAssignmentsSlider();
-        });
-        
-        // ========== Initialize on page load ==========
-        console.log("🚀 Initializing admin dashboard...");
-        
-        // Load data when page loads
-        loadAssignments();
-        updateDashboardCounts();
-        
-        // Refresh every 30 seconds
-        setInterval(() => {
-          loadAssignments();
-          updateDashboardCounts();
-        }, 30000);
-        
-        // ========== GLOBAL FUNCTIONS FOR EVALUATION ==========
-        window.openEvaluateModal = function (assignmentId) {
-          $.ajax({
-            url: `http://localhost:5000/api/assignments/${assignmentId}/submissions`,
-            type: 'GET',
-            headers: { Authorization: 'Bearer ' + token },
-            success: function (submissions) {
-              const pending = submissions.filter(s => !s.evaluated);
-              
-              if (pending.length === 0) {
-                $('#evaluateDescription').html('<div class="alert alert-success">All submissions have been evaluated.</div>');
-                $('#evaluationResult').empty();
-              } else {
-                $('#evaluateDescription').html(`
-                  <div class="alert alert-info">
-                    <strong>Pending Submissions: ${pending.length}</strong>
-                    <p class="mb-0">Click "AI Evaluate" to grade each submission.</p>
-                  </div>
-                `);
-                
-                let resultHTML = '';
-                pending.forEach(sub => {
-                  resultHTML += `
-                    <div class="mb-3 p-3 border rounded">
-                      <p><strong>Student:</strong> ${sub.studentId?.name || 'Unknown'}</p>
-                      <p><strong>Submitted:</strong> ${new Date(sub.submittedAt).toLocaleString()}</p>
-                      <button class="btn btn-primary btn-sm" onclick="evaluateSubmission('${sub._id}')">
-                        <i class="fas fa-robot me-1"></i>AI Evaluate
-                      </button>
-                      <div id="eval-${sub._id}" class="mt-2"></div>
-                    </div>
-                  `;
-                });
-                $('#evaluationResult').html(resultHTML);
-              }
-              $('#evaluateModal').modal('show');
-            },
-            error: function () {
-              showToast('Failed to load submissions.', 'error');
-            }
-          });
-        };
-        
-        window.evaluateSubmission = function (submissionId) {
-          $.ajax({
-            url: `http://localhost:5000/api/assignments/submissions/${submissionId}/evaluate`,
-            type: 'POST',
-            headers: { Authorization: 'Bearer ' + token },
-            success: function (response) {
-              showToast('Evaluation completed!', 'success');
-              $(`#eval-${submissionId}`).html(`
-                <div class="alert eval-success">
-                  <strong>Score:</strong> ${response.evaluation.score}/100<br>
-                  <strong>Feedback:</strong> ${response.evaluation.feedback}<br>
-                  <strong>Remarks:</strong> ${response.evaluation.remarks}
-                </div>
-              `);
-              
-              // Reload assignments to update counts
-              setTimeout(() => {
-                loadAssignments();
-                updateDashboardCounts();
-              }, 1000);
-            },
-            error: function (xhr) {
-              showToast('Evaluation failed: ' + (xhr.responseJSON?.message || 'Unknown error'), 'error');
-            }
-          });
-        };
       });
-    </script>
+      
+      // Activities Slider Navigation
+      $('#next-activities-nav').on('click', function() {
+        const totalSlides = Math.ceil(activities.length / itemsPerSlide);
+        if (currentActivityIndex < totalSlides - 1) {
+          currentActivityIndex++;
+          updateActivitiesSlider();
+        }
+      });
+      
+      $('#prev-activities-nav').on('click', function() {
+        if (currentActivityIndex > 0) {
+          currentActivityIndex--;
+          updateActivitiesSlider();
+        }
+      });
+      
+      $('#activities-dots').on('click', '.dot', function() {
+        currentActivityIndex = $(this).data('slide');
+        updateActivitiesSlider();
+      });
+      
+      // ========== Initialize Dashboard ==========
+      console.log("🚀 Initializing admin dashboard...");
+      
+      // Load all data when page loads
+      loadDashboardData();
+      
+      // Refresh data every 30 seconds
+      setInterval(() => {
+        loadDashboardData();
+      }, 30000);
+    });
+  </script>
   </body>
 </html>

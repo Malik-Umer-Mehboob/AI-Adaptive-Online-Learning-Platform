@@ -1,5 +1,4 @@
-// middleware/multer.js - FIXED: Removed uploadPDFs, only keep uploadPDF
-
+// middleware/multer.js - FIXED VERSION FOR ASSIGNMENT PDFS
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -10,9 +9,9 @@ const projectRoot = path.resolve(__dirname, '..');
 // Create all required directories
 const createDirectories = () => {
     const directories = [
-        path.join(projectRoot, 'public', 'uploads', 'videos'),
+        path.join(projectRoot, 'public', 'uploads', 'assignments'),  // ✅ ASSIGNMENTS FOLDER
         path.join(projectRoot, 'public', 'uploads', 'submissions'),
-        path.join(projectRoot, 'public', 'uploads', 'assignments'),
+        path.join(projectRoot, 'public', 'uploads', 'videos'),
         path.join(projectRoot, 'public', 'uploads', 'images'),
         path.join(projectRoot, 'public', 'uploads', 'documents'),
         path.join(projectRoot, 'public', 'uploads', 'resources'),
@@ -22,7 +21,7 @@ const createDirectories = () => {
     directories.forEach(dir => {
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
-            console.log(`Created upload directory: ${dir}`);
+            console.log(`✅ Created directory: ${dir}`);
         }
     });
 };
@@ -30,63 +29,49 @@ const createDirectories = () => {
 // Initialize directories
 createDirectories();
 
-// ========== PDF UPLOAD CONFIGURATION ==========
-// IMPORTANT: Middleware to add buffer to file object even with disk storage
-const addBufferToFile = (req, res, next) => {
-    if (req.file && req.file.path && !req.file.buffer) {
-        try {
-            const fileData = fs.readFileSync(req.file.path);
-            req.file.buffer = fileData;
-        } catch (error) {
-            console.error('Error reading file to buffer:', error);
-        }
-    } else if (req.files) {
-        // Handle array of files
-        for (let file of req.files) {
-            if (file.path && !file.buffer) {
-                try {
-                    const fileData = fs.readFileSync(file.path);
-                    file.buffer = fileData;
-                } catch (error) {
-                    console.error('Error reading file to buffer:', error);
-                }
-            }
-        }
-    }
-    next();
-};
-
-const pdfStorage = multer.diskStorage({
+// ========== ASSIGNMENT PDF UPLOAD CONFIGURATION ==========
+// ✅ YEH WALA USE KARNA HAI ASSIGNMENT PDFs KE LIYE
+const assignmentStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        // Determine destination based on route
-        let dest = 'submissions';
-        if (req.originalUrl && req.originalUrl.includes('/topics/') && req.originalUrl.includes('/resources')) {
-            dest = 'resources';
-        } else if (req.originalUrl && req.originalUrl.includes('/assignments/')) {
-            dest = 'assignments';
+        // Always save assignment PDFs to assignments folder
+        const uploadPath = path.join(projectRoot, 'public', 'uploads', 'assignments');
+        
+        // Ensure directory exists
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
         }
         
-        const uploadPath = path.join(projectRoot, 'public', 'uploads', dest);
+        console.log(`📁 Saving assignment PDF to: ${uploadPath}`);
         cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
-        const userPrefix = req.user ? `user_${req.user.id}_` : '';
-        const timestamp = Date.now();
-        const random = Math.round(Math.random() * 1E9);
-        const originalExt = path.extname(file.originalname);
+        // Use assignment ID in filename if available
+        let filename;
         
-        // Clean filename
-        const originalName = path.parse(file.originalname).name;
-        const cleanName = originalName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
+        if (req.params.assignmentId) {
+            // For assignment submission
+            filename = `assignment_${req.params.assignmentId}_submission_${Date.now()}.pdf`;
+        } else if (req.params.id || req.body.assignmentId) {
+            // For new assignment creation
+            const assignmentId = req.params.id || req.body.assignmentId || 'new';
+            filename = `assignment_${assignmentId}.pdf`;
+        } else {
+            // Generic filename
+            const timestamp = Date.now();
+            const random = Math.round(Math.random() * 1E9);
+            filename = `assignment_${timestamp}_${random}.pdf`;
+        }
         
-        cb(null, `${cleanName}_${timestamp}_${random}${originalExt}`);
+        console.log(`📄 Assignment PDF filename: ${filename}`);
+        cb(null, filename);
     }
 });
 
-// Single PDF upload - can use .single(), .array(), or .fields()
+// ✅ Main PDF upload middleware
 const uploadPDF = multer({
-    storage: pdfStorage,
+    storage: assignmentStorage,
     fileFilter: function (req, file, cb) {
+        // Allow only PDF files
         if (file.mimetype === 'application/pdf') {
             cb(null, true);
         } else {
@@ -98,129 +83,64 @@ const uploadPDF = multer({
     }
 });
 
-// ========== VIDEO UPLOAD CONFIGURATION ==========
-const videoStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(projectRoot, 'public', 'uploads', 'videos'));
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const originalName = path.parse(file.originalname).name;
-        const safeName = originalName.replace(/[^a-zA-Z0-9]/g, '_');
-        cb(null, safeName + '_' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
+// ========== VIDEO UPLOAD ==========
 const uploadVideo = multer({
-    storage: videoStorage,
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            const uploadPath = path.join(projectRoot, 'public', 'uploads', 'videos');
+            if (!fs.existsSync(uploadPath)) {
+                fs.mkdirSync(uploadPath, { recursive: true });
+            }
+            cb(null, uploadPath);
+        },
+        filename: function (req, file, cb) {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            const originalName = path.parse(file.originalname).name;
+            const safeName = originalName.replace(/[^a-zA-Z0-9]/g, '_');
+            cb(null, safeName + '_' + uniqueSuffix + path.extname(file.originalname));
+        }
+    }),
     fileFilter: function (req, file, cb) {
         const allowedMimes = [
-            'video/mp4',
-            'video/mpeg',
-            'video/ogg',
-            'video/webm',
-            'video/quicktime',
-            'video/x-msvideo'
+            'video/mp4', 'video/mpeg', 'video/ogg', 'video/webm',
+            'video/quicktime', 'video/x-msvideo'
         ];
-        
         if (allowedMimes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error(`Invalid file type. Only video files are allowed. Received: ${file.mimetype}`), false);
+            cb(new Error('Invalid file type. Only video files are allowed.'), false);
         }
     },
-    limits: {
-        fileSize: 500 * 1024 * 1024,
-        files: 20
-    }
+    limits: { fileSize: 500 * 1024 * 1024, files: 20 }
 });
 
-// ========== IMAGE UPLOAD CONFIGURATION ==========
-const imageStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(projectRoot, 'public', 'uploads', 'images'));
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'img_' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
+// ========== IMAGE UPLOAD ==========
 const uploadImage = multer({
-    storage: imageStorage,
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            const uploadPath = path.join(projectRoot, 'public', 'uploads', 'images');
+            if (!fs.existsSync(uploadPath)) {
+                fs.mkdirSync(uploadPath, { recursive: true });
+            }
+            cb(null, uploadPath);
+        },
+        filename: function (req, file, cb) {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            cb(null, 'img_' + uniqueSuffix + path.extname(file.originalname));
+        }
+    }),
     fileFilter: function (req, file, cb) {
-        const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
-        
+        const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         if (allowedMimes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error('Only image files are allowed (JPEG, PNG, GIF, WebP, SVG)!'), false);
+            cb(new Error('Only image files are allowed!'), false);
         }
     },
-    limits: {
-        fileSize: 5 * 1024 * 1024
-    }
+    limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-// ========== DOCUMENT UPLOAD CONFIGURATION ==========
-const documentStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(projectRoot, 'public', 'uploads', 'documents'));
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const originalName = path.parse(file.originalname).name;
-        const safeName = originalName.replace(/[^a-zA-Z0-9]/g, '_');
-        cb(null, safeName + '_' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-const uploadDocument = multer({
-    storage: documentStorage,
-    fileFilter: function (req, file, cb) {
-        const allowedMimes = [
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'text/plain',
-            'text/csv'
-        ];
-        
-        if (allowedMimes.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error('Invalid document type. Allowed: PDF, Word, Excel, PowerPoint, TXT, CSV'), false);
-        }
-    },
-    limits: {
-        fileSize: 20 * 1024 * 1024
-    }
-});
-
-// ========== TEMP UPLOAD ==========
-const tempStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(projectRoot, 'public', 'uploads', 'temp'));
-    },
-    filename: function (req, file, cb) {
-        cb(null, 'temp_' + Date.now() + path.extname(file.originalname));
-    }
-});
-
-const uploadTemp = multer({
-    storage: tempStorage,
-    limits: {
-        fileSize: 50 * 1024 * 1024
-    }
-});
-
-// ========== HELPER MIDDLEWARE ==========
-
-// Middleware to handle upload errors
+// ========== ERROR HANDLING ==========
 const handleUploadError = (err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         if (err.code === 'LIMIT_FILE_SIZE') {
@@ -233,12 +153,6 @@ const handleUploadError = (err, req, res, next) => {
             return res.status(400).json({
                 success: false,
                 message: `Too many files. Maximum allowed: ${err.limit}`
-            });
-        }
-        if (err.code === 'LIMIT_UNEXPECTED_FILE') {
-            return res.status(400).json({
-                success: false,
-                message: 'Unexpected file field'
             });
         }
         return res.status(400).json({
@@ -254,45 +168,48 @@ const handleUploadError = (err, req, res, next) => {
     next();
 };
 
+// ========== UTILITY FUNCTIONS ==========
+const getFilePath = (filename, type = 'assignments') => {
+    return path.join(projectRoot, 'public', 'uploads', type, filename);
+};
+
+const deleteFile = (filePath) => {
+    return new Promise((resolve, reject) => {
+        if (!filePath || !fs.existsSync(filePath)) {
+            return resolve(false);
+        }
+        
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error('Failed to delete file:', err);
+                reject(err);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+};
+
 // Export all configurations
 module.exports = {
-    // Multer instances - REMOVED uploadPDFs, only keep uploadPDF
+    // Multer instances
     uploadVideo,
-    uploadPDF,          // This can be used with .single(), .array(), or .fields()
+    uploadPDF,          // ✅ Assignment PDF upload
     uploadImage,
-    uploadDocument,
-    uploadTemp,
     
     // Helper middleware
     handleUploadError,
-    addBufferToFile,
-    
-    // Direct paths
-    uploadPaths: {
-        videos: path.join(projectRoot, 'public', 'uploads', 'videos'),
-        submissions: path.join(projectRoot, 'public', 'uploads', 'submissions'),
-        assignments: path.join(projectRoot, 'public', 'uploads', 'assignments'),
-        images: path.join(projectRoot, 'public', 'uploads', 'images'),
-        documents: path.join(projectRoot, 'public', 'uploads', 'documents'),
-        resources: path.join(projectRoot, 'public', 'uploads', 'resources'),
-        temp: path.join(projectRoot, 'public', 'uploads', 'temp')
-    },
     
     // Utility functions
-    deleteFile: (filePath) => {
-        return new Promise((resolve, reject) => {
-            if (!filePath || !fs.existsSync(filePath)) {
-                return resolve(false);
-            }
-            
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error('Failed to delete file:', err);
-                    reject(err);
-                } else {
-                    resolve(true);
-                }
-            });
-        });
+    getFilePath,
+    deleteFile,
+    
+    // Direct paths for reference
+    uploadPaths: {
+        assignments: path.join(projectRoot, 'public', 'uploads', 'assignments'),
+        submissions: path.join(projectRoot, 'public', 'uploads', 'submissions'),
+        videos: path.join(projectRoot, 'public', 'uploads', 'videos'),
+        images: path.join(projectRoot, 'public', 'uploads', 'images'),
+        resources: path.join(projectRoot, 'public', 'uploads', 'resources')
     }
 };

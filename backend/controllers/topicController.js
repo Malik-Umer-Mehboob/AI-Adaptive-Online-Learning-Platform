@@ -630,13 +630,18 @@ exports.addVideosToTopic = async (req, res) => {
 
 // Add resources to topic
 // controllers/topicController.js - example addResourcesToTopic function
+// In topicController.js, update the addResourcesToTopic function:
 exports.addResourcesToTopic = async (req, res) => {
     try {
         const { id } = req.params;
+        const { resources: resourcesJson } = req.body;
         
-        // Check if files were uploaded
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ message: 'No PDF files uploaded' });
+        console.log('Adding resources to topic:', id);
+        console.log('Files received:', req.files ? req.files.length : 0);
+        console.log('Resources JSON:', resourcesJson);
+        
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid topic ID' });
         }
         
         const topic = await Topic.findById(id);
@@ -644,34 +649,61 @@ exports.addResourcesToTopic = async (req, res) => {
             return res.status(404).json({ message: 'Topic not found' });
         }
         
-        // Process each PDF file
-        const resources = req.files.map(file => {
-            return {
-                name: file.originalname,
-                path: `/uploads/resources/${file.filename}`,
+        // Process uploaded files
+        const uploadedResources = [];
+        if (req.files && req.files.length > 0) {
+            uploadedResources.push(...req.files.map((file, index) => ({
                 type: 'pdf',
-                uploadedAt: new Date()
-            };
-        });
+                url: `/uploads/resources/${file.filename}`,
+                name: file.originalname.replace(/\.[^/.]+$/, "") || `Resource ${index + 1}`,
+                isFile: true
+            })));
+        }
         
-        // Add to topic resources
+        // Parse JSON resources
+        let parsedResources = [];
+        if (resourcesJson) {
+            try {
+                parsedResources = JSON.parse(resourcesJson);
+            } catch (parseError) {
+                return res.status(400).json({ message: 'Invalid resources JSON format' });
+            }
+        }
+        
+        // Filter only external URLs from JSON
+        const externalResources = parsedResources.filter(r => r.url && r.type !== 'pdf');
+        
+        // Combine all resources
+        const newResources = [...uploadedResources, ...externalResources];
+        
+        if (newResources.length === 0) {
+            return res.status(400).json({ message: 'No valid resources provided' });
+        }
+        
+        // Add resources to topic
         topic.resources = topic.resources || [];
-        topic.resources.push(...resources);
+        topic.resources.push(...newResources);
         
+        // Update content summary
+        await autoSummary(topic);
         await topic.save();
         
-        res.status(200).json({
-            message: `${resources.length} PDF resource(s) added successfully`,
-            resources: resources.map(r => ({
+        res.json({
+            message: `${newResources.length} resource(s) added successfully`,
+            addedCount: newResources.length,
+            resources: newResources.map(r => ({
                 name: r.name,
-                url: `${process.env.BASE_URL || 'http://localhost:5000'}${r.path}`,
+                url: r.isFile ? `${req.protocol}://${req.get('host')}${r.url}` : r.url,
                 type: r.type
             }))
         });
         
     } catch (error) {
-        console.error('Add resources error:', error);
-        res.status(500).json({ message: 'Failed to add resources', error: error.message });
+        console.error('Add resources to topic error:', error);
+        res.status(500).json({ 
+            message: 'Failed to add resources', 
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' 
+        });
     }
 };
 

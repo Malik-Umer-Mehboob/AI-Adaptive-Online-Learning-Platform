@@ -9,6 +9,8 @@ const Enrollment = require('../models/Enrollment');
 const Favorite = require('../models/Favorite');
 const Assignment = require('../models/Assignment');
 const Submission = require('../models/Submission');
+// File ke TOP mein yeh line add karo
+const User = require('../models/User'); // <-- Yeh line add karo
 
 // Helper function
 function getYouTubeThumbnail(url) {

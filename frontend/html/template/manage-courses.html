@@ -934,6 +934,167 @@
         padding: 1px 4px;
     }
 }
+
+/* NEW: Assignment Generation Section Styles - ADDED BACK FOR ADD MODAL ONLY */
+.assignment-generation-section {
+    border: 2px dashed #007bff;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+}
+
+.dark-mode .assignment-generation-section {
+    background: linear-gradient(135deg, #1e3a5f, #2c5282);
+    border-color: #0d6efd;
+}
+
+.assignment-generation-section h6 {
+    color: #007bff;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.dark-mode .assignment-generation-section h6 {
+    color: #60a5fa;
+}
+
+.assignment-status {
+    padding: 10px;
+    border-radius: 8px;
+    background: #e8f5e8;
+    border-left: 4px solid #28a745;
+    margin: 10px 0;
+}
+
+.dark-mode .assignment-status {
+    background: #1e3a2c;
+    border-left-color: #34d399;
+}
+
+.ai-generating {
+    background: #fff3cd !important;
+    border-left-color: #ffc107 !important;
+}
+
+.dark-mode .ai-generating {
+    background: #5a4a1a !important;
+    border-left-color: #fbbf24 !important;
+}
+
+.assignment-preview {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 10px;
+    background: white;
+    font-size: 13px;
+    white-space: pre-wrap;
+}
+
+.dark-mode .assignment-preview {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+.assignment-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-generate {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+.btn-generate:hover {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    transform: translateY(-2px);
+}
+
+.btn-view-assignment {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
+    color: white;
+}
+
+.btn-view-assignment:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
+/* NEW: Assignments Count Badge */
+.assignments-count {
+    background: #8b5cf6;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.ai-powered-badge {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    margin-left: 5px;
+}
+
+/* AI Status Indicator */
+.ai-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #e8f5e8;
+    color: #28a745;
+}
+
+.dark-mode .ai-status-indicator {
+    background: #1e3a2c;
+    color: #34d399;
+}
+
+.ai-status-indicator.offline {
+    background: #fde8e8;
+    color: #dc3545;
+}
+
+.dark-mode .ai-status-indicator.offline {
+    background: #3a1e1e;
+    color: #f87171;
+}
+
+.ai-status-indicator .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.ai-status-indicator .status-dot.online {
+    background: #28a745;
+    animation: pulse 2s infinite;
+}
+
+.ai-status-indicator .status-dot.offline {
+    background: #dc3545;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
     </style>
 </head>
 <body>
@@ -1119,6 +1280,7 @@
                                         <th>Description</th>
                                         <th>Category</th>
                                         <th>Videos</th>
+                                        <th>Assignments</th>
                                         <th>Created At</th>
                                         <th>Actions</th>
                                     </tr>
@@ -1149,7 +1311,7 @@
                 </div>
             </div>
         </div>
-        <!-- Add Course Modal -->
+        <!-- Add Course Modal - WITH Assignment Generation Section -->
         <div class="modal fade" id="addCourseModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -1248,6 +1410,81 @@
                                     <button type="button" class="btn btn-outline-success w-100" id="add-course-resource-btn">Add Resource(s) to Course</button>
                                 </div>
                             </div>
+
+                            <!-- ADDED BACK: Assignment Generation Section in Add Modal -->
+                            <div class="assignment-generation-section mt-4" id="add-modal-assignment-section">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-robot me-2"></i> Assignment Generation
+                                    <span class="ai-status-indicator" id="add-modal-ai-status">
+                                        <span class="status-dot offline"></span>
+                                        <span>Checking AI Status...</span>
+                                    </span>
+                                </h6>
+                                <p class="text-muted mb-3">Generate assignments automatically from course PDF notes.</p>
+                                
+                                <div class="row mb-3">
+                                   
+<div class="row mb-3">
+    <div class="col-md-8">
+        <label class="form-label">Custom Prompt (Optional)</label>
+        <textarea class="form-control" id="add-custom-prompt" 
+                  rows="3" 
+                  placeholder="Example: 'Generate 5 MCQs only from React Hooks section with A-D options and answer key' 
+Customize assignment generation as needed. If empty, system will use default prompt."></textarea>
+        <small class="form-text text-muted">
+            Leave empty for default. Use to specify exactly what type of questions you need.
+        </small>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Advanced Options</label>
+        
+    </div>
+</div>
+                                   
+                                    <div class="col-md-4">
+                                        <label class="form-label">Due Date</label>
+                                        <input type="date" class="form-control" id="add-assignment-due-date">
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label">Assignment Title</label>
+                                        <input type="text" class="form-control" id="add-assignment-title" 
+                                               placeholder="e.g., AI Generated Assignment - [Course Name]">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button type="button" class="btn btn-generate w-100" id="add-generate-assignment-btn">
+                                            <i class="fas fa-magic me-2"></i> Preview Assignment
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="add-assignment-status" class="assignment-status" style="display: none;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                                        <div>
+                                            <strong>Generating Assignment...</strong>
+                                            <p class="mb-0 small">AI is creating questions from course notes.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="add-assignment-preview-container" style="display: none;">
+                                    <h6 class="mt-3 mb-2">Generated Assignment Preview</h6>
+                                    <div class="assignment-preview" id="add-assignment-preview"></div>
+                                    <div class="assignment-actions">
+                                        <button type="button" class="btn btn-success" id="add-save-assignment-btn">
+                                            <i class="fas fa-save me-2"></i> Save with Course
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary" id="add-regenerate-assignment-btn">
+                                            <i class="fas fa-redo me-2"></i> Regenerate
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END: Assignment Generation Section -->
                    
                             <div class="d-flex justify-content-end mt-3">
                                 <button type="submit" class="btn btn-primary">
@@ -1259,7 +1496,7 @@
                 </div>
             </div>
         </div>
-        <!-- Edit Course Modal -->
+        <!-- Edit Course Modal - WITHOUT Assignment Generation Section -->
         <div class="modal fade" id="editCourseModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -1359,7 +1596,7 @@
                                     <button type="button" class="btn btn-outline-success w-100" id="edit-add-course-resource-btn">Add Resource(s) to Course</button>
                                 </div>
                             </div>
-                   
+
                             <div class="d-flex justify-content-end mt-3">
                                 <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary">
@@ -1601,52 +1838,30 @@
     <!-- Custom JS -->
     <script src="assets/js/script.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-    <!-- Updated Script - REMOVED combined handler, changed btn text to Topic -->
+    <!-- UPDATED Script with Assignment Generation Feature in Add Course Only -->
 <script>
-  // Ye function local video ka thumbnail dikhayega
-function getVideoThumbnail(video) {
-    if (!video) return 'assets/img/course/course-placeholder.jpg';
-
-    // Agar humne backend se thumbnail bheja ho
-    if (video.thumbnail) {
-        if (video.thumbnail.startsWith('http')) {
-            return video.thumbnail;
-        }
-        return 'http://localhost:5000' + video.thumbnail;
-    }
-
-    // YouTube video
-    const url = video.url || '';
-    const match = url.match(/(youtube\.com|youtu\.be)\/(watch\?v=|embed\/)?([\w-]{11})/);
-    if (match && match[3]) {
-        return `https://img.youtube.com/vi/${match[3]}/hqdefault.jpg`;
-    }
-
-    // Default image
-    return 'assets/img/course/course-placeholder.jpg';
-}
-$(document).ready(function() {
+  $(document).ready(function() {
     const token = localStorage.getItem('token');
     if (!token) {
-        showToast("Please login first.", "error");
-        window.location.href = 'login.html';
-        return;
+      showToast("Please login first.", "error");
+      window.location.href = 'login.html';
+      return;
     }
     let decoded;
     try {
-        decoded = jwt_decode(token);
-        console.log('Decoded Token:', decoded);
+      decoded = jwt_decode(token);
+      console.log('Decoded Token:', decoded);
     } catch (error) {
-        console.error('Token decode error:', error);
-        showToast("Invalid token. Please login again.", "error");
-        localStorage.removeItem('token');
-        window.location.href = 'login.html';
-        return;
+      console.error('Token decode error:', error);
+      showToast("Invalid token. Please login again.", "error");
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+      return;
     }
     if (decoded.role !== 'admin') {
-        showToast("Access denied: This page is for admins only.", "error");
-        window.location.href = 'login.html';
-        return;
+      showToast("Access denied: This page is for admins only.", "error");
+      window.location.href = 'login.html';
+      return;
     }
     
     // Pagination variables
@@ -1654,11 +1869,14 @@ $(document).ready(function() {
     const coursesPerPage = 10;
     let allCourses = [];
     
+    // Assignment generation variables for Add Course only
+    let addModalGeneratedAssignment = null;
+    
     // Function to show toast messages
     function showToast(message, type = 'success', duration = 3000) {
-        const toastContainer = $('#toast-container');
-        const toastId = `toast-${Date.now()}`;
-        const toastHtml = `
+      const toastContainer = $('#toast-container');
+      const toastId = `toast-${Date.now()}`;
+      const toastHtml = `
             <div id="${toastId}" class="toast align-items-center ${type === 'success' ? 'toast-success' : 'toast-error'} fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${duration}">
                 <div class="d-flex">
                     <div class="toast-body">${message}</div>
@@ -1666,15 +1884,16 @@ $(document).ready(function() {
                 </div>
             </div>
         `;
-        toastContainer.append(toastHtml);
-        const toastElement = document.getElementById(toastId);
-        const toast = new bootstrap.Toast(toastElement);
-        toast.show();
-        setTimeout(() => {
-            toast.hide();
-            $(`#${toastId}`).remove();
-        }, duration);
+      toastContainer.append(toastHtml);
+      const toastElement = document.getElementById(toastId);
+      const toast = new bootstrap.Toast(toastElement);
+      toast.show();
+      setTimeout(() => {
+        toast.hide();
+        $(`#${toastId}`).remove();
+      }, duration);
     }
+    
     let videoFiles = [];
     let resourceFiles = []; // NEW for course resources
     let topicVideoFiles = []; // NEW for topic videos
@@ -1684,116 +1903,132 @@ $(document).ready(function() {
     let currentResourceTopicId = '';
     let currentCourseIdForTopics = ''; // For topics modal
     let topicMode = 'edit'; // add or edit
+    
     function loadProfile() {
-        console.log("Loading profile for user ID:", decoded.id);
-        $.ajax({
-            url: 'http://localhost:5000/api/auth/profile',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token },
-            success: function(profile) {
-                console.log('Profile loaded:', profile);
-                $("#profile-name").text(profile.name || 'Admin');
-                $("#profile-email a")
-                  .text(profile.email || "No email")
-                  .attr("href", `mailto:${profile.email || ""}`);
-                if (profile.profileImage) {
-                    $(".dropdown-profile-img")
-                      .attr("src", profile.profileImage)
-                      .parent()
-                      .addClass("has-image");
-                    $("#profile-img")
-                      .attr("src", profile.profileImage)
-                      .parent()
-                      .addClass("has-image");
-                } else {
-                    $(".dropdown-profile-img").attr('src', '').parent().removeClass('has-image');
-                    $("#profile-img").attr('src', '').parent().removeClass('has-image');
-                }
-            },
-            error: function(xhr) {
-                console.error('Profile load error:', {
-                    status: xhr.status,
-                    response: xhr.responseText,
-                });
-                if (xhr.status === 0)
-                    showToast("Unable to connect to server.", "error");
-                else if (xhr.status === 401) {
-                    showToast("Session expired.", "error");
-                    localStorage.removeItem("token");
-                    window.location.href = "login.html";
-                } else
-                    showToast(`Profile error (Status: ${xhr.status}).`, "error");
-            },
-        });
+      console.log("Loading profile for user ID:", decoded.id);
+      $.ajax({
+        url: 'http://localhost:5000/api/auth/profile',
+        type: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token },
+        success: function(profile) {
+          console.log('Profile loaded:', profile);
+          $("#profile-name").text(profile.name || 'Admin');
+          $("#profile-email a")
+            .text(profile.email || "No email")
+            .attr("href", `mailto:${profile.email || ""}`);
+          if (profile.profileImage) {
+            $(".dropdown-profile-img")
+              .attr("src", profile.profileImage)
+              .parent()
+              .addClass("has-image");
+            $("#profile-img")
+              .attr("src", profile.profileImage)
+              .parent()
+              .addClass("has-image");
+          } else {
+            $(".dropdown-profile-img").attr('src', '').parent().removeClass('has-image');
+            $("#profile-img").attr('src', '').parent().removeClass('has-image');
+          }
+        },
+        error: function(xhr) {
+          console.error('Profile load error:', {
+            status: xhr.status,
+            response: xhr.responseText,
+          });
+          if (xhr.status === 0)
+            showToast("Unable to connect to server.", "error");
+          else if (xhr.status === 401) {
+            showToast("Session expired.", "error");
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+          } else
+            showToast(`Profile error (Status: ${xhr.status}).`, "error");
+        },
+      });
     }
+    
     // Handle profile link click
     $(".profile-link").on("click", function (e) {
-        e.preventDefault();
-        const href = $(this).data("href") || $(this).attr("href");
-        console.log('Profile link clicked, checking profile... Token ID:', decoded.id);
-        $.ajax({
-            url: 'http://localhost:5000/api/auth/profile',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token },
-            success: function(profile) {
-                console.log('Profile access OK, redirecting to:', href);
-                window.location.href = href;
-            },
-            error: function(xhr) {
-                console.error(
-                    "Profile access error:",
-                    xhr.status,
-                    xhr.responseText
-                );
-                if (xhr.status === 0) showToast("Server unavailable.", "error");
-                else if (xhr.status === 401) {
-                    showToast("Session expired.", "error");
-                    localStorage.removeItem("token");
-                    window.location.href = "login.html";
-                } else
-                    showToast(
-                        `Profile access error (Status: ${xhr.status}).`,
-                        "error"
-                    );
-            },
-        });
+      e.preventDefault();
+      const href = $(this).data("href") || $(this).attr("href");
+      console.log('Profile link clicked, checking profile... Token ID:', decoded.id);
+      $.ajax({
+        url: 'http://localhost:5000/api/auth/profile',
+        type: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token },
+        success: function(profile) {
+          console.log('Profile access OK, redirecting to:', href);
+          window.location.href = href;
+        },
+        error: function(xhr) {
+          console.error(
+            "Profile access error:",
+            xhr.status,
+            xhr.responseText
+          );
+          if (xhr.status === 0) showToast("Server unavailable.", "error");
+          else if (xhr.status === 401) {
+            showToast("Session expired.", "error");
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+          } else
+            showToast(
+              `Profile access error (Status: ${xhr.status}).`,
+              "error"
+            );
+        },
+      });
     });
+    
     loadProfile();
+    
     function populateCategorySelect(selectId) {
-        $.ajax({
-            url: 'http://localhost:5000/api/categories',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token },
-            success: function(categories) {
-                let options = '<option value="">Select Category</option>';
-                categories.forEach(cat => {
-                    options += `<option value="${cat._id}">${cat.name}</option>`;
-                });
-                $(`#${selectId}`).html(options);
-            },
-            error: function() {
-                showToast('Error loading categories.', 'error');
-            }
-        });
+      $.ajax({
+        url: 'http://localhost:5000/api/categories',
+        type: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token },
+        success: function(categories) {
+          let options = '<option value="">Select Category</option>';
+          categories.forEach(cat => {
+            options += `<option value="${cat._id}">${cat.name}</option>`;
+          });
+          $(`#${selectId}`).html(options);
+        },
+        error: function() {
+          showToast('Error loading categories.', 'error');
+        }
+      });
     }
+    
     function generateVideoId() {
-        return 'vid_' + Date.now() + '_' + videoCounter++;
+      return 'vid_' + Date.now() + '_' + videoCounter++;
     }
+    
     function generateTopicVideoId() {
-        return 'tvid_' + Date.now() + '_' + videoCounter++;
+      return 'tvid_' + Date.now() + '_' + videoCounter++;
     }
+    
     function generateResourceId() {
-        return 'res_' + Date.now() + '_' + (videoCounter++); // Reuse counter
+      return 'res_' + Date.now() + '_' + (videoCounter++); // Reuse counter
     }
+    
     function generateTopicResourceId() {
-        return 'tres_' + Date.now() + '_' + (videoCounter++);
+      return 'tres_' + Date.now() + '_' + (videoCounter++);
     }
-    // UPDATED: Add video (now allows playlist for course, single for topics)
+    
+    // Add video to list
     function addVideoToList(listId, previewId, subtopic, file, url, videoId, isTopic = false) {
-        if (!subtopic.trim()) return showToast('Sub-topic is required.', 'error'), false;
-        if (!file && !url.trim()) return showToast('Add video file or URL.', 'error'), false;
-        const filesArray = isTopic ? topicVideoFiles : videoFiles;
-        const videoItem = $(`
+      if (!subtopic.trim()) {
+        showToast('Sub-topic is required.', 'error');
+        return false;
+      }
+      if (!file && !url.trim()) {
+        showToast('Add video file or URL.', 'error');
+        return false;
+      }
+      
+      const filesArray = isTopic ? topicVideoFiles : videoFiles;
+      const videoItem = $(`
             <div class="video-item" data-video-id="${videoId}">
                 <div class="d-flex align-items-center w-100">
                     <i class="fas fa-play-circle me-3 text-primary fs-4"></i>
@@ -1811,25 +2046,36 @@ $(document).ready(function() {
                 </div>
             </div>
         `);
-        if (file) filesArray.push({ id: videoId, file });
-        videoItem.find('.remove-video').on('click', function() {
-            const id = $(this).closest('.video-item').data('video-id');
-            if (isTopic) {
-                topicVideoFiles = topicVideoFiles.filter(f => f.id !== id);
-            } else {
-                videoFiles = videoFiles.filter(f => f.id !== id);
-            }
-            $(this).closest('.video-item').fadeOut(300, function() { $(this).remove(); updatePreview(previewId); });
+      
+      if (file) filesArray.push({ id: videoId, file });
+      
+      videoItem.find('.remove-video').on('click', function() {
+        const id = $(this).closest('.video-item').data('video-id');
+        if (isTopic) {
+          topicVideoFiles = topicVideoFiles.filter(f => f.id !== id);
+        } else {
+          videoFiles = videoFiles.filter(f => f.id !== id);
+        }
+        $(this).closest('.video-item').fadeOut(300, function() { 
+          $(this).remove(); 
+          updatePreview(previewId); 
         });
-        $(`#${listId}`).append(videoItem);
-        updatePreview(previewId);
-        return true;
+      });
+      
+      $(`#${listId}`).append(videoItem);
+      updatePreview(previewId);
+      return true;
     }
-    // UPDATED: Add resource to list (for course or topic)
+    
+    // Add resource to list
     function addResourceToList(listId, name, file, url, resId, type = 'pdf', isTopic = false) {
-        if (!name && !file && !url) return showToast('Provide name, file, or URL.', 'error'), false;
-        const filesArray = isTopic ? topicResourceFiles : resourceFiles;
-        const resourceItem = $(`
+      if (!name && !file && !url) {
+        showToast('Provide name, file, or URL.', 'error');
+        return false;
+      }
+      
+      const filesArray = isTopic ? topicResourceFiles : resourceFiles;
+      const resourceItem = $(`
             <div class="resource-item" data-res-id="${resId}">
                 <div class="d-flex align-items-center w-100">
                     <i class="fas fa-file-pdf me-3 text-success fs-4"></i>
@@ -1848,694 +2094,989 @@ $(document).ready(function() {
                 </div>
             </div>
         `);
-        if (file) filesArray.push({ id: resId, file });
-        resourceItem.find('.remove-resource').on('click', function() {
-            const id = $(this).closest('.resource-item').data('res-id');
-            if (isTopic) {
-                topicResourceFiles = topicResourceFiles.filter(f => f.id !== id);
-            } else {
-                resourceFiles = resourceFiles.filter(f => f.id !== id);
-            }
-            $(this).closest('.resource-item').fadeOut(300, function() { $(this).remove(); });
-        });
-        $(`#${listId}`).append(resourceItem);
-        return true;
-    }
-    function updatePreview(previewId) {
-        const $items = $(`#${previewId.replace('preview', 'list')} .video-item`);
-        const $container = $(`#${previewId}`);
-        if ($items.length === 0) return $container.html('<p class="text-muted">No videos added.</p>');
-        let html = '<div class="row">';
-        $items.each(function() {
-            const topic = $(this).find('strong').text();
-            const url = $(this).find(`input[name^="url-"]`).val();
-            const isFile = $(this).find(`input[name^="isFile-"]`).val() === 'true';
-            let media = isFile
-                ? '<div class="text-center"><i class="fas fa-file-video fa-3x text-muted"></i><p class="small">Video File</p></div>'
-                : (getYouTubeEmbedUrl(url) ? `<iframe src="${getYouTubeEmbedUrl(url)}" frameborder="0" allowfullscreen class="rounded"></iframe>` : '<p class="text-muted">URL</p>');
-            html += `<div class="col-md-6 mb-3"><div class="border rounded p-3"><h6>${topic}</h6><div class="video-preview-container">${media}</div></div></div>`;
-        });
-        $container.html(html + '</div>');
-    }
-    function getYouTubeEmbedUrl(url) {
-        if (!url) return null;
-        try {
-            const urlObj = new URL(url);
-            const videoId = urlObj.searchParams.get('v') || (urlObj.hostname === 'youtu.be' ? urlObj.pathname.slice(1) : null);
-            return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
-        } catch {
-            return null;
+      
+      if (file) filesArray.push({ id: resId, file });
+      
+      resourceItem.find('.remove-resource').on('click', function() {
+        const id = $(this).closest('.resource-item').data('res-id');
+        if (isTopic) {
+          topicResourceFiles = topicResourceFiles.filter(f => f.id !== id);
+        } else {
+          resourceFiles = resourceFiles.filter(f => f.id !== id);
         }
+        $(this).closest('.resource-item').fadeOut(300, function() { 
+          $(this).remove(); 
+        });
+      });
+      
+      $(`#${listId}`).append(resourceItem);
+      return true;
+    }
+    
+    function updatePreview(previewId) {
+      const $items = $(`#${previewId.replace('preview', 'list')} .video-item`);
+      const $container = $(`#${previewId}`);
+      
+      if ($items.length === 0) {
+        $container.html('<p class="text-muted">No videos added.</p>');
+        return;
+      }
+      
+      let html = '<div class="row">';
+      $items.each(function() {
+        const topic = $(this).find('strong').text();
+        const url = $(this).find(`input[name^="url-"]`).val();
+        const isFile = $(this).find(`input[name^="isFile-"]`).val() === 'true';
+        let media = isFile
+          ? '<div class="text-center"><i class="fas fa-file-video fa-3x text-muted"></i><p class="small">Video File</p></div>'
+          : (getYouTubeEmbedUrl(url) ? `<iframe src="${getYouTubeEmbedUrl(url)}" frameborder="0" allowfullscreen class="rounded"></iframe>` : '<p class="text-muted">URL</p>');
+        html += `<div class="col-md-6 mb-3"><div class="border rounded p-3"><h6>${topic}</h6><div class="video-preview-container">${media}</div></div></div>`;
+      });
+      
+      $container.html(html + '</div>');
+    }
+    
+    function getYouTubeEmbedUrl(url) {
+      if (!url) return null;
+      try {
+        const urlObj = new URL(url);
+        const videoId = urlObj.searchParams.get('v') || (urlObj.hostname === 'youtu.be' ? urlObj.pathname.slice(1) : null);
+        return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+      } catch {
+        return null;
+      }
     }
     
     // UPDATED: Paginated loadCourses function
-    function loadCourses(page = 1) {
-        currentPage = page;
-        $.ajax({
-            url: 'http://localhost:5000/api/courses',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token },
-            success: function(courses) {
-                allCourses = courses;
+    // manage-courses.html script mein loadCourses function update karo:
+
+function loadCourses(page = 1) {
+    currentPage = page;
+    $.ajax({
+        url: 'http://localhost:5000/api/courses',
+        type: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token },
+        success: function(courses) {
+            allCourses = courses;
+            
+            // ✅ Har course ke assignments separately fetch karo
+            const coursePromises = allCourses.map(async (course) => {
+                try {
+                    const response = await $.ajax({
+                        url: `http://localhost:5000/api/courses/${course._id}/assignments`,
+                        type: 'GET',
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    course.assignments = response.assignments || [];
+                    return course;
+                } catch (err) {
+                    console.error(`Error fetching assignments for ${course.name}:`, err);
+                    course.assignments = [];
+                    return course;
+                }
+            });
+            
+            Promise.all(coursePromises).then((updatedCourses) => {
+                allCourses = updatedCourses;
                 renderCoursesPage(page);
-            },
-            error: function(xhr) {
-                console.error('Load courses error:', xhr.responseText);
-                $('#courses-list').html('<tr><td colspan="6" class="text-center text-danger">Error loading courses</td></tr>');
-            }
-        });
-    }
+            });
+        },
+        error: function(xhr) {
+            console.error('Load courses error:', xhr.responseText);
+            $('#courses-list').html('<tr><td colspan="7" class="text-center text-danger">Error loading courses</td></tr>');
+        }
+    });
+}
     
     // Function to render courses for current page
     function renderCoursesPage(page) {
-        const $tbody = $('#courses-list').empty();
-        const totalCourses = allCourses.length;
-        const totalPages = Math.ceil(totalCourses / coursesPerPage);
+      const $tbody = $('#courses-list').empty();
+      const totalCourses = allCourses.length;
+      const totalPages = Math.ceil(totalCourses / coursesPerPage);
+      
+      // Calculate start and end indices
+      const startIndex = (page - 1) * coursesPerPage;
+      const endIndex = Math.min(startIndex + coursesPerPage, totalCourses);
+      
+      // Update pagination info
+      $('#start-index').text(totalCourses > 0 ? startIndex + 1 : 0);
+      $('#end-index').text(endIndex);
+      $('#total-courses').text(totalCourses);
+      
+      // Show courses for current page
+      if (totalCourses === 0) {
+        $tbody.html('<tr><td colspan="7" class="text-center text-muted py-4">No courses found.</td></tr>');
+        renderPaginationControls(page, 0);
+        return;
+      }
+      
+      const pageCourses = allCourses.slice(startIndex, endIndex);
+      let html = '';
+      pageCourses.forEach(c => {
+        const videoCount = Array.isArray(c.videos) ? c.videos.length : 0;
+        const topicCount = Array.isArray(c.topics) ? c.topics.length : 0;
+        const assignmentCount = Array.isArray(c.assignments) ? c.assignments.length : 0;
+        const cat = c.category?.name || 'Uncategorized';
+        const first = videoCount > 0 ? c.videos[0].topic : '';
+        const escape = s => String(s || '').replace(/"/g, '&quot;');
+        const videosData = JSON.stringify((c.videos || []).map(v => ({ topic: v.topic, url: v.url, isFile: !!v.isFile })));
+        const resourcesData = JSON.stringify((c.resources || []).map(r => ({ name: r.name, url: r.url, isFile: !!r.isFile })));
         
-        // Calculate start and end indices
-        const startIndex = (page - 1) * coursesPerPage;
-        const endIndex = Math.min(startIndex + coursesPerPage, totalCourses);
+        // Check for AI-generated assignments
+        const aiAssignments = Array.isArray(c.assignments) ? 
+          c.assignments.filter(a => a.generatedByAI).length : 0;
         
-        // Update pagination info
-        $('#start-index').text(totalCourses > 0 ? startIndex + 1 : 0);
-        $('#end-index').text(endIndex);
-        $('#total-courses').text(totalCourses);
-        
-        // Show courses for current page
-        if (totalCourses === 0) {
-            $tbody.html('<tr><td colspan="6" class="text-center text-muted py-4">No courses found.</td></tr>');
-            renderPaginationControls(page, 0);
-            return;
-        }
-        
-        const pageCourses = allCourses.slice(startIndex, endIndex);
-        let html = '';
-        pageCourses.forEach(c => {
-            const count = Array.isArray(c.videos) ? c.videos.length : 0;
-            const topicCount = Array.isArray(c.topics) ? c.topics.length : 0;
-            const resCount = Array.isArray(c.resources) ? c.resources.length : 0;
-            const cat = c.category?.name || 'Uncategorized';
-            const first = count > 0 ? c.videos[0].topic : '';
-            const escape = s => String(s || '').replace(/"/g, '&quot;');
-            const videosData = JSON.stringify((c.videos || []).map(v => ({ topic: v.topic, url: v.url, isFile: !!v.isFile })));
-            const resourcesData = JSON.stringify((c.resources || []).map(r => ({ name: r.name, url: r.url, isFile: !!r.isFile })));
-            html += `
+        html += `
                 <tr>
                     <td>${escape(c.name)}</td>
                     <td>${escape(c.description).substring(0,50)}${c.description.length > 50 ? '...' : ''}</td>
                     <td>${escape(cat)}</td>
-                    <td><span class="badge bg-primary">${count} video${count !== 1 ? 's' : ''}</span> | <span class="badge bg-info">${topicCount} topic${topicCount !== 1 ? 's' : ''}</span>${count > 0 ? `<br><small class="text-muted">${escape(first)}</small>` : ''}</td>
+                    <td>
+                        <span class="badge bg-primary">${videoCount} video${videoCount !== 1 ? 's' : ''}</span> 
+                        <span class="badge bg-info">${topicCount} topic${topicCount !== 1 ? 's' : ''}</span>
+                        ${videoCount > 0 ? `<br><small class="text-muted">${escape(first)}</small>` : ''}
+                    </td>
+                    <td>
+                        <span class="badge ${assignmentCount > 0 ? 'bg-success' : 'bg-secondary'}">
+                            ${assignmentCount} assignment${assignmentCount !== 1 ? 's' : ''}
+                        </span>
+                        ${aiAssignments > 0 ? `
+                            <span class="ai-powered-badge" title="${aiAssignments} AI-generated assignments">
+                                ${aiAssignments} AI
+                            </span>
+                        ` : ''}
+                    </td>
                     <td>${new Date(c.createdAt).toLocaleDateString()}</td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-sm btn-primary edit-course" data-id="${c._id}" data-name="${escape(c.name)}" data-description="${escape(c.description)}" data-category="${c.category?._id || ''}" data-videos="${escape(videosData)}" data-resources="${escape(resourcesData)}">Edit</button>
-                            <button class="btn btn-sm btn-info manage-topics-btn" data-id="${c._id}" data-name="${escape(c.name)}">Topic</button>
-                            <button class="btn btn-sm btn-danger delete-course" data-id="${c._id}" title="Delete entire course">Delete Course</button>
+                            <button class="btn btn-sm btn-primary edit-course" 
+                                data-id="${c._id}" 
+                                data-name="${escape(c.name)}" 
+                                data-description="${escape(c.description)}" 
+                                data-category="${c.category?._id || ''}" 
+                                data-videos="${escape(videosData)}" 
+                                data-resources="${escape(resourcesData)}">
+                                Edit
+                            </button>
+                            <button class="btn btn-sm btn-info manage-topics-btn" 
+                                data-id="${c._id}" 
+                                data-name="${escape(c.name)}">
+                                Topic
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-course" 
+                                data-id="${c._id}" 
+                                title="Delete entire course">
+                                Delete
+                            </button>
                         </div>
                     </td>
                 </tr>`;
-        });
-        $tbody.html(html);
-        renderPaginationControls(page, totalPages);
+      });
+      $tbody.html(html);
+      renderPaginationControls(page, totalPages);
     }
     
     // Function to render pagination controls
     function renderPaginationControls(currentPage, totalPages) {
-        const $pagination = $('#pagination-controls').empty();
-        
-        if (totalPages <= 1) return;
-        
-        // Previous button
-        const prevDisabled = currentPage === 1 ? 'disabled' : '';
-        const prevButton = $(`
+      const $pagination = $('#pagination-controls').empty();
+      
+      if (totalPages <= 1) return;
+      
+      // Previous button
+      const prevDisabled = currentPage === 1 ? 'disabled' : '';
+      const prevButton = $(`
             <li class="page-item ${prevDisabled}">
                 <a class="page-link" href="javascript:void(0);" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
         `);
-        if (!prevDisabled) {
-            prevButton.find('a').on('click', () => loadCourses(currentPage - 1));
-        }
-        $pagination.append(prevButton);
-        
-        // Page buttons (show max 5 pages)
-        let startPage = Math.max(1, currentPage - 2);
-        let endPage = Math.min(totalPages, startPage + 4);
-        
-        if (endPage - startPage < 4) {
-            startPage = Math.max(1, endPage - 4);
-        }
-        
-        for (let i = startPage; i <= endPage; i++) {
-            const active = i === currentPage ? 'active' : '';
-            const pageButton = $(`
+      if (!prevDisabled) {
+        prevButton.find('a').on('click', () => loadCourses(currentPage - 1));
+      }
+      $pagination.append(prevButton);
+      
+      // Page buttons (show max 5 pages)
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, startPage + 4);
+      
+      if (endPage - startPage < 4) {
+        startPage = Math.max(1, endPage - 4);
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        const active = i === currentPage ? 'active' : '';
+        const pageButton = $(`
                 <li class="page-item ${active}">
                     <a class="page-link" href="javascript:void(0);">${i}</a>
                 </li>
             `);
-            pageButton.find('a').on('click', () => loadCourses(i));
-            $pagination.append(pageButton);
-        }
-        
-        // Next button
-        const nextDisabled = currentPage === totalPages ? 'disabled' : '';
-        const nextButton = $(`
+        pageButton.find('a').on('click', () => loadCourses(i));
+        $pagination.append(pageButton);
+      }
+      
+      // Next button
+      const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+      const nextButton = $(`
             <li class="page-item ${nextDisabled}">
                 <a class="page-link" href="javascript:void(0);" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         `);
-        if (!nextDisabled) {
-            nextButton.find('a').on('click', () => loadCourses(currentPage + 1));
-        }
-        $pagination.append(nextButton);
+      if (!nextDisabled) {
+        nextButton.find('a').on('click', () => loadCourses(currentPage + 1));
+      }
+      $pagination.append(nextButton);
     }
     
-    // Add Video Button for Add Course (allows playlist)
-    $('#add-video-btn').on('click', () => {
-        const topic = $('#video-topic').val().trim();
-        const file = $('#course-video')[0].files[0];
-        const url = $('#course-video-url').val().trim();
-        if (file && url) {
-            return showToast('Choose file OR URL/Playlist, not both.', 'error');
+    // NEW: Check AI Status for Add Modal
+    function checkAIStatusForAddModal() {
+      $.ajax({
+        url: 'http://localhost:5000/api/ai/status',
+        type: 'GET',
+        success: function(response) {
+          const statusIndicator = $('#add-modal-ai-status');
+          if (response.ollamaRunning && response.modelExists) {
+            statusIndicator.removeClass('offline').addClass('online');
+            statusIndicator.find('.status-dot').removeClass('offline').addClass('online');
+            statusIndicator.find('span').last().text('AI Ready');
+          } else {
+            statusIndicator.addClass('offline');
+            statusIndicator.find('.status-dot').removeClass('online').addClass('offline');
+            statusIndicator.find('span').last().text('AI Not Configured');
+          }
+        },
+        error: function() {
+          $('#add-modal-ai-status').addClass('offline')
+            .find('.status-dot').removeClass('online').addClass('offline')
+            .end().find('span').last().text('AI Service Error');
         }
-        if (file) {
-            const id = generateVideoId();
-            if (addVideoToList('video-list', 'video-preview', topic, file, null, id)) {
-                $('#video-topic, #course-video, #course-video-url').val('');
-            }
-        } else if (url) {
-            const id = generateVideoId();
-            if (addVideoToList('video-list', 'video-preview', topic, null, url, id)) {
-                $('#video-topic, #course-video-url').val('');
-            }
+      });
+    }
+    
+    // ✅ NEW: Generate Assignment with Custom Prompt
+   // Frontend script mein
+$('#add-generate-assignment-btn').on('click', function() {
+    const customPrompt = $('#add-custom-prompt').val().trim();
+    
+    if (!customPrompt) {
+        showToast('Enter custom prompt first', 'error');
+        return;
+    }
+    
+    const numQuestions = $('#add-assignment-num-questions').val();
+    const type = $('#add-assignment-type').val();
+    
+    // Build final prompt
+    let finalPrompt = customPrompt;
+    
+    // Agar prompt mein instructions nahi hain, toh add karo
+    if (!customPrompt.toLowerCase().includes('generate') && 
+        !customPrompt.toLowerCase().includes('create') &&
+        !customPrompt.toLowerCase().includes('make')) {
+        
+        finalPrompt = `Generate ${numQuestions} ${type} questions: ${customPrompt}`;
+    }
+    
+    console.log('📝 Final prompt:', finalPrompt);
+    
+    // Show loading
+    $('#add-assignment-status').show();
+    
+    // Save for later
+    addModalGeneratedAssignment = {
+        generateAssignment: true,
+        customPrompt: finalPrompt,
+        numQuestions: numQuestions,
+        type: type,
+        dueDate: $('#add-assignment-due-date').val(),
+        title: $('#add-assignment-title').val()
+    };
+    
+    // Show preview
+    setTimeout(() => {
+        $('#add-assignment-status').hide();
+        $('#add-assignment-preview').html(`
+            <div class="alert alert-success">
+                <strong>✅ Ready to Generate!</strong>
+                <p>Assignment will be generated from your custom prompt:</p>
+                <p><em>"${finalPrompt.substring(0, 200)}..."</em></p>
+                <p><strong>Type:</strong> ${type} | <strong>Questions:</strong> ${numQuestions}</p>
+            </div>
+        `);
+        $('#add-assignment-preview-container').show();
+        showToast('Ready to generate assignment', 'success');
+    }, 1000);
+});
+    // ✅ NEW: Regenerate Assignment Button
+    $('#add-regenerate-assignment-btn').on('click', function() {
+        if (addModalGeneratedAssignment) {
+            // Just trigger the generate button again
+            $('#add-generate-assignment-btn').trigger('click');
         } else {
-            showToast('Add video file or URL/Playlist.', 'error');
+            showToast('Please generate assignment first.', 'warning');
         }
     });
-    // UPDATED: Add Course Resource(s) - Now supports multiple PDFs
-    $('#add-course-resource-btn').on('click', () => {
-        const name = $('#course-resource-name').val().trim();
-        const files = $('#course-resource-pdf')[0].files;
-        const url = $('#course-resource-url').val().trim();
-        if (files.length > 0 && url) return showToast('Choose file(s) OR URL, not both.', 'error');
-        let addedCount = 0;
-        if (files.length > 0) {
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.size > 50 * 1024 * 1024) return showToast(`File ${file.name} exceeds 50MB limit.`, 'error');
-                const resName = name || file.name.replace(/\.[^/.]+$/, ''); // Remove extension for name
-                const id = generateResourceId();
-                if (addResourceToList('course-resource-list', resName, file, null, id)) {
-                    addedCount++;
-                }
-            }
-            showToast(`${addedCount} resource(s) added!`, 'success');
-            $('#course-resource-name, #course-resource-url').val('');
-            $('#course-resource-pdf').val(''); // Clear file selection
-        } else if (url) {
-            const id = generateResourceId();
-            if (addResourceToList('course-resource-list', name, null, url, id)) {
-                addedCount = 1;
-                showToast('Resource added!', 'success');
-                $('#course-resource-name, #course-resource-url').val('');
-            }
-        } else {
-            showToast('Provide file(s) or URL.', 'error');
+    
+    // ✅ NEW: Save Assignment Button
+    $('#add-save-assignment-btn').on('click', function() {
+        if (!addModalGeneratedAssignment) {
+            showToast('Please generate assignment first.', 'error');
+            return;
         }
+        
+        showToast('Assignment settings saved! It will be created when you save the course.', 'success');
+        
+        // Scroll to the top of assignment section
+        $('html, body').animate({
+            scrollTop: $('#add-modal-assignment-section').offset().top - 100
+        }, 500);
     });
-    // REMOVED: Combined add handler as per requirement
-    // UPDATED: Add Course Form (same, but now supports multiple resources via list)
+    
+    // ========== UPDATED: Add Course Form Submit with Assignment ==========
     $('#add-course-form').on('submit', function(e) {
-        e.preventDefault();
-        const name = $('#course-name').val().trim();
-        const desc = $('#course-description').val().trim();
-        const cat = $('#course-category').val();
-        if (!name || !desc || !cat) return showToast('Fill all fields.', 'error');
-        if ($('#video-list .video-item').length === 0) return showToast('Add at least one video.', 'error');
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('description', desc);
-        formData.append('category', cat);
-        const videos = [];
-        $('#video-list .video-item').each(function() {
-            const topic = $(this).find('input[name^="subtopic-"]').val();
-            const fileId = $(this).find('input[name^="fileId-"]').val();
-            const url = $(this).find('input[name^="url-"]').val();
-            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
-            const obj = { topic, isFile };
-            if (isFile && fileId) {
-                const f = videoFiles.find(x => x.id === fileId);
-                if (f) formData.append('videoFiles', f.file);
-            } else if (url) {
-                obj.url = url;
-            }
-            videos.push(obj);
-        });
-        formData.append('videos', JSON.stringify(videos));
-        const resources = [];
-        $('#course-resource-list .resource-item').each(function() {
-            const resName = $(this).find('input[name^="resName-"]').val();
-            const fileId = $(this).find('input[name^="fileId-"]').val();
-            const url = $(this).find('input[name^="url-"]').val();
-            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
-            const type = $(this).find('input[name^="type-"]').val();
-            const obj = { name: resName, isFile, type };
-            if (isFile && fileId) {
-                const f = resourceFiles.find(x => x.id === fileId);
-                if (f) formData.append('resourceFiles', f.file);
-            } else if (url) {
-                obj.url = url;
-            }
-            resources.push(obj);
-        });
-        formData.append('resources', JSON.stringify(resources));
-        $.ajax({
-            url: 'http://localhost:5000/api/courses',
-            type: 'POST',
-            headers: { 'Authorization': 'Bearer ' + token },
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function() {
-                showToast('Course created!', 'success');
-                $('#addCourseModal').modal('hide');
-                $('#add-course-form')[0].reset();
-                $('#video-list, #course-resource-list').empty();
-                $('#video-preview').html('<p class="text-muted">Video preview will appear here</p>');
-                videoFiles = [];
-                resourceFiles = [];
-                videoCounter = 0;
-                loadCourses();
-            },
-            error: function(xhr) {
-                showToast(xhr.responseJSON?.message || 'Error creating course.', 'error');
-            }
-        });
-    });
-    // UPDATED: Edit Course Resource(s) - Now supports multiple PDFs (similar to add)
-    $('#edit-add-course-resource-btn').on('click', () => {
-        const name = $('#edit-course-resource-name').val().trim();
-        const files = $('#edit-course-resource-pdf')[0].files;
-        const url = $('#edit-course-resource-url').val().trim();
-        if (files.length > 0 && url) return showToast('Choose file(s) OR URL, not both.', 'error');
-        let addedCount = 0;
-        if (files.length > 0) {
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.size > 50 * 1024 * 1024) return showToast(`File ${file.name} exceeds 50MB limit.`, 'error');
-                const resName = name || file.name.replace(/\.[^/.]+$/, '');
-                const id = generateResourceId();
-                if (addResourceToList('edit-course-resource-list', resName, file, null, id)) {
-                    addedCount++;
-                }
-            }
-            showToast(`${addedCount} resource(s) added!`, 'success');
-            $('#edit-course-resource-name, #edit-course-resource-url').val('');
-            $('#edit-course-resource-pdf').val('');
+      e.preventDefault();
+      const name = $('#course-name').val().trim();
+      const desc = $('#course-description').val().trim();
+      const cat = $('#course-category').val();
+      
+      if (!name || !desc || !cat) return showToast('Fill all fields.', 'error');
+      if ($('#video-list .video-item').length === 0) return showToast('Add at least one video.', 'error');
+      
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', desc);
+      formData.append('category', cat);
+      
+      // Videos
+      const videos = [];
+      $('#video-list .video-item').each(function() {
+        const topic = $(this).find('input[name^="subtopic-"]').val();
+        const fileId = $(this).find('input[name^="fileId-"]').val();
+        const url = $(this).find('input[name^="url-"]').val();
+        const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+        const obj = { topic, isFile };
+        if (isFile && fileId) {
+          const f = videoFiles.find(x => x.id === fileId);
+          if (f) formData.append('videoFiles', f.file);
         } else if (url) {
-            const id = generateResourceId();
-            if (addResourceToList('edit-course-resource-list', name, null, url, id)) {
-                addedCount = 1;
-                showToast('Resource added!', 'success');
-                $('#edit-course-resource-name, #edit-course-resource-url').val('');
-            }
-        } else {
-            showToast('Provide file(s) or URL.', 'error');
+          obj.url = url;
         }
-    });
-    // Edit Course (updated to use edit resource add)
-    $(document).on('click', '.edit-course', function() {
-        const data = $(this).data();
-        $('#edit-course-id').val(data.id);
-        $('#edit-course-name').val(data.name);
-        $('#edit-course-description').val(data.description);
-        $('#edit-course-category').val(data.category);
-        $('#edit-video-list').empty();
-        $('#edit-course-resource-list').empty();
-        videoFiles = [];
-        resourceFiles = [];
-        videoCounter = 0;
-        let videos = [];
-        let resources = [];
-        try { videos = JSON.parse(data.videos || '[]'); } catch {}
-        try { resources = JSON.parse(data.resources || '[]'); } catch {}
-        videos.forEach((v, i) => {
-            const id = `edit_${i}`;
-            addVideoToList('edit-video-list', 'edit-video-preview', v.topic, null, v.url, id);
-        });
-        resources.forEach((r, i) => {
-            const id = `edit_res_${i}`;
-            addResourceToList('edit-course-resource-list', r.name, null, r.url, id, r.type || 'pdf');
-        });
-        updatePreview('edit-video-preview');
-        $('#editCourseModal').modal('show');
-    });
-    $('#edit-add-video-btn').on('click', () => {
-        const topic = $('#edit-video-topic').val().trim();
-        const file = $('#edit-course-video')[0].files[0];
-        const url = $('#edit-course-video-url').val().trim();
-        if (file && url) {
-            return showToast('Choose file OR URL/Playlist, not both.', 'error');
-        }
-        if (file) {
-            const id = generateVideoId();
-            if (addVideoToList('edit-video-list', 'edit-video-preview', topic, file, null, id)) {
-                $('#edit-video-topic, #edit-course-video, #edit-course-video-url').val('');
-            }
+        videos.push(obj);
+      });
+      formData.append('videos', JSON.stringify(videos));
+      
+      // Resources
+      const resources = [];
+      $('#course-resource-list .resource-item').each(function() {
+        const resName = $(this).find('input[name^="resName-"]').val();
+        const fileId = $(this).find('input[name^="fileId-"]').val();
+        const url = $(this).find('input[name^="url-"]').val();
+        const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+        const type = $(this).find('input[name^="type-"]').val();
+        const obj = { name: resName, isFile, type };
+        if (isFile && fileId) {
+          const f = resourceFiles.find(x => x.id === fileId);
+          if (f) formData.append('resourceFiles', f.file);
         } else if (url) {
-            const id = generateVideoId();
-            if (addVideoToList('edit-video-list', 'edit-video-preview', topic, null, url, id)) {
-                $('#edit-video-topic, #edit-course-video-url').val('');
-            }
-        } else {
-            showToast('Add video file or URL/Playlist.', 'error');
+          obj.url = url;
         }
+        resources.push(obj);
+      });
+      formData.append('resources', JSON.stringify(resources));
+      
+      // ✅ NEW: Agar assignment generate karna hai
+      if (addModalGeneratedAssignment && addModalGeneratedAssignment.generateAssignment) {
+        formData.append('generateAssignment', 'true');
+        formData.append('assignmentNumQuestions', addModalGeneratedAssignment.numQuestions);
+        formData.append('assignmentType', addModalGeneratedAssignment.type);
+        formData.append('assignmentDueDate', addModalGeneratedAssignment.dueDate);
+        formData.append('assignmentTitle', addModalGeneratedAssignment.title);
+        
+        // ✅ ADD CUSTOM PROMPT AND SETTINGS
+        if (addModalGeneratedAssignment.customPrompt) {
+            formData.append('customPrompt', addModalGeneratedAssignment.customPrompt);
+        }
+        formData.append('strictNotes', addModalGeneratedAssignment.strictNotes);
+        formData.append('includeAnswerKey', addModalGeneratedAssignment.includeAnswerKey);
+      }
+      
+      // Show loading
+      const submitBtn = $(this).find('button[type="submit"]');
+      const originalText = submitBtn.html();
+      submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+      
+      $.ajax({
+        url: 'http://localhost:5000/api/courses',
+        type: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          showToast('Course created successfully!', 'success');
+          $('#addCourseModal').modal('hide');
+          
+          // Reset form
+          $('#add-course-form')[0].reset();
+          $('#video-list, #course-resource-list').empty();
+          $('#video-preview').html('<p class="text-muted">Video preview will appear here</p>');
+          $('#add-assignment-preview-container').hide();
+          $('#add-custom-prompt').val('');
+          $('#add-strict-notes, #add-include-answer-key').prop('checked', true);
+          
+          // Reset variables
+          videoFiles = [];
+          resourceFiles = [];
+          addModalGeneratedAssignment = null;
+          videoCounter = 0;
+          
+          // Reload courses
+          loadCourses();
+        },
+        error: function(xhr) {
+          showToast(xhr.responseJSON?.message || 'Error creating course.', 'error');
+        },
+        complete: function() {
+          submitBtn.prop('disabled', false).html(originalText);
+        }
+      });
     });
-    // UPDATED: Edit Course Form Submit (same as add)
+    
+    // Edit Course Form Submit (without assignment)
     $('#edit-course-form').on('submit', function(e) {
-        e.preventDefault();
-        const id = $('#edit-course-id').val();
-        const formData = new FormData();
-        formData.append('name', $('#edit-course-name').val().trim());
-        formData.append('description', $('#edit-course-description').val().trim());
-        formData.append('category', $('#edit-course-category').val());
-        const videos = [];
-        $('#edit-video-list .video-item').each(function() {
-            const topic = $(this).find('input[name^="subtopic-"]').val();
-            const fileId = $(this).find('input[name^="fileId-"]').val();
-            const url = $(this).find('input[name^="url-"]').val();
-            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
-            const obj = { topic, isFile };
-            if (isFile && fileId) {
-                const f = videoFiles.find(x => x.id === fileId);
-                if (f) formData.append('videoFiles', f.file);
-            } else if (url) {
-                obj.url = url;
-            }
-            videos.push(obj);
-        });
-        formData.append('videos', JSON.stringify(videos));
-        const resources = [];
-        $('#edit-course-resource-list .resource-item').each(function() {
-            const resName = $(this).find('input[name^="resName-"]').val();
-            const fileId = $(this).find('input[name^="fileId-"]').val();
-            const url = $(this).find('input[name^="url-"]').val();
-            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
-            const type = $(this).find('input[name^="type-"]').val();
-            const obj = { name: resName, isFile, type };
-            if (isFile && fileId) {
-                const f = resourceFiles.find(x => x.id === fileId);
-                if (f) formData.append('resourceFiles', f.file);
-            } else if (url) {
-                obj.url = url;
-            }
-            resources.push(obj);
-        });
-        formData.append('resources', JSON.stringify(resources));
-        $.ajax({
-            url: `http://localhost:5000/api/courses/${id}`,
-            type: 'PUT',
-            headers: { 'Authorization': 'Bearer ' + token },
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function() {
-                showToast('Course updated!', 'success');
-                $('#editCourseModal').modal('hide');
-                loadCourses();
-            },
-            error: function(xhr) {
-                showToast(xhr.responseJSON?.message || 'Update failed.', 'error');
-            }
-        });
-    });
-    $(document).on('click', '.delete-course', function() {
-        if (confirm('Yeh poora course delete ho jayega (topics, videos, resources saath mein). Confirm?')) {
-            $.ajax({
-                url: `http://localhost:5000/api/courses/${$(this).data('id')}`,
-                type: 'DELETE',
-                headers: { 'Authorization': 'Bearer ' + token },
-                success: function() {
-                    showToast('Deleted!', 'success');
-                    loadCourses();
-                },
-                error: function() {
-                    showToast('Delete failed.', 'error');
-                }
-            });
+      e.preventDefault();
+      const id = $('#edit-course-id').val();
+      const name = $('#edit-course-name').val().trim();
+      const desc = $('#edit-course-description').val().trim();
+      const cat = $('#edit-course-category').val();
+      
+      if (!name || !desc || !cat) return showToast('Fill all fields.', 'error');
+      if ($('#edit-video-list .video-item').length === 0) return showToast('Add at least one video.', 'error');
+      
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', desc);
+      formData.append('category', cat);
+      
+      // Videos
+      const videos = [];
+      $('#edit-video-list .video-item').each(function() {
+        const topic = $(this).find('input[name^="subtopic-"]').val();
+        const fileId = $(this).find('input[name^="fileId-"]').val();
+        const url = $(this).find('input[name^="url-"]').val();
+        const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+        const obj = { topic, isFile };
+        if (isFile && fileId) {
+          const f = videoFiles.find(x => x.id === fileId);
+          if (f) formData.append('videoFiles', f.file);
+        } else if (url) {
+          obj.url = url;
         }
+        videos.push(obj);
+      });
+      formData.append('videos', JSON.stringify(videos));
+      
+      // Resources
+      const resources = [];
+      $('#edit-course-resource-list .resource-item').each(function() {
+        const resName = $(this).find('input[name^="resName-"]').val();
+        const fileId = $(this).find('input[name^="fileId-"]').val();
+        const url = $(this).find('input[name^="url-"]').val();
+        const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+        const type = $(this).find('input[name^="type-"]').val();
+        const obj = { name: resName, isFile, type };
+        if (isFile && fileId) {
+          const f = resourceFiles.find(x => x.id === fileId);
+          if (f) formData.append('resourceFiles', f.file);
+        } else if (url) {
+          obj.url = url;
+        }
+        resources.push(obj);
+      });
+      formData.append('resources', JSON.stringify(resources));
+      
+      $.ajax({
+        url: `http://localhost:5000/api/courses/${id}`,
+        type: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + token },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          showToast('Course updated!', 'success');
+          $('#editCourseModal').modal('hide');
+          videoFiles = [];
+          resourceFiles = [];
+          loadCourses();
+        },
+        error: function(xhr) {
+          showToast(xhr.responseJSON?.message || 'Error updating course.', 'error');
+        }
+      });
     });
-    $('#addCourseModal').on('shown.bs.modal', function() {
-        populateCategorySelect('course-category');
-        $('#video-list, #course-resource-list').empty();
-        $('#video-preview').html('<p class="text-muted">Video preview will appear here</p>');
-        videoFiles = [];
-        resourceFiles = [];
-        videoCounter = 0;
-        $('#course-resources-section').show();
+    
+    // Add Video Button
+    $('#add-video-btn').on('click', () => {
+      const topic = $('#video-topic').val().trim();
+      const file = $('#course-video')[0].files[0];
+      const url = $('#course-video-url').val().trim();
+      if (file && url) {
+        return showToast('Choose file OR URL/Playlist, not both.', 'error');
+      }
+      if (file) {
+        const id = generateVideoId();
+        if (addVideoToList('video-list', 'video-preview', topic, file, null, id)) {
+          $('#video-topic, #course-video, #course-video-url').val('');
+        }
+      } else if (url) {
+        const id = generateVideoId();
+        if (addVideoToList('video-list', 'video-preview', topic, null, url, id)) {
+          $('#video-topic, #course-video-url').val('');
+        }
+      } else {
+        showToast('Add video file or URL/Playlist.', 'error');
+      }
     });
+    
+    // Add Course Resource Button
+    $('#add-course-resource-btn').on('click', () => {
+      const name = $('#course-resource-name').val().trim();
+      const files = $('#course-resource-pdf')[0].files;
+      const url = $('#course-resource-url').val().trim();
+      if (files.length > 0 && url) return showToast('Choose file(s) OR URL, not both.', 'error');
+      let addedCount = 0;
+      if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (file.size > 50 * 1024 * 1024) return showToast(`File ${file.name} exceeds 50MB limit.`, 'error');
+          const resName = name || file.name.replace(/\.[^/.]+$/, '');
+          const id = generateResourceId();
+          if (addResourceToList('course-resource-list', resName, file, null, id)) {
+            addedCount++;
+          }
+        }
+        showToast(`${addedCount} resource(s) added!`, 'success');
+        $('#course-resource-name, #course-resource-url').val('');
+        $('#course-resource-pdf').val('');
+      } else if (url) {
+        const id = generateResourceId();
+        if (addResourceToList('course-resource-list', name, null, url, id)) {
+          addedCount = 1;
+          showToast('Resource added!', 'success');
+          $('#course-resource-name, #course-resource-url').val('');
+        }
+      } else {
+        showToast('Provide file(s) or URL.', 'error');
+      }
+    });
+    
+    // Edit Course Modal Events
     $('#editCourseModal').on('shown.bs.modal', function() {
-        populateCategorySelect('edit-course-category');
-        $('#edit-course-resources-section').show();
+      populateCategorySelect('edit-course-category');
+      $('#edit-course-resources-section').show();
     });
-    // UPDATED: Topics Management - currentCourseId set on Topic btn click
+    
+    $(document).on('click', '.edit-course', function() {
+      const data = $(this).data();
+      const courseId = data.id;
+      
+      $('#edit-course-id').val(courseId);
+      $('#edit-course-name').val(data.name);
+      $('#edit-course-description').val(data.description);
+      $('#edit-course-category').val(data.category);
+      $('#edit-video-list').empty();
+      $('#edit-course-resource-list').empty();
+      videoFiles = [];
+      resourceFiles = [];
+      videoCounter = 0;
+      let videos = [];
+      let resources = [];
+      try { videos = JSON.parse(data.videos || '[]'); } catch {}
+      try { resources = JSON.parse(data.resources || '[]'); } catch {}
+      videos.forEach((v, i) => {
+        const id = `edit_${i}`;
+        addVideoToList('edit-video-list', 'edit-video-preview', v.topic, null, v.url, id);
+      });
+      resources.forEach((r, i) => {
+        const id = `edit_res_${i}`;
+        addResourceToList('edit-course-resource-list', r.name, null, r.url, id, r.type || 'pdf');
+      });
+      updatePreview('edit-video-preview');
+      
+      $('#editCourseModal').modal('show');
+    });
+    
+    // Edit Add Video Button
+    $('#edit-add-video-btn').on('click', function() {
+      const topic = $('#edit-video-topic').val().trim();
+      const file = $('#edit-course-video')[0].files[0];
+      const url = $('#edit-course-video-url').val().trim();
+      
+      if (file && url) {
+        showToast('Please choose either file OR URL, not both.', 'error');
+        return;
+      }
+      
+      if (!topic) {
+        showToast('Topic name is required.', 'error');
+        return;
+      }
+      
+      if (file) {
+        const id = generateVideoId();
+        if (addVideoToList('edit-video-list', 'edit-video-preview', topic, file, null, id)) {
+          $('#edit-video-topic, #edit-course-video, #edit-course-video-url').val('');
+        }
+      } else if (url) {
+        const id = generateVideoId();
+        if (addVideoToList('edit-video-list', 'edit-video-preview', topic, null, url, id)) {
+          $('#edit-video-topic, #edit-course-video-url').val('');
+        }
+      } else {
+        showToast('Please add a video file or URL.', 'error');
+      }
+    });
+    
+    // Edit Add Course Resource Button
+    $('#edit-add-course-resource-btn').on('click', function() {
+      const name = $('#edit-course-resource-name').val().trim();
+      const files = $('#edit-course-resource-pdf')[0].files;
+      const url = $('#edit-course-resource-url').val().trim();
+      
+      if (files.length > 0 && url) {
+        showToast('Please choose either files OR URL, not both.', 'error');
+        return;
+      }
+      
+      let addedCount = 0;
+      if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (file.size > 50 * 1024 * 1024) {
+            showToast(`File ${file.name} exceeds 50MB limit.`, 'error');
+            return;
+          }
+          const resName = name || file.name.replace(/\.[^/.]+$/, '');
+          const id = generateResourceId();
+          if (addResourceToList('edit-course-resource-list', resName, file, null, id)) {
+            addedCount++;
+          }
+        }
+        showToast(`${addedCount} resource(s) added!`, 'success');
+        $('#edit-course-resource-name, #edit-course-resource-url').val('');
+        $('#edit-course-resource-pdf').val('');
+      } else if (url) {
+        const id = generateResourceId();
+        if (addResourceToList('edit-course-resource-list', name, null, url, id)) {
+          addedCount = 1;
+          showToast('Resource added!', 'success');
+          $('#edit-course-resource-name, #edit-course-resource-url').val('');
+        }
+      } else {
+        showToast('Please provide file(s) or URL.', 'error');
+      }
+    });
+    
+    // Delete Course
+    $(document).on('click', '.delete-course', function() {
+      if (confirm('Are you sure you want to delete this entire course? This will also delete all topics, videos, and resources.')) {
+        $.ajax({
+          url: `http://localhost:5000/api/courses/${$(this).data('id')}`,
+          type: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token },
+          success: function() {
+            showToast('Course deleted successfully!', 'success');
+            loadCourses();
+          },
+          error: function() {
+            showToast('Failed to delete course.', 'error');
+          }
+        });
+      }
+    });
+    
+    // Add Course Modal Show Event
+    $('#addCourseModal').on('shown.bs.modal', function() {
+      populateCategorySelect('course-category');
+      $('#video-list, #course-resource-list').empty();
+      $('#video-preview').html('<p class="text-muted">Video preview will appear here</p>');
+      $('#add-assignment-preview-container').hide();
+      $('#add-custom-prompt').val('');
+      $('#add-strict-notes, #add-include-answer-key').prop('checked', true);
+      videoFiles = [];
+      resourceFiles = [];
+      addModalGeneratedAssignment = null;
+      videoCounter = 0;
+      $('#course-resources-section').show();
+      
+      // Check AI status
+      checkAIStatusForAddModal();
+      
+      // Auto-update assignment title
+      $('#course-name').on('input', function() {
+        const courseName = $(this).val();
+        if (courseName) {
+          $('#add-assignment-title').val(`AI Generated Assignment - ${courseName}`);
+        }
+      });
+      
+      // Set default due date to 7 days from now
+      const today = new Date();
+      const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+      const formattedDate = nextWeek.toISOString().split('T')[0];
+      $('#add-assignment-due-date').val(formattedDate);
+    });
+    
+    // Add Course Modal Hide Event - Reset
+    $('#addCourseModal').on('hidden.bs.modal', function() {
+      addModalGeneratedAssignment = null;
+      $('#add-custom-prompt').val('');
+    });
+    
+    // Topics Management
     let currentCourseId = '';
-    // UPDATED: Add New Topic - Open modal in add mode
+    
     $('#add-topic-btn').on('click', function() {
-        if (!currentCourseId) return showToast('No course selected. Open from a course first.', 'error');
-        topicMode = 'add';
-        $('#edit-topic-id').val('');
-        $('#topic-mode').val('add');
-        $('#edit-topic-name').val('');
-        $('#edit-topic-description').val('');
-        $('#edit-topic-status').val('draft');
-        $('#topic-video-list').empty();
-        $('#topic-resource-list').empty();
+      if (!currentCourseId) return showToast('No course selected. Open from a course first.', 'error');
+      topicMode = 'add';
+      $('#edit-topic-id').val('');
+      $('#topic-mode').val('add');
+      $('#edit-topic-name').val('');
+      $('#edit-topic-description').val('');
+      $('#edit-topic-status').val('draft');
+      $('#topic-video-list').empty();
+      $('#topic-resource-list').empty();
+      $('#topic-video-preview').html('<p class="text-muted">Video preview will appear here</p>');
+      topicVideoFiles = [];
+      topicResourceFiles = [];
+      $('#topic-modal-title').text('Add New Topic');
+      $('#topic-submit-btn').text('Save Topic').show();
+      $('#delete-topic-from-modal').hide();
+      $('#editTopicModal').modal('show');
+    });
+    
+    // Edit Topic
+    $(document).on('click', '.edit-topic', function() {
+      const topicStr = $(this).attr('data-topic');
+      let topic;
+      try {
+        topic = JSON.parse(topicStr.replace(/\\'/g, "'"));
+      } catch (e) {
+        showToast('Error loading topic data.', 'error');
+        return;
+      }
+      topicMode = 'edit';
+      $('#edit-topic-id').val(topic._id);
+      $('#topic-mode').val('edit');
+      $('#edit-topic-name').val(topic.name);
+      $('#edit-topic-description').val(topic.description || '');
+      $('#edit-topic-status').val(topic.status);
+      // Populate videos
+      $('#topic-video-list').empty();
+      topic.videos.forEach((v, i) => {
+        const id = `topic_edit_vid_${i}`;
+        addVideoToList('topic-video-list', 'topic-video-preview', v.topic, null, v.url || '', id, true);
+      });
+      updatePreview('topic-video-preview');
+      // Populate resources
+      $('#topic-resource-list').empty();
+      topic.resources.forEach((r, i) => {
+        const id = `topic_edit_res_${i}`;
+        addResourceToList('topic-resource-list', r.name || '', null, r.url, id, r.type || 'pdf', true);
+      });
+      $('#topic-modal-title').text('Edit Topic');
+      $('#topic-submit-btn').text('Update Topic').show();
+      $('#delete-topic-from-modal').show().off('click').on('click', function() {
+        if (confirm('Sirf yeh topic delete ho jayega (videos/resources bhi). Confirm?')) {
+          $.ajax({
+            url: `http://localhost:5000/api/topics/${topic._id}`,
+            type: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function() {
+              showToast('Topic deleted!', 'success');
+              $('#editTopicModal').modal('hide');
+              loadCourses();
+            },
+            error: function() {
+              showToast('Delete failed.', 'error');
+            }
+          });
+        }
+      });
+      $('#editTopicModal').modal('show');
+    });
+    
+    // Topic Video Add Button
+    $('#topic-add-video-btn').on('click', () => {
+      const topic = $('#topic-video-topic').val().trim();
+      const file = $('#topic-video-file')[0].files[0];
+      const url = $('#topic-video-url').val().trim();
+      if (file && url) return showToast('Choose file OR URL, not both.', 'error');
+      if (file) {
+        const id = generateTopicVideoId();
+        if (addVideoToList('topic-video-list', 'topic-video-preview', topic, file, null, id, true)) {
+          $('#topic-video-topic, #topic-video-file, #topic-video-url').val('');
+        }
+      } else if (url) {
+        const id = generateTopicVideoId();
+        if (addVideoToList('topic-video-list', 'topic-video-preview', topic, null, url, id, true)) {
+          $('#topic-video-topic, #topic-video-url').val('');
+        }
+      } else {
+        showToast('Add video file or URL.', 'error');
+      }
+    });
+    
+    // Topic Resource Add Button
+    $('#topic-add-resource-btn').on('click', () => {
+      const name = $('#topic-resource-name').val().trim();
+      const files = $('#topic-resource-pdf')[0].files;
+      const url = $('#topic-resource-url').val().trim();
+      if (files.length > 0 && url) return showToast('Choose file(s) OR URL, not both.', 'error');
+      let addedCount = 0;
+      if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (file.size > 50 * 1024 * 1024) return showToast(`File ${file.name} exceeds 50MB limit.`, 'error');
+          const resName = name || file.name.replace(/\.[^/.]+$/, '');
+          const id = generateTopicResourceId();
+          if (addResourceToList('topic-resource-list', resName, file, null, id, 'pdf', true)) {
+            addedCount++;
+          }
+        }
+        showToast(`${addedCount} resource(s) added!`, 'success');
+        $('#topic-resource-name, #topic-resource-url').val('');
+        $('#topic-resource-pdf').val('');
+      } else if (url) {
+        const id = generateTopicResourceId();
+        if (addResourceToList('topic-resource-list', name, null, url, id, 'url', true)) {
+          addedCount = 1;
+          showToast('Resource added!', 'success');
+          $('#topic-resource-name, #topic-resource-url').val('');
+        }
+      } else {
+        showToast('Provide file(s) or URL.', 'error');
+      }
+    });
+    
+    // Edit Topic Form Submit
+    $('#edit-topic-form').on('submit', async function(e) {
+      e.preventDefault();
+      const id = $('#edit-topic-id').val();
+      const mode = $('#topic-mode').val();
+      const name = $('#edit-topic-name').val().trim();
+      const description = $('#edit-topic-description').val().trim();
+      const status = $('#edit-topic-status').val();
+      if (!name) return showToast('Name required.', 'error');
+      if (mode === 'add' && !currentCourseId) return showToast('Course ID missing.', 'error');
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('status', status);
+      if (mode === 'add') {
+        formData.append('courseId', currentCourseId);
+      }
+      // Collect videos
+      const videos = [];
+      $('#topic-video-list .video-item').each(function() {
+        const topicName = $(this).find('input[name^="subtopic-"]').val();
+        const fileId = $(this).find('input[name^="fileId-"]').val();
+        const url = $(this).find('input[name^="url-"]').val();
+        const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+        const obj = { topic: topicName, isFile };
+        if (isFile && fileId) {
+          const f = topicVideoFiles.find(x => x.id === fileId);
+          if (f) formData.append('videoFiles', f.file);
+        } else if (url) {
+          obj.url = url;
+        }
+        videos.push(obj);
+      });
+      formData.append('videos', JSON.stringify(videos));
+      // Collect resources
+      const resources = [];
+      $('#topic-resource-list .resource-item').each(function() {
+        const resName = $(this).find('input[name^="resName-"]').val();
+        const fileId = $(this).find('input[name^="fileId-"]').val();
+        const url = $(this).find('input[name^="url-"]').val();
+        const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
+        const type = $(this).find('input[name^="type-"]').val();
+        const obj = { name: resName, isFile, type };
+        if (isFile && fileId) {
+          const f = topicResourceFiles.find(x => x.id === fileId);
+          if (f) formData.append('resourceFiles', f.file);
+        } else if (url) {
+          obj.url = url;
+        }
+        resources.push(obj);
+      });
+      formData.append('resources', JSON.stringify(resources));
+      const url = mode === 'add' ? 'http://localhost:5000/api/topics' : `http://localhost:5000/api/topics/${id}`;
+      const method = mode === 'add' ? 'POST' : 'PUT';
+      try {
+        await $.ajax({
+          url: url,
+          type: method,
+          headers: { 'Authorization': 'Bearer ' + token },
+          data: formData,
+          processData: false,
+          contentType: false
+        });
+        showToast(`Topic ${mode === 'add' ? 'added' : 'updated'}!`, 'success');
+        $('#editTopicModal').modal('hide');
+        // Clear form
+        $('#edit-topic-form')[0].reset();
+        $('#topic-video-list, #topic-resource-list').empty();
         $('#topic-video-preview').html('<p class="text-muted">Video preview will appear here</p>');
         topicVideoFiles = [];
         topicResourceFiles = [];
-        $('#topic-modal-title').text('Add New Topic');
-        $('#topic-submit-btn').text('Save Topic').show();
-        $('#delete-topic-from-modal').hide();
-        $('#editTopicModal').modal('show');
+        loadCourses();
+      } catch (error) {
+        showToast('Operation failed: ' + (error.responseJSON?.message || error.message), 'error');
+      }
     });
-    // UPDATED: Edit Topic - Populate full form
-    $(document).on('click', '.edit-topic', function() {
-        const topicStr = $(this).attr('data-topic');
-        let topic;
-        try {
-            topic = JSON.parse(topicStr.replace(/\\'/g, "'"));
-        } catch (e) {
-            showToast('Error loading topic data.', 'error');
-            return;
-        }
-        topicMode = 'edit';
-        $('#edit-topic-id').val(topic._id);
-        $('#topic-mode').val('edit');
-        $('#edit-topic-name').val(topic.name);
-        $('#edit-topic-description').val(topic.description || '');
-        $('#edit-topic-status').val(topic.status);
-        // Populate videos
-        $('#topic-video-list').empty();
-        topic.videos.forEach((v, i) => {
-            const id = `topic_edit_vid_${i}`;
-            addVideoToList('topic-video-list', 'topic-video-preview', v.topic, null, v.url || '', id, true);
-        });
-        updatePreview('topic-video-preview');
-        // Populate resources
-        $('#topic-resource-list').empty();
-        topic.resources.forEach((r, i) => {
-            const id = `topic_edit_res_${i}`;
-            addResourceToList('topic-resource-list', r.name || '', null, r.url, id, r.type || 'pdf', true);
-        });
-        $('#topic-modal-title').text('Edit Topic');
-        $('#topic-submit-btn').text('Update Topic').show();
-        $('#delete-topic-from-modal').show().off('click').on('click', function() {
-            if (confirm('Sirf yeh topic delete ho jayega (videos/resources bhi). Confirm?')) {
-                $.ajax({
-                    url: `http://localhost:5000/api/topics/${topic._id}`,
-                    type: 'DELETE',
-                    headers: { 'Authorization': 'Bearer ' + token },
-                    success: function() {
-                        showToast('Topic deleted!', 'success');
-                        $('#editTopicModal').modal('hide');
-                        loadCourses(); // Refresh
-                    },
-                    error: function() {
-                        showToast('Delete failed.', 'error');
-                    }
-                });
-            }
-        });
-        $('#editTopicModal').modal('show');
-    });
-    // UPDATED: Topic Video Add Button
-    $('#topic-add-video-btn').on('click', () => {
-        const topic = $('#topic-video-topic').val().trim();
-        const file = $('#topic-video-file')[0].files[0];
-        const url = $('#topic-video-url').val().trim();
-        if (file && url) return showToast('Choose file OR URL, not both.', 'error');
-        if (file) {
-            const id = generateTopicVideoId();
-            if (addVideoToList('topic-video-list', 'topic-video-preview', topic, file, null, id, true)) {
-                $('#topic-video-topic, #topic-video-file, #topic-video-url').val('');
-            }
-        } else if (url) {
-            const id = generateTopicVideoId();
-            if (addVideoToList('topic-video-list', 'topic-video-preview', topic, null, url, id, true)) {
-                $('#topic-video-topic, #topic-video-url').val('');
-            }
-        } else {
-            showToast('Add video file or URL.', 'error');
-        }
-    });
-    // UPDATED: Topic Resource Add Button
-    $('#topic-add-resource-btn').on('click', () => {
-        const name = $('#topic-resource-name').val().trim();
-        const files = $('#topic-resource-pdf')[0].files;
-        const url = $('#topic-resource-url').val().trim();
-        if (files.length > 0 && url) return showToast('Choose file(s) OR URL, not both.', 'error');
-        let addedCount = 0;
-        if (files.length > 0) {
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.size > 50 * 1024 * 1024) return showToast(`File ${file.name} exceeds 50MB limit.`, 'error');
-                const resName = name || file.name.replace(/\.[^/.]+$/, '');
-                const id = generateTopicResourceId();
-                if (addResourceToList('topic-resource-list', resName, file, null, id, 'pdf', true)) {
-                    addedCount++;
-                }
-            }
-            showToast(`${addedCount} resource(s) added!`, 'success');
-            $('#topic-resource-name, #topic-resource-url').val('');
-            $('#topic-resource-pdf').val('');
-        } else if (url) {
-            const id = generateTopicResourceId();
-            if (addResourceToList('topic-resource-list', name, null, url, id, 'url', true)) {
-                addedCount = 1;
-                showToast('Resource added!', 'success');
-                $('#topic-resource-name, #topic-resource-url').val('');
-            }
-        } else {
-            showToast('Provide file(s) or URL.', 'error');
-        }
-    });
-    // UPDATED: Edit Topic Form Submit - Handles add/edit with videos/resources
-    $('#edit-topic-form').on('submit', async function(e) {
-        e.preventDefault();
-        const id = $('#edit-topic-id').val();
-        const mode = $('#topic-mode').val();
-        const name = $('#edit-topic-name').val().trim();
-        const description = $('#edit-topic-description').val().trim();
-        const status = $('#edit-topic-status').val();
-        if (!name) return showToast('Name required.', 'error');
-        if (mode === 'add' && !currentCourseId) return showToast('Course ID missing. Backend error avoided.', 'error');
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('description', description);
-        formData.append('status', status);
-        if (mode === 'add') {
-            formData.append('courseId', currentCourseId); // Ensure appended
-        }
-        // Collect videos
-        const videos = [];
-        $('#topic-video-list .video-item').each(function() {
-            const topicName = $(this).find('input[name^="subtopic-"]').val();
-            const fileId = $(this).find('input[name^="fileId-"]').val();
-            const url = $(this).find('input[name^="url-"]').val();
-            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
-            const obj = { topic: topicName, isFile };
-            if (isFile && fileId) {
-                const f = topicVideoFiles.find(x => x.id === fileId);
-                if (f) formData.append('videoFiles', f.file);
-            } else if (url) {
-                obj.url = url;
-            }
-            videos.push(obj);
-        });
-        formData.append('videos', JSON.stringify(videos));
-        // Collect resources
-        const resources = [];
-        $('#topic-resource-list .resource-item').each(function() {
-            const resName = $(this).find('input[name^="resName-"]').val();
-            const fileId = $(this).find('input[name^="fileId-"]').val();
-            const url = $(this).find('input[name^="url-"]').val();
-            const isFile = $(this).find('input[name^="isFile-"]').val() === 'true';
-            const type = $(this).find('input[name^="type-"]').val();
-            const obj = { name: resName, isFile, type };
-            if (isFile && fileId) {
-                const f = topicResourceFiles.find(x => x.id === fileId);
-                if (f) formData.append('resourceFiles', f.file);
-            } else if (url) {
-                obj.url = url;
-            }
-            resources.push(obj);
-        });
-        formData.append('resources', JSON.stringify(resources));
-        const url = mode === 'add' ? 'http://localhost:5000/api/topics' : `http://localhost:5000/api/topics/${id}`;
-        const method = mode === 'add' ? 'POST' : 'PUT';
-        try {
-            await $.ajax({
-                url: url,
-                type: method,
-                headers: { 'Authorization': 'Bearer ' + token },
-                data: formData,
-                processData: false,
-                contentType: false
-            });
-            showToast(`Topic ${mode === 'add' ? 'added' : 'updated'}!`, 'success');
-            $('#editTopicModal').modal('hide');
-            // Clear form
-            $('#edit-topic-form')[0].reset();
-            $('#topic-video-list, #topic-resource-list').empty();
-            $('#topic-video-preview').html('<p class="text-muted">Video preview will appear here</p>');
-            topicVideoFiles = [];
-            topicResourceFiles = [];
-            loadCourses(); // Refresh
-        } catch (error) {
-            showToast('Operation failed: ' + (error.responseJSON?.message || error.message), 'error');
-        }
-    });
-    // UPDATED: Trigger manage topics modal (changed button text to "Topic")
+    
+    // Trigger manage topics modal
     $(document).on('click', '.manage-topics-btn', function() {
-        const courseId = $(this).data('id');
-        const courseName = $(this).data('name');
-        currentCourseId = courseId; // Set for add topic
-        $('#topic-course-name').text(courseName);
-        $('#selected-course-id').val(courseId);
-        $('#manageTopicsModal').modal('show');
+      const courseId = $(this).data('id');
+      const courseName = $(this).data('name');
+      currentCourseId = courseId;
+      $('#topic-course-name').text(courseName);
+      $('#selected-course-id').val(courseId);
+      $('#manageTopicsModal').modal('show');
     });
     
     // Initial load
     loadCourses();
     populateCategorySelect('course-category');
     populateCategorySelect('edit-course-category');
+
+    
     
     // Theme toggle
     const toggleDarkMode = () => {
-        $('body').addClass('dark-mode').removeClass('light-mode');
-        $('#dark-mode-toggle').removeClass('activate');
-        $('#light-mode-toggle').addClass('activate');
-        localStorage.setItem('theme', 'dark');
+      $('body').addClass('dark-mode').removeClass('light-mode');
+      $('#dark-mode-toggle').removeClass('activate');
+      $('#light-mode-toggle').addClass('activate');
+      localStorage.setItem('theme', 'dark');
     };
     const toggleLightMode = () => {
-        $('body').addClass('light-mode').removeClass('dark-mode');
-        $('#light-mode-toggle').removeClass('activate');
-        $('#dark-mode-toggle').addClass('activate');
-        localStorage.setItem('theme', 'light');
+      $('body').addClass('light-mode').removeClass('dark-mode');
+      $('#light-mode-toggle').removeClass('activate');
+      $('#dark-mode-toggle').addClass('activate');
+      localStorage.setItem('theme', 'light');
     };
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
-        toggleDarkMode();
+      toggleDarkMode();
     } else {
-        toggleLightMode();
+      toggleLightMode();
     }
     $('#dark-mode-toggle').on('click', toggleDarkMode);
     $('#light-mode-toggle').on('click', toggleLightMode);
-});
+  });
 </script>
 </body>
 </html>

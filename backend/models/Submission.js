@@ -1,4 +1,4 @@
-// models/Submission.js - Complete with plagiarism detection fields
+// models/Submission.js - COMPLETE FIXED VERSION
 const mongoose = require('mongoose');
 
 const submissionSchema = new mongoose.Schema({
@@ -9,12 +9,19 @@ const submissionSchema = new mongoose.Schema({
     },
     studentId: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Student', 
+        ref: 'User', // ✅ Change from 'Student' to 'User'
         required: true 
     },
+    // ✅ FIX: Make pdfPath optional (remove required: true)
     pdfPath: { 
-        type: String, 
-        required: true 
+        type: String,
+        // ❌ REMOVE: required: true
+        default: null // ✅ Add default value
+    },
+    // ✅ ADD: textAnswer field for text submissions
+    textAnswer: {
+        type: String,
+        default: null
     },
     submittedAt: { 
         type: Date, 
@@ -28,13 +35,16 @@ const submissionSchema = new mongoose.Schema({
         score: { 
             type: Number, 
             min: 0, 
-            max: 100 
+            max: 100,
+            default: null
         },
         feedback: { 
-            type: String 
+            type: String,
+            default: null
         },
         remarks: { 
-            type: String 
+            type: String,
+            default: null
         },
         strengths: [{ 
             type: String 
@@ -42,17 +52,16 @@ const submissionSchema = new mongoose.Schema({
         weaknesses: [{ 
             type: String 
         }],
-        plagiarism: {
-            plagiarismScore: { type: Number },
-            isSuspicious: { type: Boolean },
-            aiGenerated: { type: Boolean },
-            confidence: { type: Number },
-            similarityFound: { type: Boolean },
-            similarText: { type: String }
+        evaluatedAt: {  // ✅ FIX: Add evaluatedAt field
+            type: Date,
+            default: null
         },
-        extractedText: { type: String },
-        evaluatedAt: { type: Date }
+        aiGenerated: {  // ✅ ADD: Track if AI evaluated
+            type: Boolean,
+            default: false
+        }
     },
+    // ✅ FIX: Move these outside evaluation object
     createdAt: { 
         type: Date, 
         default: Date.now 
@@ -61,6 +70,8 @@ const submissionSchema = new mongoose.Schema({
         type: Date, 
         default: Date.now 
     }
+}, {
+    timestamps: true // ✅ Use mongoose timestamps
 });
 
 // Indexes for performance
@@ -71,13 +82,38 @@ submissionSchema.index({ evaluated: 1 });
 submissionSchema.index({ submittedAt: -1 });
 submissionSchema.index({ 'evaluation.score': 1 });
 
-// Update timestamp on save
+// ✅ FIXED: Update timestamp on save
 submissionSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
-    if (this.evaluation && !this.evaluation.evaluatedAt) {
+    
+    // Auto-set evaluatedAt when evaluation is added
+    if (this.evaluated && this.evaluation && !this.evaluation.evaluatedAt) {
         this.evaluation.evaluatedAt = new Date();
     }
+    
     next();
 });
+
+// ✅ ADD: Virtual property for PDF URL
+submissionSchema.virtual('pdfUrl').get(function() {
+    if (this.pdfPath) {
+        return `http://localhost:5000${this.pdfPath}`;
+    }
+    return null;
+});
+
+// ✅ ADD: Method to check if submission has content
+submissionSchema.methods.hasContent = function() {
+    return !!(this.pdfPath || this.textAnswer);
+};
+
+// ✅ ADD: Method to get answer text
+submissionSchema.methods.getAnswerText = function() {
+    if (this.textAnswer) {
+        return this.textAnswer;
+    }
+    // If only PDF, we'll need to extract text (handled elsewhere)
+    return '';
+};
 
 module.exports = mongoose.model('Submission', submissionSchema);
