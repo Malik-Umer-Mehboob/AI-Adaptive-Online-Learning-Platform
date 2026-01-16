@@ -9,7 +9,7 @@ const Enrollment = require('../models/Enrollment');
 const Favorite = require('../models/Favorite');
 const Assignment = require('../models/Assignment');
 const Submission = require('../models/Submission');
-const assignmentController = require('../controllers/assignmentController').assignmentController;
+const assignmentController = require('../controllers/assignmentController');
 const { google } = require("googleapis");
 const multer = require("multer");
 const ffmpeg = require('fluent-ffmpeg');
@@ -547,6 +547,146 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
+// Line ke baad - BEFORE any other routes (aap ise file ke start mein add kar sakte hain)
+// GET all courses for homepage (Public access - NO AUTH REQUIRED)
+router.get('/public', async (req, res) => {
+    try {
+        console.log('📚 Public Courses API called');
+        
+        // Check if token exists
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        let userId = null;
+        
+        if (token) {
+            try {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                userId = decoded.id;
+                console.log('✅ User authenticated:', userId);
+            } catch (err) {
+                console.log('⚠️ Invalid token, proceeding as guest');
+            }
+        }
+        
+        const search = req.query.search?.trim() || '';
+        const category = req.query.category || '';
+        const limit = parseInt(req.query.limit) || 12;
+        const page = parseInt(req.query.page) || 1;
+        const skip = (page - 1) * limit;
+        
+        let query = {};
+
+        if (search) query.name = { $regex: search, $options: 'i' };
+        if (category) query.category = category;
+
+        // Get total courses count
+        const totalCourses = await Course.countDocuments(query);
+        
+        // Get courses with pagination
+        const courses = await Course.find(query)
+            .populate('category', 'name')
+            .select('name description category videos comments assignments createdAt')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean();
+
+        console.log(`✅ Found ${courses.length} courses`);
+
+        // Get enrollment status for logged-in user
+        let enrolledCourseIds = [];
+        let favoriteCourseIds = [];
+        
+        if (userId) {
+            try {
+                // Get enrolled courses
+                const enrollments = await Enrollment.find({ studentId: userId });
+                enrolledCourseIds = enrollments.map(e => e.courseId.toString());
+                
+                // Get favorite courses
+                const favorites = await Favorite.find({ userId: userId });
+                favoriteCourseIds = favorites.map(f => f.courseId.toString());
+            } catch (err) {
+                console.log('⚠️ Error fetching user data:', err.message);
+            }
+        }
+
+        const enhancedCourses = courses.map(course => {
+            // Get thumbnail from first video
+            let thumbnail = 'assets/img/course/course-placeholder.jpg';
+            if (course.videos && course.videos.length > 0 && course.videos[0]) {
+                const video = course.videos[0];
+                
+                // YouTube video
+                if (video.url && (video.url.includes('youtube.com') || video.url.includes('youtu.be'))) {
+                    const videoId = video.url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+                    if (videoId && videoId[1]) {
+                        thumbnail = `https://img.youtube.com/vi/${videoId[1]}/hqdefault.jpg`;
+                    }
+                } 
+                // File video with thumbnail
+                else if (video.thumbnail) {
+                    thumbnail = video.thumbnail.startsWith('http') 
+                        ? video.thumbnail 
+                        : `http://localhost:5000${video.thumbnail}`;
+                }
+            }
+            
+            // Calculate rating
+            let averageRating = 0;
+            let numRatings = 0;
+            if (course.comments && course.comments.length > 0) {
+                const ratedComments = course.comments.filter(c => c.rating);
+                numRatings = ratedComments.length;
+                if (numRatings > 0) {
+                    averageRating = ratedComments.reduce((sum, c) => sum + c.rating, 0) / numRatings;
+                    averageRating = parseFloat(averageRating.toFixed(1));
+                }
+            }
+            
+            // Calculate video count and duration
+            const videoCount = course.videos?.length || 0;
+            const duration = videoCount > 0 ? `${videoCount * 30} min` : 'Self-paced';
+            
+            // Check enrollment and favorite status (only for logged in users)
+            const isEnrolled = userId ? enrolledCourseIds.includes(course._id.toString()) : false;
+            const isFavorite = userId ? favoriteCourseIds.includes(course._id.toString()) : false;
+            
+            return {
+                _id: course._id,
+                name: course.name,
+                description: course.description || '',
+                category: course.category,
+                thumbnail: thumbnail,
+                averageRating: averageRating,
+                numRatings: numRatings,
+                videoCount: videoCount,
+                duration: duration,
+                isEnrolled: isEnrolled,
+                isFavorite: isFavorite,
+                featured: course.featured || false
+            };
+        });
+
+        res.json({
+            success: true,
+            courses: enhancedCourses,
+            currentPage: page,
+            totalPages: Math.ceil(totalCourses / limit),
+            totalCourses: totalCourses,
+            userId: userId,
+            message: 'Courses loaded successfully'
+        });
+        
+    } catch (error) {
+        console.error('❌ Error in public courses route:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error fetching courses',
+            error: error.message
+        });
+    }
+});
+
 // GET course by ID with favorite status
 router.get('/:id', auth, async (req, res) => {
     try {
@@ -684,31 +824,41 @@ router.post('/', auth, checkRole(['admin']), upload, async (req, res) => {
             createdBy: req.user.id
         });
 
-        await newCourse.save();
+       // ✅ LINE 548 ke baad (course save hone ke baad):
+await newCourse.save();
 
-        console.log(`✅ Course created: ${newCourse._id}`);
-        
-        // ✅ NEW: Automatically generate assignment for new course
+console.log(`✅ Course created: ${newCourse._id}`);
+
+// ✅✅✅ NEW: Auto-generate assignment for new course
+try {
+    console.log('🤖 Attempting to auto-generate assignment for new course...');
+    
+    // ✅ IMPORTANT: assignmentController ko theek tarike se import karein
+    const assignmentController = require('../controllers/assignmentController');
+    
+    // ✅ Background mein assignment generate karein
+    setTimeout(async () => {
         try {
-            console.log('🤖 Attempting to auto-generate assignment for new course...');
+            const assignment = await assignmentController.generateAssignmentForNewCourse(
+                newCourse._id, 
+                newCourse.name
+            );
             
-            // Import the function properly
-            const { generateAssignmentForNewCourse } = require('../controllers/assignmentController');
-            
-            await generateAssignmentForNewCourse(newCourse._id, finalResources, {
-                title: `Assignment - ${newCourse.name}`,
-                type: 'descriptive',
-                numQuestions: 5,
-                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-            }, req);
-            
-            console.log('✅ Auto-assignment generation completed');
+            if (assignment) {
+                console.log(`✅ Auto-assignment created: ${assignment._id} for course: ${newCourse.name}`);
+            } else {
+                console.log(`⚠️ Auto-assignment generation failed/skipped for: ${newCourse.name}`);
+            }
         } catch (assignError) {
-            console.log('⚠️ Auto-assignment generation failed:', assignError.message);
-            // Assignment generation fail hua to bhi course create ho jaye
+            console.error('❌ Auto-assignment generation error:', assignError.message);
         }
-        
-        const plainCourse = newCourse.toObject();
+    }, 2000); // 2 seconds delay - taki course pehle properly save ho jaye
+} catch (assignError) {
+    console.log('⚠️ Auto-assignment generation failed (outer catch):', assignError.message);
+    // Assignment generation fail hua to bhi course create ho jaye
+}
+
+const plainCourse = newCourse.toObject();
         const { average, numRatings } = computeAverageRating(newCourse);
         plainCourse.averageRating = average;
         plainCourse.numRatings = numRatings;

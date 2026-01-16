@@ -125,78 +125,87 @@ $(document).ready(function () {
     });
 
     // Signin Form Submission (Updated: Use form's submit button selector for robustness)
-    $('#signinForm').submit(function (e) {
-        e.preventDefault();
-        const $button = $(this).find('button[type="submit"]');
-        $button.find('.spinner-border').removeClass('d-none');
-        $button.prop('disabled', true);
+  // Signin Form Submission
+$('#signinForm').submit(function (e) {
+    e.preventDefault();
+    const $button = $(this).find('button[type="submit"]');
+    $button.find('.spinner-border').removeClass('d-none');
+    $button.prop('disabled', true);
 
-        const formData = {
-            email: $('input[name="email"]').val().trim(),
-            password: $('input[name="password"]').val().trim()
-        };
+    const formData = {
+        email: $('input[name="email"]').val().trim(),
+        password: $('input[name="password"]').val().trim()
+    };
 
-        console.log('Signin Form Data:', formData);
+    console.log('Signin Form Data:', formData);
 
-        if (!formData.email || !formData.password) {
-            showAlert('Please fill in all required fields.', 'warning');
-            $button.find('.spinner-border').addClass('d-none');
-            $button.prop('disabled', false);
-            return;
-        }
+    if (!formData.email || !formData.password) {
+        showAlert('Please fill in all required fields.', 'warning');
+        $button.find('.spinner-border').addClass('d-none');
+        $button.prop('disabled', false);
+        return;
+    }
 
-        if (!isValidEmail(formData.email)) {
-            showAlert('Please enter a valid email address.', 'danger');
-            $button.find('.spinner-border').addClass('d-none');
-            $button.prop('disabled', false);
-            return;
-        }
+    if (!isValidEmail(formData.email)) {
+        showAlert('Please enter a valid email address.', 'danger');
+        $button.find('.spinner-border').addClass('d-none');
+        $button.prop('disabled', false);
+        return;
+    }
 
-        $.ajax({
-            url: 'http://localhost:5000/api/auth/signin',  // Fixed: Port to 5001
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-            success: function (response) {
-                console.log('Signin Success:', response);
-                console.log('Redirect URL received:', response.redirectUrl);
-                if (!response.token || !response.role || !response.redirectUrl) {
-                    showAlert('Incomplete response from server. Please try again.', 'danger');
-                    $button.find('.spinner-border').addClass('d-none');
-                    $button.prop('disabled', false);
-                    return;
-                }
-                localStorage.setItem('token', response.token);
-                const validRedirects = [
-                    'http://127.0.0.1:5500/html/template/student-dashboard.html',
-                    'http://127.0.0.1:5500/html/template/admin-dashboard.html'
-                ];
-                if (!validRedirects.includes(response.redirectUrl)) {
-                    console.error('Invalid redirectUrl:', response.redirectUrl);
-                    showAlert('Invalid redirection URL from server.', 'danger');
-                    $button.find('.spinner-border').addClass('d-none');
-                    $button.prop('disabled', false);
-                    return;
-                }
-                showAlert(`Signin successful. Redirecting to ${response.role} dashboard...`, 'success');
-                setTimeout(() => {
-                    window.location.href = response.redirectUrl;
-                }, 1500);
-            },
-            error: function (xhr) {
-                console.error('Signin Error:', xhr.responseJSON, xhr.status);
-                const errorMessage = xhr.responseJSON?.message || 'Error during signin. Please try again.';
-                // Added: Append details if available
-                if (xhr.responseJSON?.error) {
-                    errorMessage += ` Details: ${xhr.responseJSON.error}`;
-                }
-                showAlert(errorMessage, 'danger');
+    $.ajax({
+        url: 'http://localhost:5000/api/auth/signin',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function (response) {
+            console.log('Signin Success:', response);
+            
+            if (!response.token || !response.role) {
+                showAlert('Incomplete response from server. Please try again.', 'danger');
                 $button.find('.spinner-border').addClass('d-none');
                 $button.prop('disabled', false);
+                return;
             }
-        });
+            
+            localStorage.setItem('token', response.token);
+            
+            // **NEW LOGIC START - Check URL parameters for redirect**
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirectParam = urlParams.get('redirect');
+            const sourceParam = urlParams.get('source');
+            
+            let redirectUrl = '';
+            
+            // **Case 1: Agar home page se "Start Free" click kiya tha**
+            if (sourceParam === 'enrollment' && redirectParam) {
+                // Decode the redirect URL
+                redirectUrl = decodeURIComponent(redirectParam);
+                console.log('Redirecting to:', redirectUrl, 'from home page enrollment');
+            }
+            // **Case 2: Normal login (dashboard based on role)**
+            else {
+                redirectUrl = response.role === 'student' 
+                    ? 'http://127.0.0.1:5500/html/template/student-dashboard.html'
+                    : 'http://127.0.0.1:5500/html/template/admin-dashboard.html';
+            }
+            
+            console.log('Final Redirect URL:', redirectUrl);
+            
+            showAlert(`Signin successful. Redirecting...`, 'success');
+            setTimeout(() => {
+                window.location.href = redirectUrl;
+            }, 1500);
+        },
+        error: function (xhr) {
+            console.error('Signin Error:', xhr.responseJSON, xhr.status);
+            const errorMessage = xhr.responseJSON?.message || 'Error during signin. Please try again.';
+            showAlert(errorMessage, 'danger');
+            $button.find('.spinner-border').addClass('d-none');
+            $button.prop('disabled', false);
+        }
     });
-
+});
     // Forgot Password Form Submission (Updated: Better error logging)
     $('#forgotPasswordForm').submit(function (e) {
         e.preventDefault();

@@ -25,4 +25,4 @@ categorySchema.pre('deleteOne', { document: true, query: false }, async function
   }
 });
 
-module.exports = mongoose.model('Category', categorySchema);
+module.exports = mongoose.models.Category || mongoose.model('Category', categorySchema);

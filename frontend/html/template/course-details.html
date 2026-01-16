@@ -1072,7 +1072,7 @@
                 background: rgba(13,110,253,0.2);
                 border-left-color: #0d6efd;
             }
-            /* NEW: Assignment PDF View/Download Buttons */
+            /* Assignment PDF View/Download Buttons */
             .assignment-actions {
                 display: flex;
                 gap: 10px;
@@ -1175,6 +1175,35 @@
             .status-dot.submitted { background: #17a2b8; }
             .status-dot.evaluated { background: #28a745; }
             .status-dot.overdue { background: #dc3545; }
+
+            /* Submitted status styling */
+.submitted-status {
+    background: #d1e7dd;
+    color: #0f5132;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dark-mode .submitted-status {
+    background: #0f5132;
+    color: #d1e7dd;
+}
+
+/* Hide form after submission */
+.submission-form-container {
+    transition: all 0.3s ease;
+}
+
+/* Disabled upload button */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
         </style>
 </head>
 <body>
@@ -1354,14 +1383,15 @@
                             </div>
                           </div>
                           <!-- FIXED: Assignments Section -->
-                          <div class="card mb-4 assignments-section" id="assignments-section">
-                              <div class="card-body">
-                                  <h5 class="mb-3">Assignments <span class="badge bg-primary ms-2" id="pending-count">0</span></h5>
-                                  <div id="assignments-list">
-                                      <p class="text-muted">Loading assignments...</p>
-                                  </div>
-                              </div>
-                          </div>
+                          <!-- Assignments Section -->
+<div class="card mb-4 assignments-section" id="assignments-section">
+    <div class="card-body">
+        <h5 class="mb-3">Assignments <span class="badge bg-primary ms-2" id="pending-count">0</span></h5>
+        <div id="assignments-list">
+            <p class="text-muted">Loading assignments...</p>
+        </div>
+    </div>
+</div>
                           <!-- Comments Section -->
                           <div class="card comments-section">
                             <div class="card-body">
@@ -1531,6 +1561,7 @@
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 <script>
 $(document).ready(function() {
+    // Authentication and Initial Setup
     const token = localStorage.getItem('token');
     if (!token) {
         showToast('Please login first.', 'error');
@@ -1566,6 +1597,7 @@ $(document).ready(function() {
     let currentVideoIndex = 0;
     let currentVideoData = null;
     
+    // ✅ Toast Notification Function
     function showToast(message, type = 'success', duration = 4000) {
         const toastContainer = $('#toast-container');
         const toastId = `toast-${Date.now()}`;
@@ -1587,7 +1619,7 @@ $(document).ready(function() {
         }, duration);
     }
     
-    // Load profile data
+    // ✅ Load User Profile
     function loadProfile() {
         $.ajax({
             url: 'http://localhost:5000/api/auth/profile',
@@ -1616,7 +1648,7 @@ $(document).ready(function() {
         });
     }
     
-    // Handle profile link click
+    // ✅ Profile Link Handler
     $(".profile-link").on("click", function (e) {
         e.preventDefault();
         const href = $(this).data("href") || $(this).attr("href");
@@ -1636,7 +1668,7 @@ $(document).ready(function() {
         });
     });
     
-    // Logout Handler
+    // ✅ Logout Handler
     $(document).on('click', '#logout-btn', function (e) {
         e.preventDefault();
         $.ajax({
@@ -1646,17 +1678,17 @@ $(document).ready(function() {
             success: function () {
                 localStorage.removeItem('token');
                 showToast('Logout successful.', 'success');
-                setTimeout(() => window.location.href = 'login.html', 1500);
+                setTimeout(() => window.location.href = 'index-3.html', 1500);
             },
             error: function () {
                 localStorage.removeItem('token');
                 showToast('Logout successful.', 'success');
-                setTimeout(() => window.location.href = 'login.html', 1500);
+                setTimeout(() => window.location.href = 'index-3.html', 1500);
             }
         });
     });
     
-    // Generate star display
+    // ✅ Generate Star Rating Display
     function generateStars(rating) {
         const fullStars = Math.floor(rating);
         let starsHtml = '';
@@ -1670,7 +1702,7 @@ $(document).ready(function() {
         return starsHtml;
     }
     
-    // Get YouTube embed URL
+    // ✅ Get YouTube Embed URL
     function getYouTubeEmbedUrl(url) {
         if (!url) return '';
         try {
@@ -1688,7 +1720,7 @@ $(document).ready(function() {
         return '';
     }
     
-    // Get YouTube thumbnail
+    // ✅ Get YouTube Thumbnail
     function getYouTubeThumbnail(url) {
         if (!url) return 'assets/img/course/course-placeholder.jpg';
         let videoId = null;
@@ -1702,14 +1734,14 @@ $(document).ready(function() {
         return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'assets/img/course/course-placeholder.jpg';
     }
     
-    // Convert description to bullet points
+    // ✅ Convert Description to Bullet Points
     function descriptionToBullets(description) {
         if (!description) return '<li class="list-item">No description available.</li>';
         const bullets = description.split('.').map(sent => sent.trim()).filter(sent => sent.length > 0);
         return bullets.map(bullet => `<li class="list-item">${bullet}</li>`).join('');
     }
     
-    // Load video player
+    // ✅ Load Video Player
     function loadPlayer(url, isFile, videoData) {
         const container = $('#player-container');
         container.empty();
@@ -1744,7 +1776,7 @@ $(document).ready(function() {
         }
     }
     
-    // Check if enrolled
+    // ✅ Check if Student is Enrolled
     function isEnrolled(courseId) {
         return $.ajax({
             url: `http://localhost:5000/api/dashboard/student/enrollments`,
@@ -1758,7 +1790,7 @@ $(document).ready(function() {
         }).catch(() => false);
     }
     
-    // Load comments
+    // ✅ Load Comments
     async function loadComments() {
         try {
             const response = await $.ajax({
@@ -1792,7 +1824,7 @@ $(document).ready(function() {
         }
     }
     
-    // Star rating interaction
+    // ✅ Star Rating Interaction
     $('.comment-rating').on('change', 'input[name="rating"]', function() {
         const rating = parseInt(this.value);
         $('.comment-rating label').css('color', '#ddd');
@@ -1812,7 +1844,7 @@ $(document).ready(function() {
         }
     });
     
-    // Submit comment
+    // ✅ Submit Comment
     $('#comment-form').on('submit', async function(e) {
         e.preventDefault();
         const name = $('#comment-name').val();
@@ -1849,7 +1881,7 @@ $(document).ready(function() {
         }
     });
     
-    // Construct full URL
+    // ✅ Construct Full URL
     function constructFullUrl(relativeUrl) {
         if (!relativeUrl) return '';
         if (relativeUrl.startsWith('http')) return relativeUrl;
@@ -1863,327 +1895,240 @@ $(document).ready(function() {
         }
     }
     
-    // ✅ FIXED: Function to open PDF with authentication
-    // ✅ FIXED: Function to open PDF using iframe with authentication
-function openPdfWithAuth(assignmentId, action = 'view') {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        showToast('Please login to view PDF', 'error');
-        return false;
-    }
-    
-    try {
-        // Create PDF URL
-        let pdfUrl = `http://localhost:5000/api/assignments/${assignmentId}/pdf`;
-        if (action === 'download') {
-            pdfUrl += '?download=true';
+    // ✅ Open PDF with Authentication (FIXED VERSION)
+    function openPdfWithAuth(assignmentId, action = 'view') {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            showToast('Please login to view PDF', 'error');
+            return false;
         }
         
-        console.log('Opening PDF:', pdfUrl);
-        
-        // Create a hidden iframe
-        const iframeId = `pdf-iframe-${assignmentId}-${Date.now()}`;
-        const iframe = document.createElement('iframe');
-        iframe.id = iframeId;
-        iframe.style.position = 'fixed';
-        iframe.style.top = '0';
-        iframe.style.left = '0';
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.border = 'none';
-        iframe.style.zIndex = '9999';
-        iframe.style.display = 'none';
-        
-        // Create overlay
-        const overlay = document.createElement('div');
-        overlay.id = `pdf-overlay-${assignmentId}`;
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100%';
-        overlay.style.height = '100%';
-        overlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
-        overlay.style.zIndex = '9998';
-        overlay.style.display = 'flex';
-        overlay.style.alignItems = 'center';
-        overlay.style.justifyContent = 'center';
-        
-        // Add close button
-        const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '✕';
-        closeBtn.style.position = 'absolute';
-        closeBtn.style.top = '20px';
-        closeBtn.style.right = '20px';
-        closeBtn.style.background = '#fff';
-        closeBtn.style.color = '#000';
-        closeBtn.style.border = 'none';
-        closeBtn.style.borderRadius = '50%';
-        closeBtn.style.width = '40px';
-        closeBtn.style.height = '40px';
-        closeBtn.style.fontSize = '20px';
-        closeBtn.style.cursor = 'pointer';
-        closeBtn.style.zIndex = '10000';
-        closeBtn.onclick = function() {
-            document.body.removeChild(overlay);
-            document.body.removeChild(iframe);
-        };
-        
-        // Add loading spinner
-        const spinner = document.createElement('div');
-        spinner.innerHTML = `
-            <div style="color: white; text-align: center;">
-                <div class="spinner-border mb-3" role="status"></div>
-                <p>Loading PDF...</p>
-            </div>
-        `;
-        
-        overlay.appendChild(spinner);
-        overlay.appendChild(closeBtn);
-        document.body.appendChild(overlay);
-        document.body.appendChild(iframe);
-        
-        // Load PDF in iframe with authentication
-        const loadPdf = async () => {
+        try {
+            // Create PDF URL
+            let pdfUrl = `http://localhost:5000/api/assignments/${assignmentId}/pdf`;
+            if (action === 'download') {
+                pdfUrl += '?download=true';
+            }
+            
+            console.log('Opening PDF in new tab:', pdfUrl);
+            
+            // Method 1: Create hidden form to send token
+            const form = document.createElement('form');
+            form.method = 'GET';
+            form.action = pdfUrl;
+            form.target = '_blank';
+            form.style.display = 'none';
+            
+            // Add authorization token as hidden input
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = 'token';
+            tokenInput.value = token;
+            form.appendChild(tokenInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+            
+            return true;
+            
+        } catch (error) {
+            console.error('PDF open error:', error);
+            
+            // Fallback method: Use iframe
             try {
-                // First, fetch the PDF with authentication headers
-                const response = await fetch(pdfUrl, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/pdf'
-                    }
-                });
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = pdfUrl;
+                document.body.appendChild(iframe);
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                // Convert response to blob
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                
-                // Set iframe source to blob URL
-                iframe.src = url;
-                
-                // Show iframe
+                // Also try window.open
                 setTimeout(() => {
-                    iframe.style.display = 'block';
-                    overlay.style.display = 'none';
+                    window.open(pdfUrl, '_blank');
                 }, 500);
                 
-            } catch (error) {
-                console.error('PDF load error:', error);
-                
-                // Remove loading elements
-                document.body.removeChild(overlay);
-                document.body.removeChild(iframe);
-                
-                // Try direct URL as fallback
-                if (action === 'download') {
-                    // For download, create a link and click it
-                    const link = document.createElement('a');
-                    link.href = pdfUrl;
-                    link.download = `assignment_${assignmentId}.pdf`;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                } else {
-                    // For view, open in new tab
-                    window.open(pdfUrl, '_blank');
-                }
-                
-                showToast('Opening PDF...', 'success');
+                return true;
+            } catch (e) {
+                showToast('Failed to open PDF. Please try again.', 'error');
+                return false;
             }
-        };
-        
-        // Load PDF
-        loadPdf();
-        
-        return true;
-        
-    } catch (error) {
-        console.error('PDF open error:', error);
-        showToast('Failed to open PDF. Please try again.', 'error');
-        return false;
+        }
     }
-}
-
-// ✅ Make function globally available
-window.openPdfWithAuth = openPdfWithAuth;
     
-    // ✅ FIXED: Load Assignments Function
-    async function loadAssignments() {
+    // ✅ Make function globally available
+    window.openPdfWithAuth = openPdfWithAuth;
+    
+    // ✅ Load Assignments Function
+  // ✅ Load Assignments Function (Updated)
+async function loadAssignments() {
+    try {
+        console.log(`Loading assignments for course: ${courseId}`);
+        
+        const response = await $.ajax({
+            url: `http://localhost:5000/api/assignments/course/${courseId}`,
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        
+        let assignments = [];
+        if (response.success && response.assignments) {
+            assignments = response.assignments;
+        } else if (Array.isArray(response)) {
+            assignments = response;
+        }
+        
+        const list = $('#assignments-list');
+        
+        if (assignments.length === 0) {
+            list.html(`
+                <div class="text-center p-4">
+                    <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No assignments available for this course.</p>
+                </div>
+            `);
+            $('#pending-count').text(0).hide();
+            return 0;
+        }
+        
+        // Get student's submissions
+        let mySubmissions = [];
         try {
-            console.log(`Loading assignments for course: ${courseId}`);
-            
-            // Get assignments from correct endpoint
-            const response = await $.ajax({
-                url: `http://localhost:5000/api/courses/${courseId}/assignments`,
+            const subsResponse = await $.ajax({
+                url: `http://localhost:5000/api/submissions/my`,
                 type: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             
-            console.log('Assignments response:', response);
-            
-            let assignments = [];
-            if (response.success && response.assignments) {
-                assignments = response.assignments;
-            } else if (Array.isArray(response)) {
-                assignments = response;
+            if (subsResponse.success && subsResponse.submissions) {
+                mySubmissions = subsResponse.submissions;
+            } else if (Array.isArray(subsResponse)) {
+                mySubmissions = subsResponse;
             }
             
-            console.log(`Found ${assignments.length} assignments`);
+            console.log(`Found ${mySubmissions.length} submissions`);
+        } catch (subErr) {
+            console.warn('Submissions fetch error:', subErr.message);
+        }
+        
+        let pendingCount = 0;
+        const assignHtml = [];
+        
+        for (const assign of assignments) {
+            const now = new Date();
+            const due = new Date(assign.dueDate);
+            const isOverdue = due < now;
             
-            const list = $('#assignments-list');
+            let status = 'pending';
+            let score = null;
+            let feedback = '';
+            let submissionId = null;
+            let hasSubmitted = false;
             
-            if (assignments.length === 0) {
-                list.html(`
-                    <div class="text-center p-4">
-                        <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
-                        <p class="text-muted">No assignments available for this course.</p>
-                    </div>
-                `);
-                $('#pending-count').text(0).hide();
-                return 0;
-            }
+            // Find if student has submitted this assignment
+            const mySubmission = mySubmissions.find(s => {
+                if (!s || !assign._id) return false;
+                const subAssignId = s.assignmentId?._id || s.assignmentId || s.assignment;
+                return subAssignId?.toString() === assign._id.toString();
+            });
             
-            // Get student's submissions
-            let mySubmissions = [];
-            try {
-                const subsResponse = await $.ajax({
-                    url: `http://localhost:5000/api/submissions/my`,
-                    type: 'GET',
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                
-                if (subsResponse.success && subsResponse.submissions) {
-                    mySubmissions = subsResponse.submissions;
-                } else if (Array.isArray(subsResponse)) {
-                    mySubmissions = subsResponse;
-                }
-                
-                console.log(`Found ${mySubmissions.length} submissions`);
-            } catch (subErr) {
-                console.warn('Submissions fetch error:', subErr.message);
-            }
-            
-            let pendingCount = 0;
-            const assignHtml = [];
-            
-            for (const assign of assignments) {
-                const now = new Date();
-                const due = new Date(assign.dueDate);
-                const isOverdue = due < now;
-                
-                let status = 'pending';
-                let score = null;
-                let feedback = '';
-                let submissionId = null;
-                
-                // Find if student has submitted this assignment
-                const mySubmission = mySubmissions.find(s => {
-                    if (!s || !assign._id) return false;
-                    const subAssignId = s.assignmentId?._id || s.assignmentId || s.assignment;
-                    return subAssignId?.toString() === assign._id.toString();
-                });
-                
-                if (mySubmission) {
-                    if (mySubmission.evaluated || mySubmission.evaluation?.score !== undefined) {
-                        status = 'evaluated';
-                        score = mySubmission.evaluation?.score || mySubmission.score;
-                        feedback = mySubmission.evaluation?.feedback || mySubmission.evaluation?.remarks || mySubmission.feedback || '';
-                    } else {
-                        status = 'submitted';
-                    }
-                    submissionId = mySubmission._id;
-                } else if (!isOverdue) {
-                    status = 'pending';
-                    pendingCount++;
+            if (mySubmission) {
+                hasSubmitted = true;
+                if (mySubmission.evaluated || mySubmission.evaluation?.score !== undefined) {
+                    status = 'evaluated';
+                    score = mySubmission.evaluation?.score || mySubmission.score;
+                    feedback = mySubmission.evaluation?.feedback || mySubmission.evaluation?.remarks || mySubmission.feedback || '';
                 } else {
-                    status = 'overdue';
+                    status = 'submitted';
                 }
-                
-                // Format due date
-                const dueDateStr = due.toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                // ✅ FIXED: Get PDF URL - Use API endpoint that handles authentication
-                let pdfUrl = '';
-                let pdfAvailable = false;
-                
-                if (assign._id) {
-                    // Always use the API endpoint that requires authentication
-                    pdfUrl = `http://localhost:5000/api/assignments/${assign._id}/pdf`;
-                    pdfAvailable = true;
-                } else if (assign.assignmentPdfPath) {
-                    // Try direct URL as fallback
-                    pdfUrl = `http://localhost:5000${assign.assignmentPdfPath.startsWith('/') ? assign.assignmentPdfPath : '/' + assign.assignmentPdfPath}`;
-                    pdfAvailable = true;
-                }
-                
-                // Create status badge
-                let statusBadge = '';
-                switch (status) {
-                    case 'pending':
-                        statusBadge = '<span class="status-badge status-pending">Pending</span>';
-                        break;
-                    case 'submitted':
-                        statusBadge = '<span class="status-badge status-submitted">Submitted</span>';
-                        break;
-                    case 'evaluated':
-                        statusBadge = `<span class="status-badge status-evaluated">Evaluated (${score}/100)</span>`;
-                        break;
-                    case 'overdue':
-                        statusBadge = '<span class="status-badge status-overdue">Overdue</span>';
-                        break;
-                }
-                
-                // Get questions count
-                let questionsCount = assign.numQuestions || 5;
-                if (assign.questions && Array.isArray(assign.questions)) {
-                    questionsCount = assign.questions.length;
-                }
-                
-                // ✅ FIXED: Create assignment HTML with proper PDF buttons
-                assignHtml.push(`
-                    <div class="assignment-item" data-assignment-id="${assign._id}">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="assignment-title mb-1">${assign.title || 'Untitled Assignment'}</h6>
-                                <div class="d-flex align-items-center gap-2">
-                                    ${statusBadge}
-                                    <span class="text-muted small"><i class="fas fa-calendar me-1"></i> Due: ${dueDateStr}</span>
-                                </div>
+                submissionId = mySubmission._id;
+            } else if (!isOverdue) {
+                status = 'pending';
+                pendingCount++;
+            } else {
+                status = 'overdue';
+            }
+            
+            // Format due date
+            const dueDateStr = due.toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Get PDF URL
+            let pdfUrl = '';
+            let pdfAvailable = false;
+            
+            if (assign._id) {
+                pdfUrl = `http://localhost:5000/api/assignments/${assign._id}/pdf`;
+                pdfAvailable = true;
+            }
+            
+            // Create status badge
+            let statusBadge = '';
+            switch (status) {
+                case 'pending':
+                    statusBadge = '<span class="status-badge status-pending">Pending</span>';
+                    break;
+                case 'submitted':
+                    statusBadge = '<span class="status-badge status-submitted">Submitted</span>';
+                    break;
+                case 'evaluated':
+                    statusBadge = `<span class="status-badge status-evaluated">Evaluated (${score}/100)</span>`;
+                    break;
+                case 'overdue':
+                    statusBadge = '<span class="status-badge status-overdue">Overdue</span>';
+                    break;
+            }
+            
+            // Get questions count
+            let questionsCount = assign.numQuestions || 5;
+            if (assign.questions && Array.isArray(assign.questions)) {
+                questionsCount = assign.questions.length;
+            }
+            
+            // 🔴 YEH IMPORTANT PART HAI - Submission form conditional show/hide
+            const showSubmissionForm = !hasSubmitted && status !== 'overdue';
+            
+            // Create assignment HTML
+            assignHtml.push(`
+                <div class="assignment-item" data-assignment-id="${assign._id}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="assignment-title mb-1">${assign.title || 'Untitled Assignment'}</h6>
+                            <div class="d-flex align-items-center gap-2">
+                                ${statusBadge}
+                                <span class="text-muted small"><i class="fas fa-calendar me-1"></i> Due: ${dueDateStr}</span>
                             </div>
-                            ${assign.generatedByAI ? '<span class="badge bg-info">AI Generated</span>' : ''}
                         </div>
-                        
-                        ${assign.questions ? `<p class="assignment-questions mt-2"><i class="fas fa-question-circle me-1"></i> ${questionsCount} questions</p>` : ''}
-                        
-                        <!-- ✅ FIXED: PDF View/Download Buttons with authentication -->
-                        ${pdfAvailable ? `
-                            <div class="assignment-actions mt-3">
-                                <button type="button" class="btn-pdf-view" onclick="openPdfWithAuth('${assign._id}', 'view')">
-                                    <i class="fas fa-eye me-1"></i> View Assignment PDF
-                                </button>
-                                <button type="button" class="btn-pdf-download" onclick="openPdfWithAuth('${assign._id}', 'download')">
-                                    <i class="fas fa-download me-1"></i> Download PDF
-                                </button>
-                            </div>
-                        ` : `
-                            <div class="alert alert-warning mt-3">
-                                <i class="fas fa-exclamation-triangle me-1"></i> PDF not available
-                            </div>
-                        `}
-                        
-                        <!-- Submission Form -->
-                        <div class="submission-form-container mt-3" ${status === 'submitted' || status === 'evaluated' ? 'style="display: none;"' : ''}>
+                        <!-- 🔴 YEH LINE ADD KARO - Submitted status show karegi -->
+                        ${hasSubmitted ? `<div class="submitted-status text-success"><i class="fas fa-check-circle"></i> Submitted</div>` : ''}
+                    </div>
+                    
+                    ${assign.questions ? `<p class="assignment-questions mt-2"><i class="fas fa-question-circle me-1"></i> ${questionsCount} questions</p>` : ''}
+                    
+                    <!-- PDF View/Download Buttons -->
+                    ${pdfAvailable ? `
+                        <div class="assignment-actions mt-3">
+                            <button type="button" class="btn-pdf-view" onclick="openPdfWithAuth('${assign._id}', 'view')">
+                                <i class="fas fa-eye me-1"></i> View Assignment PDF
+                            </button>
+                            <button type="button" class="btn-pdf-download" onclick="openPdfWithAuth('${assign._id}', 'download')">
+                                <i class="fas fa-download me-1"></i> Download PDF
+                            </button>
+                        </div>
+                    ` : `
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle me-1"></i> PDF not available
+                        </div>
+                    `}
+                    
+                    <!-- 🔴 YEH CONDITIONAL PART HAI - Form sirf show karega agar submit nahi kiya -->
+                    ${showSubmissionForm ? `
+                        <div class="submission-form-container mt-3">
                             <form class="submission-form" data-assignment-id="${assign._id}">
                                 <label class="file-upload-label">
                                     <i class="fas fa-cloud-upload-alt"></i>
@@ -2204,111 +2149,55 @@ window.openPdfWithAuth = openPdfWithAuth;
                                 </div>
                             </form>
                         </div>
-                        
-                        <!-- Feedback Section -->
-                        ${status === 'evaluated' ? `
-                            <div class="feedback-box mt-3">
-                                <h6><i class="fas fa-star me-1"></i> Score: ${score}/100</h6>
-                                ${feedback ? `<p class="feedback-text mb-0">${feedback}</p>` : ''}
-                                ${mySubmission?.pdfUrl ? `
-                                    <div class="mt-2">
-                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openPdfWithAuth('${assign._id}', 'view', 'my_submission.pdf')">
-                                            <i class="fas fa-eye me-1"></i> View Submitted PDF
-                                        </button>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        ` : ''}
-                        
-                        ${status === 'submitted' ? `
-                            <div class="alert alert-info mt-3">
-                                <i class="fas fa-clock me-1"></i> <strong>Assignment Submitted</strong>
-                                <p class="mb-0 mt-1 small">Your submission is being evaluated by AI. Please check back later.</p>
-                            </div>
-                        ` : ''}
-                    </div>
-                `);
-            }
-            
-            list.html(assignHtml.join(''));
-            
-            // Update pending count
-            if (pendingCount > 0) {
-                $('#pending-count').text(pendingCount).show();
-            } else {
-                $('#pending-count').hide();
-            }
-            
-            // Setup file upload handlers
-            setupFileUploadHandlers();
-            
-            return pendingCount;
-            
-        } catch (err) {
-            console.error('Load assignments error:', err);
-            $('#assignments-list').html(`
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Unable to load assignments</strong>
-                    <p class="mb-0 mt-1">Please try again later.</p>
+                    ` : ''}
+                    
+                    <!-- Feedback Section -->
+                    ${status === 'evaluated' ? `
+                        <div class="feedback-box mt-3">
+                            <h6><i class="fas fa-star me-1"></i> Score: ${score}/100</h6>
+                            ${feedback ? `<p class="feedback-text mb-0">${feedback}</p>` : ''}
+                        </div>
+                    ` : ''}
+                    
+                    <!-- 🔴 Submitted but not evaluated message -->
+                    ${status === 'submitted' ? `
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-clock me-1"></i> <strong>Assignment Submitted</strong>
+                            <p class="mb-0 mt-1 small">Your submission is being evaluated. Please check back later.</p>
+                        </div>
+                    ` : ''}
                 </div>
             `);
-            $('#pending-count').hide();
-            return 0;
-        }
-    }
-    
-    // ✅ FIXED: Make openPdfWithAuth available globally
-    window.openPdfWithAuth = function(assignmentId, action = 'view', fileName = 'assignment.pdf') {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            showToast('Please login to view PDF', 'error');
-            return false;
         }
         
-        try {
-            // Create URL for PDF
-            let url = `http://localhost:5000/api/assignments/${assignmentId}/pdf`;
-            
-            // Add query parameter for download
-            if (action === 'download') {
-                url += '?download=true';
-            }
-            
-            // Method 1: Create hidden iframe with Authorization header
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = url;
-            iframe.onload = function() {
-                // If iframe loads successfully, the PDF should display
-                setTimeout(() => {
-                    document.body.removeChild(iframe);
-                }, 1000);
-            };
-            document.body.appendChild(iframe);
-            
-            // Method 2: Try to open in new window with Authorization
-            setTimeout(() => {
-                try {
-                    const newWindow = window.open(url, '_blank');
-                    if (!newWindow || newWindow.closed) {
-                        showToast('Please allow popups to view PDF', 'warning');
-                    }
-                } catch (e) {
-                    console.warn('Popup blocked:', e);
-                }
-            }, 500);
-            
-            return true;
-            
-        } catch (error) {
-            console.error('PDF open error:', error);
-            showToast('Failed to open PDF', 'error');
-            return false;
+        list.html(assignHtml.join(''));
+        
+        // Update pending count
+        if (pendingCount > 0) {
+            $('#pending-count').text(pendingCount).show();
+        } else {
+            $('#pending-count').hide();
         }
-    };
-    
-    // Setup file upload handlers
+        
+        // Setup file upload handlers
+        setupFileUploadHandlers();
+        
+        return pendingCount;
+        
+    } catch (err) {
+        console.error('Load assignments error:', err);
+        $('#assignments-list').html(`
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Unable to load assignments</strong>
+                <p class="mb-0 mt-1">Please try again later.</p>
+            </div>
+        `);
+        $('#pending-count').hide();
+        return 0;
+    }
+}
+    // ✅ Setup File Upload Handlers
     function setupFileUploadHandlers() {
         // File upload label click
         $(document).off('click', '.file-upload-label').on('click', '.file-upload-label', function() {
@@ -2348,12 +2237,12 @@ window.openPdfWithAuth = openPdfWithAuth;
         });
         
         // Form submission
-       // ✅ FIXED: Update the form submission handler
-// setupFileUploadHandlers() function mein yeh change karo:
+       // ✅ Submit handler (Updated)
 $(document).off('submit', '.submission-form').on('submit', '.submission-form', async function(e) {
     e.preventDefault();
     
     const form = $(this);
+    const assignmentItem = form.closest('.assignment-item');
     const assignmentId = form.data('assignment-id');
     const fileInput = form.find('input[type="file"]');
     const file = fileInput[0].files[0];
@@ -2367,19 +2256,19 @@ $(document).off('submit', '.submission-form').on('submit', '.submission-form', a
     try {
         submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Submitting...');
         
-        // ✅ OPTION 1: Convert file to base64 and send as JSON (Recommended)
+        // Convert file to base64 and send as JSON
         const base64Data = await fileToBase64(file);
         
         const response = await fetch(`http://localhost:5000/api/assignments/${assignmentId}/submit`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json', // ✅ IMPORTANT
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({
-                pdfBase64: base64Data,
-                textAnswer: "Submitted via file upload" // Optional text
-            })
+           body: JSON.stringify({
+    pdfBase64: base64Data
+})
+
         });
         
         const result = await response.json();
@@ -2387,25 +2276,31 @@ $(document).off('submit', '.submission-form').on('submit', '.submission-form', a
         if (result.success) {
             showToast('Assignment submitted successfully! AI evaluation in progress.', 'success');
             
-            // Hide form and show success message
+            // 🔴 YEH IMPORTANT PART HAI - Form hide karo aur submitted status dikhao
             form.closest('.submission-form-container').slideUp();
-            form.closest('.assignment-item').append(`
-                <div class="alert alert-success mt-3">
-                    <i class="fas fa-check-circle me-1"></i> 
-                    <strong>Assignment Submitted</strong>
-                    <p class="mb-0 mt-1 small">Your submission has been received. AI evaluation in progress.</p>
-                    ${result.submission?.pdfUrl ? `
-                        <a href="${result.submission.pdfUrl}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
-                            <i class="fas fa-eye me-1"></i> View Submitted PDF
-                        </a>
-                    ` : ''}
+            
+            // Add submitted status badge
+            assignmentItem.find('.submitted-status').remove();
+            assignmentItem.find('.d-flex.justify-content-between').append(`
+                <div class="submitted-status text-success">
+                    <i class="fas fa-check-circle"></i> Submitted
                 </div>
             `);
             
-            // Reload assignments after 3 seconds
+            // Add submitted message
+            assignmentItem.append(`
+                <div class="alert alert-success mt-3">
+                    <i class="fas fa-check-circle me-1"></i> 
+                    <strong>Assignment Submitted Successfully!</strong>
+                    <p class="mb-0 mt-1 small">Your submission has been received. AI evaluation in progress.</p>
+                </div>
+            `);
+            
+            // 🔴 Pending assignments count update karo
             setTimeout(() => {
                 loadAssignments();
-            }, 3000);
+            }, 2000);
+            
         } else {
             showToast(result.message || 'Submission failed.', 'error');
             submitBtn.prop('disabled', false).html('<i class="fas fa-paper-plane me-1"></i> Submit Assignment');
@@ -2418,100 +2313,22 @@ $(document).off('submit', '.submission-form').on('submit', '.submission-form', a
         submitBtn.prop('disabled', false).html('<i class="fas fa-paper-plane me-1"></i> Submit Assignment');
     }
 });
-
-// ✅ Add this function to convert file to base64
-function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            // Remove the data URL prefix
-            const base64 = reader.result.split(',')[1];
-            resolve(base64);
-        };
-        reader.onerror = error => reject(error);
-    });
-}}
-    // Load course
-    async function loadCourse() {
-        try {
-            const course = await $.ajax({
-                url: `http://localhost:5000/api/courses/${courseId}`,
-                type: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            
-            const enrolled = await isEnrolled(courseId);
-            
-            // Calculate average rating
-            let averageRating = course.averageRating || 0;
-            if (!course.averageRating && course.comments) {
-                const ratedComments = course.comments.filter(c => c.rating);
-                averageRating = ratedComments.length > 0 ? 
-                    (ratedComments.reduce((sum, c) => sum + c.rating, 0) / ratedComments.length).toFixed(1) : 0;
-            }
-            
-            const stars = generateStars(averageRating);
-            
-            // Load assignments first to get pending count
-            const pendingAssigns = await loadAssignments();
-            
-            // Update course header
-            $('#course-header').html(`
-                <div class="row align-items-center">
-                    <div class="col-lg-8">
-                        <h3>${course.name}</h3>
-                        <div class="average-rating">
-                            <span>${stars}</span>
-                            <small class="ms-2 text-white-50">(${averageRating}) - ${course.comments ? course.comments.filter(c => c.rating).length : 0} ratings</small>
-                        </div>
-                        ${pendingAssigns > 0 ? `<p class="text-white-50 mb-0">📝 ${pendingAssigns} pending assignment${pendingAssigns !== 1 ? 's' : ''}</p>` : ''}
-                    </div>
-                    <div class="col-lg-4 text-lg-end enroll-section">
-                        <button id="enroll-btn" class="btn-enroll ${enrolled ? 'disabled' : ''}">
-                            ${enrolled ? 'Enrolled' : 'Enroll Now'}
-                        </button>
-                    </div>
-                </div>
-            `);
-            
-            // Update description
-            $('#course-desc-bullets').html(descriptionToBullets(course.description));
-            
-            // Load videos and resources
-            loadCourseContent(course);
-            
-            // Enroll button handler
-            $('#enroll-btn').off('click').on('click', async () => {
-                if (enrolled) return;
-                
-                try {
-                    await $.ajax({
-                        url: 'http://localhost:5000/api/dashboard/student/enroll',
-                        type: 'POST',
-                        headers: { 'Authorization': 'Bearer ' + token },
-                        contentType: 'application/json',
-                        data: JSON.stringify({ courseId })
-                    });
-                    
-                    showToast('Enrolled successfully!', 'success');
-                    $('#enroll-btn').text('Enrolled').prop('disabled', true).addClass('disabled');
-                    loadCourse(); // Reload course
-                } catch (err) {
-                    showToast('Enrollment failed: ' + (err.responseJSON?.message || 'Try again'), 'error');
-                }
-            });
-            
-            // Load comments
-            loadComments();
-            
-        } catch (err) {
-            console.error('Load course error:', err);
-            showToast('Error loading course.', 'error');
-        }
+    }
+    // ✅ Convert File to Base64
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                // Remove the data URL prefix
+                const base64 = reader.result.split(',')[1];
+                resolve(base64);
+            };
+            reader.onerror = error => reject(error);
+        });
     }
     
-    // Load course content (videos and resources)
+    // ✅ Load Course Content (Videos and Resources)
     function loadCourseContent(course) {
         const playlist = $('#playlist-items');
         playlist.empty();
@@ -2643,11 +2460,86 @@ function fileToBase64(file) {
         }
     }
     
-    // Initialize
-    loadCourse();
-    loadProfile();
+    // ✅ Load Main Course Data
+    async function loadCourse() {
+        try {
+            const course = await $.ajax({
+                url: `http://localhost:5000/api/courses/${courseId}`,
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            
+            const enrolled = await isEnrolled(courseId);
+            
+            // Calculate average rating
+            let averageRating = course.averageRating || 0;
+            if (!course.averageRating && course.comments) {
+                const ratedComments = course.comments.filter(c => c.rating);
+                averageRating = ratedComments.length > 0 ? 
+                    (ratedComments.reduce((sum, c) => sum + c.rating, 0) / ratedComments.length).toFixed(1) : 0;
+            }
+            
+            const stars = generateStars(averageRating);
+            
+            // Load assignments first to get pending count
+            const pendingAssigns = await loadAssignments();
+            
+            // Update course header
+            $('#course-header').html(`
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h3>${course.name}</h3>
+                        <div class="average-rating">
+                            <span>${stars}</span>
+                            <small class="ms-2 text-white-50">(${averageRating}) - ${course.comments ? course.comments.filter(c => c.rating).length : 0} ratings</small>
+                        </div>
+                        ${pendingAssigns > 0 ? `<p class="text-white-50 mb-0">📝 ${pendingAssigns} pending assignment${pendingAssigns !== 1 ? 's' : ''}</p>` : ''}
+                    </div>
+                    <div class="col-lg-4 text-lg-end enroll-section">
+                        <button id="enroll-btn" class="btn-enroll ${enrolled ? 'disabled' : ''}">
+                            ${enrolled ? 'Enrolled' : 'Enroll Now'}
+                        </button>
+                    </div>
+                </div>
+            `);
+            
+            // Update description
+            $('#course-desc-bullets').html(descriptionToBullets(course.description));
+            
+            // Load videos and resources
+            loadCourseContent(course);
+            
+            // Enroll button handler
+            $('#enroll-btn').off('click').on('click', async () => {
+                if (enrolled) return;
+                
+                try {
+                    await $.ajax({
+                        url: 'http://localhost:5000/api/dashboard/student/enroll',
+                        type: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        contentType: 'application/json',
+                        data: JSON.stringify({ courseId })
+                    });
+                    
+                    showToast('Enrolled successfully!', 'success');
+                    $('#enroll-btn').text('Enrolled').prop('disabled', true).addClass('disabled');
+                    loadCourse(); // Reload course
+                } catch (err) {
+                    showToast('Enrollment failed: ' + (err.responseJSON?.message || 'Try again'), 'error');
+                }
+            });
+            
+            // Load comments
+            loadComments();
+            
+        } catch (err) {
+            console.error('Load course error:', err);
+            showToast('Error loading course.', 'error');
+        }
+    }
     
-    // Theme toggle
+    // ✅ Theme Toggle Functions
     const toggleDarkMode = () => {
         $('body').addClass('dark-mode').removeClass('light-mode');
         $('#dark-mode-toggle').removeClass('activate');
@@ -2662,15 +2554,26 @@ function fileToBase64(file) {
         localStorage.setItem('theme', 'light');
     };
     
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        toggleDarkMode();
-    } else {
-        toggleLightMode();
+    // ✅ Initialize Everything
+    function initialize() {
+        loadCourse();
+        loadProfile();
+        
+        // Set theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            toggleDarkMode();
+        } else {
+            toggleLightMode();
+        }
+        
+        // Theme toggle event handlers
+        $('#dark-mode-toggle').on('click', toggleDarkMode);
+        $('#light-mode-toggle').on('click', toggleLightMode);
     }
     
-    $('#dark-mode-toggle').on('click', toggleDarkMode);
-    $('#light-mode-toggle').on('click', toggleLightMode);
+    // Start the application
+    initialize();
 });
 </script>
 </body>

@@ -11,7 +11,7 @@
 		<meta name="author" content="Dreams Technologies">
 		<meta name="robots" content="index, follow">
 		
-		<title>Dreams LMS | Advanced Learning Management System Template</title>
+		<title>Adaptive LMS</title>
 
 		<!-- Favicon -->
 		<link rel="shortcut icon" href="assets/img/favicon.png"> 
@@ -46,6 +46,582 @@
 
 		<!-- Main CSS -->
 		<link rel="stylesheet" href="assets/css/style.css">
+		
+		<style>
+			/* Header Logo Fix */
+			.header-three .navbar-logo {
+				display: flex;
+				align-items: center;
+				height: 100%;
+			}
+			
+			.header-three .navbar-logo .logo {
+				max-height: 90px; /* Logo height same */
+				width: auto;
+				object-fit: contain;
+			}
+			
+			.header-three .menu-logo img {
+				max-height: 90px; /* Logo height same */
+				width: auto;
+			}
+			
+			/* REDUCE HEADER HEIGHT - from 70px to 50px */
+			.header-three .header-nav {
+				padding: 5px 0; /* Reduced from 12px to 5px */
+				min-height: 50px; /* Reduced from 70px to 50px */
+			}
+			
+			.header-three .navbar-header {
+				display: flex;
+				align-items: center;
+				height: 100%;
+			}
+			
+			.header-three .bar-icon {
+				margin-right: 15px;
+			}
+			
+			/* Fix header layout */
+			.header-three .header-nav {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+			
+			.header-three .navbar-header {
+				flex: 0 0 auto;
+			}
+			
+			.header-three .header-btn {
+				flex: 0 0 auto;
+			}
+			
+			.header-three .main-menu-wrapper {
+				flex: 1;
+				display: flex;
+				justify-content: flex-end;
+			}
+			
+			/* Adjust button sizes for smaller header */
+			.header-three .header-btn .btn {
+				padding: 4px 12px; /* Smaller buttons */
+				font-size: 13px;
+			}
+			
+			/* Mobile adjustments */
+			@media (max-width: 991px) {
+				.header-three .navbar-logo .logo {
+					max-height: 40px;
+				}
+				
+				.header-three .header-nav {
+					padding: 4px 0; /* Reduced padding */
+					min-height: 45px; /* Reduced height */
+				}
+				
+				.header-three .header-btn .btn {
+					padding: 3px 10px; /* Even smaller buttons on mobile */
+					font-size: 12px;
+				}
+			}
+			
+			/* Prevent logo from moving down */
+			.header-three.position-fixed {
+				top: 0;
+				left: 0;
+				right: 0;
+				z-index: 1030;
+				background: #fff;
+				box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+			}
+			
+			.header-three.header-three {
+				background: #fff;
+			}
+			
+			/* Reduce content top padding to match smaller header */
+			.home-3 {
+				padding-top: 50px; /* Reduced from 70px to 50px */
+			}
+
+			/* ========== COURSE CARD UI IMPROVEMENTS ========== */
+.course-item-two {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 380px; /* Fixed height - reduced */
+}
+
+.dark-mode .course-item-two {
+    background: #1e293b;
+    border-color: #2d3748;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.course-item-two:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+}
+
+.dark-mode .course-item-two:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    border-color: #60a5fa;
+}
+
+/* Course Image - Height reduced */
+.course-item-two .course-img {
+    position: relative;
+    height: 140px; /* Further reduced from 160px to 140px */
+    overflow: hidden;
+    border-bottom: 1px solid #f1f5f9;
+    flex-shrink: 0;
+}
+
+.dark-mode .course-item-two .course-img {
+    border-bottom-color: #2d3748;
+}
+
+.course-item-two .course-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.course-item-two:hover .course-img img {
+    transform: scale(1.05);
+}
+
+/* Video Count Badge */
+.course-item-two .video-count-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #3b82f6;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.dark-mode .course-item-two .video-count-badge {
+    background: rgba(30, 41, 59, 0.9);
+    color: #93c5fd;
+    border-color: rgba(147, 197, 253, 0.3);
+}
+
+/* Favorite Button */
+.course-item-two .fav-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.dark-mode .course-item-two .fav-btn {
+    background: rgba(30, 41, 59, 0.9);
+    color: #f1f5f9;
+}
+
+.course-item-two .fav-btn:hover {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dark-mode .course-item-two .fav-btn:hover {
+    background: #ffffff;
+    color: #1e293b;
+}
+
+.course-item-two .fav-btn.favorited i {
+    color: #ef4444;
+}
+
+.course-item-two .fav-btn i {
+    font-size: 0.9rem;
+    color: #64748b;
+    transition: all 0.2s ease;
+}
+
+.dark-mode .course-item-two .fav-btn i {
+    color: #cbd5e1;
+}
+
+/* Course Content - More compact */
+.course-item-two .course-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+/* Category Badge */
+.course-item-two .category-badge {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(29, 78, 216, 0.08));
+    color: #3b82f6;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    width: fit-content;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+}
+
+.dark-mode .course-item-two .category-badge {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+    border-color: rgba(147, 197, 253, 0.2);
+}
+
+/* Course Title - More compact */
+.course-item-two .course-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.4rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.4em;
+}
+
+.dark-mode .course-item-two .course-title {
+    color: #f8fafc;
+}
+
+/* Remove Rating Stars Section - Hata diya */
+.course-item-two .rating {
+    display: none !important;
+}
+
+/* Course Description - More compact */
+.course-item-two .course-desc {
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.4;
+    margin-bottom: 0.8rem;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.2em;
+}
+
+.dark-mode .course-item-two .course-desc {
+    color: #94a3b8;
+}
+
+/* Course Footer - More compact */
+.course-item-two .course-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 0.8rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.dark-mode .course-item-two .course-footer {
+    border-top-color: #2d3748;
+}
+
+/* Price - Fixed FREE text issue */
+.course-item-two .price {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #10b981;
+    display: flex;
+    align-items: center;
+}
+
+.course-item-two .price::before {
+    content: "FREE";
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #10b981, #059669);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Enroll Button - More compact */
+.course-item-two .enroll-btn {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 90px;
+    height: 32px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+}
+
+.course-item-two .enroll-btn:not(.enrolled) {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+.course-item-two .enroll-btn:not(.enrolled):hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* Enrolled Button */
+.course-item-two .enroll-btn.enrolled {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: white !important;
+    cursor: default !important;
+    pointer-events: none !important;
+    opacity: 0.95 !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15) !important;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+}
+
+.course-item-two .enroll-btn.enrolled:hover {
+    transform: none !important;
+}
+
+/* Play Overlay - Smaller */
+.course-item-two .play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(29, 78, 216, 0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.course-item-two:hover .play-overlay {
+    opacity: 1;
+}
+
+.course-item-two .play-btn {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+    border: 2px solid #3b82f6;
+}
+
+.course-item-two .play-btn:hover {
+    transform: scale(1.08);
+    background: white;
+}
+
+.course-item-two .play-btn i {
+    color: #3b82f6;
+    font-size: 1.2rem;
+    margin-left: 2px;
+}
+
+/* Success Notification */
+.notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.5s;
+    animation-fill-mode: forwards;
+    font-weight: 500;
+    border-left: 3px solid #ffffff;
+}
+
+.notification i {
+    font-size: 18px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* Badge for enrolled courses in header */
+.badge-enrolled {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 5px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .course-item-two {
+        height: 360px;
+    }
+    
+    .course-item-two .course-img {
+        height: 120px;
+    }
+    
+    .course-item-two .course-content {
+        padding: 0.75rem;
+    }
+    
+    .course-item-two .course-title {
+        font-size: 0.9rem;
+        min-height: 2.2em;
+    }
+    
+    .course-item-two .course-desc {
+        font-size: 0.7rem;
+        -webkit-line-clamp: 2;
+        min-height: 2em;
+    }
+    
+    .course-item-two .course-footer {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        padding-top: 0.6rem;
+    }
+    
+    .course-item-two .enroll-btn {
+        padding: 5px 12px;
+        height: 30px;
+        min-width: 80px;
+        font-size: 0.7rem;
+    }
+    
+    .course-item-two .price {
+        font-size: 0.9rem;
+    }
+    
+    .course-item-two .category-badge {
+        font-size: 0.6rem;
+        padding: 3px 8px;
+        margin-bottom: 0.4rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .course-item-two {
+        height: 340px;
+    }
+    
+    .course-item-two .course-img {
+        height: 110px;
+    }
+    
+    .course-item-two .video-count-badge {
+        top: 6px;
+        right: 6px;
+        padding: 2px 6px;
+        font-size: 0.6rem;
+    }
+    
+    .course-item-two .fav-btn {
+        top: 6px;
+        left: 6px;
+        width: 28px;
+        height: 28px;
+    }
+    
+    .course-item-two .play-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Grid alignment */
+#feature-courses .col-xl-4,
+#feature-courses .col-lg-6,
+#feature-courses .col-md-6 {
+    display: flex;
+}
+
+#feature-courses .course-item-two {
+    width: 100%;
+}
+
+#feature-courses .course-feature {
+    padding: 2rem 0;
+}
+
+#feature-courses .row {
+    row-gap: 1rem;
+}		
+		</style>
 	
 	</head>
 	<body>
@@ -68,242 +644,41 @@
 							</a>
 							<div class="navbar-logo">
 								<a class="logo-white header-logo" href="index-3.html">
-									<img src="assets/img/logo.svg" class="logo" alt="Logo">
+									<img src="assets/img/logo.png" class="logo" alt="Logo">
 								</a>
-								<a class="logo-dark header-logo" href="index.html">
-									<img src="assets/img/logo-white.svg" class="logo" alt="Logo">
+								<a class="logo-dark header-logo" href="index-3.html">
+									<img src="assets/img/logo.png" class="logo" alt="Logo">
 								</a>
 							</div>
 						</div>
-						<div class="main-menu-wrapper">								
+						<div class="main-menu-wrapper">
 							<div class="menu-header">
-								<a href="index.html" class="menu-logo">
-									<img src="assets/img/logo.svg" class="img-fluid" alt="Logo">
+								<a href="index-3.html" class="menu-logo">
+									<img src="assets/img/logo.png" class="img-fluid" alt="Logo">
 								</a>
 								<a id="menu_close" class="menu-close" href="javascript:void(0);">
 									<i class="fas fa-times"></i>
 								</a>
 							</div>
 							<ul class="main-nav">
-								<li class="has-submenu megamenu active">
-									<a href="#">Home <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu mega-submenu">
-										<li>
-											<div class="megamenu-wrapper">
-												<div class="row">
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index.html" class="inner-demo-img"><img src="assets/img/home/home-01.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index.html" class="inner-demo-img">Home 1</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-2.html" class="inner-demo-img"><img src="assets/img/home/home-02.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-2.html" class="inner-demo-img">Home 2</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo active">
-															<div class="demo-img">
-																<a href="index-3.html" class="inner-demo-img"><img src="assets/img/home/home-03.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-3.html" class="inner-demo-img">Home 3</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-4.html" class="inner-demo-img"><img src="assets/img/home/home-04.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-4.html" class="inner-demo-img">Home 4</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-5.html" class="inner-demo-img"><img src="assets/img/home/home-05.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-5.html" class="inner-demo-img">Home 5</a>
-															</div>
-														</div>
-													</div>
-													<div class="col-lg-2">
-														<div class="single-demo">
-															<div class="demo-img">
-																<a href="index-6.html" class="inner-demo-img"><img src="assets/img/home/home-06.jpg" class="img-fluid " alt="img"></a>
-															</div>
-															<div class="demo-info">
-																<a href="index-6.html" class="inner-demo-img">Home 6</a>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</li>
-									</ul>
+								<li class="active">
+									<a href="index-3.html">Home</a>
+								</li>
+								<li>
+									<a href="#about-section">About</a>
 								</li>
 								<li class="has-submenu">
-									<a href="#">Courses <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Courses</a>
-											<ul class="submenu">
-												<li><a href="course-grid.html">Course Grid</a></li>
-												<li><a href="course-list.html">Course List</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Course Category</a>
-											<ul class="submenu">
-												<li><a href="course-category.html">Course Category</a></li>
-												<li><a href="course-category-2.html">Course Category 2</a></li>
-												<li><a href="course-category-3.html">Course Category 3</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Course Details</a>
-											<ul class="submenu">
-												<li><a href="course-details.html">Course Details</a></li>
-												<li><a href="course-details-2.html">Course Details 2</a></li>
-											</ul>
-										</li>										
-										<li><a href="course-resume.html">Course Resume</a></li>
-										<li><a href="course-watch.html">Course Watch</a></li>
-										<li><a href="cart.html">Course Cart</a></li>
-										<li><a href="checkout.html">Course Checkout</a></li>
-										<li><a href="add-course.html">Add New Course</a></li>
-									</ul>
+	<a href="#">Courses <i class="fas fa-chevron-down"></i></a>
+	<ul class="submenu">
+		<li><a href="#feature-courses">Featured Courses</a></li>
+	</ul>
+</li>
+
+								<li>
+									<a href="javascript:void(0);" onclick="redirectToDashboard()">Dashboard</a>
 								</li>
-								<li class="has-submenu">
-									<a href="javascript:void(0);">Dashboard <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Instructor Dashboard</a>
-											<ul class="submenu">
-												<li><a href="instructor-dashboard.html">Dashboard</a></li>
-												<li><a href="instructor-profile.html">My Profile</a></li>
-												<li><a href="instructor-course.html">Course</a></li>
-												<li><a href="instructor-announcements.html">Announcements</a></li>
-												<li><a href="instructor-assignment.html">Assignments</a></li>
-												<li class="has-submenu">
-													<a href="javascript:void(0);">Student</a>
-													<ul class="submenu">
-														<li><a href="students.html">Student Grid</a></li>
-														<li><a href="student-list.html">Student List</a></li>
-														<li><a href="student-details.html">Student Details</a></li>
-													</ul>
-												</li>
-												<li><a href="instructor-quiz.html">Quiz</a></li>
-												<li><a href="instructor-quiz-results.html">Quiz Results</a></li>
-												<li><a href="instructor-certificate.html">Certificates</a></li>
-												<li><a href="instructor-earnings.html">Earning</a></li>
-												<li><a href="instructor-payout.html">Payout</a></li>
-												<li><a href="instructor-statements.html">Statement</a></li>
-												<li><a href="instructor-tickets.html">Support Tickets</a></li>
-												<li><a href="instructor-settings.html">Settings</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="javascript:void(0);">Student Dashboard</a>
-											<ul class="submenu">
-												<li><a href="student-dashboard.html">Student Dashboard</a></li>
-												<li><a href="student-profile.html">My Profile</a></li>
-												<li><a href="student-courses.html">Enrolled Courses</a></li>
-												<li><a href="student-certificates.html">My Certificates</a></li>
-												<li><a href="student-wishlist.html">Wishlist</a></li>
-												<li><a href="student-reviews.html">Reviews</a></li>
-												<li><a href="student-quiz.html">My Quiz Attempts</a></li>
-												<li><a href="student-order-history.html">Order History</a></li>
-												<li><a href="student-referral.html">Referrals</a></li>
-												<li><a href="student-messages.html">Messages</a></li>
-												<li><a href="student-tickets.html">Support Ticket</a></li>
-												<li><a href="student-settings.html">Settings</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="#">Pages <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="#">Instructors</a>
-											<ul class="submenu">
-												<li><a href="instructor-grid.html">Instructor Grid</a></li>
-												<li><a href="instructor-list.html">Instructor List</a></li>
-												<li><a href="instructor-details.html">Instructor Details</a></li>
-											</ul>
-										</li>
-										<li><a href="about-us.html">About Us</a></li>
-										<li><a href="contact-us.html">Contact us</a></li>
-										<li><a href="notifications.html">Notifications</a></li>
-										<li><a href="become-an-instructor.html">Become an Instructor</a></li>
-										<li><a href="testimonials.html">Testimonials</a></li>
-										<li class="has-submenu">
-											<a href="#">Authentication</a>
-											<ul class="submenu">
-												<li><a href="login.html">Login</a></li>
-												<li><a href="register.html">Register</a></li>
-												<li><a href="forgot-password.html">Forgot Password</a></li>
-												<li><a href="reset-password.html">Reset Password</a></li>
-												<li><a href="set-password.html">Set Password</a></li>
-												<li><a href="otp.html">OTP</a></li>
-												<li><a href="lock-screen.html">Lock Screen</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="#">Error</a>
-											<ul class="submenu">
-												<li><a href="error-404.html">404 Error</a></li>
-												<li><a href="error-500.html">500 Error</a></li>
-											</ul>
-										</li>
-										<li><a href="pricing-plan.html">Pricing Plan</a></li>
-										<li><a href="faq.html">FAQ</a></li>
-										<li><a href="coming-soon.html">Coming Soon</a></li>
-										<li><a href="under-construction.html">Under Construction</a></li>
-										<li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-										<li><a href="privacy-policy.html">Privacy Policy</a></li>
-										<li><a href="index-rtl.html">RTL</a></li>
-									</ul>
-								</li>	
-								<li class="has-submenu">
-									<a href="#">Blog <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="#">Blog Layouts</a>
-											<ul class="submenu">
-												<li><a href="blog-grid.html">Blog 1 Grid</a></li>
-												<li><a href="blog-2-grid.html">Blog 2 Grid</a></li>
-												<li><a href="blog-3-grid.html">Blog 3 Grid</a></li>
-												<li><a href="blog-carousal.html">Blog Carousal</a></li>
-												<li><a href="blog-masonry.html">Blog Mansory</a></li>
-												<li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
-												<li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="#">Blog Details</a>
-											<ul class="submenu">
-												<li><a href="blog-details.html">Blog Details</a></li>
-												<li><a href="blog-details-left-sidebar.html">Blog Details Left Sidebar</a></li>
-												<li><a href="blog-details-right-sidebar.html">Blog Details Right Sidebar</a></li>
-											</ul>
-										</li>
-									</ul>
+								<li>
+									<a href="#footer-section">Contact</a>
 								</li>
 							</ul>
 							
@@ -316,38 +691,6 @@
 											<span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
 										</a>
 									</div>
-								</div>
-								<div class="dropdown flag-dropdown mb-2">
-									<a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-										<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-									</a>
-									<ul class="dropdown-menu p-2 mt-2">
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-											</a>
-										</li>
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
-											</a>
-										</li>
-										<li>
-											<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-												<img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
-											</a>
-										</li>
-									</ul>
-								</div>
-								<div class="dropdown mb-2">
-									<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-										USD
-									</a>
-									<ul class="dropdown-menu p-2 mt-2">
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
-										<li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
-									</ul>
 								</div>
 								<div class="dropdown mb-2">
 									<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -374,38 +717,6 @@
 								</a>
 							</div>
 							
-							<div class="dropdown flag-dropdown me-3">
-								<a href="javascript:void(0);" class="dropdown-toggle d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-									<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-								</a>
-								<ul class="dropdown-menu p-2 mt-2">
-									<li>
-										<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-											<img src="assets/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-										</a>
-									</li>
-									<li>
-										<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-											<img src="assets/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
-										</a>
-									</li>
-									<li>
-										<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
-											<img src="assets/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
-										</a>
-									</li>
-								</ul>
-							</div>
-							<div class="dropdown me-3">
-								<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-									USD
-								</a>
-								<ul class="dropdown-menu p-2 mt-2" style="">
-									<li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
-									<li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
-									<li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
-								</ul>
-							</div>
 							<a href="login.html" class="btn btn-primary d-inline-flex align-items-center me-2">
 								Sign In
 							</a>
@@ -419,1558 +730,478 @@
 			<!-- /Header -->          
 			
 			<!-- Home Banner -->
-			<section class="banner-section-three d-flex align-items-center">
-				<img src="assets/img/bg/bg-3.png" alt="img" class="img-fluid banner-bg-01">
-				<img src="assets/img/bg/bg-4.png" alt="img" class="img-fluid banner-bg-02">
-				<div class="container">
-					<div class="row align-items-center">
-						<div class="col-lg-6">
-							<div class="home-slide-face aos" data-aos="fade-up">
-								<div class="home-slide-text ">
-									<span class="fw-bold text-uppercase">The Leader in Online Learning</span>
-									<h1 class="mt-4">Engaging &  Accessible <span class="text-secondary">Online Courses</span> For All</h1>
-									<p class="mt-4">Our specialized online courses are designed to bring the classroom experience to you, no matter where you are.</p>
-								</div>
-								<div class="banner-content">
-									<form class="form" action="course-list.html">
-										<div class="form-inner">
-											<div class="input-group">
-												<i class="fa-solid fa-magnifying-glass search-icon"></i>
-												<input type="email" class="form-control" placeholder="Search School, Online eductional centers, etc">
-												<span class="drop-detail">
-													<select class="form-select select">
-														<option>Category</option>
-														<option>Angular</option>
-														<option>Node Js</option>
-														<option>React</option>
-														<option>Python</option>
-													</select>
-												</span>
-												<button class="btn sub-btn" type="submit"><i class="fas fa-arrow-right"></i></button>
-											</div>
-										</div>
-									</form>
-								</div>
-								<div class="trust-user">
-									<h5>Trusted by over 15K Users worldwide since 2022</h5>
-									<div class="trust-rating d-flex align-items-center">
-										<div class="rate-head">
-											<h2><span>1000</span>+</h2>
-										</div>
-										<div class="rating d-flex align-items-center">	
-											<h2 class="d-inline-block average-rating">4.4</h2>	
-											<i class="fas fa-star filled"></i>
-											<i class="fas fa-star filled"></i>
-											<i class="fas fa-star filled"></i>
-											<i class="fas fa-star filled"></i>
-											<i class="fas fa-star filled"></i>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-6 d-flex align-items-center">
-							<div class="banner-image aos" data-aos="fade-up">
-								<img src="assets/img/hero/hero-2.png" alt="Img">
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<!-- /Home Banner -->
+<section class="banner-section-three d-flex align-items-center">
+	<img src="assets/img/bg/bg-3.png" alt="img" class="img-fluid banner-bg-01">
+	<img src="assets/img/bg/bg-4.png" alt="img" class="img-fluid banner-bg-02">
 
-			<div class="section student-course">
-				<div class="container">
-					<div class="course-widget">
-						<div class="row row-gap-4">
-							<div class="col-lg-3 col-md-6 d-flex">
-								<div class="expert-item flex-fill aos" data-aos="fade-up">
-									<div class="expert-img">
-										<img src="assets/img/icons/icon-24.svg" alt="Img">
-									</div>
-									<div class="expert-content">
-										<h4><span class="counterup">10</span>K</h4>
-										<p>Online Courses</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-3 col-md-6 d-flex">
-								<div class="expert-item flex-fill aos" data-aos="fade-up">
-									<div class="expert-img">
-										<img src="assets/img/icons/icon-25.svg" alt="Img">
-									</div>
-									<div class="expert-content">
-										<h4><span class="counterup">200</span>K</h4>
-										<p>Expert Tutors</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-3 col-md-6 d-flex">
-								<div class="expert-item flex-fill aos" data-aos="fade-up">
-									<div class="expert-img">
-										<img src="assets/img/icons/icon-26.svg" alt="Img">
-									</div>
-									<div class="expert-content">
-										<h4><span class="counterup">6</span>K</h4>
-										<p>Ceritified Courses</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-3 col-md-6 d-flex">
-								<div class="expert-item flex-fill aos" data-aos="fade-up">
-									<div class="expert-img">
-										<img src="assets/img/icons/icon-27.svg" alt="Img">
-									</div>
-									<div class="expert-content">
-										<h4><span class="counterup">60</span>K</h4>
-										<p>Online Students</p> 
-									</div>
-								</div>
-							</div>
-						</div>
+	<div class="container">
+		<div class="row align-items-center">
+
+			<!-- Left Text -->
+			<div class="col-lg-6">
+				<div class="home-slide-face aos" data-aos="fade-up">
+					<div class="home-slide-text">
+						<span class="fw-bold text-uppercase">The Leader in Adaptive Learning</span>
+						<h1 class="mt-4">
+							Personalized & Engaging <span class="text-secondary">Online Courses</span> For All Students
+						</h1>
+						<p class="mt-4">
+							Join our AI-powered learning platform and get tailored quizzes, assignments, and study recommendations to boost your skills and track progress in real-time.
+						</p>
 					</div>
+
+					<!-- CTA Button -->
+					<div class="banner-content mt-4">
+						<a href="#about-section" class="btn btn-primary btn-xl">
+							Explore Courses
+						</a>
+					</div>
+
 				</div>
 			</div>
-			<!-- Home Banner -->
+
+			<!-- Right Image -->
+			<div class="col-lg-6 d-flex align-items-center">
+				<div class="banner-image aos" data-aos="fade-up">
+					<img src="assets/img/hero/hero-2.png" alt="Img" class="img-fluid">
+				</div>
+			</div>
+
+		</div>
+	</div>
+</section>
+<!-- /Home Banner -->
+
+
+			<section id="about-section" class="section student-course mt-5">
+	<div class="container">
+
+		<!-- Section Header -->
+		<div class="section-header text-center mb-5 aos" data-aos="fade-up">
+			<span class="fw-medium text-secondary fs-18 fw-bold mb-2 d-inline-block">About Us</span>
+			<h2>Welcome to Adaptive LMS</h2>
+			<p class="mb-0">
+				Empowering education through innovative technology and adaptive learning solutions.
+			</p>
+		</div>
+
+		<!-- Mission Description -->
+		<div class="row mt-4">
+			<div class="col-lg-8 mx-auto text-center">
+				<div class="about-description aos" data-aos="fade-up">
+					<h3 class="mb-3">Our Mission</h3>
+
+					<p>
+						Our mission is to provide an adaptive and intelligent learning
+						management system that personalizes education for every student.
+						The platform analyzes quiz performance, assignments, and learning
+						progress to identify weak areas and recommend suitable learning paths.
+					</p>
+
+					<p>
+						By integrating role-based access, progress tracking, and adaptive
+						assessments, we aim to enhance learning outcomes while making course
+						management simple and efficient for administrators.
+					</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</section>
+
 			
-			<!-- Top Categories -->
-			<div class="section how-it-works">
-				<div class="container">
-					<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 aos" data-aos="fade-up">
-						<div class="section-header">
-							<span class="fw-medium text-secondary fs-18 fw-bold mb-2 d-inline-block">Favourite Course</span>
-							<h2 class="mb-0">Top Category</h2>
-						</div>
-						<div>
-							<a href="course-category-2.html" class="btn btn-secondary btn-xl">View all Categories</a>
-						</div>
-					</div>
-					<div class="mentoring-course aos" data-aos="fade-up">
-						<div class="categories-item categories-item-two">			
-							<span class="categories-icon">
-								<img src="assets/img/category/icons/icon-1.svg" alt="Img">
-							</span>		
-							<h5><a href="course-category.html">Angular Development</a></h5>
-							<p>40 Instructors</p>
-						</div>
-						<div class="categories-item categories-item-two">			
-							<span class="categories-icon">
-								<img src="assets/img/category/icons/icon-2.svg" alt="Img">
-							</span>		
-							<h5><a href="course-category.html">Docker Development</a></h5>
-							<p>45 Instructors</p>
-						</div>
-						<div class="categories-item categories-item-two">			
-							<span class="categories-icon">
-								<img src="assets/img/category/icons/icon-3.svg" alt="Img">
-							</span>		
-							<h5><a href="course-category.html">Node JS Frontend</a></h5>
-							<p>40 Instructors</p>
-						</div>
-						<div class="categories-item categories-item-two">			
-							<span class="categories-icon">
-								<img src="assets/img/category/icons/icon-4.svg" alt="Img">
-							</span>		
-							<h5><a href="course-category.html">Swift Development</a></h5>
-							<p>23 Instructors</p>
-						</div>
-						<div class="categories-item categories-item-two">			
-							<span class="categories-icon">
-								<img src="assets/img/category/icons/icon-5.png" alt="Img">
-							</span>		
-							<h5><a href="course-category.html">React Native</a></h5>
-							<p>80 Instructors</p>
-						</div>
-					</div>
-				</div>
-			</div>	
-			<!-- /Top Categories -->	
 			
-			<!-- Feature Course -->		
-			<div class="section new-course">
-				<div class="home-three-sec-bg">
-					<img src="assets/img/bg/bg-3.png" alt="img" class="img-fluid sec-bg-01">
-					<img src="assets/img/bg/bg-4.png" alt="img" class="img-fluid sec-bg-02">
-				</div>
-				<div class="container">
-					<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 aos" data-aos="fade-up">
-						<div class="section-header">
-							<span class="fw-medium text-secondary fs-18 fw-bold mb-2 d-inline-block">What’s New</span>
-							<h2 class="mb-0">Featured Courses</h2>
-						</div>
-						<div>
-							<a href="course-list.html" class="btn btn-secondary btn-xl">View all Categories</a>
-						</div>
-					</div>
-					<div class="course-feature">
-						<div class="row">
-							<div class="col-lg-4 col-md-6 d-flex">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-40.jpg">
-										</a>
-										<div class="price">
-											<h3>$200 <span>$990.00</span></h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-21.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">Nicole Brown</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<a href="#" class="fav-icon"><i class="fa-regular fa-heart"></i></a>
-										</div>
-										<h3 class="title"><a href="course-details.html">Information About UI/UX Design Degree</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img">
-												<p>12+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img">
-												<p>9hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-4 col-md-6 d-flex">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-41.jpg">
-										</a>
-										<div class="price">
-											<h3>$156</h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-22.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">Jenis R.</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<a href="#" class="fav-icon"><i class="fa-regular fa-heart"></i></a>
-										</div>
-										<h3 class="title"><a href="course-details.html">Wordpress for Beginners - Master Wordpress Quickly</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img">
-												<p>11+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img">
-												<p>6hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.3</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-4 col-md-6 d-flex">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-42.jpg">
-										</a>
-										<div class="price combo">
-											<h3>FREE</h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-25.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">Jesse Stevens</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<a href="#" class="fav-icon"><i class="fa-regular fa-heart"></i></a>
-										</div>
-										<h3 class="title"><a href="course-details.html">Sketch from A to Z (2022): Become an app designer</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img">
-												<p>16+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img">
-												<p>12hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.5</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-4 col-md-6 d-flex">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-43.jpg">
-										</a>
-										<div class="price">
-											<h3>$145</h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-24.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">Nicole Brown</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<div class="course-share d-flex align-items-center justify-content-center">
-												<a href="#"><i class="fa-regular fa-heart"></i></a>
-											</div>
-										</div>
-										<h3 class="title"><a href="course-details.html">Learn Angular Fundamentals From beginning to advance lavel</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img">
-												<p>10+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img">
-												<p>8hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.2</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-4 col-md-6 d-flex">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-45.jpg">
-										</a>
-										<div class="price combo">
-											<h3>Free</h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-23.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">John Smith</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<a href="#" class="fav-icon"><i class="fa-regular fa-heart"></i></a>
-										</div>
-										<h3 class="title"><a href="course-details.html">Build Responsive Real World Websites with HTML5 and CSS3</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img">
-												<p>13+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img">
-												<p>10hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-4 col-md-6 d-flex">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-44.jpg">
-										</a>
-										<div class="price combo">
-											<h3>$200 <span>$990.00</span></h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-26.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">Stella Johnson</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<a href="#" class="fav-icon"><i class="fa-regular fa-heart"></i></a>
-										</div>
-										<h3 class="title"><a href="course-details.html">C# Developers Double Your Coding Speed with Visual Studio</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img">
-												<p>7+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img">
-												<p>7hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.6</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>	
-			<!-- /Feature Course -->	
+		<!-- features courses section میں یہ code replace کریں -->
+<div id="feature-courses" class="section new-course">
+    <div class="home-three-sec-bg">
+        <img src="assets/img/bg/bg-3.png" alt="img" class="img-fluid sec-bg-01">
+        <img src="assets/img/bg/bg-4.png" alt="img" class="img-fluid sec-bg-02">
+    </div>
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 aos" data-aos="fade-up">
+            <div class="section-header">
+                <span class="fw-medium text-secondary fs-18 fw-bold mb-2 d-inline-block">What's New</span>
+                <h2 class="mb-0">Featured Courses</h2>
+            </div>
+            <div>
+                <a href="course-grid.html" class="btn btn-secondary btn-xl">View All Courses</a>
+            </div>
+        </div>
+        <div class="course-feature">
+            <div class="row" id="featured-courses-container">
+                <!-- Featured courses یہاں load ہوں گے -->
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading featured courses...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 			
 			<!-- Master Skill -->	
-			<div class="section master-skill">
-				<div class="container">
-					<div class="row align-items-end">
-						<div class="col-lg-6 col-md-12">
-							<div class="section-header aos" data-aos="fade-up">
-								<span class="fw-medium text-secondary fs-18 fw-bold mb-2 d-inline-block">What’s New</span>
-								<h2>Master the skills to drive your career</h2>
-								<p>Get certified, master modern tech skills, and level up your career — whether you’re starting out or a seasoned pro. 95% of eLearning learners report our hands-on content directly helped their careers.</p>
-							</div>
-							<div class="career-group aos" data-aos="fade-up">
-								<div class="row row-gap-4">
-									<div class="col-lg-6 col-md-6 d-flex">
-										<div class="certified-item d-flex align-items-center flex-fill">
-											<div class="certified-img ">
-												<img src="assets/img/icons/icon-22.svg" alt="Img" class="img-fluid">
-											</div>
-											<p>Stay motivated with engaging instructors</p>
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 d-flex">
-										<div class="certified-item d-flex align-items-center flex-fill">
-											<div class="certified-img ">
-												<img src="assets/img/icons/icon-17.svg" alt="Img" class="img-fluid">
-											</div>
-											<p>Keep up with in the latest in cloud</p>
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 d-flex">
-										<div class="certified-item d-flex align-items-center flex-fill">
-											<div class="certified-img "><img src="assets/img/icons/icon-23.svg" alt="Img" class="img-fluid">
-											</div>
-											<p>Get certified with 100+ certification courses</p>
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 d-flex">
-										<div class="certified-item d-flex align-items-center flex-fill">
-											<div class="certified-img ">
-												<img src="assets/img/icons/icon-16.svg" alt="Img" class="img-fluid">
-											</div>
-											<p>Build skills your way, from labs to courses</p>
-										</div>
-									</div>
+<div class="section master-skill">
+	<div class="container">
+		<div class="row align-items-end">
+
+			<!-- Content Left -->
+			<div class="col-lg-6 col-md-12">
+				<div class="section-header aos" data-aos="fade-up">
+					<span class="fw-medium text-secondary fs-18 fw-bold mb-2 d-inline-block">What's New</span>
+					<h2>Master Skills with Adaptive Learning</h2>
+					<p>
+						Enhance your learning experience with our AI-powered platform. Track your progress, take adaptive quizzes, complete assignments, and receive personalized recommendations to strengthen your weak areas.
+					</p>
+				</div>
+
+				<div class="career-group aos" data-aos="fade-up">
+					<div class="row row-gap-4">
+
+						<div class="col-lg-6 col-md-6 d-flex">
+							<div class="certified-item d-flex align-items-center flex-fill">
+								<div class="certified-img">
+									<img src="assets/img/icons/icon-22.svg" alt="Img" class="img-fluid">
 								</div>
+								<p>Track your progress with detailed analytics</p>
 							</div>
 						</div>
-						<div class="col-lg-6 col-md-12">
-							<div class="career-img aos" data-aos="fade-up">
-								<img src="assets/img/bg/bg-2.png" alt="Img" class="img-fluid master-bg">
-								<img src="assets/img/feature/feature-16.png" alt="Img" class="img-fluid girl-img">
-								<img src="assets/img/icons/icon-18.svg" alt="Img" class="img-fluid float-img-01">
-								<img src="assets/img/icons/icon-19.svg" alt="Img" class="img-fluid float-img-02">
-								<img src="assets/img/icons/icon-20.svg" alt="Img" class="img-fluid float-img-03">
-								<img src="assets/img/icons/icon-21.svg" alt="Img" class="img-fluid float-img-04">
+
+						<div class="col-lg-6 col-md-6 d-flex">
+							<div class="certified-item d-flex align-items-center flex-fill">
+									<div class="certified-img">
+									<img src="assets/img/icons/icon-17.svg" alt="Img" class="img-fluid">
+								</div>
+								<p>Receive personalized recommendations for weak topics</p>
 							</div>
 						</div>
+
+						<div class="col-lg-6 col-md-6 d-flex">
+							<div class="certified-item d-flex align-items-center flex-fill">
+								<div class="certified-img">
+									<img src="assets/img/icons/icon-23.svg" alt="Img" class="img-fluid">
+								</div>
+								<p>Complete adaptive quizzes and practical assignments</p>
+							</div>
+						</div>
+
+						<div class="col-lg-6 col-md-6 d-flex">
+							<div class="certified-item d-flex align-items-center flex-fill">
+								<div class="certified-img">
+									<img src="assets/img/icons/icon-16.svg" alt="Img" class="img-fluid">
+								</div>
+								<p>Engage with interactive learning materials and courses</p>
+							</div>
+						</div>
+
 					</div>
 				</div>
 			</div>
-			<!-- /Master Skill -->			
+
+			<!-- Images Right -->
+			<div class="col-lg-6 col-md-12">
+				<div class="career-img aos" data-aos="fade-up">
+					<img src="assets/img/bg/bg-2.png" alt="Img" class="img-fluid master-bg">
+					<img src="assets/img/feature/feature-16.png" alt="Img" class="img-fluid girl-img">
+					<img src="assets/img/icons/icon-18.svg" alt="Img" class="img-fluid float-img-01">
+					<img src="assets/img/icons/icon-19.svg" alt="Img" class="img-fluid float-img-02">
+					<img src="assets/img/icons/icon-20.svg" alt="Img" class="img-fluid float-img-03">
+					<img src="assets/img/icons/icon-21.svg" alt="Img" class="img-fluid float-img-04">
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+<!-- /Master Skill -->	
+
 			
-			<!-- Trending Course -->
-			<div class="section trend-course">
-				<div class="home-three-sec-bg">
-					<img src="assets/img/bg/bg-3.png" alt="img" class="img-fluid sec-bg-01">
-					<img src="assets/img/bg/bg-4.png" alt="img" class="img-fluid sec-bg-02">
-				</div>
-				<div class="container">
-					<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 aos" data-aos="fade-up">
-						<div class="section-header">
-							<span class="fw-medium text-secondary fs-18 fw-bold mb-2 d-inline-block">What’s New</span>
-							<h2 class="mb-0">Trending Courses</h2>
-						</div>
-						<div>
-							<a href="course-list.html" class="btn btn-secondary btn-xl">View all Courses</a>
-						</div>
-					</div>
-					<div class="trending-course owl-theme aos" data-aos="fade-up">
-						<div>
-							<div class="course-box trend-box">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-40.jpg">
-										</a>
-										<div class="price">
-											<h3>$200 <span>$99.00</span></h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-27.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">John Michael</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<div class="course-share d-flex align-items-center justify-content-center">
-												<a href="#"><i class="fa-regular fa-heart"></i></a>
-											</div>
-										</div>
-										<h3 class="title"><a href="course-details.html">Learn JavaScript and Express to become a professional JavaScript</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img" class="img-fluid">
-												<p>13+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img" class="img-fluid">
-												<p>10hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div>
-							<div class="course-box trend-box">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-41.jpg">
-										</a>
-										<div class="price">
-											<h3>$300 <span>$99.00</span></h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-22.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">John Smith</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<div class="course-share d-flex align-items-center justify-content-center">
-												<a href="#"><i class="fa-regular fa-heart"></i></a>
-											</div>
-										</div>
-										<h3 class="title"><a href="course-details.html">Responsive Web Design Essentials HTML5 CSS3 and Bootstrap</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img" class="img-fluid">
-												<p>10+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img" class="img-fluid">
-												<p>11hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.2</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div>
-							<div class="course-box trend-box">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-44.jpg">
-										</a>
-										<div class="price">
-											<h3>$100 <span>$99.00</span></h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-23.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">Lavern M.</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<div class="course-share d-flex align-items-center justify-content-center">
-												<a href="#"><i class="fa-regular fa-heart"></i></a>
-											</div>
-										</div>
-										<h3 class="title"><a href="course-details.html">The Complete App Design Course - UX, UI and Design Thinking</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img" class="img-fluid">
-												<p>8+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img" class="img-fluid">
-												<p>8hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.3</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div>
-							<div class="course-box d-flex aos">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-42.jpg">
-										</a>
-										<div class="price combo">
-											<h3>Free</h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-23.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">John Smith</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<div class="course-share d-flex align-items-center justify-content-center">
-												<a href="#"><i class="fa-regular fa-heart"></i></a>
-											</div>
-										</div>
-										<h3 class="title"><a href="course-details.html">Build Responsive Real World Websites with HTML5 and CSS3</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="rating-img d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img">
-												<p>13+ Lesson</p>
-											</div>
-											<div class="course-view d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img">
-												<p>10hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div>
-							<div class="course-box trend-box">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-44.jpg">
-										</a>
-										<div class="price">
-											<h3>$300 <span>$99.00</span></h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-22.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">John Smith</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<div class="course-share d-flex align-items-center justify-content-center">
-												<a href="#"><i class="fa-regular fa-heart"></i></a>
-											</div>
-										</div>
-										<h3 class="title"><a href="course-details.html">Responsive Web Design Essentials HTML5 CSS3 and Bootstrap</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img" class="img-fluid">
-												<p>10+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img" class="img-fluid">
-												<p>11hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.5</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div>
-							<div class="course-box trend-box">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-45.jpg">
-										</a>
-										<div class="price">
-											<h3>$100 <span>$99.00</span></h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-24.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">Lavern M.</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<div class="course-share d-flex align-items-center justify-content-center">
-												<a href="#"><i class="fa-regular fa-heart"></i></a>
-											</div>
-										</div>
-										<h3 class="title"><a href="course-details.html">The Complete App Design Course - UX, UI and Design Thinking</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img" class="img-fluid">
-												<p>8+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img" class="img-fluid">
-												<p>8hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div>
-							<div class="course-box trend-box">
-								<div class="course-item course-item-three mx-0 flex-fill aos" data-aos="fade-up">
-									<div class="course-img">
-										<a href="course-details.html">
-											<img class="img-fluid" alt="Img" src="assets/img/course/course-44.jpg">
-										</a>
-										<div class="price">
-											<h3>$200 <span>$99.00</span></h3>
-										</div>
-									</div>
-									<div class="course-content">
-										<div class="course-user">
-											<div class="course-user-img">
-												<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-21.jpg" alt="Img" class="img-fluid"></a>
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">John Michael</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<div class="course-share d-flex align-items-center justify-content-center">
-												<a href="#"><i class="fa-regular fa-heart"></i></a>
-											</div>
-										</div>
-										<h3 class="title"><a href="course-details.html">Learn JavaScript and Express to become a professional JavaScript</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="course-lesson d-flex align-items-center">
-												<img src="assets/img/icons/icon-3.svg" alt="Img" class="img-fluid">
-												<p>13+ Lesson</p>
-											</div>
-											<div class="course-time d-flex align-items-center">
-												<img src="assets/img/icons/icon-4.svg" alt="Img" class="img-fluid">
-												<p>10hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">							
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-											</div>
-											<a href="checkout.html" class="btn btn-primary btn-xl d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Buy Now</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					
-					<!-- Feature Instructors -->
-					<div class="feature-instructors">
-						<div class="section-header text-center aos" data-aos="fade-up">
-							<h2>Featured Instructor</h2>
-							<p class="mb-0"> Our team combines cutting-edge design with robust development</p>
-						</div>
-						<div class="instructors-course aos" data-aos="fade-up">
-							<div class="instructor-item instructor-item-two">
-								<div class="instructors-img">
-									<a href="instructor-list.html" tabindex="0">
-										<img class="img-fluid" alt="Img" src="assets/img/instructor/instructor-09.jpg">
-									</a>
-									<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<span class="verify">
-											<i class="isax isax-verify5"></i>
-										</span>
-										<a href="course-list.html" class="course-count ms-auto">20 Courses</a>
-									</div>
-									<div class="position-absolute end-0 bottom-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<a href="javascript:void(0);" class="favourite selected ms-auto">
-											<i class="isax isax-heart"></i>
-										</a>
-									</div>
-								</div>
-								<div class="instructor-content">
-									<h3 class="title">
-										<a href="instructor-details.html">David Lee</a>
-									</h3>
-									<span class="designation">Web Developer</span>
-									<div class="student-count">
-										<i class="isax isax-profile-2user5 text-secondary me-2"></i><span>50 Students</span>
-									</div>
-								</div>
-							</div>
-							<div class="instructor-item instructor-item-two">
-								<div class="instructors-img">
-									<a href="instructor-list.html" tabindex="0">
-										<img class="img-fluid" alt="Img" src="assets/img/instructor/instructor-10.jpg">
-									</a>
-									<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<a href="course-list.html" class="course-count ms-auto">15 Courses</a>
-									</div>
-									<div class="position-absolute end-0 bottom-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<a href="javascript:void(0);" class="favourite ms-auto">
-											<i class="isax isax-heart"></i>
-										</a>
-									</div>
-								</div>
-								<div class="instructor-content">
-									<h3 class="title">
-										<a href="instructor-details.html">Daziy Millar</a>
-									</h3>
-									<span class="designation">PHP Expert</span>
-									<div class="student-count">
-										<i class="isax isax-profile-2user5 text-warning me-2"></i><span>60 Students</span>
-									</div>
-								</div>
-							</div>
-							<div class="instructor-item instructor-item-two">
-								<div class="instructors-img">
-									<a href="instructor-list.html" tabindex="0">
-										<img class="img-fluid" alt="Img" src="assets/img/instructor/instructor-11.jpg">
-									</a>
-									<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<span class="verify">
-											<i class="isax isax-verify5"></i>
-										</span>
-										<a href="course-list.html" class="course-count ms-auto">22 Courses</a>
-									</div>
-									<div class="position-absolute end-0 bottom-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<a href="javascript:void(0);" class="favourite ms-auto">
-											<i class="isax isax-heart"></i>
-										</a>
-									</div>
-								</div>
-								<div class="instructor-content">
-									<h3 class="title">
-										<a href="instructor-details.html">Patricia Mendoza</a>
-									</h3>
-									<span class="designation">Web Developer</span>
-									<div class="student-count">
-										<i class="isax isax-profile-2user5 text-primary me-2"></i><span>40 Students</span>
-									</div>
-								</div>
-							</div>
-							<div class="instructor-item instructor-item-two">
-								<div class="instructors-img">
-									<a href="instructor-list.html" tabindex="0">
-										<img class="img-fluid" alt="Img" src="assets/img/instructor/instructor-12.jpg">
-									</a>
-									<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<span class="verify">
-											<i class="isax isax-verify5"></i>
-										</span>
-										<a href="course-list.html" class="course-count ms-auto">20 Courses</a>
-									</div>
-									<div class="position-absolute end-0 bottom-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<a href="javascript:void(0);" class="favourite ms-auto">
-											<i class="isax isax-heart"></i>
-										</a>
-									</div>
-								</div>
-								<div class="instructor-content">
-									<h3 class="title">
-										<a href="instructor-details.html">Skyler Whites</a>
-									</h3>
-									<span class="designation">UI Designer</span>
-									<div class="student-count">
-										<i class="isax isax-profile-2user5 text-danger me-2"></i><span>50 Students</span>
-									</div>
-								</div>
-							</div>
-							<div class="instructor-item instructor-item-two">
-								<div class="instructors-img">
-									<a href="instructor-details.html" tabindex="0">
-										<img class="img-fluid" alt="Img" src="assets/img/instructor/instructor-10.jpg">
-									</a>
-									<div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<a href="course-list.html" class="course-count ms-auto">15 Courses</a>
-									</div>
-									<div class="position-absolute end-0 bottom-0 d-flex align-items-start w-100 z-index-2 p-3">
-										<a href="javascript:void(0);" class="favourite ms-auto">
-											<i class="isax isax-heart"></i>
-										</a>
-									</div>
-								</div>
-								<div class="instructor-content">
-									<h3 class="title">
-										<a href="instructor-details.html">Patricia Mendoza</a>
-									</h3>
-									<span class="designation">Web Developer</span>
-									<div class="student-count">
-										<i class="isax isax-profile-2user5 text-pink me-2"></i><span>50 Students</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- /Feature Instructors -->
-					
-				</div>
-			</div>
-			<!-- /Trending Course -->
 			
-			<!-- Leading Companies -->
-			<div class="section lead-companies">
-				<div class="container">
-					<div class="section-header text-center aos" data-aos="fade-up">
-						<span class="fw-medium text-secondary fs-18 fw-bold mb-2 d-inline-block">Trusted By</span>
-						<h2 class="mb-0">500+ Leading Universities And Companies</h2>
-					</div>
-					<div class="lead-group aos" data-aos="fade-up">
-						<div class="lead-group-slider owl-carousel owl-theme">
-							<div class="item">
-								<div class="lead-img">
-									<img class="img-fluid" alt="Img" src="assets/img/client/22.svg">
-								</div>
-							</div>
-							<div class="item">
-								<div class="lead-img">
-									<img class="img-fluid" alt="Img" src="assets/img/client/23.svg">
-								</div>
-							</div>
-							<div class="item">
-								<div class="lead-img">
-									<img class="img-fluid" alt="Img" src="assets/img/client/24.svg">
-								</div>
-							</div>
-							<div class="item">
-								<div class="lead-img">
-									<img class="img-fluid" alt="Img" src="assets/img/client/25.svg">
-								</div>
-							</div>
-							<div class="item">
-								<div class="lead-img">
-									<img class="img-fluid" alt="Img" src="assets/img/client/26.svg">
-								</div>
-							</div>
-							<div class="item">
-								<div class="lead-img">
-									<img class="img-fluid" alt="Img" src="assets/img/client/27.svg">
-								</div>
-							</div>							
-						</div>
-					</div>
+		<!-- Share Knowledge -->
+<div class="section share-knowledge">
+	<div class="home-three-sec-bg">
+		<img src="assets/img/bg/bg-3.png" alt="img" class="img-fluid sec-bg-01">
+		<img src="assets/img/bg/bg-4.png" alt="img" class="img-fluid sec-bg-02">
+	</div>
+
+	<div class="container">
+		<div class="row align-items-center row-gap-4">
+
+			<!-- Image -->
+			<div class="col-md-6">
+				<div class="knowledge-img aos" data-aos="fade-up">
+					<img src="assets/img/feature/feature-17.svg" alt="Img" class="img-fluid">
 				</div>
 			</div>
-			<!-- /Leading Companies -->
-			
-			<!-- Share Knowledge -->
-			<div class="section share-knowledge">
-				<div class="home-three-sec-bg">
-					<img src="assets/img/bg/bg-3.png" alt="img" class="img-fluid sec-bg-01">
-					<img src="assets/img/bg/bg-4.png" alt="img" class="img-fluid sec-bg-02">
-				</div>
-				<div class="container">
-					<div class="row align-items-center row-gap-4">
-						<div class="col-md-6">
-							<div class="knowledge-img aos" data-aos="fade-up">
-								<img src="assets/img/feature/feature-17.svg" alt="Img" class="img-fluid">
-							</div>
-						</div>
-						<div class="col-md-6 d-flex align-items-center"> 
-							<div class="join-mentor aos" data-aos="fade-up">
-								<h2>Want to share your knowledge? Join us a Mentor</h2>
-								<p>High-definition video is video of higher resolution and quality than standard-definition. While there is no standardized meaning for high-definition, generally any video.</p>
-								<ul class="list-unstyled mb-4">
-									<li class="d-flex mb-3">
-										<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>Access Your Class anywhere
-									</li>
-									<li class="d-flex mb-3">
-										<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>Flexible Course Plan
-									</li>
-									<li class="d-flex mb-3">
-										<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>Quality Assurance
-									</li>
-									<li class="d-flex mb-3">
-										<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>Cost Effectiveness
-									</li>
-									<li class="d-flex mb-3">
-										<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>The Most World Class Instructors
-									</li>
-								</ul>
-								<div>
-									<a href="instructor-list.html" class="btn btn-secondary btn-xl">Read More</a>
-								</div>
-							</div>
-						</div>
+
+			<!-- Content -->
+			<div class="col-md-6 d-flex align-items-center">
+				<div class="join-mentor aos" data-aos="fade-up">
+
+					<h2>Empower Learning. Guide Students Toward Success</h2>
+
+					<p>
+Become part of an intelligent learning platform where experts design
+structured courses, adaptive quizzes, and meaningful assessments while
+analyzing student progress through real-time insights.
+</p>
+
+
+					<ul class="list-unstyled mb-4">
+						<li class="d-flex mb-3">
+							<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>
+							Create & manage courses, topics, and learning materials
+						</li>
+						<li class="d-flex mb-3">
+							<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>
+							Design adaptive quizzes based on student performance
+						</li>
+						<li class="d-flex mb-3">
+							<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>
+							Track student progress and learning analytics
+						</li>
+						<li class="d-flex mb-3">
+							<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>
+							Provide personalized feedback and assignments
+						</li>
+						<li class="d-flex mb-3">
+							<i class="isax isax-tick-circle5 text-success fs-24 me-2"></i>
+							Secure role-based access with admin control
+						</li>
+					</ul>
+
+					<div>
+						<a href="#testimonial-four" class="btn btn-secondary btn-xl">
+							Read More
+						</a>
 					</div>
+
 				</div>
 			</div>
+
+		</div>
+	</div>
+</div>
+<!-- /Share Knowledge -->
+
 			<!-- /Share Knowledge -->
 			
 			<!-- Say testimonial Four -->
-			<div class="testimonial-four">
-				<div class="review">
-					<div class="container">
-						<div class="section-header text-center aos" data-aos="fade-up">
-							<span class="fw-medium text-white fs-18 fw-bold mb-2 d-inline-block">Check out these real reviews</span>
-							<h2 class="text-white mb-0">Users-love-us Don't take it from us.</h2>
-						</div>
-						<div class="mentor-testimonial lazy slider aos" data-aos="fade-up" data-sizes="50vw ">
-							<div class="d-flex justify-content-center">
-								<div class="testimonial-all">
-									<div class="testimonial-quotes">
-										<img src="assets/img/icons/icon-28.png" alt="Img">
-									</div>
-									<div class="testimonial-content text-center align-items-center d-flex">
-										<div class="testimonial-info ">
-											<div class="testimonial-icon">
-												<img src="assets/img/icons/icon-29.png" alt="Img">
-											</div>
-											<p>I really appreciated my mentor’s insight, but sometimes I felt overwhelmed by the amount of information they provided. It would have been helpful to focus on one or two areas at a time rather than trying to cover everything.</p>
-											<div class="testimonial-user">
-												<div class="user-img">
-													<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-21.jpg" alt="Img" class="img-fluid"></a>
-												</div>
-												<h6><a href="instructor-profile.html">Daziy Millar</a></h6>
-												<span>Founder of Awesomeux Technology</span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="d-flex justify-content-center">
-								<div class="testimonial-all">
-									<div class="testimonial-quotes">
-										<img src="assets/img/icons/icon-28.png" alt="Img">
-									</div>
-									<div class="testimonial-content text-center align-items-center d-flex">
-										<div class="testimonial-info ">
-											<div class="testimonial-icon">
-												<img src="assets/img/icons/icon-29.png" alt="Img">
-											</div>
-											<p>I really appreciated my mentor’s insight, but sometimes I felt overwhelmed by the amount of information they provided. It would have been helpful to focus on one or two areas at a time rather than trying to cover everything.</p>
-											<div class="testimonial-user">
-												<div class="user-img">
-													<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-23.jpg" alt="Img" class="img-fluid"></a>
-												</div>
-												<h6><a href="instructor-profile.html">john smith</a></h6>
-												<span>Founder of Awesomeux Technology</span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="d-flex justify-content-center">
-								<div class="testimonial-all">
-									<div class="testimonial-quotes">
-										<img src="assets/img/icons/icon-28.png" alt="Img">
-									</div>
-									<div class="testimonial-content text-center align-items-center d-flex">
-										<div class="testimonial-info ">
-											<div class="testimonial-icon">
-												<img src="assets/img/icons/icon-29.png" alt="Img">
-											</div>
-											<p>I really appreciated my mentor’s insight, but sometimes I felt overwhelmed by the amount of information they provided. It would have been helpful to focus on one or two areas at a time rather than trying to cover everything.</p>
-											<div class="testimonial-user">
-												<div class="user-img">
-													<a href="instructor-profile.html"><img src="assets/img/avatar/avatar-22.jpg" alt="Img" class="img-fluid"></a>
-												</div>
-												<h6><a href="instructor-profile.html">David Lee</a></h6>
-												<span>Founder of Awesomeux Technology</span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+<div class="testimonial-four" id="testimonial-four">
+	<div class="review">
+		<div class="container">
+			<div class="section-header text-center aos" data-aos="fade-up">
+				<span class="fw-medium text-white fs-18 fw-bold mb-2 d-inline-block">
+					Check out these real reviews
+				</span>
+				<h2 class="text-white mb-0">
+					Users-love-us Don't take it from us.
+				</h2>
 			</div>
-			<!-- /Say testimonial Four -->
-			
-			<!-- Become An Instructor -->
-			<div class="section become-instructors aos" data-aos="fade-up">
-				<img src="assets/img/bg/bg-5.png" alt="" class="img-fluid become-instructors-bg1">
-				<img src="assets/img/bg/bg-6.png" alt="" class="img-fluid become-instructors-bg2">
-				<div class="container">
-					<div class="row row-gap-3">
-						<div class="col-md-6 d-flex">
-							<div class="student-mentor d-flex flex-fill">
-								<div class="row align-items-center">
-									<div class="col-lg-7 col-md-12">
-										<div class="top-instructors">
-											<h4>Become An Instructor</h4>
-											<p>Top instructors from around the world teach millions of students on Mentoring.</p>
-											<a href="become-an-instructor.html" class="btn btn-secondary btn-xl">Register as Instructor</a>
-										</div>
-									</div>
-									<div class="col-lg-5 col-md-12">
-										<div class="mentor-img">
-											<img class="img-fluid d-none d-lg-flex" alt="Img" src="assets/img/feature/feature-15.svg">
-										</div>
-									</div>
-								</div>
-							</div>
+
+			<div class="mentor-testimonial lazy slider aos" data-aos="fade-up" data-sizes="50vw">
+
+				<!-- Testimonial 1 -->
+				<div class="d-flex justify-content-center">
+					<div class="testimonial-all">
+						<div class="testimonial-quotes">
+							<img src="assets/img/icons/icon-28.png" alt="Img">
 						</div>
-						<div class="col-md-6 d-flex">
-							<div class="student-mentor bg-dark d-flex flex-fill">
-								<div class="row align-items-center">
-									<div class="col-lg-7 col-md-12">
-										<div class="top-instructors">
-											<h4>Transform Access To Education</h4>
-											<p>Create an account to receive our newsletter course promotions.</p>
-											<a href="become-an-instructor.html" class="btn btn-secondary btn-xl">Register as Instructor</a>
-										</div>
+						<div class="testimonial-content text-center align-items-center d-flex">
+							<div class="testimonial-info">
+								<div class="testimonial-icon">
+									<img src="assets/img/icons/icon-29.png" alt="Img">
+								</div>
+
+								<p>
+									This platform helped me improve my weak topics through adaptive quizzes.
+									The personalized recommendations and progress tracking made learning
+									structured and efficient.
+								</p>
+
+								<div class="testimonial-user">
+									<div class="user-img">
+										<a href="#testimonial-four">
+											<img src="assets/img/avatar/avatar-21.jpg" alt="Img" class="img-fluid">
+										</a>
 									</div>
-									<div class="col-lg-5 col-md-12">
-										<div class="mentor-img d-none d-lg-flex">
-											<img class="img-fluid" alt="Img" src="assets/img/feature/feature-14.svg">
-										</div>
-									</div>
+									<h6><a href="#testimonial-four">Sarah Khan</a></h6>
+									<span>Undergraduate Student</span>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+
+				<!-- Testimonial 2 -->
+				<div class="d-flex justify-content-center">
+					<div class="testimonial-all">
+						<div class="testimonial-quotes">
+							<img src="assets/img/icons/icon-28.png" alt="Img">
+						</div>
+						<div class="testimonial-content text-center align-items-center d-flex">
+							<div class="testimonial-info">
+								<div class="testimonial-icon">
+									<img src="assets/img/icons/icon-29.png" alt="Img">
+								</div>
+
+								<p>
+This system demonstrates a strong understanding of adaptive learning concepts.
+The implementation of role-based access control, personalized feedback, and
+adaptive quizzes reflects good software design practices. Overall, it is a
+well-structured and scalable academic project.
+</p>
+
+
+								<div class="testimonial-user">
+									<div class="user-img">
+										<a href="#testimonial-four">
+											<img src="assets/img/avatar/avatar-23.jpg" alt="Img" class="img-fluid">
+										</a>
+									</div>
+									<h6><a href="#testimonial-four">Sir Syed Muhammad Waqas</a></h6>
+									<span>Project Supervisor / Faculty Member</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Testimonial 3 -->
+				<div class="d-flex justify-content-center">
+					<div class="testimonial-all">
+						<div class="testimonial-quotes">
+							<img src="assets/img/icons/icon-28.png" alt="Img">
+						</div>
+						<div class="testimonial-content text-center align-items-center d-flex">
+							<div class="testimonial-info">
+								<div class="testimonial-icon">
+									<img src="assets/img/icons/icon-29.png" alt="Img">
+								</div>
+
+								<p>
+									The student dashboard is simple and easy to use. Course enrollment,
+									quizzes, assignments, and feedback are well organized and accessible
+									within a few clicks.
+								</p>
+
+								<div class="testimonial-user">
+									<div class="user-img">
+										<a href="#testimonial-four">
+											<img src="assets/img/avatar/avatar-22.jpg" alt="Img" class="img-fluid">
+										</a>
+									</div>
+									<h6><a href="#testimonial-four">Ahmed Bilal</a></h6>
+									<span>Computer Science Student</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</div>
-			<!-- /Become An Instructor -->
+		</div>
+	</div>
+</div>
+<!-- /Say testimonial Four -->
+
 			
-			<!-- Latest Blog -->
-			<div class="section latest-blog">
-				<div class="home-three-sec-bg">
-					<img src="assets/img/bg/bg-3.png" alt="img" class="img-fluid sec-bg-01">
-					<img src="assets/img/bg/bg-4.png" alt="img" class="img-fluid sec-bg-02">
-				</div>
-				<div class="container">
-					<div class="section-header text-center aos" data-aos="fade-up">
-						<h2>Latest Blogs</h2>
-						<p class="mb-0">Dont Miss Stay Updated with the Latest Articles and Insights</p>
-					</div>
-					<div class="row row-gap-4 justify-content-center">
-						<div class="col-md-6 col-lg-4">
-							<div class="blog-wrap shadow-sm mb-0">
-								<div class="blog-img">
-									<a href="blog-grid.html">
-										<img class="img-fluid" alt="Img" src="assets/img/blog/blog-40.jpg">
-									</a>
-								</div>
-								<div class="blog-content"> 
-									<div class="blog-info mb-3">
-										<a href="javascript:void(0);" class="blog-category">Marketing</a>
-										<p class="blog-date"><i class="isax isax-calendar-1"></i>May 15, 2020</p>
-									</div>
-									<h5><a href="blog-grid.html">How to Find the Perfect Mentor for Your Academic Journey</a></h5>
-								</div>	
-							</div>
-						</div>
-						<div class="col-md-6 col-lg-4">
-							<div class="blog-wrap shadow-sm mb-0">
-								<div class="blog-img">
-									<a href="blog-grid.html">
-										<img class="img-fluid" alt="Img" src="assets/img/blog/blog-41.jpg">
-									</a>
-								</div>
-								<div class="blog-content"> 
-									<div class="blog-info mb-3">
-										<a href="javascript:void(0);" class="blog-category">Statistics</a>
-										<p class="blog-date"><i class="isax isax-calendar-1"></i>May 15, 2020</p>
-									</div>
-									<h5><a href="blog-grid.html">Unlocking Your Potential in School and Beyond</a></h5>
-								</div>	
-							</div>
-						</div>
-						<div class="col-md-6 col-lg-4">
-							<div class="blog-wrap shadow-sm mb-0">
-								<div class="blog-img">
-									<a href="blog-grid.html">
-										<img class="img-fluid" alt="Img" src="assets/img/blog/blog-42.jpg">
-									</a>
-								</div>
-								<div class="blog-content"> 
-									<div class="blog-info mb-3">
-										<a href="javascript:void(0);" class="blog-category">Learning</a>
-										<p class="blog-date"><i class="isax isax-calendar-1"></i>May 15, 2020</p>
-									</div>
-									<h5><a href="blog-grid.html">11 Tips to Help You Get New Clients with the design knowledge</a></h5>
-								</div>	
-							</div>
-						</div>
-					</div>
-					<div class="enroll-group aos" data-aos="fade-up">
-						<div class="row row-gap-3 justify-content-center">
-							<div class="col-lg-4 col-md-6">
-								<div class="enroll-course d-flex align-items-center">
-									<div class="enroll-img">
-										<img src="assets/img/icons/icon-5.svg" alt="Img" class="img-fluid">
-									</div>
-									<div class="course-count">
-										<h3><span class="counterUp">3,490</span></h3>
-										<p>Students Enrolled</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-4 col-md-6">
-								<div class="enroll-course d-flex align-items-center">
-									<div class="enroll-img ">
-										<img src="assets/img/icons/icon-6.svg" alt="Img" class="img-fluid">
-									</div>
-									<div class="course-count">
-										<h3><span class="counterUp">255</span></h3>
-										<p>Total Courses</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-4 col-md-6">
-								<div class="enroll-course d-flex align-items-center">
-									<div class="enroll-img ">
-										<img src="assets/img/icons/icon-7.svg" alt="Img" class="img-fluid">
-									</div>
-									<div class="course-count">
-										<h3><span class="counterUp">15</span></h3>
-										<p>Countries</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="lab-course">
-						<div class="client-slider aos" data-aos="fade-up">
-							<div>
-								<img src="assets/img/icons/icon-8.svg" alt="Img" class="img-fluid">
-							</div>
-							<div>
-								<img src="assets/img/icons/icon-9.svg" alt="Img" class="img-fluid">
-							</div>
-							<div>
-								<img src="assets/img/icons/icon-10.svg" alt="Img" class="img-fluid">
-							</div>
-							<div>
-								<img src="assets/img/icons/icon-11.svg" alt="Img" class="img-fluid">
-							</div>
-							<div>
-								<img src="assets/img/icons/icon-12.svg" alt="Img" class="img-fluid">
-							</div>
-							<div>
-								<img src="assets/img/icons/icon-13.svg" alt="Img" class="img-fluid">
-							</div>
-							<div>
-								<img src="assets/img/icons/icon-14.svg" alt="Img" class="img-fluid">
-							</div>
-							<div>
-								<img src="assets/img/icons/icon-15.svg" alt="Img" class="img-fluid">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>	
-			<!-- /Latest Blog -->
 			
 			<!-- Footer -->
-			<footer class="footer footer-three">
-				
-				<!-- Footer Top -->
-				<div class="footer-top aos" data-aos="fade-up">
-					<div class="container">
-						<div class="row justify-content-between row-gap-4">
-							<div class="col-lg-4 col-md-12">
-							
-								<!-- Footer Widget -->
-								<div class="footer-widget footer-about">
-									<div class="footer-logo">
-										<img src="assets/img/logo-white.svg" alt="logo">
-									</div>
-									<div class="footer-about-content">
-										<p>Platform designed to help organizations, educators, and learners manage, deliver, and track learning and training activities.</p>
-									</div>
-									<div class="d-flex align-items-center gap-2 flex-wrap">
-										<a href="javascript:void(0);"><img src="assets/img/icons/appstore.svg" alt="" class="img-fluid"></a>
-										<a href="javascript:void(0);"><img src="assets/img/icons/googleplay.svg" alt="" class="img-fluid"></a>
-									</div>
-								</div>
-								<!-- /Footer Widget -->
-								
-							</div>
-
-							<div class="col-lg-8">
-								<div class="row row-gap-4">
-							
-									<div class="col-lg-3 col-md-6">
-									
-										<!-- Footer Widget -->
-										<div class="footer-widget footer-menu">
-											<h6 class="footer-title">Support</h6>
-											<ul>
-												<li><a href="course-grid.html">Education</a></li>
-												<li><a href="add-course.html">Enroll a Course</a></li>
-												<li><a href="register.html">Orders</a></li>
-												<li><a href="pricing-plan.html">Payments</a></li>
-												<li><a href="contact-us.html">Contact Us</a></li>
-											</ul>
-										</div>
-										<!-- /Footer Widget -->
-										
-									</div>
-									
-									<div class="col-lg-3 col-md-6">
-									
-										<!-- Footer Widget -->
-										<div class="footer-widget footer-menu">
-											<h6 class="footer-title">About</h6>
-											<ul>
-												<li><a href="course-category.html">Categories</a></li>
-												<li><a href="course-category.html">Services</a></li>
-												<li><a href="about-us.html">About Us</a></li>
-												<li><a href="faq.html">FAQ</a></li>
-												<li><a href="blog-3-grid.html">Blog</a></li>
-											</ul>
-										</div>
-										<!-- /Footer Widget -->
-										
-									</div>
-		
-									<div class="col-lg-3 col-md-6">
-									
-										<!-- Footer Widget -->
-										<div class="footer-widget footer-menu">
-											<h6 class="footer-title">Useful Links</h6>
-											<ul>
-												<li><a href="javascript:void(0);">Our values</a></li>
-												<li><a href="javascript:void(0);">Advisory board</a></li>
-												<li><a href="javascript:void(0);">Our partners</a></li>
-												<li><a href="javascript:void(0);">Become a partner</a></li>
-												<li><a href="javascript:void(0);">Future Learn</a></li>
-											</ul>
-										</div>
-										<!-- /Footer Widget -->
-										
-									</div>
-							
-									<div class="col-lg-3 col-md-6">
-									
-										<!-- Footer Widget -->
-										<div class="footer-widget footer-contact">
-											<h6 class="footer-title">Contact Info</h6>
-											<ul>
-												<li>
-													<div class="contact-infos">
-														<span>Phone Number</span>
-														<p>310-437-2766</p>
-													</div>
-												</li>
-												<li>
-													<div class="contact-infos">
-														<span>Mail Address</span>
-														<p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d1b2bebfa5b0b2a591b4a9b0bca1bdb4ffb2bebc">[email&#160;protected]</a></p>
-													</div>
-												</li>
-												<li>
-													<div class="contact-infos">
-														<span>Address</span>
-														<p>706 Campfire Ave. Meriden, CT </p>
-													</div>
-												</li>
-											</ul>
-										</div>
-										<!-- /Footer Widget -->
-										
-									</div>
-
-								</div>
-							</div>
-							
-						</div>
-					</div>
-				</div>
-				<!-- /Footer Top -->
-				
-				<!-- Footer Bottom -->
-                <div class="footer-bottom">
-					<div class="container">
-					
-						<!-- Copyright -->
-						<div class="row row-gap-3">
-							<div class="col-md-4">
-								<div class="copyright-text">
-									<p>Copyright 2025 © <a href="javascript:void(0);">DreamsLMS</a>. All right reserved.</p>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="d-flex align-items-center justify-content-center gap-2">
-									<a href="javascript:void(0);">
-										<img src="assets/img/icons/fb.svg" alt="facebook" class="img-fluid">
-									</a>
-									<a href="javascript:void(0);">
-										<img src="assets/img/icons/instagram.svg" alt="facebook" class="img-fluid">
-									</a>
-									<a href="javascript:void(0);">
-										<img src="assets/img/icons/be.svg" alt="facebook" class="img-fluid">
-									</a>
-									<a href="javascript:void(0);">
-										<img src="assets/img/icons/linkedin.svg" alt="facebook" class="img-fluid">
-									</a>
-									<a href="javascript:void(0);">
-										<img src="assets/img/icons/x.svg" alt="facebook" class="img-fluid">
-									</a>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="privacy-link">
-									<a href="terms-and-conditions.html" class="mb-0">Terms & Policy</a>
-									<a href="privacy-policy.html">Privacy Policy</a>
-								</div>
-							</div>
-						</div>
-						<!-- /Copyright -->
-						
-					</div>
-				</div>
-				<!-- /Footer Bottom -->
-				
-			</footer>
+			<footer id="footer-section" class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row align-items-start">
+        <div class="col-lg-4 mb-3">
+          <div class="footer-about">
+            <div class="footer-logo">
+              <img src="assets/img/logo.png" alt="Logo" style="max-width: 300px; margin-left: -30px;" />
+            </div>
+            <p style="margin-top: -30px;">
+              AI Adaptive Online Learning Platform empowers <br>educators and learners with innovative LMS features <br> for adaptive learning and collaboration.
+            </p>
+            <div class="d-flex align-items-center gap-3">
+              <a href="#" class="social-link" title="App Store">
+                <i class="fab fa-apple"></i>
+              </a>
+              <a href="#" class="social-link" title="Google Play">
+                <i class="fab fa-google-play"></i>
+              </a>
+              <a href="#" class="social-link" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-link" title="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-link" title="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Innovation Spotlight</h5>
+            <p>Empowering future with AI-driven education.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="footer-widget">
+            <h5 class="footer-title">Stay Updated</h5>
+            <p>Subscribe for updates on courses and features.</p>
+            <div class="subscribe-input">
+              <form action="javascript:void(0);">
+                <div class="input-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Your email address"
+                    aria-label="Email"
+                  />
+                  <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="footer-contact mt-2">
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                <span>Iqra University, Defence View, Karachi, Sindh, Pakistan</span>
+              </div>
+              <div class="d-flex align-items-center mb-1">
+                <i class="fas fa-envelope me-2"></i>
+                <a href="mailto:info@AiAdaptiveOnlineLearningPlatform.com">info@AiAdaptiveOnlineLearningPlatform.com</a>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="fas fa-phone me-2"></i>
+                <span>+92 331-8889902</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p>&copy; 2025 AI Adaptive Online Learning Platform. All rights reserved</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item"><a href="privacy.html">Privacy Policy</a></li>
+            <li class="list-inline-item"><a href="terms.html">Terms & Conditions</a></li>
+            <li class="list-inline-item"><a href="cookies.html">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 			<!-- /Footer -->
 			</div>
 		   
@@ -1978,29 +1209,506 @@
 	   <!-- /Main Wrapper -->
 	  
 		<!-- jQuery -->
-		<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="assets/js/jquery-3.7.1.min.js" type="a4a19eca451dd5bcc202fc5c-text/javascript"></script>
+		<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="assets/js/jquery-3.7.1.min.js"></script>
 		
 		<!-- Bootstrap Core JS -->
-		<script src="assets/js/bootstrap.bundle.min.js" type="a4a19eca451dd5bcc202fc5c-text/javascript"></script>
+		<script src="assets/js/bootstrap.bundle.min.js"></script>
 		
 		<!-- counterup JS -->
-		<script src="assets/js/jquery.waypoints.js" type="a4a19eca451dd5bcc202fc5c-text/javascript"></script>
-		<script src="assets/js/jquery.counterup.min.js" type="a4a19eca451dd5bcc202fc5c-text/javascript"></script>
+		<script src="assets/js/jquery.waypoints.js"></script>
+		<script src="assets/js/jquery.counterup.min.js"></script>
 		
 		<!-- Select2 JS -->
-		<script src="assets/plugins/select2/js/select2.min.js" type="a4a19eca451dd5bcc202fc5c-text/javascript"></script>
+		<script src="assets/plugins/select2/js/select2.min.js"></script>
 
 		<!-- Owl Carousel -->
-		<script src="assets/js/owl.carousel.min.js" type="a4a19eca451dd5bcc202fc5c-text/javascript"></script>	
+		<script src="assets/js/owl.carousel.min.js"></script>	
 
 		<!-- Slick Slider -->
-		<script src="assets/plugins/slick/slick.js" type="a4a19eca451dd5bcc202fc5c-text/javascript"></script>
+		<script src="assets/plugins/slick/slick.js"></script>
 		
 		<!-- Aos -->
-		<script src="assets/plugins/aos/aos.js" type="a4a19eca451dd5bcc202fc5c-text/javascript"></script>
+		<script src="assets/plugins/aos/aos.js"></script>
 		
 		<!-- Custom JS -->
-		<script src="assets/js/script.js" type="a4a19eca451dd5bcc202fc5c-text/javascript"></script>
+		<script src="assets/js/script.js"></script>
 		
+		<!-- Featured Courses JavaScript with COMPLETELY FIXED ENROLLMENT LOGIC -->
+<script>
+$(document).ready(function() {
+    console.log("Home page loaded - Loading featured courses...");
+    
+    // Function to show success notification
+    function showSuccessNotification(message) {
+        // Remove existing notification if any
+        $('.notification').remove();
+        
+        // Create new notification
+        const notification = $(`
+            <div class="notification">
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            </div>
+        `);
+        
+        $('body').append(notification);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+    
+    // Function to update header badge
+    function updateEnrolledBadge() {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Get enrolled courses count
+            $.ajax({
+                url: 'http://localhost:5000/api/enrollment/my-courses',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function(response) {
+                    if (response.enrollments) {
+                        const enrolledCount = response.enrollments.length;
+                        
+                        // Update or create badge in Courses menu
+                        let badge = $('.has-submenu > a .badge-enrolled');
+                        if (badge.length) {
+                            badge.text(enrolledCount);
+                        } else {
+                            $('.has-submenu > a').append(
+                                `<span class="badge-enrolled">${enrolledCount}</span>`
+                            );
+                        }
+                    }
+                },
+                error: function() {
+                    console.log("Could not fetch enrolled courses count");
+                }
+            });
+        }
+    }
+    
+    // Function to save enrolled course in localStorage
+    function saveEnrolledCourse(courseId) {
+        let enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+        if (!enrolledCourses.includes(courseId)) {
+            enrolledCourses.push(courseId);
+            localStorage.setItem('enrolledCourses', JSON.stringify(enrolledCourses));
+        }
+    }
+    
+    // Function to remove enrolled course from localStorage
+    function removeEnrolledCourse(courseId) {
+        let enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+        const index = enrolledCourses.indexOf(courseId);
+        if (index > -1) {
+            enrolledCourses.splice(index, 1);
+            localStorage.setItem('enrolledCourses', JSON.stringify(enrolledCourses));
+            console.log("Removed course from localStorage:", courseId);
+        }
+    }
+    
+    // Function to check if course is enrolled
+    function isCourseEnrolled(courseId) {
+        const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+        return enrolledCourses.includes(courseId);
+    }
+    
+    // **NEW: Function to verify enrollment status with API**
+    function verifyEnrollmentStatus(courseId) {
+        const token = localStorage.getItem('token');
+        if (!token) return Promise.resolve(false);
+        
+        return new Promise((resolve) => {
+            $.ajax({
+                url: 'http://localhost:5000/api/enrollment/my-courses',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function(response) {
+                    if (response.enrollments) {
+                        const isEnrolled = response.enrollments.some(enrollment => 
+                            enrollment.course && enrollment.course._id === courseId
+                        );
+                        console.log("API verification for course", courseId, ":", isEnrolled);
+                        resolve(isEnrolled);
+                    } else {
+                        resolve(false);
+                    }
+                },
+                error: function() {
+                    console.log("Could not verify enrollment status from API");
+                    resolve(false);
+                }
+            });
+        });
+    }
+    
+    // **NEW: Function to refresh courses**
+    function refreshCourses() {
+        console.log("Refreshing courses...");
+        loadFeaturedCourses();
+    }
+    
+    function loadFeaturedCourses() {
+        const token = localStorage.getItem('token');
+        const featuredContainer = $('#featured-courses-container');
+        
+        // Show loading
+        featuredContainer.html(`
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading featured courses...</p>
+            </div>
+        `);
+        
+        // API endpoint - USE PUBLIC ROUTE ONLY
+        const apiUrl = 'http://localhost:5000/api/courses/public?limit=6';
+        console.log("Fetching from PUBLIC API:", apiUrl);
+        
+        $.ajax({
+            url: apiUrl,
+            type: 'GET',
+            success: function(response) {
+                console.log("Featured courses API response:", response);
+                
+                if (response.success && response.courses && response.courses.length > 0) {
+                    renderFeaturedCourses(response.courses, token);
+                } else {
+                    showDefaultFeaturedCourses();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Featured courses error:', error);
+                showDefaultFeaturedCourses();
+            }
+        });
+    }
+    
+    async function renderFeaturedCourses(courses, token) {
+        console.log("Rendering", courses.length, "courses");
+        let html = '';
+        
+        for (let course of courses) {
+            const rating = course.averageRating || 0;
+            const numRatings = course.numRatings || 0;
+            const videoCount = course.videos?.length || course.videoCount || 0;
+            const categoryName = course.category?.name || 'General';
+            const isEnrolled = course.isEnrolled || false;
+            const isFavorite = course.isFavorite || false;
+            const courseId = course._id;
+            const courseName = course.name;
+            const description = course.description || 'No description available';
+            
+            // Thumbnail
+            let thumbnail = course.thumbnail || 'assets/img/course/course-placeholder.jpg';
+            if (!thumbnail.includes('http') && !thumbnail.startsWith('/') && !thumbnail.startsWith('assets/')) {
+                thumbnail = 'assets/img/course/course-placeholder.jpg';
+            }
+            
+            // **MAIN FIX: Check actual enrollment status**
+            let finalIsEnrolled = isEnrolled;
+            
+            // **STEP 1: Check localStorage first**
+            const localStorageEnrolled = isCourseEnrolled(courseId);
+            
+            // **STEP 2: If API says enrolled but localStorage says not enrolled, verify with API**
+            if (isEnrolled && !localStorageEnrolled) {
+                // API might be returning cached data, so verify
+                const actualEnrolled = await verifyEnrollmentStatus(courseId);
+                if (!actualEnrolled) {
+                    finalIsEnrolled = false;
+                } else {
+                    // If actually enrolled, update localStorage
+                    saveEnrolledCourse(courseId);
+                    finalIsEnrolled = true;
+                }
+            } 
+            // **STEP 3: If localStorage says enrolled but API says not enrolled, trust API**
+            else if (!isEnrolled && localStorageEnrolled) {
+                // User unenrolled from another page, update localStorage
+                removeEnrolledCourse(courseId);
+                finalIsEnrolled = false;
+            }
+            // **STEP 4: If both say enrolled, then enrolled**
+            else if (isEnrolled && localStorageEnrolled) {
+                finalIsEnrolled = true;
+            }
+            
+            // Enroll button logic
+            let btnHtml = '';
+            if (finalIsEnrolled) {
+                // Agar actually enrolled hai
+                btnHtml = `<button class="enroll-btn enrolled" disabled>
+                    <i class="fas fa-check me-1"></i> Enrolled
+                </button>`;
+            } else {
+                // Agar enrolled nahi hai
+                btnHtml = `<button class="enroll-btn" 
+                         data-id="${courseId}" 
+                         data-name="${courseName}">
+                         <i class="fas fa-play me-1"></i> Start Free
+                </button>`;
+            }
+            
+            // Course HTML - Updated UI
+html += `
+<div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+    <div class="course-item-two h-100" data-course-id="${courseId}">
+        <div class="course-img">
+            <img src="${thumbnail}" alt="${courseName}" class="img-fluid" 
+                 onerror="this.src='assets/img/course/course-placeholder.jpg'">
+            <div class="play-overlay">
+                <div class="play-btn"><i class="fas fa-play"></i></div>
+            </div>
+            ${videoCount > 0 ? `<span class="video-count-badge"><i class="fas fa-video"></i> ${videoCount}</span>` : ''}
+            <button class="fav-btn ${isFavorite ? 'favorited' : ''}" data-id="${courseId}">
+                <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
+            </button>
+        </div>
+        <div class="course-content">
+            <div class="category-badge">${categoryName}</div>
+            <h6 class="course-title">${courseName}</h6>
+            
+            <p class="course-desc">${description.substring(0, 100)}${description.length > 100 ? '...' : ''}</p>
+            
+            <div class="course-footer">
+                <div class="price">FREE</div>
+                ${btnHtml}
+            </div>
+        </div>
+    </div>
+</div>`;
+        }
+        
+        $('#featured-courses-container').html(html);
+        console.log("Courses rendered successfully");
+        
+        // Update badge after rendering
+        updateEnrolledBadge();
+    }
+    
+    function showDefaultFeaturedCourses() {
+        $('#featured-courses-container').html(`
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted mb-3">No courses available</h5>
+                <p class="text-muted mb-4">Check back later for new courses!</p>
+                <a href="course-grid.html" class="btn btn-primary">Browse All Courses</a>
+            </div>
+        `);
+    }
+    
+    // ENROLL BUTTON HANDLER
+    $(document).on('click', '.enroll-btn:not(.enrolled):not(.disabled)', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        const token = localStorage.getItem('token');
+        const btn = $(this);
+        const courseId = btn.data('id');
+        const courseName = btn.data('name');
+        
+        // Check if user is logged in
+        if (!token) {
+            const redirectUrl = encodeURIComponent('index-3.html');
+            window.location.href = `login.html?redirect=${redirectUrl}&courseId=${courseId}&source=enrollment`;
+            return;
+        }
+        
+        // Show loading
+        const originalText = btn.html();
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Enrolling...');
+        
+        console.log("Enrolling in course:", courseId, courseName);
+        
+        // API call for enrollment
+        $.ajax({
+            url: 'http://localhost:5000/api/enrollment/enroll',
+            type: 'POST',
+            headers: { 
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({ courseId: courseId }),
+            success: function(response) {
+                console.log("Enrollment success:", response);
+                
+                // 1. Show success notification
+                showSuccessNotification(`Successfully enrolled in "${courseName}"!`);
+                
+                // 2. Button permanently "Enrolled" karo with green color
+                btn.removeClass('btn-primary').addClass('btn-success enrolled');
+                btn.html('<i class="fas fa-check me-1"></i> Enrolled');
+                btn.prop('disabled', true);
+                btn.attr('disabled', 'disabled');
+                
+                // 3. Remove click event
+                btn.off('click');
+                
+                // 4. Save in localStorage for persistence
+                saveEnrolledCourse(courseId);
+                
+                // 5. Update header badge
+                updateEnrolledBadge();
+                
+                // 6. Auto-redirect to index-3.html after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'index-3.html';
+                }, 2000);
+            },
+            error: function(xhr) {
+                console.error("Enrollment error:", xhr);
+                let errorMsg = 'Enrollment failed. Please try again.';
+                if (xhr.responseJSON?.message) {
+                    errorMsg = xhr.responseJSON.message;
+                    
+                    // If already enrolled
+                    if (xhr.status === 400 && xhr.responseJSON.message.includes('already enrolled')) {
+                        errorMsg = 'You are already enrolled in this course!';
+                        btn.removeClass('btn-primary').addClass('btn-success enrolled');
+                        btn.html('<i class="fas fa-check me-1"></i> Already Enrolled');
+                        btn.prop('disabled', true);
+                        saveEnrolledCourse(courseId);
+                        return;
+                    }
+                }
+                alert(errorMsg);
+                btn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+    
+    // Favorite button handler
+    $(document).on("click", ".fav-btn", async function (e) {
+        e.stopPropagation();
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Please login to add to wishlist');
+            return;
+        }
+        
+        const btn = $(this);
+        const courseId = btn.data("id");
+        const isFav = btn.hasClass("favorited");
+        
+        // Immediate UI update
+        if (isFav) {
+            btn.removeClass("favorited");
+            btn.find("i").removeClass("fas").addClass("far");
+        } else {
+            btn.addClass("favorited");
+            btn.find("i").removeClass("far").addClass("fas");
+        }
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/courses/${courseId}/favorite`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ favorite: !isFav })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log(isFav ? "Removed from wishlist" : "Added to wishlist");
+            } else {
+                // Revert UI if API failed
+                if (isFav) {
+                    btn.addClass("favorited");
+                    btn.find("i").removeClass("far").addClass("fas");
+                } else {
+                    btn.removeClass("favorited");
+                    btn.find("i").removeClass("fas").addClass("far");
+                }
+                alert("Failed to update wishlist");
+            }
+        } catch (err) {
+            console.error("Favorite toggle failed:", err);
+            // Revert UI
+            if (isFav) {
+                btn.addClass("favorited");
+                btn.find("i").removeClass("far").addClass("fas");
+            } else {
+                btn.removeClass("favorited");
+                btn.find("i").removeClass("fas").addClass("far");
+            }
+            alert("Network error. Please try again.");
+        }
+    });
+    
+    // Check URL parameters for unenroll events
+    function checkUrlParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const unenrolled = urlParams.get('unenrolled');
+        const courseId = urlParams.get('courseId');
+        
+        if (unenrolled === 'true' && courseId) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            removeEnrolledCourse(courseId);
+            showSuccessNotification('Course unenrolled successfully!');
+            setTimeout(() => {
+                refreshCourses();
+            }, 1000);
+        }
+        
+        const enrolled = urlParams.get('enrolled');
+        const source = urlParams.get('source');
+        
+        if (enrolled === 'true' && courseId) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            saveEnrolledCourse(courseId);
+            showSuccessNotification('Course enrollment completed successfully!');
+            setTimeout(() => {
+                refreshCourses();
+            }, 1000);
+        }
+    }
+    
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'enrolledCourses') {
+            console.log("Enrolled courses updated from another tab");
+            refreshCourses();
+        }
+    });
+    
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            console.log("Page became visible, refreshing courses...");
+            refreshCourses();
+        }
+    });
+    
+    // Initialize
+    loadFeaturedCourses();
+    checkUrlParams();
+    updateEnrolledBadge();
+});
+
+// Dashboard redirect function
+function redirectToDashboard() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.role === 'student') {
+                window.location.href = 'student-dashboard.html';
+            } else {
+                window.location.href = 'login.html';
+            }
+        } catch (e) {
+            window.location.href = 'login.html';
+        }
+    } else {
+        window.location.href = 'login.html';
+    }
+}
+</script>
 	<script src="../../cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="a4a19eca451dd5bcc202fc5c-|49" defer=""></script></body>
 </html>

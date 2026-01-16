@@ -21,14 +21,17 @@ const courseSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
-    topics: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Topic' }], // Reference to topics
-    assignments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Assignment' }], // Reference to assignments
+    topics: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Topic' }],
+    assignments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Assignment' }],
+       // NEW: Featured courses field
+    
     videos: [{
         topic: { type: String, required: true },
         url: { type: String },
         type: { type: String, enum: ['single', 'playlist'], default: 'single' },
         isFile: { type: Boolean, default: false },
-        path: { type: String }
+        path: { type: String },
+        thumbnail: { type: String }
     }],
     resources: [{
         type: { type: String, enum: ['pdf', 'url'] },
@@ -67,4 +70,5 @@ courseSchema.virtual('populatedTopics', {
 courseSchema.set('toJSON', { virtuals: true });
 courseSchema.set('toObject', { virtuals: true });
 
-module.exports = mongoose.model('Course', courseSchema);
+// Check if model already exists before defining
+module.exports = mongoose.models.Course || mongoose.model('Course', courseSchema);

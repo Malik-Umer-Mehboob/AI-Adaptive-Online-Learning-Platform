@@ -11,6 +11,7 @@ const Assignment = require('../models/Assignment');
 const Submission = require('../models/Submission');
 // File ke TOP mein yeh line add karo
 const User = require('../models/User'); // <-- Yeh line add karo
+const Category = require('../models/Category');
 
 // Helper function
 function getYouTubeThumbnail(url) {
@@ -398,14 +399,18 @@ router.post('/student/cleanup-enrollments', auth, checkRole(['student']), async 
 });
 
 // GET - Admin dashboard
+// GET - Admin dashboard
 router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
     try {
         console.log('Admin dashboard accessed by user:', req.user.id);
+        
+        // ✅ CORRECTED: Use Category model for counting categories
+        const totalCategories = await Category.countDocuments();
+        
         const totalUsers = await Student.countDocuments() + await Admin.countDocuments();
         const totalStudents = await Student.countDocuments();
         const totalAdmins = await Admin.countDocuments();
         const totalCourses = await Course.countDocuments();
-        const totalCategories = (await Course.distinct('category')).length;
         const totalAssignments = await Assignment.countDocuments();
         const pendingSubmissions = await Submission.countDocuments({ evaluated: false });
 
@@ -457,16 +462,16 @@ router.get('/admin/dashboard', auth, checkRole(['admin']), async (req, res) => {
             totalStudents,
             totalAdmins,
             totalCourses,
-            totalCategories,
+            totalCategories, // ✅ Now correct count
             totalAssignments,
             pendingSubmissions,
             totalEarnings,
             recentActivities: allActivities
         });
+        
     } catch (error) {
         console.error('Admin Dashboard Error:', error.stack);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
-
 module.exports = router;

@@ -2033,12 +2033,12 @@ $(document).on('click', '.fav-btn', async function() {
             success: () => {
                 localStorage.removeItem('token');
                 showToast('Logout successful.', 'success');
-                setTimeout(() => window.location.href = 'login.html', 1500);
+                setTimeout(() => window.location.href = 'index-3.html', 1500);
             },
             error: () => {
                 localStorage.removeItem('token');
                 showToast('Logout successful.', 'success');
-                setTimeout(() => window.location.href = 'login.html', 1500);
+                setTimeout(() => window.location.href = 'index-3.html', 1500);
             }
         });
     });

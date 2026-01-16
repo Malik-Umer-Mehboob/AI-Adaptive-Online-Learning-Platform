@@ -1,15 +1,14 @@
-// models/Topic.js - Added contentSummary for AI prompt generation from notes/videos.
 const mongoose = require('mongoose');
 
 const topicSchema = new mongoose.Schema({
   name: { type: String, required: true },
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
   description: { type: String, default: '' },
-  contentSummary: { type: String, default: '' }, // New: Short summary of videos/notes for AI question generation
+  contentSummary: { type: String, default: '' },
   order: { type: Number, default: 0 },
   status: { type: String, enum: ['draft', 'published'], default: 'draft' },
   resources: [{
-    type: { type: String, enum: ['pdf', 'url', 'quiz', 'assignment'] }, // Added 'url' for external
+    type: { type: String, enum: ['pdf', 'url', 'quiz', 'assignment'] },
     url: { type: String, required: true },
     name: { type: String }
   }],
@@ -37,4 +36,5 @@ topicSchema.pre('remove', async function(next) {
   next();
 });
 
-module.exports = mongoose.model('Topic', topicSchema);
+// Fix: Check if model already exists before defining
+module.exports = mongoose.models.Topic || mongoose.model('Topic', topicSchema);

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Adaptive LMS | Manage Assignments</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/img/favicon.png">
+    <!-- Theme Settings Js -->
+    <script src="assets/js/theme-script.js" type="text/javascript"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+    <!-- Feather CSS -->
+    <link rel="stylesheet" href="assets/css/feather.css">
+    <!-- Iconsax CSS -->
+    <link rel="stylesheet" href="assets/css/iconsax.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <style>
+        /* Reusing styles from manage-courses.html */
+        .light-mode { background-color: #ffffff; color: #000000; }
+        .dark-mode { background-color: #1a1a1a; color: #ffffff; }
+        .assignments-table {
+            border-radius: 16px;
+            overflow: hidden;
+            font-weight: 600;
+            border: 2px solid #007bff;
+            background: #ffffff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .assignments-table thead { background: linear-gradient(135deg, #007bff, #0056b3); }
+        .assignments-table thead th { color: #fff; padding: 12px 14px; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.35); }
+        .assignments-table tbody td { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.15); vertical-align: middle; }
+        
+        .ai-badge {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-active { background-color: #d4edda; color: #155724; }
+        .status-draft { background-color: #f8f9fa; color: #6c757d; border: 1px solid #dee2e6; }
+        
+        /* Modal Styles */
+        .modal-header { background: linear-gradient(135deg, #007bff, #0056b3); color: white; }
+        .generation-section {
+            border: 2px dashed #007bff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+        .dark-mode .generation-section { background: #2d3748; border-color: #0d6efd; }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Header (Simplified for brevity, assuming common header exists or copying essential parts) -->
+        <header class="header-two">
+             <div class="container">
+                <div class="header-nav">
+                    <div class="navbar-header">
+                        <a class="navbar-brand logo" href="index-3.html">
+                            <img src="assets/img/logo.png" class="img-fluid" alt="Logo" style="width: 200px;">
+                        </a>
+                    </div>
+                    <div class="main-menu-wrapper">
+                         <div class="menu-header">
+                            <a href="index-3.html" class="menu-logo">
+                                <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
+                            </a>
+                            <a id="menu_close" class="menu-close" href="javascript:void(0);"> <i class="fas fa-times"></i></a>
+                        </div>
+                         <div class="header-btn d-flex align-items-center">
+                            <div class="icon-btn me-2">
+                                <a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate"><i class="isax isax-sun-15"></i></a>
+                                <a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle"><i class="isax isax-moon"></i></a>
+                            </div>
+                            <!-- Profile Dropdown (Simplified) -->
+                             <div class="dropdown profile-dropdown">
+                                <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
+                                    <span class="avatar"><img src="assets/img/avatar.png" alt="Img" class="img-fluid rounded-circle dropdown-profile-img"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="login.html">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+         <!-- Page Header -->
+        <div class="manage-courses-header py-5" style="background: linear-gradient(135deg, #DBEAFE, #F3E8FF);">
+          <div class="container text-center">
+            <h2 class="fw-bold mb-2 header-title">Manage Assignments</h2>
+            <p class="header-subtext">Create and manage AI-powered assignments for your courses.</p>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb justify-content-center mt-3 header-breadcrumb">
+                <li class="breadcrumb-item"><a href="admin-dashboard.html">Home</a></li>
+                <li class="breadcrumb-item active">Assignments</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+
+        <div class="content mt-5">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0 fs-18">Assignments List</h5>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAssignmentModal"><i class="fas fa-plus me-2"></i>Create Assignment</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table courses-table assignments-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Course</th>
+                                <th>Due Date</th>
+                                <th>Questions</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                         <tbody id="assignments-list">
+                            <!-- Populated by JS -->
+                            <tr><td colspan="6" class="text-center">Loading assignments...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Assignment Modal -->
+        <div class="modal fade" id="addAssignmentModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create New Assignment</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-assignment-form">
+                            <div class="mb-3">
+                                <label class="form-label">Course *</label>
+                                <select class="form-control" id="assignment-course" required>
+                                    <option value="">Select Course</option>
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Assignment Title *</label>
+                                <input type="text" class="form-control" id="assignment-title" required placeholder="e.g. Week 1 Assessment">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Due Date *</label>
+                                <input type="datetime-local" class="form-control" id="assignment-duedate" required>
+                            </div>
+
+                             <!-- Generation Method Selection -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Generation Method</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="gen-method" id="method-custom" value="custom" checked>
+                                    <label class="btn btn-outline-primary" for="method-custom">Custom Prompt</label>
+
+                                    <input type="radio" class="btn-check" name="gen-method" id="method-notes" value="notes">
+                                    <label class="btn btn-outline-primary" for="method-notes">From Notes (PDF/Text)</label>
+                                </div>
+                            </div>
+
+                            <!-- Custom Prompt Section -->
+                            <div id="section-custom" class="generation-section">
+                                <div class="mb-3">
+                                    <label class="form-label">Topic / Prompt</label>
+                                    <textarea class="form-control" id="custom-topic" rows="3" placeholder="Describe the assignment topic..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- From Notes Section -->
+                            <div id="section-notes" class="generation-section" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="form-label">Upload Notes (PDF)</label>
+                                    <input type="file" class="form-control" id="notes-file" accept=".pdf">
+                                    <small class="text-muted">Upload lecture notes or reading material. AI will generate questions from this.</small>
+                                </div>
+                                <div class="alert alert-info py-2">
+                                    <i class="fas fa-robot me-2"></i> Questions will be auto-generated based on the file content.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Number of Questions</label>
+                                <input type="number" class="form-control" id="num-questions" value="5" min="1" max="20">
+                            </div>
+
+                            <input type="hidden" id="generated-questions-data">
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="btn-create-assignment">
+                                    <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                                    Generate & Create
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/moment.min.js"></script> <!-- For date formatting -->
+    <script src="assets/js/auth.js"></script> <!-- Auth check -->
+    <script src="assets/js/admin-assignments.js"></script> <!-- Custom Logic -->
+    
+    <script>
+        // Simple toggle for generation method
+        $('input[name="gen-method"]').change(function() {
+            if (this.value === 'custom') {
+                $('#section-custom').show();
+                $('#section-notes').hide();
+            } else {
+                $('#section-custom').hide();
+                $('#section-notes').show();
+            }
+        });
+    </script>
+</body>
+</html>

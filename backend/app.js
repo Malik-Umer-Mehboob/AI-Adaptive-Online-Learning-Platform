@@ -1,4 +1,4 @@
-// app.js - COMPLETE FIXED VERSION WITH CORRECT PATHS
+// app.js - COMPLETE VERSION WITHOUT OLLAMA
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -10,7 +10,7 @@ const createError = require('http-errors');
 const fs = require('fs');
 const mongoose = require('mongoose');
 
-
+const OpenAIService = require('./services/openaiService');
 
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -21,81 +21,6 @@ connectDB().catch(err => {
     console.error('Failed to connect to MongoDB:', err.message);
     process.exit(1);
 });
-
-// Check AI Model Availability
-async function checkAIModel() {
-    try {
-        console.log('Checking Ollama availability for qwen2.5:7b-instruct-q4_K_M...');
-        const response = await fetch('http://localhost:11434/api/tags');
-        const data = await response.json();
-        const models = data.models || [];
-        
-        const targetModel = 'qwen2.5:7b-instruct-q4_K_M';
-        const hasModel = models.some(m => m.name === targetModel);
-        
-        if (hasModel) {
-            console.log(`✅ Ollama model "${targetModel}" is available`);
-            console.log(`ℹ️  Model details: 7B parameter, instruct-tuned, Q4_K_M quantized`);
-            console.log(`⚡ Expected performance: Fast inference (2-5 seconds per evaluation)`);
-        } else {
-            console.warn(`⚠️  Model "${targetModel}" not found.`);
-            console.log('Available models:', models.map(m => m.name));
-            console.log('\nTo download the model, run:');
-            console.log('  ollama pull qwen2.5:7b-instruct-q4_K_M');
-            console.log('\nFor optimal performance, also run:');
-            console.log('  set OLLAMA_NUM_GPU=1 (Windows)');
-            console.log('  export OLLAMA_NUM_GPU=1 (Linux/Mac)');
-        }
-        return hasModel;
-    } catch (error) {
-        console.error('❌ Ollama not running or unreachable:', error.message);
-        console.log('\nTo start Ollama:');
-        console.log('  1. Open terminal/command prompt');
-        console.log('  2. Run: ollama serve');
-        console.log('  3. In another terminal, run: ollama pull qwen2.5:7b-instruct-q4_K_M');
-        return false;
-    }
-}
-
-// Test AI model with simple prompt
-async function testAIModel() {
-    try {
-        console.log('\nTesting AI model response...');
-        const response = await fetch('http://localhost:11434/api/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'qwen2.5:7b-instruct-q4_K_M',
-                prompt: "Hello, are you ready to grade assignments?",
-                stream: false,
-                options: {
-                    temperature: 0.1,
-                    num_predict: 50
-                }
-            })
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            console.log(`✅ Model test successful: ${data.response?.substring(0, 50)}...`);
-            return true;
-        } else {
-            console.log('⚠️  Model test failed with status:', response.status);
-            return false;
-        }
-    } catch (error) {
-        console.log('⚠️  Model test error:', error.message);
-        return false;
-    }
-}
-
-// Check AI model on startup
-setTimeout(async () => {
-    const modelAvailable = await checkAIModel();
-    if (modelAvailable) {
-        await testAIModel();
-    }
-}, 2000);
 
 // Models (for any app-level use)
 const Assignment = require('./models/Assignment');
@@ -197,6 +122,19 @@ requiredDirs.forEach(dir => {
 
 const app = express();
 
+// ========== ✅ MOVE FAVICON HANDLER HERE ==========
+// Favicon handler
+app.get('/favicon.ico', (req, res) => {
+    const faviconPath = path.join(__dirname, 'public', 'favicon.ico');
+    
+    if (fs.existsSync(faviconPath)) {
+        res.sendFile(faviconPath);
+    } else {
+        // Return 204 No Content if favicon doesn't exist
+        res.status(204).end();
+    }
+});
+
 // CORS Configuration
 const corsOptions = {
     origin: function (origin, callback) {
@@ -248,7 +186,7 @@ app.use('/api/auth', authLimiter);
 
 const aiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000,
-    max: 30, // Increased for faster model
+    max: 30,
     message: 'Too many AI requests, please wait a minute.'
 });
 app.use('/api/assignments/generate', aiLimiter);
@@ -256,13 +194,20 @@ app.use('/api/assignments/submissions/*/evaluate', aiLimiter);
 
 // Middleware
 app.use(logger('dev'));
+
+// Add early favicon interceptor for morgan logger
+app.use((req, res, next) => {
+    if (req.url === '/favicon.ico') {
+        // Already handled by the favicon route above
+        next();
+    } else {
+        next();
+    }
+});
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
-
-// ========== ✅ CRITICAL FIX: STATIC FILE SERVING ==========
-// Serve public directory
-// In app.js, add these static file serving routes BEFORE your routes:
 
 // ========== ✅ CRITICAL FIX: STATIC FILE SERVING ==========
 // Serve public directory
@@ -310,11 +255,8 @@ app.use('/uploads/submissions', express.static(path.join(__dirname, 'public', 'u
 app.use('/uploads/videos', express.static(path.join(__dirname, 'public', 'uploads', 'videos')));
 app.use('/uploads/resources', express.static(path.join(__dirname, 'public', 'uploads', 'resources')));
 
-// Health Check with AI status
+// Health Check without AI status
 app.get('/api/health', async (req, res) => {
-    const aiStatus = await checkAIModel();
-    const aiTest = await testAIModel();
-    
     // Check directories
     const dirStatus = {
         assignments: fs.existsSync(assignmentsDir) ? '✅' : '❌',
@@ -337,139 +279,12 @@ app.get('/api/health', async (req, res) => {
         status: 'OK',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        ai: {
-            available: aiStatus,
-            responsive: aiTest,
-            model: 'qwen2.5:7b-instruct-q4_K_M',
-            host: process.env.OLLAMA_HOST || 'http://localhost:11434',
-            performance: 'Fast (Q4_K_M quantized)'
-        },
         directories: dirStatus,
         pdfCount: pdfCount,
         mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
-        environment: process.env.NODE_ENV || 'development'
+        environment: process.env.NODE_ENV || 'development',
+        aiService: 'Google Gemini API'
     });
-});
-
-// AI Status Check Endpoint
-app.get('/api/ai/status', async (req, res) => {
-    try {
-        const response = await fetch('http://localhost:11434/api/tags');
-        const data = await response.json();
-        const models = data.models || [];
-        
-        const targetModel = 'qwen2.5:7b-instruct-q4_K_M';
-        const modelExists = models.some(m => m.name === targetModel);
-        
-        // Test model with grading prompt
-        let testResult = null;
-        if (modelExists) {
-            try {
-                const testResponse = await fetch('http://localhost:11434/api/generate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: targetModel,
-                        prompt: "Grade this answer about JavaScript: 'JavaScript is a programming language used for web development.' Give score 0-100 and brief feedback in JSON.",
-                        stream: false,
-                        options: {
-                            temperature: 0.1,
-                            num_predict: 100,
-                            num_thread: 8
-                        }
-                    })
-                });
-                
-                if (testResponse.ok) {
-                    const testData = await testResponse.json();
-                    testResult = {
-                        success: true,
-                        response: testData.response,
-                        timing: testData.total_duration ? `${testData.total_duration / 1e9}s` : 'unknown'
-                    };
-                } else {
-                    testResult = { success: false, error: `HTTP ${testResponse.status}` };
-                }
-            } catch (testError) {
-                testResult = { success: false, error: testError.message };
-            }
-        }
-        
-        res.json({
-            ollamaRunning: true,
-            modelExists,
-            targetModel,
-            availableModels: models.map(m => ({
-                name: m.name,
-                size: m.size ? `${Math.round(m.size / 1e9)}GB` : 'unknown'
-            })),
-            testResult: testResult,
-            recommendations: modelExists ? [
-                'Model is ready for fast grading',
-                'Average evaluation time: 2-5 seconds',
-                'Optimized for assignment grading'
-            ] : [
-                'Download model: ollama pull qwen2.5:7b-instruct-q4_K_M',
-                'Start Ollama: ollama serve',
-                'Set OLLAMA_NUM_GPU=1 for GPU acceleration'
-            ]
-        });
-    } catch (error) {
-        res.status(500).json({
-            ollamaRunning: false,
-            error: error.message,
-            suggestion: 'Start Ollama with: ollama serve',
-            downloadCommand: 'ollama pull qwen2.5:7b-instruct-q4_K_M'
-        });
-    }
-});
-
-// Quick AI Test
-app.get('/api/ai/quick-test', async (req, res) => {
-    try {
-        const startTime = Date.now();
-        
-        const response = await fetch('http://localhost:11434/api/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'qwen2.5:7b-instruct-q4_K_M',
-                prompt: "What is 2+2? Answer only with the number.",
-                stream: false,
-                options: {
-                    temperature: 0.1,
-                    num_predict: 10,
-                    num_thread: 8
-                }
-            })
-        });
-        
-        const duration = Date.now() - startTime;
-        
-        if (response.ok) {
-            const data = await response.json();
-            res.json({
-                success: true,
-                model: 'qwen2.5:7b-instruct-q4_K_M',
-                response: data.response,
-                duration: `${duration}ms`,
-                performance: duration < 1000 ? 'Excellent' : duration < 3000 ? 'Good' : 'Slow',
-                readyForGrading: duration < 5000
-            });
-        } else {
-            res.status(500).json({
-                success: false,
-                error: `HTTP ${response.status}`,
-                duration: `${duration}ms`
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-            suggestion: 'Check if Ollama is running: ollama serve'
-        });
-    }
 });
 
 // Test Route
@@ -485,7 +300,7 @@ app.get('/api/test', (req, res) => {
         message: 'Assignment Grading System Server is running',
         version: '2.0.0',
         features: [
-            'Fast AI Assignment Evaluation (qwen2.5:7b-instruct-q4_K_M)',
+            'AI Assignment Generation & Evaluation (Google Gemini)',
             'Instant PDF Submission & Grading',
             'Automated Feedback Generation',
             'Course & Assignment Management',
@@ -500,8 +315,8 @@ app.get('/api/test', (req, res) => {
         endpoints: {
             assignments: '/api/assignments',
             submissions: '/api/submissions',
-            aiStatus: '/api/ai/status',
-            health: '/api/health'
+            health: '/api/health',
+            test: '/api/test'
         }
     });
 });
@@ -526,7 +341,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Request logging middleware with AI endpoints highlight
+// Request logging middleware
 app.use((req, res, next) => {
     const start = Date.now();
     
@@ -539,7 +354,7 @@ app.use((req, res, next) => {
         const logMessage = `${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`;
         
         if (isAIEndpoint) {
-            console.log(`🧠 AI ${logMessage}`);
+            console.log(`🤖 Gemini ${logMessage}`);
         } else {
             console.log(logMessage);
         }
@@ -550,7 +365,11 @@ app.use((req, res, next) => {
 // 404 Handler
 app.use((req, res, next) => {
     const userInfo = req.user ? `User: ${req.user.id} (${req.user.role})` : 'No user';
-    console.log(`[404] ${req.method} ${req.originalUrl} - ${userInfo}`);
+    
+    // Skip logging for favicon 404s
+    if (req.originalUrl !== '/favicon.ico') {
+        console.log(`[404] ${req.method} ${req.originalUrl} - ${userInfo}`);
+    }
     
     // Return JSON for API routes
     if (req.originalUrl.startsWith('/api/')) {
@@ -562,10 +381,15 @@ app.use((req, res, next) => {
             availableEndpoints: [
                 '/api/assignments - Assignment management',
                 '/api/submissions - Submission handling',
-                '/api/ai/status - AI model status',
-                '/api/health - System health check'
+                '/api/health - System health check',
+                '/api/test - Test endpoint'
             ]
         });
+    }
+    
+    // For favicon, just send 204 (already handled by the favicon route above)
+    if (req.originalUrl === '/favicon.ico') {
+        return res.status(204).end();
     }
     
     // For non-API routes, send HTML or redirect
@@ -574,6 +398,11 @@ app.use((req, res, next) => {
 
 // Global Error Handler
 app.use((err, req, res, next) => {
+    // Skip logging for favicon errors
+    if (req.originalUrl === '/favicon.ico') {
+        return res.status(204).end();
+    }
+    
     // Log the error
     const userInfo = req.user ? `User: ${req.user.id} (${req.user.role})` : 'No user';
     
@@ -636,12 +465,12 @@ app.use((err, req, res, next) => {
         return res.status(400).json(errorResponse);
     }
     
-    // Special handling for AI errors
-    if (err.message.includes('Ollama') || err.message.includes('AI') || err.message.includes('model')) {
+    // Special handling for Gemini API errors
+    if (err.message.includes('Gemini') || err.message.includes('GoogleGenerativeAI')) {
         errorResponse.suggestion = [
-            'Check if Ollama is running: ollama serve',
-            'Download the model: ollama pull qwen2.5:7b-instruct-q4_K_M',
-            'Set OLLAMA_NUM_GPU=1 for GPU acceleration'
+            'Check your Google Gemini API key in .env file',
+            'Ensure the API key has proper permissions',
+            'Verify internet connectivity for API calls'
         ];
     }
     
@@ -665,11 +494,6 @@ process.on('unhandledRejection', (reason, promise) => {
         path.join(__dirname, 'logs', 'errors.log'),
         JSON.stringify(errorLog) + '\n'
     );
-    
-    // In production, we might want to restart
-    if (process.env.NODE_ENV === 'production' && reason.message && reason.message.includes('Ollama')) {
-        console.log('⚠️  AI service error detected. Consider restarting Ollama.');
-    }
 });
 
 // Global uncaught exception handler
@@ -704,6 +528,7 @@ console.log('🚀 Assignment Grading System Starting...');
 console.log('========================================');
 console.log(`Port: ${process.env.PORT || 5000}`);
 console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+console.log(`AI Service: Google GPT API`);
 console.log('========================================\n');
 
 module.exports = app;

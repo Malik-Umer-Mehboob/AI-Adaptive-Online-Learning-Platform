@@ -1,8 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { auth } = require("../middleware/auth");  // ← Destructure karo, object se auth function nikalo
-const { enrollInCourse } = require("../controllers/enrollmentController");
+const { auth } = require("../middleware/auth");
+const { 
+    enrollInCourse, 
+    getEnrollmentStats,  // Added for debugging
+    getEnrolledCourses 
+} = require("../controllers/enrollmentController");
 
+// Enrollment routes
 router.post("/enroll", auth, enrollInCourse);
+router.get("/stats", auth, getEnrollmentStats); // Debug route
+router.get("/my-courses", auth, getEnrolledCourses);
 
 module.exports = router;
